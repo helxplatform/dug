@@ -25,6 +25,7 @@ class Search:
     """
     def __init__(self, host="localhost", port=9200, indices=['test']):
         self.indices = indices
+        self.crawlspace = "crawl"
         self.es = Elasticsearch([
             {
                 'host' : host,
@@ -82,6 +83,10 @@ class Search:
             body=json.dumps({ 'query': query }),
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'])
 
+    def make_crawlspace (self):
+        if not os.path.exists (self.crawlspace):
+            os.mkdirs (self.crawlspace)
+            
     def crawl (self):
         monarch_endpoint = "https://monarchinitiative.org/searchapi"
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
@@ -89,6 +94,7 @@ class Search:
             "accept" : "application/json",
             "Content-Type" : "text/plain"
         }
+        self.make_crawlspace ()
         with open("phenotypes.json") as stream:
             phenotypes = json.load (stream)
             for phenotype in phenotypes:
@@ -104,7 +110,7 @@ class Search:
                     if not any(map(lambda v: identifier.startswith(v), accept)):
                         continue
 
-                    filename = f"crawl/{identifier}.json"
+                    filename = f"{self.crawlspace}/{identifier}.json"
                     if os.path.exists (filename):
                         logger.info (f"identifier {identifier} is already crawled.")
                         continue
@@ -119,7 +125,8 @@ class Search:
                         json.dump (response, stream, indent=2)
                         
     def index (self, index):
-        files = glob.glob ("crawl/*.json")
+        self.make_crawlspace ()
+        files = glob.glob (f"{self.crawlspace}/*.json")
         for f in files:
             print (f"index {f}")
             with open (f, 'r') as stream:
