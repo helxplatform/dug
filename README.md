@@ -2,8 +2,6 @@
 
 ## Prerequisites
 
-* Elasticsearch 7.5.2
-* Java 1.8.x
 * Python 3.7.x
 
 ## Configure
@@ -14,6 +12,7 @@ pip install -r requiements.txt
 
 ## Run
 ```
+docker run -d --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" elasticsearch:7.5.2
 python search.py --crawl
 python search.py --index
 python search.py --query coug
