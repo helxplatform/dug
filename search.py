@@ -85,7 +85,7 @@ class Search:
 
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
-            os.mkdirs (self.crawlspace)
+            os.makedirs (self.crawlspace)
             
     def crawl (self):
         monarch_endpoint = "https://monarchinitiative.org/searchapi"
