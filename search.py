@@ -84,8 +84,10 @@ class Search:
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'])
 
     def make_crawlspace (self):
-        if not os.path.exists (self.crawlspace):
-            os.mkdirs (self.crawlspace)
+        try:
+            os.makedirs (self.crawlspace)
+        except FileExistsError:
+            logger.info (f"Crawlspace {self.crawlspace} already exists.")
             
     def crawl (self):
         monarch_endpoint = "https://monarchinitiative.org/searchapi"
