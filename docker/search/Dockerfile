@@ -1,9 +1,13 @@
+######################################################
+#
+# A container for the core semantic-search capability.
+#
+######################################################
 FROM python:3.7.6-alpine
 
 WORKDIR /
 
-# build-base linux-headers zeromq zeromq-dev && \
-
+# Install source code and required packages.
 RUN apk add git && \
 	git clone https://github.com/helxplatform/semantic-search.git && \
 	cd semantic-search && \
@@ -11,13 +15,23 @@ RUN apk add git && \
 	pip install --no-cache-dir -r requirements.txt && \
 	apk del git
 
-# build-base linux-headers zeromq-dev
+# Least privilege: Run as a non-root user.
+ENV USER search-user
+ENV UID 1000
+ENV HOME /home/$USER
+RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
+
+#RUN useradd -m -s /bin/bash -N -u $UID $USER
+USER $USER
+#WORKDIR $HOME
 
 ENV PYTHONPATH /semantic-search
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
 ENV PORT=5009
+ENV COMMAND=--crawl
 
-#ENTRYPOINT /usr/local/bin/gunicorn --workers=$WORKERS --bind=0.0.0.0:$PORT --name=$APP_NAME --timeout=600 --log-level=debug $APP_MODULE
+WORKDIR /semantic-search/search
 
-ENTRYPOINT python /semantic-search/search/search.py --elastic-host=$ELASTIC_API_HOST --elastic-port=$ELASTIC_API_PORT --crawl
+# Define the generic search entrypoint providing elasticsearch connectivity information.
+ENTRYPOINT python search.py --elastic-host=$ELASTIC_API_HOST --elastic-port=$ELASTIC_API_PORT $COMMAND

@@ -4,6 +4,7 @@ import logging
 import glob
 import json
 import requests
+import traceback
 import os
 
 logger = logging.getLogger (__name__)
@@ -85,8 +86,12 @@ class Search:
 
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
-            os.makedirs (self.crawlspace)
-            
+            try:
+                os.makedirs (self.crawlspace)
+            except Exception as e:
+                print (f"-----------> {e}")
+                traceback.print_exc ()
+                
     def crawl (self):
         monarch_endpoint = "https://monarchinitiative.org/searchapi"
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
