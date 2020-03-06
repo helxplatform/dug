@@ -1,0 +1,20 @@
+#!/bin/bash
+
+org=heliumdatastage
+
+build () {
+    local mod=$1
+    if [ -z "$mod" ]; then
+        echo module name required
+    fi
+    docker build --no-cache $mod -t $org/$mod
+}
+push () {
+    local mod=$1
+    if [ -z "$mod" ]; then
+        echo module name required
+    fi
+    docker push $org/$mod
+}
+
+$*
