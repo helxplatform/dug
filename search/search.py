@@ -9,7 +9,7 @@ import os
 
 logger = logging.getLogger (__name__)
 
-class SearchException:
+class SearchException (Exception):
     def __init__(self, message, details):
         self.message = message
         self.details = details
