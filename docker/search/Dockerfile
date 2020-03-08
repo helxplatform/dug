@@ -19,8 +19,8 @@ RUN apk add git && \
 ENV USER search-user
 ENV UID 1000
 ENV HOME /home/$USER
-RUN chown -R $UID:$UID $HOME
 RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
+RUN chown -R $UID:$UID $HOME
 
 #RUN useradd -m -s /bin/bash -N -u $UID $USER
 USER $USER
