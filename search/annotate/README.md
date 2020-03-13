@@ -33,17 +33,13 @@ Install Python dependencies:
 ```
 pip install -r requirements.txt
 ```
-Install Translator KGX:
-```
-git clone https://github.com/NCATS-Tangerine/kgx.git
-```
 Annotate a data dictionary via Monarch NLP 
 ```
-PYTHONPATH=$PWD:$PWD/kgx python -m search.annotate.annotator --annotate dd.xml
+bin/ingest annotate dd
 ```
 Load the resulting graph into Neo4J
 ```
-PYTHONPATH=$PWD:$PWD/kgx python -m search.annotate.annotator --load dd_tagged.json
+bin/ingest load dd
 ```
 ## Data Formats
 
