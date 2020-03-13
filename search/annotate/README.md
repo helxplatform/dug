@@ -3,7 +3,7 @@
 
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to the utilization of this knowledge is the lack of tools available to researchers to go from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
-While other approaches to search exist for these data, our focus is semantic search. That is, we aim to annotate the metadata with terms from biomedical ontologies, contextualize them within an upper ontology that allows study data to be federated with larger knowledge graphs, and index a full text search based on on those knowledge graphs.
+While other approaches to search exist for these data, our focus is semantic search. That is, we aim to annotate the metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
 
 This prototype 
 * Demonstrates how we might annotate dbGaP metadata for a TOPMed study.
