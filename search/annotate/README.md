@@ -89,3 +89,12 @@ A field from the output looks like this:
 ![image](https://user-images.githubusercontent.com/306971/76590963-3f351600-64c5-11ea-84d0-f08b7963a1b2.png)
 
 ![image](https://user-images.githubusercontent.com/306971/76589696-4b1ed900-64c1-11ea-9a8d-145dbb6a83be.png)
+
+## Next Steps
+
+These things need attention:
+* [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer.
+* [ ] The input here is a TOPMed DD. Investigate doing the same pipeline starting from harmonized variables.
+* [ ] Use the Neo4J as input to the Plater/Automat infrastructure to serve the TOPMed metadata API.
+* [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
+
