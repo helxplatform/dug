@@ -149,7 +149,7 @@ An annotated variable from the *annotate* step looks like this:
   },
 ```
 The load step gives us one study object, the hub in this figure, connected to many study variables, each connected to ontology terms to which those variables are related.
-![image](https://user-images.githubusercontent.com/306971/76589696-4b1ed900-64c1-11ea-9a8d-145dbb6a83be.png)
+![image](https://user-images.githubusercontent.com/306971/76662892-c4680b80-6555-11ea-8a05-731858d08cf3.png)
 
 That's the knowledge graph we'll use to drive a Translator service which will be queried to produce more localized connections as shown in this figure:
 ![image](https://user-images.githubusercontent.com/306971/76590963-3f351600-64c5-11ea-84d0-f08b7963a1b2.png)
