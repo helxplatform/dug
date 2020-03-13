@@ -25,12 +25,20 @@ Install Python dependencies:
 ```
 pip install -r requirementst.txt
 ```
-Run
+Install Translator KGX:
 ```
-python search/annotate/annotator.py dd.xml
+git clone https://github.com/NCATS-Tangerine/kgx.git
+```
+Annotate a data dictionary via Monarch NLP 
+```
+PYTHONPATH=$PWD:$PWD/kgx python -m search.annotate.annotator --annotate dd.xml
+```
+Load the resulting graph into Neo4J
+```
+PYTHONPATH=$PWD:$PWD/kgx python -m search.annotate.annotator --load dd_tagged.json
 ```
 
-A field from the output looks like this:
+An annotated variable from the *annotate* step looks like this:
 ```
   {
     "study_id": "phs000179.v6",
@@ -86,9 +94,12 @@ A field from the output looks like this:
     }
   },
 ```
+The load step gives us one study object, the hub in this figure, connected to many study variables, each connected to ontology terms to which those variables are related.
+![image](https://user-images.githubusercontent.com/306971/76589696-4b1ed900-64c1-11ea-9a8d-145dbb6a83be.png)
+
+That's the knowledge graph we'll use to drive a Translator service which will be queried to produce more localized connections as shown in this figure:
 ![image](https://user-images.githubusercontent.com/306971/76590963-3f351600-64c5-11ea-84d0-f08b7963a1b2.png)
 
-![image](https://user-images.githubusercontent.com/306971/76589696-4b1ed900-64c1-11ea-9a8d-145dbb6a83be.png)
 
 ## Next Steps
 
