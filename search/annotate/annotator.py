@@ -2,15 +2,17 @@ import argparse
 import json
 import logging
 import requests
+import requests_cache
 import sys
 import traceback
 import urllib
 import xml.etree.ElementTree as ET
-
 from kgx import NeoTransformer, JsonTransformer
 from typing import List, Dict
 
 logger = logging.getLogger (__name__)
+
+requests_cache.install_cache('http_cache')
 
 class TOPMedStudyAnnotator:
     """ Annotate TOPMed study data with semantic knowledge graph linkages. """
@@ -26,20 +28,19 @@ class TOPMedStudyAnnotator:
         
     def annotate (self, input_file):
         """
-        Tag prose descriptions with ontology identifiers. 
-        This operates on a dbGaP XML formatted study with a data_table root element.
-        For each variable
-          for each configured ontology
-            for each entity in the ontology
-              for each synonym and label of the entity
-                do a series of tests to determine if the entity is related to the study variable
-                  (presumably use vanderbilt's nlp or scigraph or all of the above plus more)
-                if the identifier is a match for this variable
-                  normalize the identifier with respect to the BioLink Model
-                  add the normalized entity to the list of associated identifiers for this variable
+        This operates on a dbGaP data dictionary which is
+          an XML formatted study with a data_table root element containing a list of variables.
+        - Tag prose variable descriptions with ontology identifiers.
+        - Resolve those identifiers via Translator to preferred identifiers and BioLink Model categories.
+        Specifically, for each variable
+          create an object to represent the variable
+          perform NLP annotation of the variable based on its description
+            use the Monarch NLP annotator with named entity recognition
+            (add additional NLP, eg. Vanderbilt and others here...?)
+          normalize the resulting identifiers using the Translator normalization API
         """
         response = []
-        similarity_threshold = 2
+        http_session = requests.Session()
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
@@ -61,8 +62,7 @@ class TOPMedStudyAnnotator:
                 """ Annotate ontology terms in the text. """
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
-                annotations = self.cache[url] if url in self.cache else requests.get(url).json ()
-                self.cache[url] = annotations
+                annotations = http_session.get(url).json ()
                 
                 """ Normalize each ontology identifier in the annotation. """
                 for span in annotations.get('spans',[]):
@@ -75,26 +75,26 @@ class TOPMedStudyAnnotator:
                         """ Normalize the identifier with respect to the BioLink Model. """
                         url = f"{self.normalizer}{curie}"
                         try:
-                            normalized = self.cache[url] if url in self.cache else requests.get(url).json ()
-                            self.cache[url] = normalized
+                            normalized = http_session.get(url).json ()
+
+                            """ Record normalized results. """
+                            preferred_id = normalized.get(curie, {}).get ("id", {})
+                            equivalent_identifiers = normalized.get(curie, {}).get ("equivalent_identifiers", [])
+                            equivalent_identifiers = [ v['identifier'] for v in equivalent_identifiers ]
+                            biolink_type = normalized.get(curie, {}).get ("type", [])
+                            
+                            """ Build the response. """
+                            if 'identifier' in preferred_id:
+                                result['identifiers'][preferred_id['identifier']] = {
+                                    "label" : preferred_id.get('label',''),
+                                    "equivalent_identifiers" : equivalent_identifiers,
+                                    "type" : biolink_type
+                                }
+                            else:
+                                print (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
                         except json.decoder.JSONDecodeError as e:
-                            print (f"error normalizing curie: {curie}")
+                            print (f"JSONDecoderError normalizing curie: {curie}")
 
-                        """ Register results. """
-                        preferred_id = normalized.get(curie, {}).get ("id", {})
-                        equivalent_identifiers = normalized.get(curie, {}).get ("equivalent_identifiers", [])
-                        equivalent_identifiers = [ v['identifier'] for v in equivalent_identifiers ]
-                        biolink_type = normalized.get(curie, {}).get ("type", [])
-
-                        """ Build the response. """
-                        if 'identifier' in preferred_id:
-                            result['identifiers'][preferred_id['identifier']] = {
-                                "label" : preferred_id.get('label',''),
-                                "equivalent_identifiers" : equivalent_identifiers,
-                                "type" : biolink_type
-                            }
-                        else:
-                            print (f"ERROR: curie:{curie} returned preferred id: {preferred_id}")
             except json.decoder.JSONDecodeError as e:
                 traceback.print_exc ()
             except:
@@ -137,6 +137,9 @@ class TOPMedStudyAnnotator:
     
     def convert_to_kgx_json (self, annotations):
         """
+        Given an annotated and normalized set of study variables,
+        generate a KGX compliant graph given the normalized annotations.
+        Write that grpah to a graph database.
         See BioLink Model for category descriptions. https://biolink.github.io/biolink-model/notes.html
         """
         graph = {
@@ -173,6 +176,7 @@ class TOPMedStudyAnnotator:
             nodes.append ({
                 "id" : variable['variable_id'],
                 "name" : variable['variable'],
+                "description" : variable['description'],
                 "category" : [ "clinical_modifier" ]
             })
             for identifier, metadata in variable['identifiers'].items ():
@@ -193,7 +197,6 @@ class TOPMedStudyAnnotator:
                     "name" : metadata['label'],
                     "category" : metadata['type']
                 })
-        print (f"{json.dumps(graph,indent=2)}")
         return graph
 
 def main ():
@@ -208,13 +211,20 @@ def main ():
         'db_url'     : "http://localhost:7474/db/data",
         'skip'       : [ 'ever', 'disease' ]
     }
-    annotator = TOPMedStudyAnnotator (config=config)
     
     parser = argparse.ArgumentParser(description='Load edges and nodes into Neo4j via kgx')
     parser.add_argument('--load', help='annotation file to load via kgx')
     parser.add_argument('--annotate', help='annotate TOPMed data dictionary file', default=None)
+    parser.add_argument('--db-url', help='database url', default='http://localhost:7474/db/data')
+    parser.add_argument('--db-username', help='database username', default='neo4j')
+    parser.add_argument('--db-password', help='database username', default='topmed')
     args = parser.parse_args()
 
+    config['username'] = args.db_username
+    config['password'] = args.db_password
+    config['db_url']   = args.db_url
+    annotator = TOPMedStudyAnnotator (config=config)
+    
     if args.load:
         """ Load an annotated data dictionary and write to a graph database. """
         with open(args.load, 'r') as stream:
@@ -230,7 +240,6 @@ def main ():
         with open(output_file, 'w') as stream:
             json.dump(response, stream, indent=2)
         
-
 if __name__ == '__main__':    
     main ()
 

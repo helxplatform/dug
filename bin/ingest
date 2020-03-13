@@ -1,0 +1,26 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SEARCH_ROOT=$( dirname $DIR )
+export PYTHONPATH=$SEARCH_ROOT:$SEARCH_ROOT/kgx
+
+if [ ! -d $SEARCH_ROOT/kgx ]; then
+    git clone https://github.com/NCATS-Tangerine/kgx.git $SEARCH_ROOT/kgx
+fi
+
+annotate () {
+    input=${1}.xml
+    shift
+    echo preparing to ingest $input
+    python -m search.annotate.annotator --annotate $input $*
+}
+load () {
+    input=${1}_tagged.json
+    shift
+    echo preparing to load $input
+    python -m search.annotate.annotator --load $input $*
+}
+
+$*
+
+exit 0
