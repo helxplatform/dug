@@ -1,12 +1,17 @@
 
 # Overview
 
-The annotator ingests raw dbGaP study metadata and performs semantic annotation by
+The **annotator** ingests raw dbGaP study metadata and performs semantic annotation by
+* Parsing a TOPMed data dictionary XML file to extract variables.
 * Using the Monarch SciGraph named entity recognizer to identify ontology terms.
-* Using the Translator SRI identifier normalization service to 
+* Using the Translator SRI identifier normalization service to
   * Select a preferred identifier for the entity
   * Determine the BioLink types applying to each entity
 * Writing each variable with its annotations as a JSON object to a file.
+
+The **loader** 
+* Converts the annotation format written in the steps above to a KGX graph
+* Inserts that graph into a Neo4J database.
 
 ## Install
 
