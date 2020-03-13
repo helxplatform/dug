@@ -81,3 +81,5 @@ A field from the output looks like this:
     }
   },
 ```
+
+![image](https://user-images.githubusercontent.com/306971/76589696-4b1ed900-64c1-11ea-9a8d-145dbb6a83be.png)
