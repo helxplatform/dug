@@ -37,6 +37,56 @@ Load the resulting graph into Neo4J
 ```
 PYTHONPATH=$PWD:$PWD/kgx python -m search.annotate.annotator --load dd_tagged.json
 ```
+## Data Formats
+
+The input data dictionary looks like this:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="varreports_v3.xsl"?>
+<data_table name="COPDGene_Subject_Phenotypes" dataset_id="pht002239.v4" study_name="Genetic Epidemiology of COPD (COPDGene)" study_id="phs000179.v6" participant_set="2" date_created="2018/04/23">
+  <description>Subject ID, died center, age at enrolment, race, ethnic, gender, body weight, body height, BMI, systolic and diastolic blood pressure, measurement of several parameters during 6 minutes work, CT slicer, CT scanner, heart rate, oxygen saturation and therapy, medical history of back pain, cancer, cardio vascular diseases, diabetes, digestive system diseases, eye diseases, general health, musculoskeletal diseases, painful joint type, respiratory tract disease, smoking, and walking limbs, medication history of treatment with beta-agonist, theophylline, inhaled corticosteroid, Oral corticosteroids, ipratropium bromide, and tiotroprium bromide, respiratory disease, St. George's Respiratory Questionnaire, SF-36 Health Survey, spirometry, and VIDA of participants with or without chronic obstructive pulmonary disease and involved in the "Genetic Epidemiology of COPD (COPDGene) Funded by the National Heart, Lung, and Blood Institute" project.</description>
+  <variable id="phv00159568.v4.p2" var_name="SUBJECT_ID" calculated_type="string" reported_type="string">
+    <description>Dbgap_id</description>
+    <total>
+      <subject_profile>
+        <case_control>
+          <case>3692</case>
+          <control>4499</control>
+        </case_control>
+        <sex>
+          <male>5524</male>
+          <female>4847</female>
+        </sex>
+      </subject_profile>
+      <stats>
+        <stat n="10371" nulls="0"/>
+      </stats>
+    </total>
+    <cases>
+      <subject_profile>
+        <sex>
+          <male>2053</male>
+          <female>1639</female>
+        </sex>
+      </subject_profile>
+      <stats>
+        <stat n="3692" nulls="0"/>
+      </stats>
+    </cases>
+    <controls>
+      <subject_profile>
+        <sex>
+          <male>2355</male>
+          <female>2144</female>
+        </sex>
+      </subject_profile>
+      <stats>
+        <stat n="4499" nulls="0"/>
+      </stats>
+    </controls>
+  </variable>
+...
+```
 
 An annotated variable from the *annotate* step looks like this:
 ```
