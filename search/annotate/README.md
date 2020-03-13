@@ -31,7 +31,7 @@ curl ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000179/phs000179.v6.p2/pheno_va
 ```
 Install Python dependencies:
 ```
-pip install -r requirementst.txt
+pip install -r requirements.txt
 ```
 Install Translator KGX:
 ```
