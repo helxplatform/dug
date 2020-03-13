@@ -6,27 +6,34 @@ import requests_cache
 import sys
 import traceback
 import urllib
+import yaml
 import xml.etree.ElementTree as ET
 from kgx import NeoTransformer, JsonTransformer
 from typing import List, Dict
 
 logger = logging.getLogger (__name__)
 
+
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 requests_cache.install_cache('http_cache')
+
+SkipTerms = List[str]
+Config = Dict
 
 class TOPMedStudyAnnotator:
     """ Annotate TOPMed study data with semantic knowledge graph linkages. """
     
-    def __init__(self, config: Dict[str, str], skip = []):
+    def __init__(self, config: Config, skip : SkipTerms = []):
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
         self.skip = config['skip']
-        self.cache = {}
         
-    def annotate (self, input_file):
+    def annotate (self, input_file : str) -> Dict:
         """
         This operates on a dbGaP data dictionary which is
           an XML formatted study with a data_table root element containing a list of variables.
@@ -78,16 +85,16 @@ class TOPMedStudyAnnotator:
                             normalized = http_session.get(url).json ()
 
                             """ Record normalized results. """
-                            preferred_id = normalized.get(curie, {}).get ("id", {})
-                            equivalent_identifiers = normalized.get(curie, {}).get ("equivalent_identifiers", [])
-                            equivalent_identifiers = [ v['identifier'] for v in equivalent_identifiers ]
-                            biolink_type = normalized.get(curie, {}).get ("type", [])
+                            normalization = normalized.get(curie, {})
+                            preferred_id = normalization.get ("id", {})
+                            equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
+                            biolink_type = normalization.get ("type", [])
                             
                             """ Build the response. """
                             if 'identifier' in preferred_id:
                                 result['identifiers'][preferred_id['identifier']] = {
                                     "label" : preferred_id.get('label',''),
-                                    "equivalent_identifiers" : equivalent_identifiers,
+                                    "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
                                     "type" : biolink_type
                                 }
                             else:
@@ -102,7 +109,7 @@ class TOPMedStudyAnnotator:
                 raise
         return response
 
-    def write (self, annotations) -> None:
+    def write (self, annotations : Dict) -> None:
         """
         Convert the TOPMed metadata to KGX form.
         Import the graph to KGX
@@ -124,7 +131,14 @@ class TOPMedStudyAnnotator:
         db.save_with_unwind()        
         db.neo4j_report()
         
-    def make_edge (self, subj, pred, obj, edge_label='association', category=[]):
+    def make_edge (self,
+                   subj : str,
+                   pred : str,
+                   obj  : str,
+                   edge_label : str ='association',
+                   category : List[str] = []
+    ):
+        """ Create an edge between two nodes. """
         return {
             "subject"     : subj,
             "predicate"   : pred,
