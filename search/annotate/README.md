@@ -1,6 +1,9 @@
 
 # Overview
 
+We apply semantic web approaches to curating, organizing, and visualizing the relationship between biomedical entities and clinical study data using COPDGene study data as an example. Figure 1 shows the relationship between early onset COPD and study variables:
+![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
+
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to go from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
 While other approaches to searching this data exist, our focus is semantic search. That is, we aim to annotate the metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
@@ -153,9 +156,6 @@ The load step gives us one study object, the hub in this figure, connected to ma
 
 That's the knowledge graph we'll use to drive a Translator service which will be queried to produce more localized connections as shown in this figure:
 ![image](https://user-images.githubusercontent.com/306971/76590963-3f351600-64c5-11ea-84d0-f08b7963a1b2.png)
-
-And here's the relationship between early onset COPDD and study variables from the data dictionary we processed:
-![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 
 ## Next Steps
 
