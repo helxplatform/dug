@@ -2,7 +2,7 @@
 # Overview
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene entities shows relationships between biomedical entites, variables, and studies.
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
 
 
 Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
