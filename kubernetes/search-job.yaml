@@ -11,4 +11,9 @@ spec:
           containers:
           - name: search
             image: heliumdatastage/search:latest
+          - env:
+              - name: "ELASTIC_API_HOST"
+                value: "elasticsearch"
+              - name: "ELASTIC_API_PORT"
+                value: 9200
           restartPolicy: OnFailure
