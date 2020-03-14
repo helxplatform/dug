@@ -1,9 +1,11 @@
 
 # Overview
 
-We apply semantic web approaches to curating, organizing, and visualizing the relationship between biomedical entities and clinical study data using COPDGene study data as an example. Figure 1 shows the relationship between early onset COPD and study variables:
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
+**Figure 1**: Automating semantic web approaches, we structure and visualizing relationships between biomedical entities. 
 
+
+Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to go from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
 While other approaches to searching this data exist, our focus is semantic search. That is, we aim to annotate the metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
