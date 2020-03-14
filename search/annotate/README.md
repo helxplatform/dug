@@ -6,9 +6,11 @@
 
 
 Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
-[dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to go from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
+[dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
 While other approaches to searching this data exist, our focus is semantic search. That is, we aim to annotate the metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
+
+Also, the approach shown here uses study metadata as a starting point, not harmonized variables. But we hope to reuse significant components of the pipeline for processing harmonized variables as well.
 
 This prototype 
 * Demonstrates how we might annotate dbGaP metadata for a TOPMed study.
@@ -181,6 +183,7 @@ ERROR: curie:dc:subject returned preferred id: {}
 error normalizing curie: NCBIGene:22819
 ...
  ```
+* [ ] Can this work for harmonized variables? 
 * [ ] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
