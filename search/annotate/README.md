@@ -154,6 +154,8 @@ The load step gives us one study object, the hub in this figure, connected to ma
 That's the knowledge graph we'll use to drive a Translator service which will be queried to produce more localized connections as shown in this figure:
 ![image](https://user-images.githubusercontent.com/306971/76590963-3f351600-64c5-11ea-84d0-f08b7963a1b2.png)
 
+And here's the relationship between early onset COPDD and study variables from the data dictionary we processed:
+![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 
 ## Next Steps
 
