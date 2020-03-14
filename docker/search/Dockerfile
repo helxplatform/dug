@@ -20,6 +20,7 @@ ENV USER search-user
 ENV UID 1000
 ENV HOME /home/$USER
 RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
+RUN chown -R $UID:$UID $HOME
 
 #RUN useradd -m -s /bin/bash -N -u $UID $USER
 USER $USER
@@ -28,7 +29,6 @@ USER $USER
 ENV PYTHONPATH /semantic-search
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
-ENV PORT=5009
 ENV COMMAND=--crawl
 
 WORKDIR /semantic-search/search
