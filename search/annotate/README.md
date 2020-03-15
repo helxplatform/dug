@@ -32,22 +32,30 @@ The **loader**
 
 In the repo root:
 
-Get a TOPMed study data dictionary:
-```
-curl ftp://ftp.ncbi.nlm.nih.gov/dbgap/studies/phs000179/phs000179.v6.p2/pheno_variable_summaries/phs000179.v6.pht002239.v4.COPDGene_Subject_Phenotypes.data_dict.xml -o dd.xml
-```
+### Configure
 Install Python dependencies:
 ```
 pip install -r requirements.txt
 ```
+### Annotate and load dbGaP data dictionary file
 Annotate a data dictionary via Monarch NLP 
 ```
-bin/ingest annotate dd
+bin/ingest annotate data/dd.xml
 ```
 Load the resulting graph into Neo4J
 ```
-bin/ingest load dd
+bin/ingest load data/dd
 ```
+### Annotate and load harmonized variables
+Annotate harmonized variables
+```
+bin/ingest annotate data/harmonized_variable_DD.csv
+```
+Load resulting graph into Neo4J via KGX
+```
+bin/ingest load data/harmonized_variable_DD
+```
+
 ## Data Formats
 
 The input data dictionary looks like this:
