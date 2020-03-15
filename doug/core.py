@@ -100,7 +100,8 @@ class Search:
             "Content-Type" : "text/plain"
         }
         self.make_crawlspace ()
-        with open("phenotypes.json") as stream:
+        phenotype_list = os.path.join (os.path.dirname (__file__), "conf", "phenotypes.json")
+        with open(phenotype_list) as stream:
             phenotypes = json.load (stream)
             for phenotype in phenotypes:
 

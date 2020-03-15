@@ -29,9 +29,7 @@ CORS(app)
 debug=False
 
 """ Load the schema. """
-schema_file_path = os.path.join (
-    os.path.dirname (__file__),
-    'api-schema.yaml')
+schema_file_path = os.path.join (os.path.dirname (__file__), 'conf', 'api-schema.yaml')
 template = None
 with open(schema_file_path, 'r') as file_obj:
     template = yaml.load(file_obj)
