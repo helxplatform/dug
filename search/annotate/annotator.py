@@ -1,4 +1,5 @@
 import argparse
+import csv
 import json
 import logging
 import requests
@@ -13,7 +14,6 @@ from typing import List, Dict
 
 logger = logging.getLogger (__name__)
 
-
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
@@ -22,6 +22,17 @@ requests_cache.install_cache('http_cache')
 SkipTerms = List[str]
 Config = Dict
 
+class Debreviator:
+    """ Expand certain abbreviations to increase our hit rate. """
+    def __init__(self):
+        self.decoder = {
+            "bmi" : "body mass index"
+        }
+    def decode (self, text):
+        for key, value in self.decoder.items ():
+            text = text.replace (key, value)
+        return text
+    
 class TOPMedStudyAnnotator:
     """ Annotate TOPMed study data with semantic knowledge graph linkages. """
     
@@ -32,7 +43,68 @@ class TOPMedStudyAnnotator:
         self.username = config['username']
         self.password = config['password']
         self.skip = config['skip']
+        self.debreviator = Debreviator ()
         
+    def load_data_dictionary (self, input_file : str) -> Dict:        
+        tree = ET.parse(input_file)
+        root = tree.getroot()
+        study_id = root.attrib['study_id']
+        return [{
+            "study_id"    : study_id,
+            "variable_id" : variable.attrib['id'],
+            "variable"    : variable.find ('name').text,
+            "description" : variable.find ('description').text.lower (),
+            "identifiers" : {}
+        } for variable in root.iter('variable') ]
+
+    def load_csv (self, input_file : str) -> Dict:
+        response = []
+        with open(input_file, newline='') as csvfile:
+            spamreader = csv.DictReader(csvfile, delimiter='\t',)
+            for row in spamreader:
+                print  (row)
+                """ VARNAME	VARDESC	TYPE	UNITS	VARIABLE_SOURCE	SOURCE_VARIABLE_ID	VARIABLE_MAPPING	VALUES """
+                variable_source = row['VARIABLE_SOURCE']
+                source_variable_id = row['SOURCE_VARIABLE_ID']
+                response.append ({
+                    "study_id"      : 'TODO-???',
+                    "variable_id"   : row['VARNAME'],
+                    "variable_name" : row['VARNAME'],
+                    "description"   : row['VARDESC'],
+                    "type"          : row['TYPE'],
+                    "units"         : row['UNITS'],
+                    "xref"          : f"{variable_source}:{source_variable_id}",
+                    "identifiers"   : {}
+                })
+        return response
+
+    def normalize (self, http_session, curie, url, variable) -> None:
+        """ Given an identifier (curie), use the Translator SRI node normalization service to 
+        find a preferred identifier, equivalent identifiers, and biolink model types for the node. """
+        # CUI to UMLS : http://www.chibi.ubc.ca/wp-content/uploads/2013/02/Mapping%20from%20CUI%20to%20Ontologies.xls
+        
+        """ Normalize the identifier with respect to the BioLink Model. """
+        try:
+            normalized = http_session.get(url).json ()
+            
+            """ Record normalized results. """
+            normalization = normalized.get(curie, {})
+            preferred_id = normalization.get ("id", {})
+            equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
+            biolink_type = normalization.get ("type", [])
+            
+            """ Build the response. """
+            if 'identifier' in preferred_id:
+                variable['identifiers'][preferred_id['identifier']] = {
+                    "label" : preferred_id.get('label',''),
+                    "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
+                    "type" : biolink_type
+                }
+            else:
+                print (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
+        except json.decoder.JSONDecodeError as e:
+            print (f"JSONDecoderError normalizing curie: {curie}")
+                
     def annotate (self, input_file : str) -> Dict:
         """
         This operates on a dbGaP data dictionary which is
@@ -46,74 +118,54 @@ class TOPMedStudyAnnotator:
             (add additional NLP, eg. Vanderbilt and others here...?)
           normalize the resulting identifiers using the Translator normalization API
         """
-        response = []
-        http_session = requests.Session()
-        tree = ET.parse(input_file)
-        root = tree.getroot()
-        study_id = root.attrib['study_id']
-        for variable in root.iter('variable'):
-            """ Get variable attributes """
-            variable_id = variable.attrib['id']
-            variable_name = variable.find ('name').text
-            description = variable.find ('description').text.lower ()
-            
-            result = {
-                "study_id" : study_id,
-                "variable_id" : variable_id,
-                "variable" : variable_name,
-                "description" : description,
-                "identifiers" : {}
-            }
-            response.append (result)
+        
+        """ Initialize an HTTP session for more efficient connection management. """
+        http_session = requests.Session ()
+
+        """ Get a list of variables from a variety of source formats. """
+        variables = self.load_data_dictionary (input_file) \
+                    if input_file.endswith('.xml') \
+                       else self.load_csv (input_file)
+
+        """ Annotate and normalize each variable. """
+        for variable in variables:
+            print (variable)
             try:
+                """ If the variable has an Xref identifier, normalize it. """
+                if 'xref' in variable:
+                    self.normalize (http_session,
+                                    variable['xref'],
+                                    f"{self.normalizer}{variable['xref']}",
+                                    variable)
+                    
                 """ Annotate ontology terms in the text. """
+                description = variable['description'].replace ("_", " ")
+                description = self.debreviator.decode (description)
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
                 
-                """ Normalize each ontology identifier in the annotation. """
+                """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
                     for token in span.get('token',[]):
                         normalized = {}
                         curie = token.get('id', None)
                         if not curie:
                             continue
-                        
-                        """ Normalize the identifier with respect to the BioLink Model. """
-                        url = f"{self.normalizer}{curie}"
-                        try:
-                            normalized = http_session.get(url).json ()
-
-                            """ Record normalized results. """
-                            normalization = normalized.get(curie, {})
-                            preferred_id = normalization.get ("id", {})
-                            equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
-                            biolink_type = normalization.get ("type", [])
-                            
-                            """ Build the response. """
-                            if 'identifier' in preferred_id:
-                                result['identifiers'][preferred_id['identifier']] = {
-                                    "label" : preferred_id.get('label',''),
-                                    "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
-                                    "type" : biolink_type
-                                }
-                            else:
-                                print (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
-                        except json.decoder.JSONDecodeError as e:
-                            print (f"JSONDecoderError normalizing curie: {curie}")
-
+                        self.normalize (http_session,
+                                        curie,
+                                        f"{self.normalizer}{curie}",
+                                        variable)
             except json.decoder.JSONDecodeError as e:
                 traceback.print_exc ()
             except:
                 traceback.print_exc ()
                 raise
-        return response
+        return variables
 
     def write (self, annotations : Dict) -> None:
         """
-        Convert the TOPMed metadata to KGX form.
-        Import the graph to KGX
-        Write the KGX graph to Neo4J
+        Convert the TOPMed metadata to KGX form. Export the graph via KGX to a graph database.
         """
 
         """ Convert. """
@@ -250,7 +302,9 @@ def main ():
         response = annotator.annotate (args.annotate)
         
         """ Write the annotated variables. """
-        output_file = args.annotate.replace ('.xml', '_tagged.json')
+        output_file = args.annotate.\
+                      replace ('.xml', '_tagged.json').\
+                      replace ('.csv', '_tagged.json')
         with open(output_file, 'w') as stream:
             json.dump(response, stream, indent=2)
         

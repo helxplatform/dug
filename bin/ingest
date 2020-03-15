@@ -9,7 +9,7 @@ if [ ! -d $SEARCH_ROOT/kgx ]; then
 fi
 
 annotate () {
-    input=${1}.xml
+    input=$1 #${1}.xml
     shift
     echo preparing to ingest $input
     python -m search.annotate.annotator --annotate $input $*
