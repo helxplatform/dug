@@ -1,6 +1,8 @@
 
 # Overview
 
+Doug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search.
+
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
 
