@@ -1,0 +1,1491 @@
+preparing to ingest data/dd.xml
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159568.v4', 'variable': 'SUBJECT_ID', 'description': 'dbgap_id', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159569.v4', 'variable': 'deid_center', 'description': 'de-identified site code', 'identifiers': {}}
+JSONDecoderError normalizing curie: BFO:0000029
+JSONDecoderError normalizing curie: SO:0000408
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169306.v3', 'variable': 'ExclusionaryDisease', 'description': 'other primary disease so subject excluded from copd disease analysis [ild, bronchiectasis]', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+JSONDecoderError normalizing curie: OBO:OGMS_0000031
+JSONDecoderError normalizing curie: AQTLTrait:1438
+JSONDecoderError normalizing curie: dc:subject
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: OBO:OGMS_0000031
+JSONDecoderError normalizing curie: AQTLTrait:1438
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278174.v1', 'variable': 'Study_Phase', 'description': 'phase of copdgene study: baseline, phase 2', 'identifiers': {}}
+JSONDecoderError normalizing curie: http://purl.org/net/OCRe/study_design.owl#OCRE100038
+JSONDecoderError normalizing curie: PATO:0000083
+JSONDecoderError normalizing curie: http://purl.org/net/OCRe/study_design.owl#OCRE100038
+JSONDecoderError normalizing curie: PATO:0000083
+JSONDecoderError normalizing curie: http://purl.org/net/OCRe/study_design.owl#Phase_2
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159572.v4', 'variable': 'race', 'description': 'race', 'identifiers': {}}
+JSONDecoderError normalizing curie: dictyBase:DDB_G0280975
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159573.v4', 'variable': 'ethnic', 'description': 'your ethnic background', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278175.v1', 'variable': 'Visit_Year', 'description': 'year of visit, to use for longitudinal analysis', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0002618
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159571.v4', 'variable': 'gender', 'description': 'gender', 'identifiers': {}}
+JSONDecoderError normalizing curie: foaf:gender
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159592.v4', 'variable': 'Height_CM', 'description': 'height [cm]', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:31433
+JSONDecoderError normalizing curie: pigQTL:31436
+JSONDecoderError normalizing curie: pigQTL:31439
+JSONDecoderError normalizing curie: sheepQTL:57932
+JSONDecoderError normalizing curie: pigQTL:31391
+JSONDecoderError normalizing curie: pigQTL:147195
+JSONDecoderError normalizing curie: pigQTL:31394
+JSONDecoderError normalizing curie: NCBIGene:104978969
+JSONDecoderError normalizing curie: pigQTL:31430
+JSONDecoderError normalizing curie: pigQTL:31397
+JSONDecoderError normalizing curie: NCBIGene:104978965
+JSONDecoderError normalizing curie: NCBIGene:104978967
+JSONDecoderError normalizing curie: NCBIGene:104978963
+JSONDecoderError normalizing curie: NCBIGene:104979278
+JSONDecoderError normalizing curie: NCBIGene:104979279
+JSONDecoderError normalizing curie: pigQTL:31421
+JSONDecoderError normalizing curie: NCBIGene:101180093
+JSONDecoderError normalizing curie: pigQTL:31424
+JSONDecoderError normalizing curie: pigQTL:31427
+JSONDecoderError normalizing curie: NCBIGene:101055340
+JSONDecoderError normalizing curie: NCBIGene:101055189
+JSONDecoderError normalizing curie: NCBIGene:104978939
+JSONDecoderError normalizing curie: NCBIGene:104978935
+JSONDecoderError normalizing curie: NCBIGene:104979506
+JSONDecoderError normalizing curie: PATO:0000119
+JSONDecoderError normalizing curie: pigQTL:172209
+JSONDecoderError normalizing curie: pigQTL:31418
+JSONDecoderError normalizing curie: pigQTL:165276
+JSONDecoderError normalizing curie: NCBIGene:104979321
+JSONDecoderError normalizing curie: sheepQTL:122126
+JSONDecoderError normalizing curie: pigQTL:31412
+JSONDecoderError normalizing curie: pigQTL:31415
+JSONDecoderError normalizing curie: pigQTL:165271
+JSONDecoderError normalizing curie: pigQTL:172208
+JSONDecoderError normalizing curie: pigQTL:16975
+JSONDecoderError normalizing curie: pigQTL:16974
+JSONDecoderError normalizing curie: pigQTL:16973
+JSONDecoderError normalizing curie: NCBIGene:104978947
+JSONDecoderError normalizing curie: pigQTL:172210
+JSONDecoderError normalizing curie: NCBIGene:104978949
+JSONDecoderError normalizing curie: pigQTL:172211
+JSONDecoderError normalizing curie: NCBIGene:104978943
+JSONDecoderError normalizing curie: NCBIGene:104979516
+JSONDecoderError normalizing curie: sheepQTL:136169
+JSONDecoderError normalizing curie: sheepQTL:136168
+JSONDecoderError normalizing curie: NCBIGene:104978945
+JSONDecoderError normalizing curie: sheepQTL:136167
+JSONDecoderError normalizing curie: sheepQTL:136166
+JSONDecoderError normalizing curie: NCBIGene:101054921
+JSONDecoderError normalizing curie: NCBIGene:104978940
+JSONDecoderError normalizing curie: NCBIGene:104979511
+JSONDecoderError normalizing curie: sheepQTL:57916
+JSONDecoderError normalizing curie: pigQTL:31409
+JSONDecoderError normalizing curie: NCBIGene:104978960
+JSONDecoderError normalizing curie: pigQTL:165269
+JSONDecoderError normalizing curie: pigQTL:165267
+JSONDecoderError normalizing curie: pigQTL:31400
+JSONDecoderError normalizing curie: pigQTL:31445
+JSONDecoderError normalizing curie: pigQTL:31448
+JSONDecoderError normalizing curie: sheepQTL:122130
+JSONDecoderError normalizing curie: pigQTL:31403
+JSONDecoderError normalizing curie: pigQTL:31447
+JSONDecoderError normalizing curie: pigQTL:31406
+JSONDecoderError normalizing curie: pigQTL:17944
+JSONDecoderError normalizing curie: sheepQTL:57924
+JSONDecoderError normalizing curie: pigQTL:106375
+JSONDecoderError normalizing curie: NCBIGene:104978959
+JSONDecoderError normalizing curie: pigQTL:31442
+JSONDecoderError normalizing curie: sheepQTL:57920
+JSONDecoderError normalizing curie: pigQTL:106372
+JSONDecoderError normalizing curie: NCBIGene:104978955
+JSONDecoderError normalizing curie: NCBIGene:104978951
+JSONDecoderError normalizing curie: sheepQTL:57928
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159591.v4', 'variable': 'Weight_KG', 'description': 'weight [kg]', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000128
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159590.v4', 'variable': 'sysBP', 'description': 'systolic blood pressure [mmhg]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000007
+JSONDecoderError normalizing curie: PATO:0001025
+JSONDecoderError normalizing curie: EFO:0004325
+JSONDecoderError normalizing curie: EFO:0006335
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159583.v4', 'variable': 'diasBP', 'description': 'diastolic blood pressure [mmhg]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000007
+JSONDecoderError normalizing curie: PATO:0001025
+JSONDecoderError normalizing curie: EFO:0004325
+JSONDecoderError normalizing curie: EFO:0006336
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159584.v4', 'variable': 'HR', 'description': 'heart rate [bpm]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000114
+JSONDecoderError normalizing curie: PATO:0000161
+JSONDecoderError normalizing curie: EFO:0004326
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159585.v4', 'variable': 'O2_Hours_Day', 'description': 'on typical 24-hour day how many hours supplemental 02 used [hours]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159586.v4', 'variable': 'O2_Therapy', 'description': 'does subject use supplemental 02 therapy', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0016794
+JSONDecoderError normalizing curie: KEGG-ko:K13243
+JSONDecoderError normalizing curie: MGI:1856598
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0016794
+JSONDecoderError normalizing curie: NCBIGene:1792
+JSONDecoderError normalizing curie: MGI:94913
+JSONDecoderError normalizing curie: NCBIGene:50491
+JSONDecoderError normalizing curie: FlyBase:FBgn0261519
+JSONDecoderError normalizing curie: NCBIGene:10216624
+JSONDecoderError normalizing curie: NCBIGene:216164
+JSONDecoderError normalizing curie: NCBIGene:38321
+JSONDecoderError normalizing curie: KEGG-ko:K20231
+JSONDecoderError normalizing curie: NCBIGene:5658690
+JSONDecoderError normalizing curie: NCBIGene:13438
+JSONDecoderError normalizing curie: dc:subject
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159588.v4', 'variable': 'O2_Years', 'description': 'how long have they used supplemental 02 [years]', 'identifiers': {}}
+JSONDecoderError normalizing curie: WBPhenotype:0000022
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159589.v4', 'variable': 'Resting_SaO2', 'description': 'resting sao2 %', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-080415-1
+JSONDecoderError normalizing curie: NCBIGene:100016000
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-955466
+JSONDecoderError normalizing curie: NCBIGene:422623
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000029249
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000103046
+JSONDecoderError normalizing curie: MGI:104897
+JSONDecoderError normalizing curie: NCBIGene:564772
+JSONDecoderError normalizing curie: NCBIGene:100564403
+JSONDecoderError normalizing curie: NCBIGene:734016
+JSONDecoderError normalizing curie: XCO:0000002
+JSONDecoderError normalizing curie: NCBIGene:100078457
+JSONDecoderError normalizing curie: NCBIGene:101086719
+JSONDecoderError normalizing curie: NCBIGene:100425257
+JSONDecoderError normalizing curie: NCBIGene:100216471
+JSONDecoderError normalizing curie: NCBIGene:19712
+JSONDecoderError normalizing curie: KEGG-ko:K09222
+JSONDecoderError normalizing curie: NCBIGene:482163
+JSONDecoderError normalizing curie: OMIM:600571
+JSONDecoderError normalizing curie: NCBIGene:83618
+JSONDecoderError normalizing curie: NCBIGene:100058152
+JSONDecoderError normalizing curie: RGD:621069
+JSONDecoderError normalizing curie: NCBIGene:100520754
+JSONDecoderError normalizing curie: NCBIGene:471235
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159593.v4', 'variable': 'BMI', 'description': 'bmi', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000125
+JSONDecoderError normalizing curie: VT:0001259
+JSONDecoderError normalizing curie: AQTLTrait:72
+JSONDecoderError normalizing curie: EFO:0004340
+JSONDecoderError normalizing curie: pigQTL:72
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160265.v4', 'variable': 'O2use_rest', 'description': 'oxygen use: at rest', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-080415-1
+JSONDecoderError normalizing curie: NCBIGene:100016000
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-955466
+JSONDecoderError normalizing curie: NCBIGene:422623
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000029249
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000103046
+JSONDecoderError normalizing curie: MGI:104897
+JSONDecoderError normalizing curie: NCBIGene:564772
+JSONDecoderError normalizing curie: NCBIGene:100564403
+JSONDecoderError normalizing curie: NCBIGene:734016
+JSONDecoderError normalizing curie: XCO:0000002
+JSONDecoderError normalizing curie: NCBIGene:100078457
+JSONDecoderError normalizing curie: NCBIGene:101086719
+JSONDecoderError normalizing curie: NCBIGene:100425257
+JSONDecoderError normalizing curie: NCBIGene:100216471
+JSONDecoderError normalizing curie: NCBIGene:19712
+JSONDecoderError normalizing curie: KEGG-ko:K09222
+JSONDecoderError normalizing curie: NCBIGene:482163
+JSONDecoderError normalizing curie: OMIM:600571
+JSONDecoderError normalizing curie: NCBIGene:83618
+JSONDecoderError normalizing curie: NCBIGene:100058152
+JSONDecoderError normalizing curie: RGD:621069
+JSONDecoderError normalizing curie: NCBIGene:100520754
+JSONDecoderError normalizing curie: NCBIGene:471235
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160266.v4', 'variable': 'O2use_exercise', 'description': 'oxygen use: exercise', 'identifiers': {}}
+JSONDecoderError normalizing curie: EFO:0000483
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160267.v4', 'variable': 'O2use_sleep', 'description': 'oxygen use: sleep', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159576.v4', 'variable': 'O2_suppl_6MW', 'description': 'supplemental o2 used during 6-min walk l/min', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+JSONDecoderError normalizing curie: OBO:mp/mp-equivalent-axioms-subq#during
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159575.v4', 'variable': 'distwalked', 'description': 'distance walked [ft]', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000040
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159577.v4', 'variable': 'Walk_Course', 'description': 'six minute walk: course layout', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:107894
+JSONDecoderError normalizing curie: FBcv:0000443
+JSONDecoderError normalizing curie: MGI:2178160
+JSONDecoderError normalizing curie: MGI:1927811
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159578.v4', 'variable': 'Walk_Limit', 'description': 'six minute walk: was your walking limited?', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:107894
+JSONDecoderError normalizing curie: FBcv:0000443
+JSONDecoderError normalizing curie: MGI:2178160
+JSONDecoderError normalizing curie: MGI:1927811
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160261.v4', 'variable': 'WalkSymp_BackPain', 'description': 'walk symptoms: back pain', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: horseQTL:37862
+JSONDecoderError normalizing curie: horseQTL:37873
+JSONDecoderError normalizing curie: horseQTL:37861
+JSONDecoderError normalizing curie: horseQTL:37872
+JSONDecoderError normalizing curie: horseQTL:37871
+JSONDecoderError normalizing curie: horseQTL:37860
+JSONDecoderError normalizing curie: horseQTL:37870
+JSONDecoderError normalizing curie: horseQTL:37877
+JSONDecoderError normalizing curie: horseQTL:37866
+JSONDecoderError normalizing curie: horseQTL:37865
+JSONDecoderError normalizing curie: horseQTL:37876
+JSONDecoderError normalizing curie: horseQTL:37864
+JSONDecoderError normalizing curie: horseQTL:37875
+JSONDecoderError normalizing curie: horseQTL:37874
+JSONDecoderError normalizing curie: horseQTL:37863
+JSONDecoderError normalizing curie: horseQTL:37859
+JSONDecoderError normalizing curie: horseQTL:37869
+JSONDecoderError normalizing curie: horseQTL:37858
+JSONDecoderError normalizing curie: horseQTL:37857
+JSONDecoderError normalizing curie: horseQTL:37868
+JSONDecoderError normalizing curie: horseQTL:37867
+JSONDecoderError normalizing curie: PATO:0001901
+JSONDecoderError normalizing curie: EFO:0003843
+JSONDecoderError normalizing curie: NCBIGene:37985
+JSONDecoderError normalizing curie: FlyBase:FBgn0060296
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0060296
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160262.v4', 'variable': 'WalkSymp_JointPain', 'description': 'walk symptoms: joint pain', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: EFO:0003843
+JSONDecoderError normalizing curie: NCBIGene:37985
+JSONDecoderError normalizing curie: FlyBase:FBgn0060296
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0060296
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160263.v4', 'variable': 'WalkSymp_Legs_Fatigue', 'description': 'walk symptoms: leg discomfort/fatigue', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00160264.v4', 'variable': 'WalkSymp_ShortnessBreath', 'description': 'walk symptoms: shortness of breath', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159602.v4', 'variable': 'HealthStatus', 'description': 'health status', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000905
+JSONDecoderError normalizing curie: foaf:status
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159606.v4', 'variable': 'CancerLung', 'description': 'lung cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+JSONDecoderError normalizing curie: NCBITaxon:6754
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159604.v4', 'variable': 'CancerBreast', 'description': 'breast cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBITaxon:6754
+JSONDecoderError normalizing curie: KEGG-path:map05224
+JSONDecoderError normalizing curie: KEGG-ds:H00031
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159607.v4', 'variable': 'CancerProstate', 'description': 'prostate cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBITaxon:6754
+JSONDecoderError normalizing curie: KEGG-path:map05215
+JSONDecoderError normalizing curie: KEGG-ds:H00024
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159605.v4', 'variable': 'CancerColon', 'description': 'colon cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBITaxon:6754
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159603.v4', 'variable': 'CancerBladder', 'description': 'bladder cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBITaxon:6754
+JSONDecoderError normalizing curie: KEGG-ds:H00022
+JSONDecoderError normalizing curie: KEGG-path:map05219
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159614.v4', 'variable': 'Pneumothorax', 'description': 'pneumothorax [collapsed lung]', 'identifiers': {}}
+JSONDecoderError normalizing curie: OMIA:000804
+JSONDecoderError normalizing curie: MP:0010822
+JSONDecoderError normalizing curie: KEGG-ds:H01110
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159608.v4', 'variable': 'Angina', 'description': 'angina', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0006112
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159609.v4', 'variable': 'CongestHeartFail', 'description': 'congestive heart failure', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000114
+JSONDecoderError normalizing curie: MP:0006138
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159610.v4', 'variable': 'CoronaryArtery', 'description': 'coronary artery disease', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000005
+JSONDecoderError normalizing curie: ZFA:0005812
+JSONDecoderError normalizing curie: AQTLTrait:1438
+JSONDecoderError normalizing curie: OBO:OGMS_0000031
+JSONDecoderError normalizing curie: KEGG-ds:H01742
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159611.v4', 'variable': 'Diabetes', 'description': 'diabetes', 'identifiers': {}}
+JSONDecoderError normalizing curie: OMIA:000277
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159612.v4', 'variable': 'HighBloodPres', 'description': 'high blood pressure', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000007
+JSONDecoderError normalizing curie: PATO:0001025
+JSONDecoderError normalizing curie: EFO:0004325
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159613.v4', 'variable': 'HighCholest', 'description': 'high cholesterol', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159615.v4', 'variable': 'HeartAttack', 'description': 'heart attack [mi]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000114
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159616.v4', 'variable': 'BloodClots', 'description': 'blood clots [in legs or lungs]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000007
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-2166
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159617.v4', 'variable': 'MacularDegen', 'description': 'macular degeneration', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0002037
+JSONDecoderError normalizing curie: OMIA:000619
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159618.v4', 'variable': 'PeriphVascular', 'description': 'peripheral vascular disease', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0002107
+JSONDecoderError normalizing curie: AQTLTrait:1438
+JSONDecoderError normalizing curie: OBO:OGMS_0000031
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159619.v4', 'variable': 'Stroke', 'description': 'stroke', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159620.v4', 'variable': 'TIA', 'description': 'tia [transient ischemic attack]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159621.v4', 'variable': 'GastroEsophReflx', 'description': 'gastroesophageal reflux', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0003286
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159622.v4', 'variable': 'StomachUlcers', 'description': 'stomach ulcers', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000437
+JSONDecoderError normalizing curie: MPATH:579
+JSONDecoderError normalizing curie: MP:0003300
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159623.v4', 'variable': 'CompressFracBack', 'description': 'compression fractures [in your back]', 'identifiers': {}}
+JSONDecoderError normalizing curie: EFO:0009707
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159624.v4', 'variable': 'HipFracture', 'description': 'hip fracture', 'identifiers': {}}
+JSONDecoderError normalizing curie: EFO:0009707
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159625.v4', 'variable': 'OsteoArth', 'description': 'osteoarthritis', 'identifiers': {}}
+JSONDecoderError normalizing curie: AQTLTrait:5128
+JSONDecoderError normalizing curie: OMIA:000747
+JSONDecoderError normalizing curie: MP:0003560
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159626.v4', 'variable': 'Osteoporosis', 'description': 'osteoporosis [thin bones]', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0000066
+JSONDecoderError normalizing curie: KEGG-ds:H01593
+JSONDecoderError normalizing curie: OMIA:000105
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159627.v4', 'variable': 'RheumArth', 'description': 'rheumatoid arthritis', 'identifiers': {}}
+JSONDecoderError normalizing curie: MPATH:195
+JSONDecoderError normalizing curie: MP:0002993
+JSONDecoderError normalizing curie: OMIA:000064
+JSONDecoderError normalizing curie: KEGG-path:map05323
+JSONDecoderError normalizing curie: KEGG-ds:H00630
+JSONDecoderError normalizing curie: MP:0003561
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159628.v4', 'variable': 'StiffPainLimitWk', 'description': 'stiffness/pain in joints/bones limit ability to walk', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159629.v4', 'variable': 'StiffPainBack', 'description': 'chronic stiffness/pain in back', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: horseQTL:37862
+JSONDecoderError normalizing curie: horseQTL:37873
+JSONDecoderError normalizing curie: horseQTL:37861
+JSONDecoderError normalizing curie: horseQTL:37872
+JSONDecoderError normalizing curie: horseQTL:37871
+JSONDecoderError normalizing curie: horseQTL:37860
+JSONDecoderError normalizing curie: horseQTL:37870
+JSONDecoderError normalizing curie: horseQTL:37877
+JSONDecoderError normalizing curie: horseQTL:37866
+JSONDecoderError normalizing curie: horseQTL:37865
+JSONDecoderError normalizing curie: horseQTL:37876
+JSONDecoderError normalizing curie: horseQTL:37864
+JSONDecoderError normalizing curie: horseQTL:37875
+JSONDecoderError normalizing curie: horseQTL:37874
+JSONDecoderError normalizing curie: horseQTL:37863
+JSONDecoderError normalizing curie: horseQTL:37859
+JSONDecoderError normalizing curie: horseQTL:37869
+JSONDecoderError normalizing curie: horseQTL:37858
+JSONDecoderError normalizing curie: horseQTL:37857
+JSONDecoderError normalizing curie: horseQTL:37868
+JSONDecoderError normalizing curie: horseQTL:37867
+JSONDecoderError normalizing curie: PATO:0001901
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159630.v4', 'variable': 'LimitWalkMost', 'description': 'what limits your walking most', 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159631.v4', 'variable': 'CABG', 'description': 'coronary artery bypass surgery [cabg]', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000005
+JSONDecoderError normalizing curie: ZFA:0005812
+JSONDecoderError normalizing curie: EFO:0003776
+JSONDecoderError normalizing curie: ERO:0000378
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159632.v4', 'variable': 'Angioplasty', 'description': 'angioplasty or cardiac stents placed', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0000114
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169331.v3', 'variable': 'PainfulJoints', 'description': 'do you have any joints that are painful stiff or achy?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: NCBIGene:102658172
+JSONDecoderError normalizing curie: pigQTL:1046
+JSONDecoderError normalizing curie: NCBIGene:449473
+JSONDecoderError normalizing curie: pigQTL:1042
+JSONDecoderError normalizing curie: pigQTL:318
+JSONDecoderError normalizing curie: pigQTL:21852
+JSONDecoderError normalizing curie: pigQTL:21853
+JSONDecoderError normalizing curie: NCBIGene:100323014
+JSONDecoderError normalizing curie: NCBIGene:102659001
+JSONDecoderError normalizing curie: NCBIGene:100323016
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169332.v3', 'variable': 'LowerBackPain', 'description': 'do you have lower back buttock or radiating leg pain?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: horseQTL:37862
+JSONDecoderError normalizing curie: horseQTL:37873
+JSONDecoderError normalizing curie: horseQTL:37861
+JSONDecoderError normalizing curie: horseQTL:37872
+JSONDecoderError normalizing curie: horseQTL:37871
+JSONDecoderError normalizing curie: horseQTL:37860
+JSONDecoderError normalizing curie: horseQTL:37870
+JSONDecoderError normalizing curie: horseQTL:37877
+JSONDecoderError normalizing curie: horseQTL:37866
+JSONDecoderError normalizing curie: horseQTL:37865
+JSONDecoderError normalizing curie: horseQTL:37876
+JSONDecoderError normalizing curie: horseQTL:37864
+JSONDecoderError normalizing curie: horseQTL:37875
+JSONDecoderError normalizing curie: horseQTL:37874
+JSONDecoderError normalizing curie: horseQTL:37863
+JSONDecoderError normalizing curie: horseQTL:37859
+JSONDecoderError normalizing curie: horseQTL:37869
+JSONDecoderError normalizing curie: horseQTL:37858
+JSONDecoderError normalizing curie: horseQTL:37857
+JSONDecoderError normalizing curie: horseQTL:37868
+JSONDecoderError normalizing curie: horseQTL:37867
+JSONDecoderError normalizing curie: PATO:0001901
+JSONDecoderError normalizing curie: PATO:0005005
+JSONDecoderError normalizing curie: EFO:0003843
+JSONDecoderError normalizing curie: NCBIGene:37985
+JSONDecoderError normalizing curie: FlyBase:FBgn0060296
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0060296
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169333.v3', 'variable': 'PainJointType_Shoulder', 'description': 'painful joint type: shoulder', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169334.v3', 'variable': 'PainJointType_Elbow', 'description': 'painful joint type: elbow', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169335.v3', 'variable': 'PainJointType_Wrist', 'description': 'painful joint type: wrist or hand', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+JSONDecoderError normalizing curie: NCBIGene:34379
+JSONDecoderError normalizing curie: FlyBase:FBgn0032209
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0032209
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169336.v3', 'variable': 'PainJointType_Hip', 'description': 'painful joint type: hip groin thigh', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169337.v3', 'variable': 'PainJointType_Knee', 'description': 'painful joint type: knee', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169338.v3', 'variable': 'PainJointType_Foot', 'description': 'painful joint type: foot or ankle', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFA:0001596
+JSONDecoderError normalizing curie: dc:type
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159633.v4', 'variable': 'Alpha1Test', 'description': 'have you been tested for alpha1 antitrypsin deficiency', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:100325603
+JSONDecoderError normalizing curie: pigQTL:6531
+JSONDecoderError normalizing curie: pigQTL:7213
+JSONDecoderError normalizing curie: NCBIGene:100325230
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169328.v3', 'variable': 'PhenoGenotype', 'description': 'a1ad: phenotype/genotype', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169329.v3', 'variable': 'PhenoGenoDK', 'description': 'a1ad: do not know phenotype', 'identifiers': {}}
+JSONDecoderError normalizing curie: foaf:knows
+JSONDecoderError normalizing curie: RO:0002201
+JSONDecoderError normalizing curie: UPHENO:0001001
+JSONDecoderError normalizing curie: FBcv:0001347
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159636.v4', 'variable': 'HowSoonSmoke', 'description': 'how soon after waking do you smoke first cigarette', 'identifiers': {}}
+JSONDecoderError normalizing curie: faldo:after
+JSONDecoderError normalizing curie: OBO:mp/mp-equivalent-axioms-subq#after
+JSONDecoderError normalizing curie: FlyBase:FBgn0266418
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0266418
+JSONDecoderError normalizing curie: NCBIGene:42676
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159637.v4', 'variable': 'SmokeMore2hrs', 'description': 'smoke more during first 2 hours of day than rest of day', 'identifiers': {}}
+JSONDecoderError normalizing curie: OBO:mp/mp-equivalent-axioms-subq#during
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-080415-1
+JSONDecoderError normalizing curie: NCBIGene:100016000
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-955466
+JSONDecoderError normalizing curie: NCBIGene:422623
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000029249
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000103046
+JSONDecoderError normalizing curie: MGI:104897
+JSONDecoderError normalizing curie: NCBIGene:564772
+JSONDecoderError normalizing curie: NCBIGene:100564403
+JSONDecoderError normalizing curie: NCBIGene:734016
+JSONDecoderError normalizing curie: XCO:0000002
+JSONDecoderError normalizing curie: NCBIGene:100078457
+JSONDecoderError normalizing curie: NCBIGene:101086719
+JSONDecoderError normalizing curie: NCBIGene:100425257
+JSONDecoderError normalizing curie: NCBIGene:100216471
+JSONDecoderError normalizing curie: NCBIGene:19712
+JSONDecoderError normalizing curie: KEGG-ko:K09222
+JSONDecoderError normalizing curie: NCBIGene:482163
+JSONDecoderError normalizing curie: OMIM:600571
+JSONDecoderError normalizing curie: NCBIGene:83618
+JSONDecoderError normalizing curie: NCBIGene:100058152
+JSONDecoderError normalizing curie: RGD:621069
+JSONDecoderError normalizing curie: NCBIGene:100520754
+JSONDecoderError normalizing curie: NCBIGene:471235
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159638.v4', 'variable': 'CigHateGiveUp', 'description': 'which cigarette would you hate most to give up', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159639.v4', 'variable': 'FindHardNotSmoke', 'description': 'do you find it hard to not smoke in forbidden places', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0033859
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0033859
+JSONDecoderError normalizing curie: NCBIGene:36514
+JSONDecoderError normalizing curie: PATO:0000386
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159640.v4', 'variable': 'SmokeSickBed', 'description': 'smoke when so ill you are in bed most of day', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159641.v4', 'variable': 'SmokeMenthol', 'description': 'do you now or did you smoke menthol cigarettes', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159642.v4', 'variable': 'bagonist', 'description': 'inhaled short-acting beta-agonist', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159643.v4', 'variable': 'bagonistlongact', 'description': 'long-acting beta-agonist', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159644.v4', 'variable': 'CombcCSBagon', 'description': 'combination inhaled corticosteroid and beta-agonist', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159645.v4', 'variable': 'combivent', 'description': 'combination short-acting medication', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159646.v4', 'variable': 'Cortsterinhal', 'description': 'inhaled corticosteroids', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159647.v4', 'variable': 'CortsterOral', 'description': 'oral corticosteroids', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159648.v4', 'variable': 'CurrentMedUse', 'description': 'currently do you use medications to treat breathing problem', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159649.v4', 'variable': 'ipratrop', 'description': 'ipratropium bromide', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159651.v4', 'variable': 'nebulizer', 'description': 'nebulizer for an inhaled medication', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0001389
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159652.v4', 'variable': 'theoph', 'description': 'theophylline', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159653.v4', 'variable': 'tiotrop', 'description': 'tiotroprium bromide', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159654.v4', 'variable': 'HaveCough', 'description': 'do you usually have a cough [exclude clearing of throat]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: WBPhenotype:0001010
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159655.v4', 'variable': 'Cough4Plus', 'description': 'if yes usually as much as 4 tims a day 4+ days per week', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MUCH
+JSONDecoderError normalizing curie: BNODE:b2a9446d992d80521ab3
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159656.v4', 'variable': 'CoughAM_yn', 'description': 'do you usually cough first thing in the morning?', 'identifiers': {}}
+JSONDecoderError normalizing curie: owl:Thing
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159657.v4', 'variable': 'CoughRestDay', 'description': 'do you usually cough during rest of day or night', 'identifiers': {}}
+JSONDecoderError normalizing curie: OBO:mp/mp-equivalent-axioms-subq#during
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-080415-1
+JSONDecoderError normalizing curie: NCBIGene:100016000
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-955466
+JSONDecoderError normalizing curie: NCBIGene:422623
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000029249
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000103046
+JSONDecoderError normalizing curie: MGI:104897
+JSONDecoderError normalizing curie: NCBIGene:564772
+JSONDecoderError normalizing curie: NCBIGene:100564403
+JSONDecoderError normalizing curie: NCBIGene:734016
+JSONDecoderError normalizing curie: XCO:0000002
+JSONDecoderError normalizing curie: NCBIGene:100078457
+JSONDecoderError normalizing curie: NCBIGene:101086719
+JSONDecoderError normalizing curie: NCBIGene:100425257
+JSONDecoderError normalizing curie: NCBIGene:100216471
+JSONDecoderError normalizing curie: NCBIGene:19712
+JSONDecoderError normalizing curie: KEGG-ko:K09222
+JSONDecoderError normalizing curie: NCBIGene:482163
+JSONDecoderError normalizing curie: OMIM:600571
+JSONDecoderError normalizing curie: NCBIGene:83618
+JSONDecoderError normalizing curie: NCBIGene:100058152
+JSONDecoderError normalizing curie: RGD:621069
+JSONDecoderError normalizing curie: NCBIGene:100520754
+JSONDecoderError normalizing curie: NCBIGene:471235
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159658.v4', 'variable': 'Cough3Mo', 'description': 'cough like this most days for 3 consecutive months or more', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159659.v4', 'variable': 'CoughNumYr', 'description': 'how many years have you had this cough', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159660.v4', 'variable': 'HavePhlegm', 'description': 'do you usually bring up phlegm from your chest', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159661.v4', 'variable': 'PhlegmOften', 'description': 'do you usually bring up phlegm 2 times a day 4 or more days', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159662.v4', 'variable': 'PhlegmAM', 'description': 'usually bring up phlegm from chest first thing in morning', 'identifiers': {}}
+JSONDecoderError normalizing curie: owl:Thing
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159663.v4', 'variable': 'PhlegmRestDay', 'description': 'usually bring up phlegm from chest rest of day or at night', 'identifiers': {}}
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-080415-1
+JSONDecoderError normalizing curie: NCBIGene:100016000
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-955466
+JSONDecoderError normalizing curie: NCBIGene:422623
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000029249
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000103046
+JSONDecoderError normalizing curie: MGI:104897
+JSONDecoderError normalizing curie: NCBIGene:564772
+JSONDecoderError normalizing curie: NCBIGene:100564403
+JSONDecoderError normalizing curie: NCBIGene:734016
+JSONDecoderError normalizing curie: XCO:0000002
+JSONDecoderError normalizing curie: NCBIGene:100078457
+JSONDecoderError normalizing curie: NCBIGene:101086719
+JSONDecoderError normalizing curie: NCBIGene:100425257
+JSONDecoderError normalizing curie: NCBIGene:100216471
+JSONDecoderError normalizing curie: NCBIGene:19712
+JSONDecoderError normalizing curie: KEGG-ko:K09222
+JSONDecoderError normalizing curie: NCBIGene:482163
+JSONDecoderError normalizing curie: OMIM:600571
+JSONDecoderError normalizing curie: NCBIGene:83618
+JSONDecoderError normalizing curie: NCBIGene:100058152
+JSONDecoderError normalizing curie: RGD:621069
+JSONDecoderError normalizing curie: NCBIGene:100520754
+JSONDecoderError normalizing curie: NCBIGene:471235
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159664.v4', 'variable': 'Phlegm3Mo', 'description': 'usually bring up phlegm on most days for 3 months or more', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159665.v4', 'variable': 'PhlegmNumYr', 'description': 'how many years have you had trouble with phlegm', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159666.v4', 'variable': 'EpisodeCghPhlm', 'description': 'episodes of increased cough/phlegm lasting 1 week or more', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02533
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159667.v4', 'variable': 'NumEpisodeLastYr', 'description': 'how many episodes of increased cough/phlegm in past 12 months', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: NCBIGene:10496
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159668.v4', 'variable': 'YrsEpisodeLast', 'description': 'how many years had at least one episode of increased cough/phlegm per year', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159669.v4', 'variable': 'ChstWheezyWhist', 'description': 'ever had wheezing or whistling in chest', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159672.v4', 'variable': 'ShrtBrthAttk', 'description': 'had an attack of wheezing/whistling in chest', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159677.v4', 'variable': 'ChestWheez12mo', 'description': 'in last 12 months had wheezing or whistling in chest', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02533
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159678.v4', 'variable': 'WithCold', 'description': 'wheezing: when you have a cold', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: KEGG-ko:K21131
+JSONDecoderError normalizing curie: FlyBase:FBgn0031268
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0031268
+JSONDecoderError normalizing curie: NCBIGene:33237
+JSONDecoderError normalizing curie: dictyBase:DDB_G0284983
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159679.v4', 'variable': 'ApartFromCold', 'description': 'wheezing: occasionally apart from colds', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:250486
+JSONDecoderError normalizing curie: FlyBase:FBgn0004976
+JSONDecoderError normalizing curie: KEGG-ko:K21131
+JSONDecoderError normalizing curie: FlyBase:FBgn0031268
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0031268
+JSONDecoderError normalizing curie: NCBIGene:33237
+JSONDecoderError normalizing curie: dictyBase:DDB_G0284983
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159680.v4', 'variable': 'MoreOnceAWeek', 'description': 'wheezing: more than once a week', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159681.v4', 'variable': 'MostDaysNights', 'description': 'wheezing: most days and nights', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159682.v4', 'variable': 'AwakeByCough', 'description': 'awakened from sleep by cough not from colds/chest infection', 'identifiers': {}}
+JSONDecoderError normalizing curie: OBO:IDO_0000586
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159683.v4', 'variable': 'AwakeByShrtBrth', 'description': 'awakened from sleep by shortness of breath/tightness in chess', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159688.v4', 'variable': 'LtdUphill', 'description': 'have shortness of breath when hurrying or slight uphill', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159689.v4', 'variable': 'LtdLevelSlow', 'description': 'have to walk slower than others due to shortness of breath', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159690.v4', 'variable': 'LtdLevelStop', 'description': 'have to stop for breath when walk on the level at own pace', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: PATO:0002443
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159691.v4', 'variable': 'LtdLvlStop100', 'description': 'have to stop for breath after 100 yards on level ground', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+JSONDecoderError normalizing curie: faldo:after
+JSONDecoderError normalizing curie: OBO:mp/mp-equivalent-axioms-subq#after
+JSONDecoderError normalizing curie: PATO:0002443
+JSONDecoderError normalizing curie: cattleQTL:102010
+JSONDecoderError normalizing curie: cattleQTL:102020
+JSONDecoderError normalizing curie: cattleQTL:102023
+JSONDecoderError normalizing curie: cattleQTL:102045
+JSONDecoderError normalizing curie: cattleQTL:102033
+JSONDecoderError normalizing curie: cattleQTL:101992
+JSONDecoderError normalizing curie: cattleQTL:102013
+JSONDecoderError normalizing curie: cattleQTL:102038
+JSONDecoderError normalizing curie: cattleQTL:102016
+JSONDecoderError normalizing curie: cattleQTL:101994
+JSONDecoderError normalizing curie: cattleQTL:102026
+JSONDecoderError normalizing curie: cattleQTL:101984
+JSONDecoderError normalizing curie: cattleQTL:102006
+JSONDecoderError normalizing curie: cattleQTL:101998
+JSONDecoderError normalizing curie: cattleQTL:101988
+JSONDecoderError normalizing curie: cattleQTL:102030
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159692.v4', 'variable': 'LtdNotLeaveHm', 'description': 'too breathless to leave the house on dressing/undressing', 'identifiers': {}}
+JSONDecoderError normalizing curie: OBO:BSPO_0000110
+JSONDecoderError normalizing curie: PATO:0000366
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159693.v4', 'variable': 'ERLungProb', 'description': 'been to emergency room or hospitalized for lung problems', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169339.v3', 'variable': 'ERLungProbtimes', 'description': 'how many times', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169340.v3', 'variable': 'TreatChestIll', 'description': 'have you been to treated with antibiotics for chest illness', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169341.v3', 'variable': 'TreatChestTimes', 'description': 'how many times treated with antibiotics for chest illness', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169342.v3', 'variable': 'TreatSteroids', 'description': 'been treated with steroid pills or injections', 'identifiers': {}}
+JSONDecoderError normalizing curie: XCO:0000091
+JSONDecoderError normalizing curie: ERO:0000640
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169343.v3', 'variable': 'TreatSteroiTimes', 'description': 'if yes how many times', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159694.v4', 'variable': 'FlareupChestTrb', 'description': 'had a flare-up of chest troubles in last 12 months', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02533
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159749.v4', 'variable': 'SmokCigNow', 'description': 'do you now smoke cigarettes [as of one month ago]?', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159750.v4', 'variable': 'CigPerDaySmokNow', 'description': 'how many cigarettes do you smoke per day now? [cigarettes/day]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159754.v4', 'variable': 'CigSmok24hrs', 'description': 'how many cigarettes have you smoked in the past 24 hours [cigarettes]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:10496
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159755.v4', 'variable': 'CigSmok2hrs', 'description': 'how many cigarettes have you smoked in the past 2 hours [cigarettes]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:10496
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159756.v4', 'variable': 'CigSmokHalfHr', 'description': 'how many cigarettes have you smoked in the past half hour [cigarettes]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:10496
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159751.v4', 'variable': 'SmokStopAge', 'description': 'how old were you when you completely stopped smoking? [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159757.v4', 'variable': 'SmokPipeReg', 'description': 'have you ever smoked a pipe regularly?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159763.v4', 'variable': 'SmokCigarReg', 'description': 'have you ever smoked cigars regularly?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159797.v4', 'variable': 'MMRCDyspneaScor', 'description': 'mmrc dyspnea score', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159798.v4', 'variable': 'COPDExac_NoTrt', 'description': 'episodes past year: number of times "no special treatment"', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159799.v4', 'variable': 'COPDExac_UsualMed', 'description': 'episodes past year: number of times "increased usual medication"', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169350.v3', 'variable': 'COPDExac_Antib_Ster_Home', 'description': 'episodes past year: number of times antibiotics or steroids at home', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: PATO:0000165
+JSONDecoderError normalizing curie: XCO:0000091
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169351.v3', 'variable': 'COPDExac_NewRx_Antib_Ster', 'description': 'episodes past year: number of times doctor new prescription [antibiotics or steroids]', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169352.v3', 'variable': 'COPDExac_Hospital', 'description': 'episodes past year: number of times [hospital]', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: PATO:0000165
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159670.v4', 'variable': 'AgeWheezWhist', 'description': 'how old when you had first wheezing/whistling in chest', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159671.v4', 'variable': 'AgeWheezWhistDK', 'description': "age wheezing started: don't know", 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+JSONDecoderError normalizing curie: foaf:knows
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159673.v4', 'variable': 'AgeFirstAttack', 'description': 'how old when you had first attack of wheezing', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159674.v4', 'variable': 'AgeFirstAttackDK', 'description': "age first attack of wheezing: don't know", 'identifiers': {}}
+JSONDecoderError normalizing curie: foaf:knows
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159675.v4', 'variable': 'ShrtBrth2Plus', 'description': 'have you had 2 or more shortness of breath episodes', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159676.v4', 'variable': 'MedorTreatAttack', 'description': 'have you ever required medicine/treatment for attacks', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159684.v4', 'variable': 'SneezRunnyNose', 'description': 'sneezing/runny/blocked nose when you did not have a cold/flu', 'identifiers': {}}
+JSONDecoderError normalizing curie: WBbt:0008426
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159685.v4', 'variable': 'ItchyBurningEye', 'description': 'watery/itchy/burning eyes but not have cold or flu', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0000624
+JSONDecoderError normalizing curie: NCBIGene:248617
+JSONDecoderError normalizing curie: NCBIGene:835217
+JSONDecoderError normalizing curie: ZFA:0000107
+JSONDecoderError normalizing curie: FBbt:00004508
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: KEGG-ko:K21131
+JSONDecoderError normalizing curie: FlyBase:FBgn0031268
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0031268
+JSONDecoderError normalizing curie: NCBIGene:33237
+JSONDecoderError normalizing curie: dictyBase:DDB_G0284983
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159686.v4', 'variable': 'UnablWalkCondOth', 'description': "can't walk due to condition other than shortness of breath", 'identifiers': {}}
+JSONDecoderError normalizing curie: horseQTL:124189
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-070117-809
+JSONDecoderError normalizing curie: horseQTL:124193
+JSONDecoderError normalizing curie: XCO:0000007
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159701.v4', 'variable': 'Asthma', 'description': 'asthma: have you ever had asthma', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159702.v4', 'variable': 'AsthmaAge', 'description': 'asthma: at about what age did asthma start', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159703.v4', 'variable': 'AsthmaAgeDK', 'description': 'asthma: asthma as a child; age not known', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159704.v4', 'variable': 'AsthmaDxByDr', 'description': 'asthma: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159705.v4', 'variable': 'AsthmaStillHave', 'description': 'asthma: do you still have asthma', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159706.v4', 'variable': 'AsthmaAgeStop', 'description': 'asthma: if you no longer have asthma at what age did it stop', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159707.v4', 'variable': 'AsthmaStopChild', 'description': 'asthma: asthma stopped as a child; age not known', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159708.v4', 'variable': 'AsthmaTreat', 'description': 'asthma: received medical treatment or used medications/inhaler', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159709.v4', 'variable': 'HayFev', 'description': 'hayfever: have you ever had hay fever (allergy involving nose or eyes)', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: MGI:5654760
+JSONDecoderError normalizing curie: RO:0002331
+JSONDecoderError normalizing curie: WBbt:0008426
+JSONDecoderError normalizing curie: FlyBase:FBgn0000624
+JSONDecoderError normalizing curie: NCBIGene:248617
+JSONDecoderError normalizing curie: NCBIGene:835217
+JSONDecoderError normalizing curie: ZFA:0000107
+JSONDecoderError normalizing curie: FBbt:00004508
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159710.v4', 'variable': 'HayFevAge', 'description': 'hayfever: at about what age did hay fever start', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159711.v4', 'variable': 'HayFevAgeDK', 'description': 'hayfever: hay fever as a child; age not known', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159712.v4', 'variable': 'HayFevDxByDr', 'description': 'hayfever: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159713.v4', 'variable': 'HayFevStillHave', 'description': 'hayfever: do you still have hay fever', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159714.v4', 'variable': 'HayFevAgeStop', 'description': 'hayfever: if you no longer have hay fever at what age did it stop', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159715.v4', 'variable': 'HayFevStill', 'description': 'hayfever: hay fever stopped as a child; age not known', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159716.v4', 'variable': 'HayFevTreat', 'description': 'hayfever: received medical treatment or used medications/nasal spray', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159717.v4', 'variable': 'BronchAttack', 'description': 'bronchitis: have you ever had an attack of bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159718.v4', 'variable': 'BronchDxByDr', 'description': 'bronchitis: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159719.v4', 'variable': 'BronchAge', 'description': 'bronchitis: at about what age did you first have bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159720.v4', 'variable': 'BronchAgeDK', 'description': 'bronchitis: bronchitis as a child; age not known', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159721.v4', 'variable': 'BronchTimes', 'description': 'bronchitis: how many times have you had bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0000165
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159722.v4', 'variable': 'Pneumonia', 'description': 'pneumonia: have you ever had pneumonia or bronchopneumonia', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159723.v4', 'variable': 'PneuDxByDr', 'description': 'pneumonia: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159724.v4', 'variable': 'PneuAge', 'description': 'pneumonia: at what age did you first have pneumonia/bronchopneumonia', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159725.v4', 'variable': 'PneuAgeDK', 'description': 'pneumonia: pneumonia as a child; age not known', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159726.v4', 'variable': 'PneuTimes', 'description': 'pneumonia: how many times have you had pneumonia/bronchopneumonia', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0000165
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159727.v4', 'variable': 'ChronBronch', 'description': 'chronic bronchitis: have you ever had chronic bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: PATO:0001863
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159728.v4', 'variable': 'ChronBroncDxByDr', 'description': 'chronic bronchitis: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169344.v3', 'variable': 'ChronBroncAge', 'description': 'chronic bronchitis: at about what age did it start', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169345.v3', 'variable': 'ChronBrncStillHv', 'description': 'chronic bronchitis: do you still have it', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169346.v3', 'variable': 'ChronBroncTreat', 'description': 'chronic bronchitis: received medical treatment or used medications/inhaler', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159729.v4', 'variable': 'Emphysema', 'description': 'emphysema: have you ever had emphysema', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159730.v4', 'variable': 'EmphDxByDr', 'description': 'emphysema: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169347.v3', 'variable': 'EmphAge', 'description': 'emphysema: at about what age did it start', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169348.v3', 'variable': 'EmphStillHave', 'description': 'emphysema: do you still have it', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169349.v3', 'variable': 'EmphTreat', 'description': 'emphysema: received medical treatment or used medications/inhaler', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159731.v4', 'variable': 'COPD', 'description': 'copd: have you ever had copd', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159732.v4', 'variable': 'CopdDxByDr', 'description': 'copd: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159733.v4', 'variable': 'CopdAge', 'description': 'copd: at about what age did copd start', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159734.v4', 'variable': 'CopdStillHave', 'description': 'copd: do you still have copd', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159735.v4', 'variable': 'CopdTreat', 'description': 'copd: received medical treatment or used medications/inhaler', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159736.v4', 'variable': 'SleepApnea', 'description': 'sleep apnea: have you ever had sleep apnea', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: MP:0001957
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159737.v4', 'variable': 'SleepApDxByDr', 'description': 'sleep apnea: diagnosed by doctor or other health professional', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159738.v4', 'variable': 'SleepApAge', 'description': 'sleep apnea: at about what age did sleep apnea start', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: IAO:0000136
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159739.v4', 'variable': 'SleepApStillHav', 'description': 'sleep apnea: do you still have sleep apnea', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: MP:0001957
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159740.v4', 'variable': 'SleepApTreat', 'description': 'sleep apnea: in past 12 months have you received any treatment for sleep apnea', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001957
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: MP:0001957
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159741.v4', 'variable': 'ChestIllOther', 'description': 'any other chest illnesses', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159743.v4', 'variable': 'ChestOper', 'description': 'any chest operations', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159745.v4', 'variable': 'ChestInj', 'description': 'any chest injuries', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159747.v4', 'variable': 'EverSmokedCig', 'description': 'have you ever smoked cigarettes?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159748.v4', 'variable': 'SmokStartAge', 'description': 'how old were you when you first started cigarette smoking? [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+JSONDecoderError normalizing curie: XCO:0000079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159752.v4', 'variable': 'CigPerDaySmokAvg', 'description': 'average for entire time how many cigarettes smoked per day [cigarettes/day]', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000165
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: XCO:0000079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159753.v4', 'variable': 'CigSmok24hrs_NA', 'description': 'cigarettes smoked past 24 hours - does not apply', 'identifiers': {}}
+JSONDecoderError normalizing curie: XCO:0000079
+JSONDecoderError normalizing curie: NCBIGene:10496
+JSONDecoderError normalizing curie: FlyBase:FBgn0016794
+JSONDecoderError normalizing curie: KEGG-ko:K13243
+JSONDecoderError normalizing curie: MGI:1856598
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0016794
+JSONDecoderError normalizing curie: NCBIGene:1792
+JSONDecoderError normalizing curie: MGI:94913
+JSONDecoderError normalizing curie: NCBIGene:50491
+JSONDecoderError normalizing curie: FlyBase:FBgn0261519
+JSONDecoderError normalizing curie: NCBIGene:10216624
+JSONDecoderError normalizing curie: NCBIGene:216164
+JSONDecoderError normalizing curie: NCBIGene:38321
+JSONDecoderError normalizing curie: KEGG-ko:K20231
+JSONDecoderError normalizing curie: NCBIGene:5658690
+JSONDecoderError normalizing curie: NCBIGene:13438
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159758.v4', 'variable': 'AgeStartSmokPipe', 'description': 'age when started to smoke pipe regularly [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159759.v4', 'variable': 'SmokPipeNow', 'description': 'do you now smoke a pipe [as of one month ago]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159760.v4', 'variable': 'QtySmokPipeTob', 'description': 'how much pipe tobacco do you smoke per day now? [oz per day]', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MUCH
+JSONDecoderError normalizing curie: BNODE:b2a9446d992d80521ab3
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159761.v4', 'variable': 'AgeStopSmokPipe', 'description': 'age when completely stopped smoking pipe [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159762.v4', 'variable': 'SmokTobPerWeek', 'description': 'on average ounces of tobacco smoked per week [oz per week]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159764.v4', 'variable': 'AgeStartSmkCigar', 'description': 'age when started to smoke cigars regularly [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0002224
+JSONDecoderError normalizing curie: RO:0002223
+JSONDecoderError normalizing curie: OBO:so#starts
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159765.v4', 'variable': 'SmokCigarNow', 'description': 'do you now smoke cigars [as of one month ago]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159766.v4', 'variable': 'CigarPerDayNow', 'description': 'how many cigars do you smoke per day now. [cigars per day]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159767.v4', 'variable': 'AgeStopSmokCigar', 'description': 'age when completely stopped smoking cigars [years old]', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159768.v4', 'variable': 'SmokCigarPerWeek', 'description': 'on average how many cigars did you smoke per week [cigars per week]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159769.v4', 'variable': 'MothSmokPreg', 'description': 'did your mother smoke cigarettes when she was pregnant', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159770.v4', 'variable': 'OthSmokChildYrs', 'description': 'as a child years lived with someone who smoked [years]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159771.v4', 'variable': 'OthSmokYrs', 'description': 'since age 18 years lived with someone who smoked [years]', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159772.v4', 'variable': 'ExpSmokAtWorkYr', 'description': 'how many years exposed to smoke at work [years]', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02795
+JSONDecoderError normalizing curie: PATO:0002425
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159773.v4', 'variable': 'SchoolCompleted', 'description': 'highest degree or level of school completed', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0002443
+JSONDecoderError normalizing curie: VIVO:School
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159774.v4', 'variable': 'DustyJobEver', 'description': 'have you ever worked for a year or more in dusty job?', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07538
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159775.v4', 'variable': 'FumesJobEver', 'description': 'exposed to gas smoke chemicals other fumes at work?', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0002425
+JSONDecoderError normalizing curie: XCO:0000088
+JSONDecoderError normalizing curie: IAO:0000230
+JSONDecoderError normalizing curie: AQTLTrait:3239
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159778.v4', 'variable': 'WorkNow', 'description': 'are you working now?', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159779.v4', 'variable': 'WorkDustyJobNow', 'description': 'are you currently working in a dusty job?', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159780.v4', 'variable': 'ExpFumesNow', 'description': 'are you currently exposed to gas smoke chemicals fumes?', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0002425
+JSONDecoderError normalizing curie: XCO:0000088
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159783.v4', 'variable': 'StopWork', 'description': 'why did you stop working?', 'identifiers': {}}
+JSONDecoderError normalizing curie: FlyBase:FBgn0003535
+JSONDecoderError normalizing curie: FlyBase:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:43683
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0086704
+JSONDecoderError normalizing curie: NCBIGene:252732
+JSONDecoderError normalizing curie: PATO:0001026
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159785.v4', 'variable': 'FathChronBronch', 'description': 'father: chronic bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159786.v4', 'variable': 'MothChronBronch', 'description': 'mother: chronic bronchitis', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159787.v4', 'variable': 'FathEmphysema', 'description': 'father: emphysema', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159788.v4', 'variable': 'MothEmphysema', 'description': 'mother: emphysema', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159789.v4', 'variable': 'FathCOPD', 'description': 'father: copd', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159790.v4', 'variable': 'MothCOPD', 'description': 'mother: copd', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159791.v4', 'variable': 'FathAsthma', 'description': 'father: asthma', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159792.v4', 'variable': 'MothAsthma', 'description': 'mother: asthma', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-path:map05310
+JSONDecoderError normalizing curie: KEGG-ds:H00079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159793.v4', 'variable': 'FathLungCancer', 'description': 'father: lung cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+JSONDecoderError normalizing curie: NCBITaxon:6754
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159794.v4', 'variable': 'MothLungCancer', 'description': 'mother: lung cancer', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+JSONDecoderError normalizing curie: NCBITaxon:6754
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159795.v4', 'variable': 'FathCigSmok', 'description': 'was your natural father a cigarette smoker?', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000782
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159796.v4', 'variable': 'MothCigSmok', 'description': 'was your natural mother a cigarette smoker?', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000782
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159809.v4', 'variable': 'SGRQ_scoreSymptom', 'description': 'sgrq score: symptoms', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159810.v4', 'variable': 'SGRQ_scoreActive', 'description': 'sgrq score: active', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+JSONDecoderError normalizing curie: RO:0002432
+JSONDecoderError normalizing curie: PATO:0002354
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159811.v4', 'variable': 'SGRQ_scoreImpact', 'description': 'sgrq score: impact', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+JSONDecoderError normalizing curie: NCBIGene:449553
+JSONDecoderError normalizing curie: MGI:1098233
+JSONDecoderError normalizing curie: NCBIGene:496763
+JSONDecoderError normalizing curie: NCBIGene:16210
+JSONDecoderError normalizing curie: NCBIGene:101081680
+JSONDecoderError normalizing curie: NCBIGene:100083918
+JSONDecoderError normalizing curie: NCBIGene:497635
+JSONDecoderError normalizing curie: ZFIN:ZDB-GENE-040927-10
+JSONDecoderError normalizing curie: dictyBase:DDB_G0287757
+JSONDecoderError normalizing curie: NCBIGene:497198
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000024423
+JSONDecoderError normalizing curie: OMIM:615319
+JSONDecoderError normalizing curie: RGD:1591977
+JSONDecoderError normalizing curie: NCBIGene:101075543
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-947990
+JSONDecoderError normalizing curie: ENSEMBL:ENSBTAG00000003035
+JSONDecoderError normalizing curie: NCBIGene:517248
+JSONDecoderError normalizing curie: NCBIGene:707508
+JSONDecoderError normalizing curie: NCBIGene:100557162
+JSONDecoderError normalizing curie: NCBIGene:421080
+JSONDecoderError normalizing curie: NCBIGene:455343
+JSONDecoderError normalizing curie: NCBIGene:100011324
+JSONDecoderError normalizing curie: NCBIGene:100063715
+JSONDecoderError normalizing curie: NCBIGene:490513
+JSONDecoderError normalizing curie: ENSEMBL:ENSDARG00000043288
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159812.v4', 'variable': 'SGRQ_scoreTotal', 'description': 'sgrq score: total', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159824.v4', 'variable': 'SF36_PF_score', 'description': 'sf-36 physical function (pf) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: BFO:0000034
+JSONDecoderError normalizing curie: RO:0000079
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159825.v4', 'variable': 'SF36_RP_score', 'description': 'sf-36 role physical (rp) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0000081
+JSONDecoderError normalizing curie: BFO:0000023
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159826.v4', 'variable': 'SF36_RE_score', 'description': 'sf-36 role emotional (re) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0000081
+JSONDecoderError normalizing curie: BFO:0000023
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159827.v4', 'variable': 'SF36_SF_score', 'description': 'sf-36 social function (sf) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:100310193
+JSONDecoderError normalizing curie: chickenQTL:2391
+JSONDecoderError normalizing curie: BFO:0000034
+JSONDecoderError normalizing curie: RO:0000079
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159828.v4', 'variable': 'SF36_BP_score', 'description': 'sf-36 body pain (bp) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: EFO:0003843
+JSONDecoderError normalizing curie: NCBIGene:37985
+JSONDecoderError normalizing curie: FlyBase:FBgn0060296
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0060296
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159829.v4', 'variable': 'SF36_VT_score', 'description': 'sf-36 vitality (vt) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159830.v4', 'variable': 'SF36_MH_score', 'description': 'sf-36 mental health (mh) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159831.v4', 'variable': 'SF36_GH_score', 'description': 'sf-36 general health (gh) score', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159832.v4', 'variable': 'SF36_PF_t_score', 'description': 'sf-36 physical function (pf) t-score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: BFO:0000034
+JSONDecoderError normalizing curie: RO:0000079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169378.v3', 'variable': 'SF36_RP_t_score', 'description': 'sf-36 role physical (rp) t-score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0000081
+JSONDecoderError normalizing curie: BFO:0000023
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169379.v3', 'variable': 'SF36_RE_t_score', 'description': 'sf-36 role emotional (re) t-score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: RO:0000081
+JSONDecoderError normalizing curie: BFO:0000023
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169380.v3', 'variable': 'SF36_SF_t_score', 'description': 'sf-36 social function (sf) t-score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:100310193
+JSONDecoderError normalizing curie: chickenQTL:2391
+JSONDecoderError normalizing curie: BFO:0000034
+JSONDecoderError normalizing curie: RO:0000079
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169381.v3', 'variable': 'SF36_BP_t_score', 'description': 'sf-36 body pain (bp) t-score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: EFO:0003843
+JSONDecoderError normalizing curie: NCBIGene:37985
+JSONDecoderError normalizing curie: FlyBase:FBgn0060296
+JSONDecoderError normalizing curie: ENSEMBL:FBgn0060296
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169382.v3', 'variable': 'SF36_VT_t_score', 'description': 'sf-36 vitality (vt) t-score (normalized)', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169383.v3', 'variable': 'SF36_MH_t_score', 'description': 'sf-36 mental health (mh) t-score (normalized)', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159833.v4', 'variable': 'SF36_GH_t_score', 'description': 'sf-36 general health (gh) t-score (normalized)', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159834.v4', 'variable': 'SF36_PCS_score', 'description': 'sf-36 physical health aggregate (pcs) score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001629
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159835.v4', 'variable': 'SF36_MCS_score', 'description': 'sf-36 mental health aggregate (mcs) score (normalized)', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001629
+JSONDecoderError normalizing curie: SO:0001685
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169327.v3', 'variable': 'QA_CalciumCalPad', 'description': 'qa_calciumcalpad', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159582.v4', 'variable': 'FinalApproval', 'description': 'ct scan final approval', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K09230
+JSONDecoderError normalizing curie: ERO:0001900
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159581.v4', 'variable': 'scanner', 'description': 'ct scanner', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278176.v1', 'variable': 'kernel', 'description': 'ct reconstruction kernel used for quantitative analysis', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169355.v3', 'variable': 'TLC_CT_vida', 'description': 'tlc ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169353.v3', 'variable': 'pctEmph_vida', 'description': 'percent emph (-950 hu) total lung ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169359.v3', 'variable': 'Hu_15perc_Insp_vida', 'description': 'hu 15th percentile insp ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169357.v3', 'variable': 'AttenMean_Insp_vida', 'description': 'attenuation mean insp ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169356.v3', 'variable': 'FRC_CT_vida', 'description': 'frc ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169354.v3', 'variable': 'pctGasTrap_vida', 'description': 'percent gas trap (-856 hu) total lung ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:100187907
+JSONDecoderError normalizing curie: KEGG-ko:K13837
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169360.v3', 'variable': 'Hu_15perc_Exp_vida', 'description': 'hu 15th percentile exp ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169358.v3', 'variable': 'AttenMean_Exp_vida', 'description': 'attenuation mean exp ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169362.v3', 'variable': 'pctEmph_UpperLobes_vida', 'description': 'percent emph upper lobes ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169363.v3', 'variable': 'pctEmph_LowerLobes_vida', 'description': 'percent emph lower lobes ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169365.v3', 'variable': 'pctEmph_UL_LL_ratio_vida', 'description': 'upper lobe/lower lobe ratio ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0001913
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169364.v3', 'variable': 'UpperLobe_pctTotalAirVol_vida', 'description': 'upper lobes percent of total air vol ct vida', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169361.v3', 'variable': 'ExpInspMeanAtten_ratio_vida', 'description': 'exp mean atten / insp mean atten ratio ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: ERO:0001913
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159820.v4', 'variable': 'TLC_Slicer', 'description': 'tlc ct slicer', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159822.v4', 'variable': 'pctEmph_Slicer', 'description': 'percent emphysema total lung: ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: MP:0001958
+JSONDecoderError normalizing curie: MPATH:31
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169370.v3', 'variable': 'Hu_15pct_Insp_Slicer', 'description': 'hu 15th percentile insp ct slicer', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169371.v3', 'variable': 'IntensityMean_In_Slicer', 'description': 'intensity mean insp total lung ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000049
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159821.v4', 'variable': 'FRC_Slicer', 'description': 'frc ct slicer', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159823.v4', 'variable': 'pctGasTrap_Slicer', 'description': 'percent gas trapping total lung: ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:100187907
+JSONDecoderError normalizing curie: KEGG-ko:K13837
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169374.v3', 'variable': 'Hu_15pct_Exp_Slicer', 'description': 'hu 15th percentile exp total lung ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169375.v3', 'variable': 'IntensityMean_Ex_Slicer', 'description': 'intensity mean exp total lung ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000049
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: pigQTL:8659
+JSONDecoderError normalizing curie: NCBIGene:100530540
+JSONDecoderError normalizing curie: pigQTL:165308
+JSONDecoderError normalizing curie: pigQTL:165291
+JSONDecoderError normalizing curie: pigQTL:168395
+JSONDecoderError normalizing curie: pigQTL:12535
+JSONDecoderError normalizing curie: NCBIGene:100328518
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169372.v3', 'variable': 'pctEmph_UpperThird_Slicer', 'description': 'percent emph upper third ct slicer', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169373.v3', 'variable': 'pctEmph_LowerThird_Slicer', 'description': 'percent emph lower third ct slicer', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169377.v3', 'variable': 'ExpInspMeanAtten_ratio_Slicer', 'description': 'exp mean atten / insp mean atten ratio ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: BNODE:MEAN
+JSONDecoderError normalizing curie: BNODE:b40f67415af9323b018d
+JSONDecoderError normalizing curie: ERO:0001913
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169376.v3', 'variable': 'UpperThird_LowerThird_Slicer', 'description': 'upper third/lower third ratio ct slicer', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0001913
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169366.v3', 'variable': 'Pi10_SRWA_vida', 'description': 'pi10 srwa ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: OMIM:602058
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169367.v3', 'variable': 'Pi15_SRWA_vida', 'description': 'pi15 srwa ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:100561823
+JSONDecoderError normalizing curie: NCBIGene:101066306
+JSONDecoderError normalizing curie: RGD:1309577
+JSONDecoderError normalizing curie: ENSEMBL:ENSMUSG00000067780
+JSONDecoderError normalizing curie: NCBIGene:100060330
+JSONDecoderError normalizing curie: NCBIGene:100489915
+JSONDecoderError normalizing curie: NCBIGene:532863
+JSONDecoderError normalizing curie: NCBIGene:100085841
+JSONDecoderError normalizing curie: MGI:1934659
+JSONDecoderError normalizing curie: NCBIGene:101082374
+JSONDecoderError normalizing curie: OMIM:607076
+JSONDecoderError normalizing curie: NCBIGene:100020279
+JSONDecoderError normalizing curie: NCBIGene:301489
+JSONDecoderError normalizing curie: NCBIGene:487003
+JSONDecoderError normalizing curie: NCBIGene:94227
+JSONDecoderError normalizing curie: NCBIGene:100158209
+JSONDecoderError normalizing curie: Xenbase:XB-GENE-989406
+JSONDecoderError normalizing curie: NCBIGene:374241
+JSONDecoderError normalizing curie: NCBIGene:697375
+JSONDecoderError normalizing curie: NCBIGene:472798
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169368.v3', 'variable': 'WallAreaPct_seg_vida', 'description': 'wall area percent: segmental   ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: AspGD:ASPL0000320188
+JSONDecoderError normalizing curie: PATO:0001323
+JSONDecoderError normalizing curie: AspGD:ASPL0000074615
+JSONDecoderError normalizing curie: AspGD:ASPL0000197220
+JSONDecoderError normalizing curie: PATO:0002404
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169369.v3', 'variable': 'WallAreaPct_subseg_vida', 'description': 'wall area percent: sub segmental ct vida', 'identifiers': {}}
+JSONDecoderError normalizing curie: AspGD:ASPL0000320188
+JSONDecoderError normalizing curie: PATO:0001323
+JSONDecoderError normalizing curie: AspGD:ASPL0000074615
+JSONDecoderError normalizing curie: AspGD:ASPL0000197220
+JSONDecoderError normalizing curie: PATO:0002404
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159836.v4', 'variable': 'Age_Enroll', 'description': 'age at enrollment', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169384.v3', 'variable': 'TLCpred_race_adjusted', 'description': 'tlc predicted race-adjusted', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169385.v3', 'variable': 'FRCpred_race_adjusted', 'description': 'frc predicted race-adjusted', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169386.v3', 'variable': 'TLCpp_race_adjusted', 'description': 'tlc percent predicted race-adjusted', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169387.v3', 'variable': 'FRCpp_race_adjusted', 'description': 'frc percent predicted race-adjusted', 'identifiers': {}}
+JSONDecoderError normalizing curie: SO:0000732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278177.v1', 'variable': 'FRC_TLC_ratio', 'description': 'ct-based frc/tlc ratio', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0001913
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159841.v4', 'variable': 'BODE', 'description': 'bode index', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159842.v4', 'variable': 'ATS_PackYears', 'description': 'pack years (ats)', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169388.v3', 'variable': 'Duration_Smoking', 'description': 'duration of smoking [yrs]', 'identifiers': {}}
+JSONDecoderError normalizing curie: IAO:0000413
+JSONDecoderError normalizing curie: PATO:0001309
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169389.v3', 'variable': 'YearsSinceQuit', 'description': 'years since quit smoking', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169390.v3', 'variable': 'PFT_CT_numdays', 'description': 'pft to ct scan number of days', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K09230
+JSONDecoderError normalizing curie: ERO:0001900
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159843.v4', 'variable': 'Severe_Exacerbations', 'description': 'severe exacerbations in the last year', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K02533
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159844.v4', 'variable': 'Exacerbation_Frequency', 'description': 'number of copd exacerbations', 'identifiers': {}}
+JSONDecoderError normalizing curie: NCBIGene:22819
+JSONDecoderError normalizing curie: dictyBase:DDB_G0268702
+JSONDecoderError normalizing curie: NCBIGene:260431
+JSONDecoderError normalizing curie: KEGG-ko:K20471
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159845.v4', 'variable': 'Chronic_Bronchitis', 'description': 'chronic bronchitis calc. from cough/phlegm ques', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0001863
+JSONDecoderError normalizing curie: NCBIGene:30220
+JSONDecoderError normalizing curie: KEGG-ko:K12332
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159846.v4', 'variable': 'Siemens64', 'description': 'siemens sensation-64 flag', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07330
+JSONDecoderError normalizing curie: KEGG-ko:K06603
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159847.v4', 'variable': 'Fagerstrom_Index', 'description': 'fagerstrom index', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159570.v4', 'variable': 'finalGold', 'description': 'final gold stage post-qa', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K22251
+JSONDecoderError normalizing curie: ZFS:0100000
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169391.v3', 'variable': 'pftused', 'description': 'pft used: pre post failed noutah', 'identifiers': {}}
+JSONDecoderError normalizing curie: ERO:0000031
+JSONDecoderError normalizing curie: ECO:9000001
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159848.v4', 'variable': 'FEV1pp_post', 'description': 'fev1 % pred post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159849.v4', 'variable': 'FVCpp_post', 'description': 'fvc % pred post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159850.v4', 'variable': 'FEV1_FVC_post', 'description': 'fev1/fvc post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159851.v4', 'variable': 'FEV1_post', 'description': 'fev1 post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169392.v3', 'variable': 'FEV6_post', 'description': 'fev6 post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159852.v4', 'variable': 'FVC_post', 'description': 'fvc post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169393.v3', 'variable': 'PEF_post', 'description': 'pef post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169394.v3', 'variable': 'FEF2575_post', 'description': 'fef 25-75 post-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159853.v4', 'variable': 'FEV1_pre', 'description': 'fev1 pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169395.v3', 'variable': 'FEV6_pre', 'description': 'fev6 pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159854.v4', 'variable': 'FVC_pre', 'description': 'fvc pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159855.v4', 'variable': 'FEV1_FVC_pre', 'description': 'fev1/fvc pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169396.v3', 'variable': 'PEF_pre', 'description': 'pef pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00169397.v3', 'variable': 'FEF2575_pre', 'description': 'fef 25-75 pre-bronch', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159574.v4', 'variable': 'ATS_ERS', 'description': 'ats/ers classification', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159856.v4', 'variable': 'deltaFEV1', 'description': 'pre/post-bronch fev1 volume change', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000918
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159857.v4', 'variable': 'deltaFVC', 'description': 'pre/post-bronch fvc volume change', 'identifiers': {}}
+JSONDecoderError normalizing curie: PATO:0000918
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159858.v4', 'variable': 'BDR_pct_FEV1', 'description': 'pre/post-bronch fev1 % change', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159859.v4', 'variable': 'BDR_pct_FVC', 'description': 'pre/post-bronch fvc % change', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00159860.v4', 'variable': 'BDR', 'description': 'bronchodilator responsiveness', 'identifiers': {}}
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278178.v1', 'variable': 'TLCpp_low_flag', 'description': 'flag for low tlc percent predicted (<70%)', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K07330
+JSONDecoderError normalizing curie: KEGG-ko:K06603
+JSONDecoderError normalizing curie: SO:0000732
+{'study_id': 'phs000179.v6', 'variable_id': 'phv00278179.v1', 'variable': 'NewGOLD_SGRQ', 'description': 'new gold classification, using sgrq for qol', 'identifiers': {}}
+JSONDecoderError normalizing curie: KEGG-ko:K22251
