@@ -11,7 +11,7 @@ from flasgger import Swagger
 from flask import Flask, jsonify, g, Response, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from search import Search
+from doug.core import Search
 
 """
 Defines the semantic search API

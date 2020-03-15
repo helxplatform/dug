@@ -1,0 +1,111 @@
+#############################################################
+##
+## Doug is a semantic search pipeline framework including
+##
+##   Ingest:
+##
+##     link: Annotate a data set with ontology identifiers
+##           based on NLP and other tagging mechanisms.
+##       usage: bin/doug link <metadata>
+##
+##     load: Turn the data into a knowledge graph into a
+##           graph and add insert it into a database. 
+##       usage: bin/doug load <metadata>_tagged.json
+##
+##   Crawl & Index:
+##
+##     crawl: Execute graph queries against an aggregator.
+##            Record the knowledge graphs in a cache.
+##       usage: bin/doug crawl
+##
+##     index: Analyze the graph to build a search index.
+##       usage: bin/doug index
+##
+##     query: Query the search engine from the command line
+##       usage: bin/doug query <text>
+##
+##   Search:
+##
+##     api: Provides a REST API to the search engine.
+##       bin/doug api [--debug] [--port=<int>]
+##
+#############################################################
+#!/bin/bash
+
+# Configure the PYTHONPATH
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SEARCH_ROOT=$( dirname $DIR )
+export PYTHONPATH=$SEARCH_ROOT:$SEARCH_ROOT/kgx
+
+# Ensure the KGX library is installed
+if [ ! -d $SEARCH_ROOT/kgx ]; then
+    git clone https://github.com/NCATS-Tangerine/kgx.git $SEARCH_ROOT/kgx
+fi
+
+### INGEST:
+
+#############################################################
+##
+## Link: Generate linked data information from raw metadata.
+##
+#############################################################
+link () {
+    python -m doug.ingest --annotate $*
+}
+
+#############################################################
+##
+## Load: Create a knowledge graph in a graph database.
+##
+#############################################################
+load () {
+    python -m doug.ingest --load $input $*
+}
+
+### Crawl/Index
+
+#############################################################
+##
+## Crawl: Gather knowledge graphs via queries.
+##
+#############################################################
+crawl () {
+    curdir=$PWD
+    cd $SEARCH_ROOT/doug
+    python -m doug.core --crawl $*
+    cd $curdir
+}
+
+#############################################################
+##
+## Index: Create indices and add to search engine.
+##
+#############################################################
+index () {
+    curdir=$PWD
+    cd $SEARCH_ROOT/doug
+    python -m doug.core --index $*
+    cd $curdir
+}
+
+#############################################################
+##
+## Query: Test the created index with a query.
+##
+#############################################################
+query () {
+    python -m doug.core --query $*
+}
+
+#############################################################
+##
+## Query: Test the created index with a query.
+##
+#############################################################
+api () {
+    python -m doug.api $*
+}
+
+$*
+
+exit 0
