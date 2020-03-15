@@ -172,7 +172,7 @@ That's the knowledge graph we'll use to drive a Translator service which will be
 ## Next Steps
 
 These things need attention:
-* [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer.
+* [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
   * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/dd_norm_fail.log).
   * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/harm_norm_fail.log).
 * [ ] Can this work for harmonized variables? 
