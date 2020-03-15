@@ -35,8 +35,8 @@ Doug provides tools for the ingest, annotation, knowledge graph representation, 
 ## Metadata Ingest, Annotation, and Knowledge Graph Creation
 | Command           | Description                   | Example                  |
 | ----------------- | ----------------------------- | ------------------------ |
-| bin/doug link  | Annotate metadata with ontology identifiers using NLP and other methods to add semantic metadata. | bin/doug link {input} |
-| bin/doug load  | Convert annotated data into a knowledge graph and load into a graph database. | bin/doug load {input} |
+| bin/doug link  | Use NLP, etc to add ontology identifiers and types. | bin/doug link {input} |
+| bin/doug load  | Create a knowledge graph database. | bin/doug load {input} |
 
 There are two example metadata files in the repo.
 
