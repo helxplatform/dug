@@ -172,25 +172,9 @@ That's the knowledge graph we'll use to drive a Translator service which will be
 ## Next Steps
 
 These things need attention:
-* [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. eg:
- ```
- error normalizing curie: BFO:0000029
-ERROR: curie:BFO:0000029 returned preferred id: {}
-error normalizing curie: SO:0000408
-ERROR: curie:SO:0000408 returned preferred id: {}
-error normalizing curie: IAO:0000230
-ERROR: curie:IAO:0000230 returned preferred id: {}
-error normalizing curie: AQTLTrait:3239
-ERROR: curie:AQTLTrait:3239 returned preferred id: {}
-error normalizing curie: OBO:OGMS_0000031
-ERROR: curie:OBO:OGMS_0000031 returned preferred id: {}
-error normalizing curie: AQTLTrait:1438
-ERROR: curie:AQTLTrait:1438 returned preferred id: {}
-error normalizing curie: dc:subject
-ERROR: curie:dc:subject returned preferred id: {}
-error normalizing curie: NCBIGene:22819
-...
- ```
+* [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer.
+  * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/dd_norm_fail.log).
+  * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/harm_norm_fail.log).
 * [ ] Can this work for harmonized variables? 
 * [ ] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
