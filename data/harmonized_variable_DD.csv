@@ -1,0 +1,16 @@
+VARNAME	VARDESC	TYPE	UNITS	VARIABLE_SOURCE	SOURCE_VARIABLE_ID	VARIABLE_MAPPING	VALUES	
+height_baseline_1	Body height at baseline.	decimal	cm	UMLS	C0005890	Comparable		
+age_at_height_baseline_1	age at measurement of height_baseline_1	decimal	years					
+unit_height_baseline_1	harmonization unit for height_baseline_1	string						
+weight_baseline_1	Body weight at baseline.	decimal	kg	UMLS	C0005910	Comparable		
+age_at_weight_baseline_1	age at measurement of weight_baseline_1	decimal	years					
+unit_weight_baseline_1	harmonization unit for weight_baseline_1	string						
+current_smoker_baseline_1	Indicates whether subject currently smokes cigarettes.	encoded		UMLS	C0337667	Comparable	0=Does not currently smoke cigarettes	1=Currently smokes cigarettes
+age_at_current_smoker_baseline_1	age at measurement of current_smoker_baseline_1	decimal	years					
+unit_current_smoker_baseline_1	harmonization unit for current_smoker_baseline_1	string						
+ever_smoker_baseline_1	Indicates whether subject ever regularly smoked cigarettes.	encoded		UMLS	C1519384	Comparable	0=Never a cigarette smoker	1=Current or former cigarette smoker
+age_at_ever_smoker_baseline_1	age at measurement of ever_smoker_baseline_1	decimal	years					
+unit_ever_smoker_baseline_1	harmonization unit for ever_smoker_baseline_1	string						
+bmi_baseline_1	Body mass index calculated at baseline.	decimal	kg/m^2	UMLS	C1305855	Comparable		
+age_at_bmi_baseline_1	age at measurement of bmi_baseline_1	decimal	years					
+unit_bmi_baseline_1	harmonization unit for bmi_baseline_1	string						
