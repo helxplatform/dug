@@ -28,33 +28,45 @@ The **loader**
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
-## Install
+## The Doug Framework
 
-In the repo root:
+Doug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
 
-### Configure
-Install Python dependencies:
+## Metadata Ingest, Annotation, and Knowledge Graph Creation
+| Command           | Description                   | Example                  |
+| ----------------- | ----------------------------- | ------------------------ |
+| bin/doug link  | Annotate metadata with ontology identifiers using NLP and other methods to add semantic metadata. | bin/doug link {input} |
+| bin/doug load  | Convert annotated data into a knowledge graph and load into a graph database. | bin/doug load {input} |
+
+There are two example metadata files in the repo.
+
+A COPDGene dbGaP metadata file is at `data/dd.xml`
+
+A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
+
+These can be run with 
 ```
-pip install -r requirements.txt
+bin/doug link data/dd.xml
+bin/doug load data/dd_tagged.json
 ```
-### Annotate and load dbGaP data dictionary file
-Annotate a data dictionary via Monarch NLP 
+and
 ```
-bin/ingest annotate data/dd.xml
+bin/doug link data/harmonized_variable_DD.csv
+bin/doug load data/harmoinzed_variable_DD_tagged.json
 ```
-Load the resulting graph into Neo4J
-```
-bin/ingest load data/dd
-```
-### Annotate and load harmonized variables
-Annotate harmonized variables
-```
-bin/ingest annotate data/harmonized_variable_DD.csv
-```
-Load resulting graph into Neo4J via KGX
-```
-bin/ingest load data/harmonized_variable_DD
-```
+
+## Tools for Crawl & Indexing
+| Command        | Description           | Example  |
+| -------------- | --------------------- | ----- |
+| bin/doug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/doug crawl |
+| bin/doug index | Analyze crawled knowledge graphs and create search engine indices. | bin/doug index |
+| bin/doug query | Test the index by querying from the CLI.                           | bin/doug query {text} |
+ 
+## Serving Elasticsearch
+Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
+| Command        | Description           | Example  |
+| -------------- | --------------------- | ----- |
+| bin/doug api   | Run the REST API. | bin/doug api [--debug] [--port={int}] |
 
 ## Data Formats
 
