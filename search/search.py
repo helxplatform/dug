@@ -173,8 +173,8 @@ if __name__ == '__main__':
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
     parser.add_argument('--query', help="Query", action="store", dest="query")
-    parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host")
-    parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port")
+    parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host", default='localhost')
+    parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port", default=9200)
     args = parser.parse_args ()
     
     logging.basicConfig(level=logging.INFO)    

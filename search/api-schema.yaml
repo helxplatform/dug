@@ -1,0 +1,144 @@
+openapi: 3.0.1
+info:
+  description: Exploratory bioinformatic datascience via software defined distributed systems.
+  version: 0.0.1
+  title: 
+  contact:
+    email: scox@renci.org
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+externalDocs:
+  description: Exploratory bioinformatic datascience via software defined distributed systems.
+  url: 'https://github.com/heliumplusdatastage/tycho'
+tags:
+  - name: message
+    description: Request compute services.
+    externalDocs:
+      description: Documentation for the compute request.
+      url: 'https://github.com/heliumplusdatastage/tycho#request'
+paths:
+  /system/start:
+    post:
+      summary: Compute service request.
+      description: ''
+      operationId: start
+      requestBody:
+        description: Compute service request.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/System'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Invalid status value
+      x-swagger-router-controller: swagger_server.controllers.query_controller
+      
+components:
+  schemas:
+    Limits:
+      type: object
+      properties:
+        cpus:
+          type: string
+          example: "0.3"
+          description: Number of CPUs requested. May be a fractional value.
+        memory:
+          type: string
+          example: "512M"
+          description: Amount of memory to request for this container.
+    Port:
+      type: object
+      properties:
+        containerPort:
+          type: integer
+          example: 80
+          description: Container port to expose
+    EnvironmentVariable:
+      type: object
+      properties:
+        name:
+          type: string
+          example: X
+          description: Name of an environment variable
+        value:
+          type: string
+          example: http://example.org
+          description: A string value.
+    Container:
+      type: object
+      properties:
+        name:
+          type: string
+          example: web-server
+          description: Name of the container to execute.
+        image:
+          type: string
+          example: nginx:1.9.1
+          description: Name and version of a docker image to execute.
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Limits'
+          example:
+            - cpus: "0.3"
+              memory: "512M"
+        command:
+          type: array
+          required: false
+          items:
+            type: string
+        env:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvironmentVariable'
+        ports:
+          type: array
+          items:
+            $ref: '#/components/schemas/Port'
+    System:
+      type: object
+      properties:
+        name:
+          type: string
+          example: some-stack
+          description: Description of the system provided and defined by this set of components.
+        containers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Container'            
+    Response:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success | error
+          description: Status code denoting the outcome of the activity.
+        message:
+          type: string
+          example: Job succeeded.
+          description: Description of the result.
+        result:
+          type: object
+    DeleteRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: test-app
+          description: Identifier of system to delete
+    StatusRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: test-app
+          nullable: true
+          description: Identifier of system to list
