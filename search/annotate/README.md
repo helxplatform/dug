@@ -175,8 +175,10 @@ These things need attention:
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
   * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/dd_norm_fail.log).
   * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/semantic-search/blob/master/search/annotate/harm_norm_fail.log).
-* [ ] Can this work for harmonized variables? 
 * [ ] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
+  * We now have the ability to (roughly) parse harmonized variables from their standard CSV format.
+  * Several issues arose around formatting, the need for a study id, and a few other things. 
+  * But the overall approach seems feasible.
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
 * [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
