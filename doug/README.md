@@ -68,6 +68,11 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 | -------------- | --------------------- | ----- |
 | bin/doug api   | Run the REST API. | bin/doug api [--debug] [--port={int}] |
 
+## Doug Pipeline
+
+For context, the overall pipeline this framework enables is depicted in the following figure:
+![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
+
 ## Data Formats
 
 The input data dictionary looks like this:
