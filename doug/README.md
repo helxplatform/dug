@@ -187,7 +187,7 @@ These things need attention:
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
   * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/dd_norm_fail.log).
   * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/harm_norm_fail.log).
-* [ ] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
+* [x] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
   * We now have the ability to (roughly) parse harmonized variables from their standard CSV format.
   * Several issues arose around formatting, the need for a study id, and a few other things. 
   * But the overall approach seems feasible.
