@@ -1,7 +1,7 @@
 
 # Overview
 
-Doug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search.
+Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search.
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
@@ -30,15 +30,15 @@ The **loader**
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
-## The Doug Framework
+## The Dug Framework
 
-Doug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
+Dug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
 
 ## Metadata Ingest, Annotation, and Knowledge Graph Creation
 | Command           | Description                   | Example                  |
 | ----------------- | ----------------------------- | ------------------------ |
-| bin/doug link  | Use NLP, etc to add ontology identifiers and types. | bin/doug link {input} |
-| bin/doug load  | Create a knowledge graph database. | bin/doug load {input} |
+| bin/dug link  | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input} |
+| bin/dug load  | Create a knowledge graph database. | bin/dug load {input} |
 
 There are two example metadata files in the repo.
 
@@ -48,29 +48,29 @@ A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
 
 These can be run with 
 ```
-bin/doug link data/dd.xml
-bin/doug load data/dd_tagged.json
+bin/dug link data/dd.xml
+bin/dug load data/dd_tagged.json
 ```
 and
 ```
-bin/doug link data/harmonized_variable_DD.csv
-bin/doug load data/harmoinzed_variable_DD_tagged.json
+bin/dug link data/harmonized_variable_DD.csv
+bin/dug load data/harmoinzed_variable_DD_tagged.json
 ```
 
 ## Tools for Crawl & Indexing
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
-| bin/doug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/doug crawl |
-| bin/doug index | Analyze crawled knowledge graphs and create search engine indices. | bin/doug index |
-| bin/doug query | Test the index by querying from the CLI.                           | bin/doug query {text} |
+| bin/dug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/dug crawl |
+| bin/dug index | Analyze crawled knowledge graphs and create search engine indices. | bin/dug index |
+| bin/dug query | Test the index by querying from the CLI.                           | bin/dug query {text} |
  
 ## Serving Elasticsearch
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
-| bin/doug api   | Run the REST API. | bin/doug api [--debug] [--port={int}] |
+| bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
 
-## Doug Pipeline
+## Dug Pipeline
 
 For context, the overall pipeline this framework enables is depicted in the following figure:
 ![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
@@ -192,8 +192,8 @@ That's the knowledge graph we'll use to drive a Translator service which will be
 
 These things need attention:
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
-  * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/dd_norm_fail.log).
-  * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/harm_norm_fail.log).
+  * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/dd_norm_fail.log).
+  * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/harm_norm_fail.log).
 * [x] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
   * We now have the ability to (roughly) parse harmonized variables from their standard CSV format.
   * Several issues arose around formatting, the need for a study id, and a few other things. 
