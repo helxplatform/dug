@@ -1,24 +1,35 @@
 
-# Overview
+# Dug
 
-Doug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search.
+## Context
 
-![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
+Achieving the aspirational goal of [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in well understood pipelines. Here, we apply semantic web and knowledge graph tools to the problem of improving the FAIR-ness of data in dbGaP.
 
-
-Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
-While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
+While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
 
-Also, the approach shown here uses study metadata as a starting point, not harmonized variables. But we hope to reuse significant components of the pipeline for processing harmonized variables as well.
+## The Dug Framework
 
-This prototype 
-* Demonstrates how we might annotate dbGaP metadata for a TOPMed study.
+Dug is a [Biolink](https://biolink.github.io/biolink-model/) framework for annotation, knowledge graph representation, and full text search.
+![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
+
+## Knowledge Graphs
+
+Dug's core construct is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
+
+![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization. It shows connections betweek COPD, variables from the study, and the study itself, all in terms from the Biolink model.
+
+## Approach
+
+Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
+
+Dug 
+* Annotates dbGaP metadata for a TOPMed study.
 * Provides a potential basis for annotating and searching harmonized variables.
 
-The **annotator** ingests raw dbGaP study metadata and performs semantic annotation by
+The **link** phase ingests raw dbGaP study metadata and performs semantic annotation by
 * Parsing a TOPMed data dictionary XML file to extract variables.
 * Using the Monarch SciGraph named entity recognizer to identify ontology terms.
 * Using the Translator SRI identifier normalization service to
@@ -26,19 +37,19 @@ The **annotator** ingests raw dbGaP study metadata and performs semantic annotat
   * Determine the BioLink types applying to each entity
 * Writing each variable with its annotations as a JSON object to a file.
 
-The **loader** 
+The **load** phase 
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
-## The Doug Framework
+## The Dug Framework
 
-Doug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
+Dug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
 
 ## Metadata Ingest, Annotation, and Knowledge Graph Creation
 | Command           | Description                   | Example                  |
 | ----------------- | ----------------------------- | ------------------------ |
-| bin/doug link  | Use NLP, etc to add ontology identifiers and types. | bin/doug link {input} |
-| bin/doug load  | Create a knowledge graph database. | bin/doug load {input} |
+| bin/dug link  | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input} |
+| bin/dug load  | Create a knowledge graph database. | bin/dug load {input} |
 
 There are two example metadata files in the repo.
 
@@ -48,32 +59,32 @@ A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
 
 These can be run with 
 ```
-bin/doug link data/dd.xml
-bin/doug load data/dd_tagged.json
+bin/dug link data/dd.xml
+bin/dug load data/dd_tagged.json
 ```
 and
 ```
-bin/doug link data/harmonized_variable_DD.csv
-bin/doug load data/harmoinzed_variable_DD_tagged.json
+bin/dug link data/harmonized_variable_DD.csv
+bin/dug load data/harmoinzed_variable_DD_tagged.json
 ```
 
 ## Tools for Crawl & Indexing
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
-| bin/doug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/doug crawl |
-| bin/doug index | Analyze crawled knowledge graphs and create search engine indices. | bin/doug index |
-| bin/doug query | Test the index by querying from the CLI.                           | bin/doug query {text} |
+| bin/dug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/dug crawl |
+| bin/dug index | Analyze crawled knowledge graphs and create search engine indices. | bin/dug index |
+| bin/dug query | Test the index by querying from the CLI.                           | bin/dug query {text} |
  
 ## Serving Elasticsearch
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
-| bin/doug api   | Run the REST API. | bin/doug api [--debug] [--port={int}] |
+| bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
 
-## Doug Pipeline
-
-For context, the overall pipeline this framework enables is depicted in the following figure:
-![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
+To try the API from the CLI:
+```
+wget -O- --quiet --post-data='{"index": "test", "query" : { "match" : { "name" : { "query" : "cough" } } } }' --header='Content-Type:application/json' http://0.0.0.0:5551/search
+```
 
 ## Data Formats
 
@@ -192,8 +203,8 @@ That's the knowledge graph we'll use to drive a Translator service which will be
 
 These things need attention:
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
-  * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/dd_norm_fail.log).
-  * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/doug/blob/master/doug/log/harm_norm_fail.log).
+  * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/dd_norm_fail.log).
+  * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/harm_norm_fail.log).
 * [x] The input here is a TOPMed DD. Investigate starting the pipeline from harmonized variables.
   * We now have the ability to (roughly) parse harmonized variables from their standard CSV format.
   * Several issues arose around formatting, the need for a study id, and a few other things. 
@@ -201,4 +212,5 @@ These things need attention:
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
 * [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
+* [ ] Document the crawl, index, and search (API) components of Dug here.
 
