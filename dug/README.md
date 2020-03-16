@@ -212,4 +212,5 @@ These things need attention:
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
 * [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
+* [ ] Document the crawl, index, and search (API) components of Dug here.
 
