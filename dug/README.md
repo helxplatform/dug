@@ -81,6 +81,11 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 | -------------- | --------------------- | ----- |
 | bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
 
+To try the API from the CLI:
+```
+wget -O- --quiet --post-data='{"index": "test", "query" : { "match" : { "name" : { "query" : "cough" } } } }' --header='Content-Type:application/json' http://0.0.0.0:5551/search
+```
+
 ## Data Formats
 
 The input data dictionary looks like this:
