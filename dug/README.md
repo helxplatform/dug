@@ -3,7 +3,7 @@
 
 ## Context
 
-Achieving the aspirational goal of [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in well understood workflows. Here, we apply semantic web and knowledge graph tools to the problem of improving the FAIR-ness of data in dbGaP.
+Achieving the aspirational goal of [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in well understood pipelines. Here, we apply semantic web and knowledge graph tools to the problem of improving the FAIR-ness of data in dbGaP.
 
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
