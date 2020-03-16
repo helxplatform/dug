@@ -1,33 +1,33 @@
 #############################################################
 ##
-## Doug is a semantic search pipeline framework including
+## Dug is a semantic search pipeline framework including
 ##
 ##   Ingest:
 ##
 ##     link: Annotate a data set with ontology identifiers
 ##           based on NLP and other tagging mechanisms.
-##       usage: bin/doug link <metadata>
+##       usage: bin/dug link <metadata>
 ##
 ##     load: Turn the data into a knowledge graph into a
 ##           graph and add insert it into a database. 
-##       usage: bin/doug load <metadata>_tagged.json
+##       usage: bin/dug load <metadata>_tagged.json
 ##
 ##   Crawl & Index:
 ##
 ##     crawl: Execute graph queries against an aggregator.
 ##            Record the knowledge graphs in a cache.
-##       usage: bin/doug crawl
+##       usage: bin/dug crawl
 ##
 ##     index: Analyze the graph to build a search index.
-##       usage: bin/doug index
+##       usage: bin/dug index
 ##
 ##     query: Query the search engine from the command line
-##       usage: bin/doug query <text>
+##       usage: bin/dug query <text>
 ##
 ##   Search:
 ##
 ##     api: Provides a REST API to the search engine.
-##       bin/doug api [--debug] [--port=<int>]
+##       bin/dug api [--debug] [--port=<int>]
 ##
 #############################################################
 #!/bin/bash
@@ -50,7 +50,7 @@ fi
 ##
 #############################################################
 link () {
-    python -m doug.ingest --annotate $*
+    python -m dug.ingest --annotate $*
 }
 
 #############################################################
@@ -59,7 +59,7 @@ link () {
 ##
 #############################################################
 load () {
-    python -m doug.ingest --load $input $*
+    python -m dug.ingest --load $input $*
 }
 
 ### Crawl/Index
@@ -71,8 +71,8 @@ load () {
 #############################################################
 crawl () {
     curdir=$PWD
-    cd $SEARCH_ROOT/doug
-    python -m doug.core --crawl $*
+    cd $SEARCH_ROOT/dug
+    python -m dug.core --crawl $*
     cd $curdir
 }
 
@@ -83,8 +83,8 @@ crawl () {
 #############################################################
 index () {
     curdir=$PWD
-    cd $SEARCH_ROOT/doug
-    python -m doug.core --index $*
+    cd $SEARCH_ROOT/dug
+    python -m dug.core --index $*
     cd $curdir
 }
 
@@ -94,7 +94,7 @@ index () {
 ##
 #############################################################
 query () {
-    python -m doug.core --query $*
+    python -m dug.core --query $*
 }
 
 #############################################################
@@ -103,7 +103,7 @@ query () {
 ##
 #############################################################
 api () {
-    python -m doug.api $*
+    python -m dug.api $*
 }
 
 $*

@@ -11,7 +11,7 @@ from flasgger import Swagger
 from flask import Flask, jsonify, g, Response, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from doug.core import Search
+from dug.core import Search
 
 """
 Defines the semantic search API
@@ -36,24 +36,24 @@ with open(schema_file_path, 'r') as file_obj:
 
 """ Describe the API. """
 app.config['SWAGGER'] = {
-    'title': 'Doug Search API',
+    'title': 'Dug Search API',
     'description': 'An API, compiler, and executor for cloud native distributed systems.',
     'uiversion': 3
 }
 
 swagger = Swagger(app, template=template)
 
-def doug ():
-    if not hasattr(g, 'doug'):
+def dug ():
+    if not hasattr(g, 'dug'):
         g.search = Search ()
     return g.search
     
-class DougResource(Resource):
-    """ Base class handler for Doug API requests. """
+class DugResource(Resource):
+    """ Base class handler for Dug API requests. """
     def __init__(self):
         self.specs = {}
         
-    """ Functionality common to Doug services. """
+    """ Functionality common to Dug services. """
     def validate (self, request, component):
         return
         """ Validate a request against the schema. """
@@ -85,7 +85,7 @@ class DougResource(Resource):
             'message' : message
         }
             
-class DougSearchResource(DougResource):
+class DugSearchResource(DugResource):
     """ Execute a search """
     
     """ System initiation. """
@@ -126,7 +126,7 @@ class DougSearchResource(DougResource):
             app.logger.info (f"search: {json.dumps(request.json, indent=2)}")
             self.validate (request, component="Search")
             response = self.create_response (
-                result=doug().search (**request.json),
+                result=dug().search (**request.json),
                 message=f"Search result")
         except Exception as e:
             response = self.create_response (
@@ -136,10 +136,10 @@ class DougSearchResource(DougResource):
 
     
 """ Register endpoints. """
-api.add_resource(DougSearchResource, '/search')
+api.add_resource(DugSearchResource, '/search')
 
 if __name__ == "__main__":
-   parser = argparse.ArgumentParser(description='Doug Search API')
+   parser = argparse.ArgumentParser(description='Dug Search API')
    parser.add_argument('-p', '--port',  type=int, help='Port to run service on.', default=5551)
    parser.add_argument('-d', '--debug', help="Debug log level.", default=False, action='store_true')
    args = parser.parse_args ()
@@ -148,5 +148,5 @@ if __name__ == "__main__":
    if args.debug:
        debug = True
        logging.basicConfig(level=logging.DEBUG)
-   logger.info (f"starting doug on port={args.port} with debug={args.debug}")
+   logger.info (f"starting dug on port={args.port} with debug={args.debug}")
    app.run(host='0.0.0.0', port=args.port, debug=args.debug, threaded=True)
