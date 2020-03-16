@@ -12,7 +12,7 @@ While other approaches to searching this data exist, our focus is semantic searc
 ## The Dug Framework
 
 Dug is a [Biolink](https://biolink.github.io/biolink-model/) framework for annotation, knowledge graph representation, and full text search.
-![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
+![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
 
 ## Knowledge Graphs
 
