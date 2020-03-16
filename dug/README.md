@@ -1,7 +1,7 @@
 
 # Overview
 
-Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search.
+Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search. It is conforms to a number of useful semantic standards including [Biolink model](https://biolink.github.io/biolink-model/).
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
