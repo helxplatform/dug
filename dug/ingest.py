@@ -274,7 +274,8 @@ def main ():
         'normalizer' : "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
         'password'   : 'topmed',
         'username'   : 'neo4j',
-        'db_url'     : "http://localhost:7474/db/data",
+#        'db_url'     : "http://localhost:7474/db/data",
+        'db_url'     : "http://0.0.0.0:7474/db/data/",
         'skip'       : [ 'ever', 'disease' ]
     }
     
@@ -283,7 +284,7 @@ def main ():
     parser.add_argument('--annotate', help='annotate TOPMed data dictionary file', default=None)
     parser.add_argument('--db-url', help='database url', default='http://localhost:7474/db/data')
     parser.add_argument('--db-username', help='database username', default='neo4j')
-    parser.add_argument('--db-password', help='database username', default='topmed')
+    parser.add_argument('--db-password', help='database password', default='topmed')
     args = parser.parse_args()
 
     config['username'] = args.db_username

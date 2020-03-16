@@ -1,0 +1,28 @@
+version: '3.0'
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.5.2
+    networks:
+      - dug-network
+    environment:
+      - discovery.type=single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300' 
+  neo4j:
+    image: bitnami/neo4j:3.5.14
+    networks:
+      - dug-network
+    environment:
+      - NEO4J_PASSWORD=topmed
+      - NEO4J_HOST=scox.europa.renci.org
+    ports:
+      - '7474:7474'
+      - '7473:7473'
+      - '7687:7687'
+
+networks:
+  dug-network:
+    driver: bridge
+

@@ -34,12 +34,12 @@
 
 # Configure the PYTHONPATH
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-SEARCH_ROOT=$( dirname $DIR )
-export PYTHONPATH=$SEARCH_ROOT:$SEARCH_ROOT/kgx
+DUG_HOME=$( dirname $DIR )
+export PYTHONPATH=$DUG_HOME:$DUG_HOME/kgx
 
 # Ensure the KGX library is installed
-if [ ! -d $SEARCH_ROOT/kgx ]; then
-    git clone https://github.com/NCATS-Tangerine/kgx.git $SEARCH_ROOT/kgx
+if [ ! -d $DUG_HOME/kgx ]; then
+    git clone https://github.com/NCATS-Tangerine/kgx.git $DUG_HOME/kgx
 fi
 
 ### INGEST:
@@ -71,7 +71,7 @@ load () {
 #############################################################
 crawl () {
     curdir=$PWD
-    cd $SEARCH_ROOT/dug
+    cd $DUG_HOME/dug
     python -m dug.core --crawl $*
     cd $curdir
 }
@@ -83,7 +83,7 @@ crawl () {
 #############################################################
 index () {
     curdir=$PWD
-    cd $SEARCH_ROOT/dug
+    cd $DUG_HOME/dug
     python -m dug.core --index $*
     cd $curdir
 }
@@ -104,6 +104,48 @@ query () {
 #############################################################
 api () {
     python -m dug.api $*
+}
+
+#############################################################
+##
+## Stack: Start the system's essential persistence services.
+##
+#############################################################
+stack () {
+      set -x
+      docker-compose -f $DUG_HOME/docker/docker-compose.yaml up
+      set +x
+}
+#############################################################
+##
+## Test: Automated functional test
+##
+#############################################################
+test () {
+
+     # Prerequisites: stack must be running.
+     # API must be running.
+
+     # Delete the test index
+     curl -X DELETE http://localhost:9200/test
+
+     # Ingest, annotate, load knowledge graph.
+     bin/dug link data/dd.xml
+     bin/dug load data/dd_tagged.json
+
+     # Crawl model queries, create index, test index.
+     bin/dug crawl
+     bin/dug index
+     bin/dug query coug # direct to search engine
+
+     # Query via API
+     bin/dug query_api coug | grep MONDO:0015118
+}
+query_api () {
+      curl --data '{"index" : "test", "query" : { "match" : {"name": {"query" : "coug", "fuzziness" : 1 }}}}' \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search
 }
 
 $*
