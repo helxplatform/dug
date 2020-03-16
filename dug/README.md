@@ -1,5 +1,5 @@
 
-# Dug Semantic Search
+# Dug
 
 Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search. It is conforms to a number of useful semantic standards including [Biolink model](https://biolink.github.io/biolink-model/).
 
