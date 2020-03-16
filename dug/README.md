@@ -2,10 +2,6 @@
 # Dug
 
 Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search. It is conforms to a number of useful semantic standards including [Biolink model](https://biolink.github.io/biolink-model/).
-
-## Dug Pipeline
-
-For context, the overall pipeline this framework enables is depicted in the following figure:
 ![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
 
 ## Context
