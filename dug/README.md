@@ -1,7 +1,7 @@
 
 # Dug
 
-Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search. It is conforms to a number of useful semantic standards including [Biolink model](https://biolink.github.io/biolink-model/).
+Dug is a [Biolink](https://biolink.github.io/biolink-model/) framework for annotation, knowledge graph representation, and full text search.
 ![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
 
 ## Context
@@ -13,18 +13,18 @@ While other approaches to searching this data exist, our focus is semantic searc
 
 ## Knowledge Graphs
 
-Dug's core construct is the knowledge graph. Here's a query of a knowledge graph created by Dug from COPDGene dbGaP metadata.
+Dug's core construct is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization. It shows connections betweek COPD, variables from the study, and the study itself, all in terms from the Biolink model.
 
-Also, the approach shown here uses study metadata as a starting point, not harmonized variables. But we hope to reuse significant components of the pipeline for processing harmonized variables as well.
+## Approach
 
-This prototype 
-* Demonstrates how we might annotate dbGaP metadata for a TOPMed study.
+Dug 
+* Annotates dbGaP metadata for a TOPMed study.
 * Provides a potential basis for annotating and searching harmonized variables.
 
-The **annotator** ingests raw dbGaP study metadata and performs semantic annotation by
+The **link** phase ingests raw dbGaP study metadata and performs semantic annotation by
 * Parsing a TOPMed data dictionary XML file to extract variables.
 * Using the Monarch SciGraph named entity recognizer to identify ontology terms.
 * Using the Translator SRI identifier normalization service to
@@ -32,7 +32,7 @@ The **annotator** ingests raw dbGaP study metadata and performs semantic annotat
   * Determine the BioLink types applying to each entity
 * Writing each variable with its annotations as a JSON object to a file.
 
-The **loader** 
+The **load** phase 
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
@@ -75,7 +75,6 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
 | bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
-
 
 ## Data Formats
 
