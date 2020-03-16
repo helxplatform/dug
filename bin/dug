@@ -139,10 +139,11 @@ test () {
      bin/dug query coug # direct to search engine
 
      # Query via API
-     bin/dug query_api coug | grep MONDO:0015118
+     bin/dug query_api coug
 }
 query_api () {
-      curl --data '{"index" : "test", "query" : { "match" : {"name": {"query" : "coug", "fuzziness" : 1 }}}}' \
+     query="`echo '{"index" : "test", "query" : { "match" : {"name": {"query" : "'$1'", "fuzziness" : 1 }}}}'`"
+     curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
            http://localhost:5551/search

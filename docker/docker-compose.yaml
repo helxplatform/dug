@@ -21,7 +21,18 @@ services:
       - '7474:7474'
       - '7473:7473'
       - '7687:7687'
-
+  redis:
+    image: 'bitnami/redis:5.0.8'
+    networks:
+      - dug-network
+    environment:
+      - REDIS_PASSWORD=topmed
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - '6379:6379'
+    volumes:
+      - '$PWD/redis_data:/bitnami/redis/data'
+      
 networks:
   dug-network:
     driver: bridge
