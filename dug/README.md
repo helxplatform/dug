@@ -3,14 +3,24 @@
 
 Dug is a metadata framework enabling ingest, annotation, knowledge graph representation, and full text search. It is conforms to a number of useful semantic standards including [Biolink model](https://biolink.github.io/biolink-model/).
 
-![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
+## Dug Pipeline
 
+For context, the overall pipeline this framework enables is depicted in the following figure:
+![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
+
+## Context
 
 Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
 [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
-While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and index a full text search based on on those knowledge graphs.
+While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
+
+## Knowledge Graphs
+
+Dug's core construct is the knowledge graph. Here's a query of a knowledge graph created by Dug from COPDGene dbGaP metadata.
+
+![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization.
 
 Also, the approach shown here uses study metadata as a starting point, not harmonized variables. But we hope to reuse significant components of the pipeline for processing harmonized variables as well.
 
@@ -70,10 +80,6 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 | -------------- | --------------------- | ----- |
 | bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
 
-## Dug Pipeline
-
-For context, the overall pipeline this framework enables is depicted in the following figure:
-![image](https://user-images.githubusercontent.com/306971/76712938-7426b000-66f3-11ea-94f2-8fc91e58cbea.png)
 
 ## Data Formats
 
