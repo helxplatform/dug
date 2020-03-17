@@ -1,4 +1,5 @@
 alabaster==0.7.12
+aniso8601==8.0.0
 antlr4-python3-runtime==4.8
 appnope==0.1.0
 attrs==19.3.0
@@ -18,6 +19,10 @@ docutils==0.16
 elasticsearch==7.5.1
 elasticsearch-dsl==7.1.0
 entrypoints==0.3
+flasgger==0.9.4
+Flask==1.1.1
+Flask-Cors==3.0.8
+Flask-RESTful==0.3.8
 graphviz==0.13.2
 idna==2.8
 imagesize==1.2.0
@@ -28,6 +33,7 @@ ipython==7.13.0
 ipython-genutils==0.2.0
 ipywidgets==7.5.1
 isodate==0.6.0
+itsdangerous==1.1.0
 jedi==0.16.0
 Jinja2==2.11.1
 jsonasobj==1.2.1
@@ -110,5 +116,6 @@ urllib3==1.25.7
 validators==0.14.2
 wcwidth==0.1.8
 webencodings==0.5.1
+Werkzeug==1.0.0
 widgetsnbextension==3.5.1
 zipp==3.1.0

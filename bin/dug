@@ -50,7 +50,14 @@ fi
 ##
 #############################################################
 link () {
-    python -m dug.ingest --annotate $*
+    #    python -m dug.ingest --annotate $*
+    if [ $(echo "$*" | grep -c "_variables_") == 1 ]; then
+        echo topmed tagged variables
+        python -m  dug.ingest --tagged $*
+    else
+        echo annotate $*
+        python -m dug.ingest --annotate $*
+     fi        
 }
 
 #############################################################
@@ -123,6 +130,7 @@ stack () {
 #############################################################
 test () {
 
+     set -e
      # Prerequisites: stack must be running.
      # API must be running.
 
@@ -140,6 +148,8 @@ test () {
 
      # Query via API
      bin/dug query_api coug
+
+     set +e
 }
 query_api () {
      query="`echo '{"index" : "test", "query" : { "match" : {"name": {"query" : "'$1'", "fuzziness" : 1 }}}}'`"

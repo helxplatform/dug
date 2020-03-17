@@ -1,15 +1,19 @@
 version: '3.0'
 
 services:
+
   elasticsearch:
-    image: elasticsearch:7.5.2
+    image: 'bitnami/elasticsearch:latest'
     networks:
       - dug-network
     environment:
       - discovery.type=single-node
+    volumes:
+      - $PWD/db/elastic:/bitnami/elasticsearch/data
     ports:
       - '9200:9200'
-      - '9300:9300' 
+      - '9300:9300'
+
   neo4j:
     image: bitnami/neo4j:3.5.14
     networks:
@@ -17,10 +21,21 @@ services:
     environment:
       - NEO4J_PASSWORD=topmed
       - NEO4J_HOST=scox.europa.renci.org
+    volumes:
+      - $PWD/db/neo4j:/bitnami
     ports:
       - '7474:7474'
       - '7473:7473'
       - '7687:7687'
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 3G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+          
   redis:
     image: 'bitnami/redis:5.0.8'
     networks:
@@ -28,10 +43,12 @@ services:
     environment:
       - REDIS_PASSWORD=topmed
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    volumes:
+      - $PWD/db/redis:/bitnami/redis/data
     ports:
       - '6379:6379'
     volumes:
-      - '$PWD/redis_data:/bitnami/redis/data'
+      - $PWD/redis:/bitnami/redis/data
       
 networks:
   dug-network:
