@@ -94,15 +94,23 @@ To call the API endpoint using curl:
 | ------------------- | --------------------- | ----- |
 | bin/dug query_api   | Call the REST API. | bin/dug query_api <query> |
 
-For development:
+# Development
+
+A docker-compose is provided that runs four services:
+* Redis
+* Neo4J
+* Elasticsearch
+* The Dug search OpenAPI
+
 | Command             | Description           | Example  |
 | ------------------- | --------------------- | ----- |
 | bin/dug dev init   | Generate docker/.env config | bin/dug dev init |
+| bin/dug stack      | Runs all services           | bin/dug stack    |
 | bin/dug dev conf   | Configure environment vars  | bin/dug dev conf |
 
-Init must be run exactly once before starting the docker-compose the first time.
-Delete docker/db/* and re-run to reset everything.
-Conf must be run before any clients that connect to the service to set up environment variables, especially ones used for authentication.
+* Init must be run exactly once before starting the docker-compose the first time.
+* Delete docker/db/* and re-run to reset everything.
+* Conf must be run before any clients that connect to the service to set up environment variables, especially ones used for authentication.
 
 ## Testing
 
