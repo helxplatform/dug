@@ -19,6 +19,8 @@ Dug's core data structure is the knowledge graph. Here's a query of a COPDGene k
 ![image](https://user-images.githubusercontent.com/306971/77009445-513c0c00-693e-11ea-83ed-722ec896d3e9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata. It shows the relationship between the biological process "Sleep" and a meta variable. That meta variable, is in turn associated with variables connected to two studies in the data set.
 
+These graphs are used to create the document's well add to the search index to power full text search.
+
 ## Approach
 
 Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
@@ -95,12 +97,22 @@ To call the API endpoint using curl:
 For development:
 | Command             | Description           | Example  |
 | ------------------- | --------------------- | ----- |
-| bin/dev init   | Generate docker/.env config | bin/dug dev init |
-| bin/dev conf   | Configure environment vars  | bin/dug dev conf |
+| bin/dug dev init   | Generate docker/.env config | bin/dug dev init |
+| bin/dug dev conf   | Configure environment vars  | bin/dug dev conf |
 
 Init must be run exactly once before starting the docker-compose the first time.
 Delete docker/db/* and re-run to reset everything.
 Conf must be run before any clients that connect to the service to set up environment variables, especially ones used for authentication.
+
+## Testing
+
+For development:
+| Command             | Description           | Example  |
+| ------------------- | --------------------- | ----- |
+| bin/dug test   | Run automated functional tests | bin/dug test |
+
+Once the test is complete, a command line search shows the contents of the index:
+![image](https://user-images.githubusercontent.com/306971/77009780-e939f580-693e-11ea-8a02-ca2fd59d4366.png)
 
 ## Data Formats
 
