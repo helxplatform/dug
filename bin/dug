@@ -45,15 +45,19 @@ fi
 # Development tools.
 dev () {
     # This must be run once and only once before running the stack.
+    # It generates a docker-compose environment file, including
+    # passwords for the services.
     DUGENV=$DUG_HOME/docker/.env    
     init () {
         HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUG_HOME/docker/.env
     }
-    # This must be run each time before a component connects to the stack.
+    # This must be run before each time a component connects to the stack.
+    # It reads configuration settings for the stack, including passwords
+    # and sets them as environment variables so the application will have access to them.
     conf ()  {
         if [ ! -f $DUGENV ]; then
             echo missing $DUGENV - will probably need that.
-            return
+            exit 0 #return
         fi
         source $DUGENV
         export $(cut -d= -f1 $DUGENV)
@@ -67,22 +71,20 @@ dev conf
 
 #############################################################
 ##
-## Link: Generate linked data information from raw metadata.
+## Link: Read metadata and annotate to create linked data.
 ##
 #############################################################
 link () {
     if [ $(echo "$*" | grep -c "_variables_") == 1 ]; then
-        echo topmed tagged variables
         ELASTIC_API_HOST=localhost python -m  dug.ingest --tagged $*
     else
-        echo annotate $*
         python -m dug.ingest --annotate $*
-     fi        
+    fi
 }
 
 #############################################################
 ##
-## Load: Create a knowledge graph in a graph database.
+## Load: Create knowledge graph and store in a database.
 ##
 #############################################################
 load () {
@@ -135,12 +137,13 @@ api () {
 
 #############################################################
 ##
-## Stack: Start the system's essential persistence services.
+## Stack: Start the system's essential services.
 ##
 #############################################################
 stack () {
-      docker-compose -f $DUG_HOME/docker/docker-compose.yaml up $*
+    docker-compose -f $DUG_HOME/docker/docker-compose.yaml up $*
 }
+
 #############################################################
 ##
 ## Test: Automated functional test
@@ -152,7 +155,7 @@ test () {
      # API must be running.
 
      # Delete the test index
-     curl -X DELETE http://localhost:9200/test
+     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@localhost:9200/test
 
      # Ingest, annotate, load knowledge graph.
      bin/dug link data/dd.xml
@@ -161,14 +164,29 @@ test () {
      # Crawl model queries, create index, test index.
      bin/dug crawl
      bin/dug index
+
+     # The best format for variables we have is currently
+     # implemented so that, if we pass the additional
+     # --index <arg> flag, it will use the neo4j
+     # database to drive queries, create knoweldge graphs,
+     # create documents, and index those for search.
+     bin/dug link data/topmed_variables_v1.0.csv --index x
      sleep 4
      bin/dug query coug # direct to search engine
 
      # Query via API
      bin/dug query_api coug
+     bin/dug query_api copd
+     bin/dug query_api sleep
 }
+
+#############################################################
+##
+## Query_API: Query the index via the search API.
+##
+#############################################################
 query_api () {
-     query="`echo '{"index" : "test", "query" : { "match" : {"name": {"query" : "'$1'", "fuzziness" : 1 }}}}'`"
+     query="`echo '{"index" : "test", "query" : "'$1'"}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \

@@ -9,7 +9,7 @@ services:
 
   #################################################################################
   ##
-  ## The OpenAPI endpoint for search. This is the only service that should be
+  ## The OpenAPI endpoint for search. This is the only service to be
   ## exposed beyond the internal network.
   ##
   #################################################################################
@@ -18,17 +18,18 @@ services:
     networks:
       - dug-network
     environment:
-      - ELASTIC_API_HOST=elasticsearch #$HOSTNAME
+      - ELASTIC_API_HOST=$ELASTIC_API_HOST
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
     entrypoint: [ "python", "-m", "dug.api", "--debug" ]
-    # gunicorn --workers=2 --name=dug --bind=0.0.0.0  --timeout=100 dug.api:app
+    # gunicorn --workers=2 --name=dug --bind=0.0.0.0 --timeout=100 dug.api:app
     volumes:
-      - $PWD:/home/dug
+      - $PWD:/home/dug/dug
     ports:
       - 5551:5551 
 
   #################################################################################
   ##
-  ## The search engine. Provides a full text search index.
+  ## A search engine providing scalable indexing and full text search.
   ##
   #################################################################################
   elasticsearch:
@@ -36,7 +37,7 @@ services:
     networks:
       - dug-network
     environment:
-      #- ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
       - discovery.type=single-node
     volumes:
       - $ELASTIC_DATA:/bitnami/elasticsearch/data
@@ -46,7 +47,7 @@ services:
 
   #################################################################################
   ##
-  ## A graph database. Provides graph query over linked data to drive indexing.
+  ## A graph database provides query over linked data to drive indexing.
   ##
   #################################################################################
   neo4j:
@@ -65,7 +66,7 @@ services:
           
   #################################################################################
   ##
-  ## A memory cache. Cache results of high volume service requests.
+  ## A memory cache for results of high volume service requests.
   ##
   #################################################################################
   redis:

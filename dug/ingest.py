@@ -5,23 +5,23 @@ import logging
 import requests
 import requests_cache
 import os
+import redis
 import sys
 import traceback
 import urllib
-import yaml
 import xml.etree.ElementTree as ET
+import yaml
 from dug.core import Search
 from kgx import NeoTransformer, JsonTransformer
 from neo4jrestclient.client import GraphDatabase
 from neo4jrestclient import client
+from requests_cache import CachedSession
 from typing import List, Dict
 
 logger = logging.getLogger (__name__)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-
-requests_cache.install_cache('http_cache')
 
 Config = Dict
 
@@ -37,7 +37,10 @@ class Debreviator:
         return text
     
 class TOPMedStudyAnnotator:
-    """ Annotate TOPMed study data with semantic knowledge graph linkages. """
+    """
+    Annotate TOPMed study data with semantic knowledge graph linkages. 
+    
+    """
     
     def __init__(self, config: Config):
         self.normalizer = config['normalizer']
@@ -45,6 +48,9 @@ class TOPMedStudyAnnotator:
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
+        self.redis_host = config['redis_host']
+        self.redis_port = config['redis_port']
+        self.redis_password = config['redis_password']        
         self.debreviator = Debreviator ()
         
     def load_data_dictionary (self, input_file : str) -> Dict:
@@ -181,14 +187,27 @@ class TOPMedStudyAnnotator:
           :returns: A dictionary of annotted variables.          
         """
         
-        """ Initialize an HTTP session for more efficient connection management. """
-        http_session = requests.Session ()
+        """
+        Initialize and reuse a cached HTTP session for more efficient connection management.
+        Use the Redis backend for requests-cache to store results accross executions
+        """
+        redis_connection = redis.StrictRedis (host=self.redis_host,
+                                              port=self.redis_port,
+                                              password=self.redis_password)
+        http_session = CachedSession (
+            cache_name='annotator',
+            backend="redis",
+            connection=redis_connection)
 
         """ Annotate and normalize each variable. """
         for variable in variables:
             logger.debug (variable)
             try:
-                """ If the variable has an Xref identifier, normalize it. """
+                """
+                If the variable has an Xref identifier, normalize it. 
+                This data is only in the CSV formatted harmonized variable data.
+                If that format goes away, delete this.
+                """
                 if 'xref' in variable:
                     self.normalize (http_session,
                                     variable['xref'],
@@ -197,7 +216,7 @@ class TOPMedStudyAnnotator:
                     
                 """ Annotate ontology terms in the text. """
                 if not 'description' in variable:
-                    logger.debug (f"{json.dumps(variable, indent=2)}")
+                    logger.warn (f"this variable has no description: {json.dumps(variable, indent=2)}")
                     continue
                 
                 description = variable['description'].replace ("_", " ")
@@ -232,11 +251,9 @@ class TOPMedStudyAnnotator:
         :param graph: A KGX formatted graph as dictionary.
         """
         
-        """ Load. """
+        """ Load the knowledge graph into KGX and emit to Neo4J. """
         json_transformer = JsonTransformer ()
         json_transformer.load (graph)
-
-        """ Write. """
         db = NeoTransformer (json_transformer.graph,
                              self.db_url,
                              self.username,
@@ -372,7 +389,6 @@ class TOPMedStudyAnnotator:
 
         return graph
 
-    '''
     def convert_to_kgx_json (self, annotations):
         """
         Given an annotated and normalized set of study variables,
@@ -436,8 +452,7 @@ class TOPMedStudyAnnotator:
                     "category" : metadata['type']
                 })
         return graph
-    '''
-
+    
 class GraphDB:
     def __init__(self, conf):
         self.conf = conf
@@ -452,11 +467,14 @@ def main ():
     Configure an annotator. 
     """
     config = {
-        'annotator'  : "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
-        'normalizer' : "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
-        'password'   : os.environ['NEO4J_PASSWORD'],
-        'username'   : 'neo4j',
-        'db_url'     : "http://localhost:7474/db/data",
+        'annotator'      : "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
+        'normalizer'     : "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
+        'password'       : os.environ['NEO4J_PASSWORD'],
+        'username'       : 'neo4j',
+        'db_url'         : "http://localhost:7474/db/data",
+        'redis_host'     : os.environ.get('REDIS_HOST', 'localhost'),
+        'redis_port'     : os.environ.get('REDIS_PORT', 6379),
+        'redis_password' : os.environ.get('REDIS_PASSWORD', ''),
     }
     
     parser = argparse.ArgumentParser(description='Load edges and nodes into Neo4j via kgx')

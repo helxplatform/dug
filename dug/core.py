@@ -4,6 +4,7 @@ import logging
 import glob
 import json
 import requests
+import sys
 import traceback
 import os
 
@@ -30,14 +31,19 @@ class Search:
         logger.debug (f"Connecting to elasticsearch host: {host} at port: {port}")
         self.indices = indices
         self.crawlspace = "crawl"
-        self.es = Elasticsearch([
+        self.host = os.environ.get ('ELASTIC_API_HOST', 'localhost')
+        self.username = os.environ.get ('ELASTIC_USERNAME', 'elastic')
+        self.password = os.environ.get ('ELASTIC_PASSWORD', 'changeme')
+        self.hosts = [
             {
-                'host' : host,
+                'host' : self.host,
                 'port' : port
             }            
-        ])
-#        http_auth=("elastic", os.environ.get('ELASTIC_PASSWORD', '')))
-        
+        ]
+        logger.debug (f"Authenticating as user {self.username} to host:{self.hosts}")
+        self.es = Elasticsearch (hosts=self.hosts,
+                                 http_auth=(self.username, self.password))
+
         if self.es.ping():
             logger.info ('connected to elasticsearch')
             self.init_indices ()
@@ -89,7 +95,15 @@ class Search:
             id=doc_id,
             body=doc)
             
-    def search (self, index, query):
+    def search (self, index, query, fuzziness=1):
+        query = {
+            'match': {
+                'name' : {
+                    'query' : query,
+                    'fuzziness' : fuzziness
+                }
+            }
+        }
         return self.es.search(
             index=index,
             body=json.dumps({ 'query': query }),
@@ -179,7 +193,7 @@ class Search:
                     doc_id=root_id)
                     
 if __name__ == '__main__':
-
+    
     parser = argparse.ArgumentParser(description='TranQL-Search')
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
@@ -213,18 +227,7 @@ if __name__ == '__main__':
             },
             doc_id=1)        
     elif args.query:
-        val = search.search (
-            index=index,
-            query={
-                'match': {
-                    'name' : {
-                        'query' : args.query,
-                        'fuzziness' : 1
-                    }
-                }
-            }
-        )
-
+        val = search.search (index=index, query=args.query)
         if 'hits' in val:
             for hit in val['hits']['hits']:
                 print (hit)
