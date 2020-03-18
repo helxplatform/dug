@@ -14,7 +14,7 @@ Dug is a [Biolink](https://biolink.github.io/biolink-model/) framework for annot
 
 ## Knowledge Graphs
 
-Dug's core construct is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
+Dug's core data structure is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization. It shows connections betweek COPD, variables from the study, and the study itself, all in terms from the Biolink model.
