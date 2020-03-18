@@ -14,10 +14,10 @@ Dug uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology 
 
 ## Knowledge Graphs
 
-Dug's core data structure is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
+Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from raw data about harmonized TOPMed variables.
 
-![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization. It shows connections betweek COPD, variables from the study, and the study itself, all in terms from the Biolink model.
+![image](https://user-images.githubusercontent.com/306971/77009445-513c0c00-693e-11ea-83ed-722ec896d3e9.png)
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata. It shows the relationship between the biological process "Sleep" and a meta variable. That meta variable, is in turn associated with variables connected to two studies in the data set.
 
 ## Approach
 
@@ -49,29 +49,37 @@ Dug provides tools for the ingest, annotation, knowledge graph representation, q
 | bin/dug link  | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input} |
 | bin/dug load  | Create a knowledge graph database. | bin/dug load {input} |
 
-There are two example metadata files in the repo.
-
-A COPDGene dbGaP metadata file is at `data/dd.xml`
-
-A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
+There are three sets of example metadata files in the repo.
+* A COPDGene dbGaP metadata file is at `data/dd.xml`
+* A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
+* Files with names starting with: `data/topmed_*`
 
 These can be run with 
 ```
 bin/dug link data/dd.xml
 bin/dug load data/dd_tagged.json
 ```
-and
+or 
 ```
 bin/dug link data/harmonized_variable_DD.csv
 bin/dug load data/harmoinzed_variable_DD_tagged.json
 ```
-
+or
+```
+bin/dug link data/topmed_variables_v1.0.csv [--index x]
+```
+The first two formats will likely go away.
+The last format
+* Consists of two sets of files following that naming convention.
+* Combines the link and load phases into link.
+* Optionally allows the --index <arg> flag. This will run graph queries and index data in Elasticsearch.
+ 
 ## Tools for Crawl & Indexing
 | Command        | Description           | Example  |
 | -------------- | --------------------- | ----- |
 | bin/dug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/dug crawl |
 | bin/dug index | Analyze crawled knowledge graphs and create search engine indices. | bin/dug index |
-| bin/dug query | Test the index by querying from the CLI.                           | bin/dug query {text} |
+| bin/dug query | Test the index by querying the search engine from Python.          | bin/dug query {text} |
  
 ## Serving Elasticsearch
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
@@ -79,10 +87,20 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 | -------------- | --------------------- | ----- |
 | bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
 
-To try the API from the CLI:
-```
-wget -O- --quiet --post-data='{"index": "test", "query" : { "match" : { "name" : { "query" : "cough" } } } }' --header='Content-Type:application/json' http://0.0.0.0:5551/search
-```
+To call the API endpoint using curl:
+| Command             | Description           | Example  |
+| ------------------- | --------------------- | ----- |
+| bin/dug query_api   | Call the REST API. | bin/dug query_api <query> |
+
+For development:
+| Command             | Description           | Example  |
+| ------------------- | --------------------- | ----- |
+| bin/dev init   | Generate docker/.env config | bin/dug dev init |
+| bin/dev conf   | Configure environment vars  | bin/dug dev conf |
+
+Init must be run exactly once before starting the docker-compose the first time.
+Delete docker/db/* and re-run to reset everything.
+Conf must be run before any clients that connect to the service to set up environment variables, especially ones used for authentication.
 
 ## Data Formats
 
