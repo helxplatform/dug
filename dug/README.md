@@ -1,11 +1,9 @@
 
 # Dug
 
-## Context
+Searching [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in repeatable pipelines. Dug applies semantic web and knowledge graph methods to the improve the FAIR-ness of research data.
 
-Achieving the aspirational goal of [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in well understood pipelines. Here, we apply semantic web and knowledge graph tools to the problem of improving the FAIR-ness of data in dbGaP.
-
-[dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
+As an example, [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
 While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
 
