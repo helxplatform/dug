@@ -21,6 +21,11 @@ Dug's core data structure is the knowledge graph. Here's a query of a COPDGene k
 
 These graphs are used to create the document's well add to the search index to power full text search.
 
+In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate other semantic services using TranQL.
+
+![image](https://user-images.githubusercontent.com/306971/77010772-d9231580-6940-11ea-9a58-00a168ce7b74.png)
+**Figure 2**: The image above shows the TranQL user interface visualizing a knowledge graph query response. Integrating TOPMed harmonized variables will allow us to make more useful ontological connections as a precursor to indexing.
+
 ## Approach
 
 Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
