@@ -94,7 +94,7 @@ To call the API endpoint using curl:
 | ------------------- | --------------------- | ----- |
 | bin/dug query_api   | Call the REST API. | bin/dug query_api <query> |
 
-# Development
+## Development
 
 A docker-compose is provided that runs four services:
 * Redis
