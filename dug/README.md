@@ -1,22 +1,20 @@
 
 # Dug
 
-## Context
+Dug applies semantic web and knowledge graph methods to the improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
 
-Achieving the aspirational goal of [FAIR](https://www.go-fair.org/fair-principles/) biomedical data requires applying repeatable computational methods in well understood pipelines. Here, we apply semantic web and knowledge graph tools to the problem of improving the FAIR-ness of data in dbGaP.
-
-[dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
+As an example, [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards specific study variables related to those interests. In a word, **search**.
 
 While other approaches to searching this data exist, our focus is semantic search: We annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) that allows study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
 
 ## The Dug Framework
 
-Dug is a [Biolink](https://biolink.github.io/biolink-model/) framework for annotation, knowledge graph representation, and full text search.
+Dug uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search.
 ![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
 
 ## Knowledge Graphs
 
-Dug's core construct is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
+Dug's core data structure is the knowledge graph. Here's a query of a COPDGene KG created by Dug from dbGaP metadata.
 
 ![image](https://user-images.githubusercontent.com/306971/76685812-faa49a00-65ec-11ea-9da9-906370b2e1c9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata from dbGaP enables study metadata visualization. It shows connections betweek COPD, variables from the study, and the study itself, all in terms from the Biolink model.
