@@ -12,6 +12,10 @@ While other approaches to searching this data exist, our focus is semantic searc
 Dug uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search. It uses Monarch Initiative APIs to perform named entity recognition on natural language prose to extract ontology identifiers. It also uses Translator normalization services to find preferred identifiers and Biolink types for each extracted identifier.
 ![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
 
+Dug will then generate Translator knowledge sources for the annotated variables and present them for query via TranQL.
+
+Crawl queries TranQL for relevant knowledge graphs. Indexing creates documents based on those graphs and inserts them into a search engine. An OpenAP serves as the query endpoint for a user interface.
+
 ## Knowledge Graphs
 
 Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from raw data about harmonized TOPMed variables.
