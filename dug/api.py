@@ -32,7 +32,7 @@ debug=False
 schema_file_path = os.path.join (os.path.dirname (__file__), 'conf', 'api-schema.yaml')
 template = None
 with open(schema_file_path, 'r') as file_obj:
-    template = yaml.load(file_obj)
+    template = yaml.load(file_obj, Loader=yaml.FullLoader)
 
 """ Describe the API. """
 app.config['SWAGGER'] = {
@@ -120,7 +120,7 @@ class DugSearchResource(DugResource):
                             type: string
 
         """
-        print (f"--------------------> {json.dumps(request.json, indent=2)}")
+        logger.debug (f"search:{json.dumps(request.json)}")
         response = {}
         try:
             app.logger.info (f"search: {json.dumps(request.json, indent=2)}")

@@ -42,6 +42,27 @@ if [ ! -d $DUG_HOME/kgx ]; then
     git clone https://github.com/NCATS-Tangerine/kgx.git $DUG_HOME/kgx
 fi
 
+# Development tools.
+dev () {
+    # This must be run once and only once before running the stack.
+    DUGENV=$DUG_HOME/docker/.env    
+    init () {
+        HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUG_HOME/docker/.env
+    }
+    # This must be run each time before a component connects to the stack.
+    conf ()  {
+        if [ ! -f $DUGENV ]; then
+            echo missing $DUGENV - will probably need that.
+            return
+        fi
+        source $DUGENV
+        export $(cut -d= -f1 $DUGENV)
+    }
+    $*
+}
+dev conf
+
+
 ### INGEST:
 
 #############################################################
@@ -50,10 +71,9 @@ fi
 ##
 #############################################################
 link () {
-    #    python -m dug.ingest --annotate $*
     if [ $(echo "$*" | grep -c "_variables_") == 1 ]; then
         echo topmed tagged variables
-        python -m  dug.ingest --tagged $*
+        ELASTIC_API_HOST=localhost python -m  dug.ingest --tagged $*
     else
         echo annotate $*
         python -m dug.ingest --annotate $*
@@ -106,7 +126,7 @@ query () {
 
 #############################################################
 ##
-## Query: Test the created index with a query.
+## API: Run the OpenAPI search endpoint.
 ##
 #############################################################
 api () {
@@ -119,9 +139,7 @@ api () {
 ##
 #############################################################
 stack () {
-      set -x
-      docker-compose -f $DUG_HOME/docker/docker-compose.yaml up
-      set +x
+      docker-compose -f $DUG_HOME/docker/docker-compose.yaml up $*
 }
 #############################################################
 ##
@@ -130,7 +148,6 @@ stack () {
 #############################################################
 test () {
 
-     set -e
      # Prerequisites: stack must be running.
      # API must be running.
 
@@ -144,12 +161,11 @@ test () {
      # Crawl model queries, create index, test index.
      bin/dug crawl
      bin/dug index
+     sleep 4
      bin/dug query coug # direct to search engine
 
      # Query via API
      bin/dug query_api coug
-
-     set +e
 }
 query_api () {
      query="`echo '{"index" : "test", "query" : { "match" : {"name": {"query" : "'$1'", "fuzziness" : 1 }}}}'`"

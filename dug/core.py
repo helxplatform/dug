@@ -9,6 +9,8 @@ import os
 
 logger = logging.getLogger (__name__)
 
+logging.getLogger("elasticsearch").setLevel(logging.WARNING)
+
 class SearchException (Exception):
     def __init__(self, message, details):
         self.message = message
@@ -24,22 +26,27 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
-    def __init__(self, host="localhost", port=9200, indices=['test']):
+    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test']):
+        logger.debug (f"Connecting to elasticsearch host: {host} at port: {port}")
         self.indices = indices
         self.crawlspace = "crawl"
         self.es = Elasticsearch([
             {
                 'host' : host,
                 'port' : port
-            }
+            }            
         ])
+#        http_auth=("elastic", os.environ.get('ELASTIC_PASSWORD', '')))
+        
         if self.es.ping():
-            print('connected to elasticsearch')
+            logger.info ('connected to elasticsearch')
             self.init_indices ()
         else:
+            print (f"Unable to connect to elasticsearch at {host}:{port}")
+            logger.error (f"Unable to connect to elasticsearch at {host}:{port}")
             raise SearchException (
                 message='failed to connect to elasticsearch',
-                details=f'connecting to host {host} and port {port}')
+                details=f"connecting to host {host} and port {port}")
 
     def clean (self):
         self.es.indices.delete ("*")
@@ -64,13 +71,17 @@ class Search:
         logger.info (f"creating indices: {self.indices}")
         for index in self.indices:
             try:
-                result = self.es.indices.create (
-                    index=index,
-                    body=settings,
-                    ignore=400)
-                logger.info (f"result creating index {index}: {result}")
+                if self.es.indices.exists(index=index):
+                    logger.info (f"Ignoring index {index} which already exists.")
+                else:
+                    result = self.es.indices.create (
+                        index=index,
+                        body=settings,
+                        ignore=400)
+                    logger.info (f"result created index {index}: {result}")
             except Exception as e:
                 logger.error (f"exception: {e}")
+                raise e
                 
     def index_doc (self, index, doc, doc_id):
         self.es.index (
@@ -173,9 +184,13 @@ if __name__ == '__main__':
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
+    parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
+                        default=False, action='store_true')
     parser.add_argument('--query', help="Query", action="store", dest="query")
-    parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host", default='localhost')
-    parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port", default=9200)
+    parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host",
+                        default=os.environ.get('ELASTIC_API_HOST', 'localhost'))
+    parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port",
+                        default=os.environ.get('ELASTIC_API_PORT', 9200))
     args = parser.parse_args ()
     
     logging.basicConfig(level=logging.INFO)    

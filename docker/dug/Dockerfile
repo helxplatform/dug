@@ -5,9 +5,6 @@
 ######################################################
 FROM python:3.7.6-alpine
 
-ENV HOME /home/$USER
-WORKDIR $HOME
-
 # Building numpy can get complicated
 # https://www.freecodecamp.org/news/building-python-data-science-container-using-docker/
 ENV PACKAGES="\
@@ -28,6 +25,14 @@ ENV PACKAGES="\
     tk \
 "
 
+# Least privilege: Run as a non-root user.
+ENV USER dug
+ENV HOME /home/$USER
+WORKDIR $HOME
+ENV UID 1000
+RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
+RUN chown -R $UID:$UID $HOME
+
 # Install source code and required packages.
 # Run dug to also install KGX.
 RUN \
@@ -36,16 +41,11 @@ RUN \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
         pip install --upgrade pip && \
-        pip install --no-cache-dir -r requirements.txt && \
+        cat requirements.txt | egrep -v "numpy|pandas|pyzmq" > requirements.txt.2 && \
+        pip install --no-cache-dir -r requirements.txt.2 && \
         bin/dug && \
         rm -rf /var/cache/apk/* && \
 	apk del git
-
-# Least privilege: Run as a non-root user.
-ENV USER dug
-ENV UID 1000
-RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
-RUN chown -R $UID:$UID $HOME
 
 USER $USER
 
@@ -57,5 +57,4 @@ ENV COMMAND=crawl
 WORKDIR $HOME/dug
 
 # Define the generic search entrypoint providing elasticsearch connectivity information.
-#ENTRYPOINT python search/search.py --elastic-host=$ELASTIC_API_HOST --elastic-port=$ELASTIC_API_PORT $COMMAND
 ENTRYPOINT bin/dug $COMMAND --elastic-host=$ELASTIC_API_HOST --elastic-port=$ELASTIC_API_PORT

@@ -10,7 +10,10 @@ import traceback
 import urllib
 import yaml
 import xml.etree.ElementTree as ET
+from dug.core import Search
 from kgx import NeoTransformer, JsonTransformer
+from neo4jrestclient.client import GraphDatabase
+from neo4jrestclient import client
 from typing import List, Dict
 
 logger = logging.getLogger (__name__)
@@ -20,7 +23,6 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 requests_cache.install_cache('http_cache')
 
-SkipTerms = List[str]
 Config = Dict
 
 class Debreviator:
@@ -37,16 +39,19 @@ class Debreviator:
 class TOPMedStudyAnnotator:
     """ Annotate TOPMed study data with semantic knowledge graph linkages. """
     
-    def __init__(self, config: Config, skip : SkipTerms = []):
+    def __init__(self, config: Config):
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
-        self.skip = config['skip']
         self.debreviator = Debreviator ()
         
-    def load_data_dictionary (self, input_file : str) -> Dict:        
+    def load_data_dictionary (self, input_file : str) -> Dict:
+        """
+        This loads a data dictionary. It's unclear if this will be useful going forwar. But for now,
+        it demonstrates how much of the rest of the  pipeline might be applied to data dictionaries.
+        """
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
@@ -59,11 +64,15 @@ class TOPMedStudyAnnotator:
         } for variable in root.iter('variable') ]
 
     def load_csv (self, input_file : str) -> Dict:
+        """
+        Load a CSV. We had a CSV representation of some harmonized variables. This  is likely 
+        superseded by the approach below. Pending confirmation to delete this code.
+        """
         response = []
         with open(input_file, newline='') as csvfile:
             reader = csv.DictReader(csvfile, delimiter='\t',)
             for row in reader:
-                print  (row)
+                logger.debug (row)
                 """ VARNAME	VARDESC	TYPE	UNITS	VARIABLE_SOURCE	SOURCE_VARIABLE_ID	VARIABLE_MAPPING	VALUES """
                 variable_source = row['VARIABLE_SOURCE']
                 source_variable_id = row['SOURCE_VARIABLE_ID']
@@ -80,6 +89,16 @@ class TOPMedStudyAnnotator:
         return response
 
     def load_tagged_variables (self, input_file : str) -> Dict:
+        """
+        Load tagged variables.
+          Presumes a harmonized variable list as a CSV file as input.
+          A naming convention such that <prefix>_variables_<version>.csv will be the form of the filename.
+          An adjacent file called <prefix>_tags_<version.json will exist.
+        
+          :param input_file: A list of study variables linked to tags, studies, and other relevant data.
+          :returns: Returns variables, a list of parsed variable dictionaries and tags, a list of parsed
+                    tag definitions linked to the variabels.
+        """
         tags_input_file = input_file.replace (".csv", ".json").replace ("_variables_", "_tags_")
         if not os.path.exists (tags_input_file):
             raise ValueError (f"Accompanying tags file: {tags_input_file} must exist.")
@@ -90,7 +109,7 @@ class TOPMedStudyAnnotator:
             for row in reader:
                 better_row = { k.strip () : v for  k, v in row.items () }
                 row = better_row
-                #print  (f"{json.dumps(row, indent=2)}")
+                logger.debug (f"{json.dumps(row, indent=2)}")
                 variables.append ({
                     "study_id"               : f"TOPMED.STUDY:{row['study_full_accession']}",
                     "tag_pk"                 : row['tag_pk'],
@@ -115,8 +134,13 @@ class TOPMedStudyAnnotator:
 
     def normalize (self, http_session, curie, url, variable) -> None:
         """ Given an identifier (curie), use the Translator SRI node normalization service to 
-        find a preferred identifier, equivalent identifiers, and biolink model types for the node. """
-        # CUI to UMLS : http://www.chibi.ubc.ca/wp-content/uploads/2013/02/Mapping%20from%20CUI%20to%20Ontologies.xls
+            find a preferred identifier, equivalent identifiers, and biolink model types for the node. 
+        
+            :param http_session: A requests session to use for HTTP requests.
+            :param curie: The identifier to normalize.
+            :param url: The URL to use.
+            :param variable: The variable in which to record the normalized identifier.
+        """
         
         """ Normalize the identifier with respect to the BioLink Model. """
         try:
@@ -136,9 +160,9 @@ class TOPMedStudyAnnotator:
                     "type" : biolink_type
                 }
             else:
-                print (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
+                logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
         except json.decoder.JSONDecodeError as e:
-            print (f"JSONDecoderError normalizing curie: {curie}")
+            logger.error (f"JSONDecoderError normalizing curie: {curie}")
                 
     def annotate (self, variables : Dict) -> Dict:
         """
@@ -152,6 +176,9 @@ class TOPMedStudyAnnotator:
             use the Monarch NLP annotator with named entity recognition
             (add additional NLP, eg. Vanderbilt and others here...?)
           normalize the resulting identifiers using the Translator normalization API
+
+          :param variables: A dictionary of variables.
+          :returns: A dictionary of annotted variables.          
         """
         
         """ Initialize an HTTP session for more efficient connection management. """
@@ -159,7 +186,7 @@ class TOPMedStudyAnnotator:
 
         """ Annotate and normalize each variable. """
         for variable in variables:
-            #print (variable)
+            logger.debug (variable)
             try:
                 """ If the variable has an Xref identifier, normalize it. """
                 if 'xref' in variable:
@@ -170,7 +197,7 @@ class TOPMedStudyAnnotator:
                     
                 """ Annotate ontology terms in the text. """
                 if not 'description' in variable:
-                    print (f"{json.dumps(variable, indent=2)}")
+                    logger.debug (f"{json.dumps(variable, indent=2)}")
                     continue
                 
                 description = variable['description'].replace ("_", " ")
@@ -197,29 +224,12 @@ class TOPMedStudyAnnotator:
                 raise
         return variables
 
-    def write0 (self, annotations : Dict) -> None:
-        """
-        Convert the TOPMed metadata to KGX form. Export the graph via KGX to a graph database.
-        """
-
-        """ Convert. """
-        graph = self.convert_to_kgx_json (annotations)
-
-        """ Load. """
-        json_transformer = JsonTransformer ()
-        json_transformer.load (graph)
-
-        """ Write. """
-        db = NeoTransformer (json_transformer.graph,
-                             self.db_url,
-                             self.username,
-                             self.password)
-        db.save_with_unwind()        
-        db.neo4j_report()
-        
     def write (self, graph : Dict) -> None:
         """
-        Export the graph via KGX to a graph database.
+        Given a dictionary that is a graph containing nodes edges,
+        use KGX to load the graph into a Neo4J database.
+
+        :param graph: A KGX formatted graph as dictionary.
         """
         
         """ Load. """
@@ -241,7 +251,16 @@ class TOPMedStudyAnnotator:
                    edge_label : str ='association',
                    category : List[str] = []
     ):
-        """ Create an edge between two nodes. """
+        """
+        Create an edge between two nodes.
+        
+        :param subj: The identifier of the subject.
+        :param pred: The predicate linking the subject and object.
+        :param obj: The object of the relation.
+        :param edge_label: Label for the edge.
+        :param category: The list of Biolink categories relating to the edge.
+        :returns: Returns and edge.
+        """
         return {
             "subject"     : subj,
             "predicate"   : pred,
@@ -251,7 +270,14 @@ class TOPMedStudyAnnotator:
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "OBAN:association",
             "category" : category
         }
+    
     def make_tagged_kg (self, variables : Dict, tags : Dict) -> Dict:
+        """ Make a Translator standard knowledge graph representing 
+        tagged study variables.
+        :param variables: The variables to model.
+        :param tags: The tags characterizing the variables.
+        :returns: Returns dictionary with nodes and edges modeling a Translator/Biolink KG.
+        """
         graph = {
             "nodes" : [],
             "edges" : []
@@ -260,8 +286,9 @@ class TOPMedStudyAnnotator:
         nodes = graph['nodes']
         studies = {}
         tag_ref = {}
-        
 
+        """ Create graph elements to model tags and their
+        links to identifiers gathered by semantic tagging. """
         tag_map = {}
         for tag in tags:
             tag_pk = tag['pk']
@@ -269,7 +296,11 @@ class TOPMedStudyAnnotator:
             tag_map[tag_pk] = tag
             nodes.append ({
                 "id" : tag_id,
-                "category" : [ "clinical_modifier" ]
+                "pk" : tag_pk,
+                "name" : tag['title'],
+                "description" : tag['description'],
+                "instructions" : tag['instructions'],
+                "category" : [ "abstract_entity" ]
             })
             """ Link ontology identifiers we've found for this tag via nlp. """
             for identifier, metadata in tag['identifiers'].items ():
@@ -289,9 +320,10 @@ class TOPMedStudyAnnotator:
                     pred="OBO:RO_0002434",
                     obj=tag_id,
                     edge_label='association',
-                    category=[ "association" ]))
-                        
+                    category=[ "association" ]))                        
 
+        """ Create nodes and edges to model variables, studies, and their
+        relationships to tags. """
         for variable in variables:
             variable_id = variable['variable_id']
             variable_tag_pk = variable['tag_pk']
@@ -300,12 +332,14 @@ class TOPMedStudyAnnotator:
             if not study_id in studies:
                 nodes.append ({
                     "id" : study_id,
+                    "name" : variable['study_name'],
                     "category" : [ "clinical_trial" ]
                 })
                 studies[study_id] = study_id
 
             nodes.append ({
                 "id" : variable_id,
+                "name" : variable_id,
                 "category" : [ "clinical_modifier" ]
             })
             """ Link to its study.  """
@@ -336,56 +370,9 @@ class TOPMedStudyAnnotator:
                 obj=variable_id,
                 category=['has_part']))
 
-
-            
-            '''
-            for tag in tags:
-                tag_pk = tag['pk']
-                
-                if variable_tag_pk == tag_pk:
-                    """ This tag is linked to this variable. Write that down. """
-                    tag_id = f"TOPMED.TAG:{tag_pk}"
-                    if not tag_pk in tag_ref:
-                        """ We haven't seen this tag before, write that down. """
-                        nodes.append ({
-                            "id" : tag_id,
-                            "category" : [ "clinical_modifier" ]
-                        })
-                    """ Make the edges to link the tag and variable. """
-                    edges.append (self.make_edge (
-                        subj=variable_id,
-                        edge_label='part_of',
-                        pred="OBO:RO_0002434",
-                        obj=tag_id,
-                        category=['part_of']))
-                    edges.append (self.make_edge (
-                        subj=tag_id,
-                        edge_label='has_part',
-                        pred="OBO:RO_0002434",
-                        obj=variable_id,
-                        category=['has_part']))
-                    """ Link ontology identifiers we've found for this tag via nlp. """
-                    for identifier, metadata in tag['identifiers'].items ():
-                        nodes.append ({
-                            "id" : identifier,
-                            "name" : metadata['label'],
-                            "category" : metadata['type']
-                        })
-                        edges.append (self.make_edge (
-                            subj=tag_id,
-                            pred="OBO:RO_0002434",
-                            obj=identifier,
-                            edge_label='association',
-                            category=[ "association" ]))
-                        edges.append (self.make_edge (
-                            subj=identifier,
-                            pred="OBO:RO_0002434",
-                            obj=tag_id,
-                            edge_label='association',
-                            category=[ "association" ]))
-            '''
         return graph
-    
+
+    '''
     def convert_to_kgx_json (self, annotations):
         """
         Given an annotated and normalized set of study variables,
@@ -449,7 +436,17 @@ class TOPMedStudyAnnotator:
                     "category" : metadata['type']
                 })
         return graph
+    '''
 
+class GraphDB:
+    def __init__(self, conf):
+        self.conf = conf
+        self.gdb = GraphDatabase(url=conf['db_url'],
+                                 username=conf['username'],
+                                 password=conf['password'])
+    def query (self, query):
+        return self.gdb.query(query, data_contents=True)
+    
 def main ():
     """ 
     Configure an annotator. 
@@ -457,11 +454,9 @@ def main ():
     config = {
         'annotator'  : "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
         'normalizer' : "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
-        'password'   : 'topmed',
+        'password'   : os.environ['NEO4J_PASSWORD'],
         'username'   : 'neo4j',
-#        'db_url'     : "http://localhost:7474/db/data",
-        'db_url'     : "http://0.0.0.0:7474/db/data/",
-        'skip'       : [ 'ever', 'disease' ]
+        'db_url'     : "http://localhost:7474/db/data",
     }
     
     parser = argparse.ArgumentParser(description='Load edges and nodes into Neo4j via kgx')
@@ -469,16 +464,20 @@ def main ():
     parser.add_argument('--annotate', help='annotate TOPMed data dictionary file', default=None)
     parser.add_argument('--db-url', help='database url', default='http://localhost:7474/db/data')
     parser.add_argument('--db-username', help='database username', default='neo4j')
-    parser.add_argument('--db-password', help='database password', default='topmed')
+    parser.add_argument('--db-password', help='database password', default=os.environ['NEO4J_PASSWORD'])
     parser.add_argument('--tagged', help='annotate tagged variables')
     parser.add_argument('--index', help='build search index directly. valid only with --tagged.', default=False)
+    parser.add_argument('--debug', help='debug output', default=False)
     args = parser.parse_args()
 
     config['username'] = args.db_username
     config['password'] = args.db_password
     config['db_url']   = args.db_url
     annotator = TOPMedStudyAnnotator (config=config)
-    
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+       
     if args.load:
         """ Load an annotated data dictionary and write to a graph database. """
         with open(args.load, 'r') as stream:
@@ -506,16 +505,67 @@ def main ():
         with open(output_file, 'w') as stream:
             json.dump(response, stream, indent=2)
     elif args.tagged:
+
+        """
+        The link operator for tagged variables.
+        This annotates, normalizes, converts to a kgs graph, and loads via KGX into Neo4J.
+        """
         variables, tags = annotator.load_tagged_variables (args.tagged)
         tags = annotator.annotate (tags)
-        print (f"{json.dumps(tags, indent=2)}")
+        logger.debug (f"{json.dumps(tags, indent=2)}")
         knowledge_graph = annotator.make_tagged_kg (variables, tags)
-        print (f"{json.dumps(knowledge_graph, indent=2)}")
+        logger.debug (f"{json.dumps(knowledge_graph, indent=2)}")
         annotator.write (knowledge_graph)
 
-#        if (args.index):
-            
-        
+        if (args.index):
+            """ PHASE-1: Go directly to Elasticsearch, bypassing Translator. """
+
+            """ Initialize the search engine core. """
+            search = Search ()
+
+            """ Connect to the graph database. """
+            graph = GraphDB (config)
+
+            """
+            For each Biolink model category, get subgraphs initiated with the category, connected to a tag, to a variable, to a study.
+            For each resulting subgraph, build a document linking data from each of these layers.
+            Add the document to the search index.
+            """
+            for category in [ "phenotypic_feature", "anatomical_entity", "cell_type", "gene", "disease", "biological_process" ]:
+                query = f"match (bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial) return * limit 2000"
+                result = graph.query (query)
+                if result:
+                    for index, row in enumerate(result.rows):
+                        """
+                        We're looking at a single subgraph returned from the query.
+                        Build a document collecting these artifacts.
+                        """
+                        text = []
+                        doc = {}
+                        for node in row:
+                            node_id = node['id']
+                            if node_id.startswith ("TOPMED.VAR:"):
+                                doc['var'] = node_id.replace  ("TOPMED.VAR:", "")
+                            elif node_id.startswith ("TOPMED.STUDY"):
+                                doc['study'] = node_id.replace ("TOPMED.STUDY:", "")
+                                text.append (node['name'])
+                            elif node_id.startswith ("TOPMED.TAG"):
+                                doc['tag'] = node_id.replace ("TOPMED.TAG:", "")
+                                text.append (node['description'])
+                                text.append (node['instructions'])
+                            else:
+                                doc['id'] = node_id
+                                text.append (node['name'])
+                                
+                        doc['name'] = text
+                        logger.debug (f"{json.dumps(doc, indent=2)}")
+
+                        """ Index the document. """
+                        search.index_doc (
+                            index='test',
+                            doc=doc,
+                            doc_id=doc['id'])
+
 if __name__ == '__main__':    
     main ()
 

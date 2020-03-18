@@ -1,54 +1,84 @@
 version: '3.0'
 
+#################################################################################
+##
+## A service stack for HeLx semantic search.
+##
+#################################################################################
 services:
 
-  elasticsearch:
-    image: 'bitnami/elasticsearch:latest'
+  #################################################################################
+  ##
+  ## The OpenAPI endpoint for search. This is the only service that should be
+  ## exposed beyond the internal network.
+  ##
+  #################################################################################
+  api:
+    image: heliumdatastage/dug:latest
     networks:
       - dug-network
     environment:
+      - ELASTIC_API_HOST=elasticsearch #$HOSTNAME
+    entrypoint: [ "python", "-m", "dug.api", "--debug" ]
+    # gunicorn --workers=2 --name=dug --bind=0.0.0.0  --timeout=100 dug.api:app
+    volumes:
+      - $PWD:/home/dug
+    ports:
+      - 5551:5551 
+
+  #################################################################################
+  ##
+  ## The search engine. Provides a full text search index.
+  ##
+  #################################################################################
+  elasticsearch:
+    image: 'bitnami/elasticsearch:7.6.1'
+    networks:
+      - dug-network
+    environment:
+      #- ELASTIC_PASSWORD=$ELASTIC_PASSWORD
       - discovery.type=single-node
     volumes:
-      - $PWD/db/elastic:/bitnami/elasticsearch/data
+      - $ELASTIC_DATA:/bitnami/elasticsearch/data
     ports:
       - '9200:9200'
       - '9300:9300'
 
+  #################################################################################
+  ##
+  ## A graph database. Provides graph query over linked data to drive indexing.
+  ##
+  #################################################################################
   neo4j:
     image: bitnami/neo4j:3.5.14
     networks:
       - dug-network
     environment:
-      - NEO4J_PASSWORD=topmed
-      - NEO4J_HOST=scox.europa.renci.org
+      - NEO4J_PASSWORD=$NEO4J_PASSWORD
+      - NEO4J_HOST=$HOSTNAME
     volumes:
-      - $PWD/db/neo4j:/bitnami
+      - $NEO4J_DATA:/bitnami
     ports:
       - '7474:7474'
       - '7473:7473'
       - '7687:7687'
-    deploy:
-      resources:
-        limits:
-          cpus: '1.5'
-          memory: 3G
-        reservations:
-          cpus: '1.0'
-          memory: 2G
           
+  #################################################################################
+  ##
+  ## A memory cache. Cache results of high volume service requests.
+  ##
+  #################################################################################
   redis:
     image: 'bitnami/redis:5.0.8'
     networks:
       - dug-network
     environment:
-      - REDIS_PASSWORD=topmed
+      - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     volumes:
-      - $PWD/db/redis:/bitnami/redis/data
+      - $REDIS_DATA:/bitnami/redis/data
     ports:
       - '6379:6379'
-    volumes:
-      - $PWD/redis:/bitnami/redis/data
       
 networks:
   dug-network:
