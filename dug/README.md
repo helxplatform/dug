@@ -42,7 +42,9 @@ Dug
 * Annotates dbGaP metadata for a TOPMed study.
 * Provides a potential basis for annotating and searching harmonized variables.
 
-The **link** phase ingests raw dbGaP study metadata and performs semantic annotation by
+### Link
+
+Link ingests raw dbGaP study metadata and performs semantic annotation by
 * Parsing a TOPMed data dictionary XML file to extract variables.
 * Using the Monarch SciGraph named entity recognizer to identify ontology terms.
 * Using the Translator SRI identifier normalization service to
@@ -50,21 +52,21 @@ The **link** phase ingests raw dbGaP study metadata and performs semantic annota
   * Determine the BioLink types applying to each entity
 * Writing each variable with its annotations as a JSON object to a file.
 
-The **load** phase 
+### Load
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
 In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the Neo4J to create a Translator Knowledge Provider API. That API will be integrated using TranQL with other Translator reasoners like ROBOKOP. This will allow us to build more sophisticated graphs spanning federated ontological knowledge.
 
-The **crawl** phase
+### Crawl
 * Runs those graph queries and caches knowledge graph responses.
 
-The **index** phase
+### Index
 * Consumes knowledge graphs produced by the crawl.
 * Uses connections in the graph to create documents including both full text of variable descriptions and ontology terms.
 * Produces a queryable full text index of the variable set.
 
-The **api** 
+### Dug Search API
 * Presents an OpenAPI compliant REST interface
 * Protects the Elasticsearch endpoint which is not suitable for exposing 
 
