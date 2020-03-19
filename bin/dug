@@ -1,15 +1,15 @@
 #############################################################
 ##
-## Dug is a semantic search pipeline framework including
+## Dug is semantic search framework for digging in dark data
 ##
 ##   Ingest:
 ##
 ##     link: Annotate a data set with ontology identifiers
-##           based on NLP and other tagging mechanisms.
+##           based on NLP and named entity recognition.
 ##       usage: bin/dug link <metadata>
 ##
-##     load: Turn the data into a knowledge graph into a
-##           graph and add insert it into a database. 
+##     load: Turn the data into a knowledge graph and
+##           insert it into a database. 
 ##       usage: bin/dug load <metadata>_tagged.json
 ##
 ##   Crawl & Index:
@@ -24,10 +24,29 @@
 ##     query: Query the search engine from the command line
 ##       usage: bin/dug query <text>
 ##
-##   Search:
+##   Search API:
 ##
 ##     api: Provides a REST API to the search engine.
 ##       bin/dug api [--debug] [--port=<int>]
+##
+##   Development:
+##
+##     stack: Run search engine, neo4j, redis, and the
+##            search OpenAPI endpoint.
+##
+##       usage: bin/dug stack [service ]*
+##
+##     dev init: Run once before any services to generate
+##         docker/.env containing passwords, etc.
+##       usage: bin/dug dev init
+##
+##     dev conf: Is run automatically in this script to
+##         source docker/.env and make env variables
+##         available to all client applications.
+##       usage: bin/dug dev conf
+##
+##     test: Run automated functional tests.
+##       usage: bin/dug test
 ##
 #############################################################
 #!/bin/bash
