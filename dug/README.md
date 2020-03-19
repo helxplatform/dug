@@ -159,6 +159,10 @@ Until data formats stabilize, the best approach is to have a look at the raw dat
 ## Next Steps
 
 These things need attention:
+* [ ] Develop Kubernetes artifacts to move from development to a public API.
+* [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
+* [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
+* [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
   * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/dd_norm_fail.log).
   * Logs from harmonized variable annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/harm_norm_fail.log).
@@ -166,8 +170,5 @@ These things need attention:
   * We now have the ability to (roughly) parse harmonized variables from their standard CSV format.
   * Several issues arose around formatting, the need for a study id, and a few other things. 
   * But the overall approach seems feasible.
-* [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
-* [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
-* [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
-* [ ] Document the crawl, index, and search (API) components of Dug here.
+* [x] Document the crawl, index, and search (API) components of Dug here.
 
