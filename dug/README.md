@@ -69,6 +69,9 @@ In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the 
 Dug provides a tool chain for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant components.
 
 ## Metadata Ingest, Annotation, and Knowledge Graph Creation
+
+Data formats for harmonized variables appear to be in flux, hence the multiple approaches. More on this soon.
+
 | Command           | Description                                         | Example                  |
 | ----------------- | --------------------------------------------------- | ------------------------ |
 | bin/dug link      | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input}     |
