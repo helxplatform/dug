@@ -176,3 +176,10 @@ These things need attention:
   * But the overall approach seems feasible.
 * [x] Document the crawl, index, and search (API) components of Dug here.
 
+## Future
+* [ ] Refine knowledge graph queries and indexing analytics to improve result relevance.
+* [ ] Parallelize steps with Spark.
+* [ ] Develop a frictionless KGX interface to Spark.
+* [ ] Use Morpheus Cypher for query.
+
+
