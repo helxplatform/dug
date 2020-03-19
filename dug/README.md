@@ -21,7 +21,7 @@ Crawl queries TranQL for relevant knowledge graphs. Indexing creates documents b
 Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from raw data about harmonized TOPMed variables.
 
 ![image](https://user-images.githubusercontent.com/306971/77009445-513c0c00-693e-11ea-83ed-722ec896d3e9.png)
-**Figure 1**: A Biolink knowledge graph of COPDGene metadata. It shows the relationship between the biological process "Sleep" and a meta variable. That meta variable, is in turn associated with variables connected to two studies in the data set.
+**Figure 1**: A Biolink knowledge graph of COPDGene metadata. It shows the relationship between the biological process "Sleep" and a meta variable. The highlighted node is aTOPMed meta variable or harmonized variable. It is in turn associated with variables connected to two studies in the data set. By linking additional ontological terms to the biological process sleep, we will be able to provde progressively more helpful search results rooted in curated biomedical knowledge.
 
 These graphs are used to create the document's well add to the search index to power full text search.
 
