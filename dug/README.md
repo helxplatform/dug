@@ -32,7 +32,9 @@ In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate ot
 
 ## Approach
 
-Starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
+The methodology, from start to finish, reads raw data, annotates it with ontological terms, normalizes those terms, inserts them into a queryable knowledge graph, queries that graph along pre-configured lines, turns the resulting knowledge graphs into documents, and indexes those documents in a full text search engine.
+
+For example, starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
 
 Dug 
 * Annotates dbGaP metadata for a TOPMed study.
@@ -50,15 +52,29 @@ The **load** phase
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
-## The Dug Framework
+In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the Neo4J to create a Translator Knowledge Provider API. That API will be integrated using TranQL with other Translator reasoners like ROBOKOP. This will allow us to build more sophisticated graphs spanning federated ontological knowledge.
 
-Dug provides tools for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant tools.
+The **crawl** phase
+* Runs those graph queries and caches knowledge graph responses.
+
+The **index** phase
+* Consumes knowledge graphs produced by the crawl.
+* Uses connections in the graph to create documents including both full text of variable descriptions and ontology terms.
+* Produces a queryable full text index of the variable set.
+
+The **api** 
+* Presents an OpenAPI compliant REST interface
+* Protects the Elasticsearch endpoint which is not suitable for exposing 
+
+## The Dug Data Development Kit (DDK)
+
+Dug provides a tool chain for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant components.
 
 ## Metadata Ingest, Annotation, and Knowledge Graph Creation
-| Command           | Description                   | Example                  |
-| ----------------- | ----------------------------- | ------------------------ |
-| bin/dug link  | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input} |
-| bin/dug load  | Create a knowledge graph database. | bin/dug load {input} |
+| Command           | Description                                         | Example                  |
+| ----------------- | --------------------------------------------------- | ------------------------ |
+| bin/dug link      | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input}     |
+| bin/dug load      | Create a knowledge graph database.                  | bin/dug load {input}     |
 
 There are three sets of example metadata files in the repo.
 * A COPDGene dbGaP metadata file is at `data/dd.xml`
@@ -86,22 +102,22 @@ The last format
 * Optionally allows the --index <arg> flag. This will run graph queries and index data in Elasticsearch.
  
 ## Tools for Crawl & Indexing
-| Command        | Description           | Example  |
-| -------------- | --------------------- | ----- |
-| bin/dug crawl | Execute graph queries and accumulate knowledge graphs in response. | bin/dug crawl |
-| bin/dug index | Analyze crawled knowledge graphs and create search engine indices. | bin/dug index |
-| bin/dug query | Test the index by querying the search engine from Python.          | bin/dug query {text} |
+| Command        | Description                                                       | Example              |
+| -------------- | ----------------------------------------------------------------- | -------------------- |
+| bin/dug crawl  | Execute graph queries and accumulate knowledge graphs in response.| bin/dug crawl        |
+| bin/dug index  | Analyze crawled knowledge graphs and create search engine indices.| bin/dug index        |
+| bin/dug query  | Test the index by querying the search engine from Python.         | bin/dug query {text} |
  
 ## Serving Elasticsearch
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
-| Command        | Description           | Example  |
-| -------------- | --------------------- | ----- |
-| bin/dug api   | Run the REST API. | bin/dug api [--debug] [--port={int}] |
+| Command        | Description           | Example                              |
+| -------------- | --------------------- | ------------------------------------ |
+| bin/dug api    | Run the REST API.     | bin/dug api [--debug] [--port={int}] |
 
 To call the API endpoint using curl:
-| Command             | Description           | Example  |
-| ------------------- | --------------------- | ----- |
-| bin/dug query_api   | Call the REST API. | bin/dug query_api <query> |
+| Command             | Description           | Example                   |
+| ------------------- | --------------------- | ------------------------- |
+| bin/dug query_api   | Call the REST API.    | bin/dug query_api <query> |
 
 ## Development
 
@@ -111,11 +127,11 @@ A docker-compose is provided that runs four services:
 * Elasticsearch
 * The Dug search OpenAPI
 
-| Command             | Description           | Example  |
-| ------------------- | --------------------- | ----- |
-| bin/dug dev init   | Generate docker/.env config | bin/dug dev init |
-| bin/dug stack      | Runs all services           | bin/dug stack    |
-| bin/dug dev conf   | Configure environment vars  | bin/dug dev conf |
+| Command             | Description                | Example          |
+| ------------------- | -------------------------- | ---------------- |
+| bin/dug dev init    | Generate docker/.env config| bin/dug dev init |
+| bin/dug stack       | Runs all services          | bin/dug stack    |
+| bin/dug dev conf    | Configure environment vars | bin/dug dev conf |
 
 * Init must be run exactly once before starting the docker-compose the first time.
 * Delete docker/db/* and re-run to reset everything.
@@ -124,9 +140,9 @@ A docker-compose is provided that runs four services:
 ## Testing
 
 For development:
-| Command             | Description           | Example  |
-| ------------------- | --------------------- | ----- |
-| bin/dug test   | Run automated functional tests | bin/dug test |
+| Command             | Description                    | Example      |
+| ------------------- | ------------------------------ | ------------ |
+| bin/dug test        | Run automated functional tests | bin/dug test |
 
 Once the test is complete, a command line search shows the contents of the index:
 ![image](https://user-images.githubusercontent.com/306971/77009780-e939f580-693e-11ea-8a02-ca2fd59d4366.png)
