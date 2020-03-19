@@ -178,6 +178,7 @@ These things need attention:
 
 ## Future
 * [ ] Refine knowledge graph queries and indexing analytics to improve result relevance.
+* [ ] Incorporate synonyms and additional NLP approaches.
 * [ ] Parallelize steps with Spark.
 * [ ] Develop a frictionless KGX interface to Spark.
 * [ ] Use Morpheus Cypher for query.
