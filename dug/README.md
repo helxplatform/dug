@@ -36,12 +36,6 @@ In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate ot
 
 The methodology, from start to finish, reads raw data, annotates it with ontological terms, normalizes those terms, inserts them into a queryable knowledge graph, queries that graph along pre-configured lines, turns the resulting knowledge graphs into documents, and indexes those documents in a full text search engine.
 
-For example, starting with a dbGaP data dictionary for the COPDGene study, we create a Biolink compliant knowledge graph.
-
-Dug 
-* Annotates dbGaP metadata for a TOPMed study.
-* Provides a potential basis for annotating and searching harmonized variables.
-
 ### Link
 
 Link ingests raw dbGaP study metadata and performs semantic annotation by
