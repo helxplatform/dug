@@ -160,6 +160,7 @@ Until data formats stabilize, the best approach is to have a look at the raw dat
 
 These things need attention:
 * [ ] Develop Kubernetes artifacts to move from development to a public API.
+* [ ] Add automated unit tests and a Travis build.
 * [ ] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [ ] Demonstrate a TranQL query incorporating this data with ROBOKOP
 * [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
