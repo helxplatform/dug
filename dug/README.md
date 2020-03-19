@@ -16,8 +16,6 @@ Dug uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology 
 
 Dug will then generate Translator knowledge sources for the annotated variables and present them for query via TranQL.
 
-Crawl queries TranQL for relevant knowledge graphs. Indexing creates documents based on those graphs and inserts them into a search engine. An OpenAP serves as the query endpoint for a user interface.
-
 ## Knowledge Graphs
 
 Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from raw data about harmonized TOPMed variables.
