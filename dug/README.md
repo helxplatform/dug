@@ -139,7 +139,12 @@ A docker-compose is provided that runs four services:
 
 ## Testing
 
-For development:
+Dug's automated functional tests:
+* Delete the test index
+* Execute the link and load phases for the dbGaP data dictionary and harmonized variables.
+* Execute the crawl and index phases.
+* Execute a number of searches over the generated search index.
+
 | Command             | Description                    | Example      |
 | ------------------- | ------------------------------ | ------------ |
 | bin/dug test        | Run automated functional tests | bin/dug test |
