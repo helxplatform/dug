@@ -137,7 +137,7 @@ A docker-compose is provided that runs four services:
 
 * Init must be run exactly once before starting the docker-compose the first time.
 * Delete docker/db/* and re-run to reset everything.
-* Conf must be run before any clients that connect to the service to set up environment variables, especially ones used for authentication.
+* Conf must be run before any clients that connect to the service to set up environment variables.
 
 ## Testing
 
