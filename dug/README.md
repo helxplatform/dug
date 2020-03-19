@@ -81,6 +81,8 @@ There are three sets of example metadata files in the repo.
 * A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
 * Files with names starting with: `data/topmed_*`
 
+This last format seems to be the go-forward TOPMed harmonized variable form.
+
 These can be run with 
 ```
 bin/dug link data/dd.xml
