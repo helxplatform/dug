@@ -1,5 +1,5 @@
 
-# Dug : digging in dark data
+# Dug : digging up dark data
 
 Dug applies semantic web and knowledge graph methods to the improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
 
