@@ -60,7 +60,7 @@ In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the 
 
 ### Dug Search API
 * Presents an OpenAPI compliant REST interface
-* Protects the Elasticsearch endpoint which is not suitable for exposing 
+* Provides a scalable microservice suitable as an Internet endpoint. 
 
 ## The Dug Data Development Kit (DDK)
 
