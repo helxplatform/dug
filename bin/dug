@@ -68,7 +68,7 @@ dev () {
     # passwords for the services.
     DUGENV=$DUG_HOME/docker/.env    
     init () {
-        HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUG_HOME/docker/.env
+        HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
     }
     # This must be run before each time a component connects to the stack.
     # It reads configuration settings for the stack, including passwords
@@ -83,8 +83,11 @@ dev () {
     }
     $*
 }
-dev conf
 
+if [ "$(echo $* | grep -c 'dev init')" == 0 ]; then
+   echo setting up dev
+   dev conf        
+fi
 
 ### INGEST:
 
