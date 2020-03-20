@@ -1,7 +1,7 @@
 
 # Dug : digging up dark data
 
-Dug applies semantic web and knowledge graph methods to the improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
+Dug applies semantic web and knowledge graph methods to improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
 
 As an example, [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards relevant study variables. In a word, **search**. 
 
