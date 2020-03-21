@@ -41,9 +41,8 @@ RUN \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
         pip install --upgrade pip && \
-        cat requirements.txt | egrep -v "numpy|pandas|pyzmq" > requirements.txt.2 && \
-        pip install --no-cache-dir -r requirements.txt.2 && \
-        bin/dug && \
+        pip install --no-cache-dir -r requirements.txt && \
+        bin/dug dev init  && \
         rm -rf /var/cache/apk/* && \
 	apk del git
 

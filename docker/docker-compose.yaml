@@ -2,7 +2,7 @@ version: '3.0'
 
 #################################################################################
 ##
-## A service stack for HeLx semantic search.
+## A service stack for the Dug semantic search framework.
 ##
 #################################################################################
 services:
@@ -20,12 +20,13 @@ services:
     environment:
       - ELASTIC_API_HOST=$ELASTIC_API_HOST
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
-    entrypoint: [ "python", "-m", "dug.api", "--debug" ]
-    # gunicorn --workers=2 --name=dug --bind=0.0.0.0 --timeout=100 dug.api:app
+    entrypoint: [ "gunicorn",
+                     "--workers=$API_WORKERS", "--name=dug",
+                     "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT", "dug.api:app" ]
     volumes:
       - $PWD:/home/dug/dug
     ports:
-      - 5551:5551 
+      - $API_PORT:$API_PORT
 
   #################################################################################
   ##
