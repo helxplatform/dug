@@ -1,7 +1,7 @@
 
-# Dug : digging in dark data
+# Dug: digging up dark data
 
-Dug applies semantic web and knowledge graph methods to the improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
+Dug applies semantic web and knowledge graph methods to improve the [FAIR](https://www.go-fair.org/fair-principles/)-ness of research data.
 
 As an example, [dbGaP](https://www.ncbi.nlm.nih.gov/gap/) is a rich source of metadata about biomedical knowledge derived from clinical research like the underutilized [TOPMed](https://www.nhlbiwgs.org/) data sets. A key obstacle to leveraging this knowledge is the lack of researcher tools to navigate from a set of concepts of interest towards relevant study variables. In a word, **search**. 
 
@@ -11,12 +11,14 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 ## The Dug Framework
 
-Dug uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search. It uses Monarch Initiative APIs to perform named entity recognition on natural language prose to extract ontology identifiers. It also uses Translator normalization services to find preferred identifiers and Biolink types for each extracted identifier.
+Dug's **ingest** uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search. It uses Monarch Initiative APIs to perform named entity recognition on natural language prose to extract ontology identifiers. It also uses Translator normalization services to find preferred identifiers and Biolink types for each extracted identifier. The final step of ingest is to represent the annotated data in a Neo4J graph database.
+
+Dug's **integration** phase uses Translator's Plater and Automat to generate a Reasoner Standard API compliant service and integrates that service into TranQL. This enables queries that span TOPMed, ROBOKOP, and other reasoners.
+
+Dug's **indexing & search** phase query the graph infrastructure and analyze the resulting graphs. These are used to create documents associating natural language terms with annotations and the annotated variables and studies.
 ![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
 
 Dug will then generate Translator knowledge sources for the annotated variables and present them for query via TranQL.
-
-Crawl queries TranQL for relevant knowledge graphs. Indexing creates documents based on those graphs and inserts them into a search engine. An OpenAP serves as the query endpoint for a user interface.
 
 ## Knowledge Graphs
 
@@ -62,7 +64,7 @@ In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the 
 
 ### Dug Search API
 * Presents an OpenAPI compliant REST interface
-* Protects the Elasticsearch endpoint which is not suitable for exposing 
+* Provides a scalable microservice suitable as an Internet endpoint. 
 
 ## The Dug Data Development Kit (DDK)
 
@@ -175,4 +177,12 @@ These things need attention:
   * Several issues arose around formatting, the need for a study id, and a few other things. 
   * But the overall approach seems feasible.
 * [x] Document the crawl, index, and search (API) components of Dug here.
+
+## Future
+* [ ] Refine knowledge graph queries and indexing analytics to improve result relevance.
+* [ ] Incorporate synonyms and additional NLP approaches.
+* [ ] Parallelize steps with Spark.
+* [ ] Develop a frictionless KGX interface to Spark.
+* [ ] Use Morpheus Cypher for query.
+
 
