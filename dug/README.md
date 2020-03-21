@@ -49,20 +49,24 @@ Link ingests raw dbGaP study metadata and performs semantic annotation by
 * Writing each variable with its annotations as a JSON object to a file.
 
 ### Load
+
 * Converts the annotation format written in the steps above to a KGX graph
 * Inserts that graph into a Neo4J database.
 
 In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the Neo4J to create a Translator Knowledge Provider API. That API will be integrated using TranQL with other Translator reasoners like ROBOKOP. This will allow us to build more sophisticated graphs spanning federated ontological knowledge.
 
 ### Crawl
+
 * Runs those graph queries and caches knowledge graph responses.
 
 ### Index
+
 * Consumes knowledge graphs produced by the crawl.
 * Uses connections in the graph to create documents including both full text of variable descriptions and ontology terms.
 * Produces a queryable full text index of the variable set.
 
-### Dug Search API
+### Search API
+
 * Presents an OpenAPI compliant REST interface
 * Provides a scalable microservice suitable as an Internet endpoint. 
 
@@ -70,7 +74,7 @@ In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the 
 
 Dug provides a tool chain for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant components.
 
-## Metadata Ingest, Annotation, and Knowledge Graph Creation
+## Ingest
 
 Data formats for harmonized variables appear to be in flux, hence the multiple approaches. More on this soon.
 
@@ -106,14 +110,16 @@ The last format
 * Combines the link and load phases into link.
 * Optionally allows the --index <arg> flag. This will run graph queries and index data in Elasticsearch.
  
-## Tools for Crawl & Indexing
+## Crawl & Index
+
 | Command        | Description                                                       | Example              |
 | -------------- | ----------------------------------------------------------------- | -------------------- |
 | bin/dug crawl  | Execute graph queries and accumulate knowledge graphs in response.| bin/dug crawl        |
 | bin/dug index  | Analyze crawled knowledge graphs and create search engine indices.| bin/dug index        |
 | bin/dug query  | Test the index by querying the search engine from Python.         | bin/dug query {text} |
  
-## Serving Elasticsearch
+## Search API
+
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
 | Command        | Description           | Example                              |
 | -------------- | --------------------- | ------------------------------------ |
