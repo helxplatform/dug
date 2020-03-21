@@ -22,17 +22,21 @@ Dug will then generate Translator knowledge sources for the annotated variables 
 
 ## Knowledge Graphs
 
-Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from raw data about harmonized TOPMed variables.
+Dug's core data structure is the knowledge graph. Here's a query of a COPDGene knowledge graph created by Dug from harmonized TOPMed variables.
 
 ![image](https://user-images.githubusercontent.com/306971/77009445-513c0c00-693e-11ea-83ed-722ec896d3e9.png)
 **Figure 1**: A Biolink knowledge graph of COPDGene metadata. It shows the relationship between the biological process "Sleep" and a meta variable. The highlighted node is aTOPMed meta variable or harmonized variable. It is in turn associated with variables connected to two studies in the data set. By linking additional ontological terms to the biological process sleep, we will be able to provde progressively more helpful search results rooted in curated biomedical knowledge.
+
+And one more example to illustrate the knowledge model we use to inform the search index:
+![image](https://user-images.githubusercontent.com/306971/77230029-b9ba0180-6b67-11ea-9ccf-748955aa1931.png)
+**Figure 2**: The TOPMed harmonized variable is highlighted, showing its relationships with the ontology term for Heart Failure and the Heart Failure and with a specific study variable. Several similar disease, harmonized variable, variable, study relationships are also shown.
 
 These graphs are used to create the document's well add to the search index to power full text search.
 
 In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate other semantic services using TranQL.
 
 ![image](https://user-images.githubusercontent.com/306971/77010772-d9231580-6940-11ea-9a58-00a168ce7b74.png)
-**Figure 2**: A TranQL knowledge graph query response. Integrating TOPMed harmonized variables as a Translator service called by TranQL will allow us to make more useful ontological connections as a precursor to indexing.
+**Figure 3**: A TranQL knowledge graph query response. Integrating TOPMed harmonized variables as a Translator service called by TranQL will allow us to make more useful ontological connections as a precursor to indexing.
 
 ## Approach
 
@@ -162,6 +166,7 @@ Dug's automated functional tests:
 
 Once the test is complete, a command line search shows the contents of the index:
 ![image](https://user-images.githubusercontent.com/306971/77009780-e939f580-693e-11ea-8a02-ca2fd59d4366.png)
+**Figure 4**: A command line query using the Dug Search OpenAPI to query the Elasticsearch index for a term.
 
 ## Data Formats
 
