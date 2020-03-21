@@ -74,7 +74,7 @@ In phase-1, we query Neo4J to create knowledge graphs. In phase-2 we'll use the 
 
 Dug provides a tool chain for the ingest, annotation, knowledge graph representation, query, crawling, indexing, and search of datasets with metadata. The following sections provide an overview of the relevant components.
 
-## Ingest
+### Ingest
 
 Data formats for harmonized variables appear to be in flux, hence the multiple approaches. More on this soon.
 
@@ -110,7 +110,7 @@ The last format
 * Combines the link and load phases into link.
 * Optionally allows the --index <arg> flag. This will run graph queries and index data in Elasticsearch.
  
-## Crawl & Index
+### Crawl & Index
 
 | Command        | Description                                                       | Example              |
 | -------------- | ----------------------------------------------------------------- | -------------------- |
@@ -118,7 +118,7 @@ The last format
 | bin/dug index  | Analyze crawled knowledge graphs and create search engine indices.| bin/dug index        |
 | bin/dug query  | Test the index by querying the search engine from Python.         | bin/dug query {text} |
  
-## Search API
+### Search API
 
 Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
 | Command        | Description           | Example                              |
