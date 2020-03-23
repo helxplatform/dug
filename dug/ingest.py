@@ -15,6 +15,7 @@ from kgx import NeoTransformer, JsonTransformer
 from neo4jrestclient.client import GraphDatabase
 from neo4jrestclient import client
 from typing import List, Dict
+import hashlib
 
 logger = logging.getLogger (__name__)
 
@@ -261,9 +262,11 @@ class TOPMedStudyAnnotator:
         :param category: The list of Biolink categories relating to the edge.
         :returns: Returns and edge.
         """
+        edge_id = hashlib.md5(f'{subj}{pred}{obj}'.encode('utf-8')).hexdigest()
         return {
             "subject"     : subj,
             "predicate"   : pred,
+            "id": edge_id,
             "edge_label"  : edge_label if len(edge_label) > 0 else "n/a",
             "object"      : obj,
             "provided_by" : "renci.bdc.semanticsearch.annotator",
