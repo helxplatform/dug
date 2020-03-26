@@ -36,13 +36,17 @@ RUN chown -R $UID:$UID $HOME
 # Install source code and required packages.
 # Run dug to also install KGX.
 RUN \
-        apk add git && \
+        apk add curl git && \
         apk add --no-cache --virtual build-dependencies $PACKAGES && \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
         pip install --upgrade pip && \
         pip install --no-cache-dir -r requirements.txt && \
         bin/dug dev init  && \
+        find . -type f -exec chmod 664 {} \; && \
+        find . -type f -iname *.py -exec chmod 775 {} \; && \
+        find bin -type f -exec chmod 775 {} \; && \
+        find . -type d -exec chmod 775 {} \; && \
         rm -rf /var/cache/apk/* && \
 	apk del git
 
