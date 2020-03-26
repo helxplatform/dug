@@ -9,7 +9,7 @@
 ##       usage: bin/dug link <metadata>
 ##
 ##     load: Turn the data into a knowledge graph and
-##           insert it into a database. 
+##           insert it into a database.
 ##       usage: bin/dug load <metadata>_tagged.json
 ##
 ##   Crawl & Index:
@@ -66,7 +66,7 @@ dev () {
     # This must be run once and only once before running the stack.
     # It generates a docker-compose environment file, including
     # passwords for the services.
-    DUGENV=$DUG_HOME/docker/.env    
+    DUGENV=$DUG_HOME/docker/.env
     init () {
         HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
     }
@@ -86,7 +86,7 @@ dev () {
 
 if [ "$(echo $* | grep -c 'dev init')" == 0 ]; then
    echo setting up dev
-   dev conf        
+   dev conf
 fi
 
 ### INGEST:
@@ -177,7 +177,7 @@ test () {
      # API must be running.
 
      # Delete the test index
-     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@localhost:9200/test
+     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
 
      # Ingest, annotate, load knowledge graph.
      bin/dug link data/dd.xml
