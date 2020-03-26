@@ -7,7 +7,8 @@
 ## Configure
 ```
 python3.7 -m venv search
-pip install -r requiements.txt
+source search/bin/activate
+pip install -r requirements.txt
 ```
 
 ## Run
