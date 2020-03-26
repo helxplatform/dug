@@ -36,7 +36,7 @@ These graphs are used to create the document's well add to the search index to p
 In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate other semantic services using TranQL.
 
 ![image](https://user-images.githubusercontent.com/306971/77681466-bcec2d80-6f6b-11ea-93c5-87eee57d4b66.png)
-**Figure 3**: A TranQL knowledge graph query response. Integrating TOPMed harmonized variables as a Translator service called by TranQL allows us to query the federation of Translator ontological connections as a precursor to indexing. This includes chemical, phenotypic, disease, cell type, genetic, and other ontologies from sources like [ROBOKOP](https://researchsoftwareinstitute.github.io/data-translator/apps/robokop) as well as clinical aggregate data from sources like [ICEES](https://researchsoftwareinstitute.github.io/data-translator/apps/icees).
+**Figure 3**: A TranQL knowledge graph query response. Integrating TOPMed harmonized variables as a Translator service called by TranQL allows us to query the federation of Translator ontological connections as a precursor to indexing. This includes chemical, phenotypic, disease, cell type, genetic, and other ontologies from sources like [ROBOKOP](https://researchsoftwareinstitute.github.io/data-translator/apps/robokop) as well as clinical aggregate data from sources like [ICEES](https://researchsoftwareinstitute.github.io/data-translator/apps/icees). The image above shows a query linking cholesterol to "LDL in Blood" a harmonized TOPMed variable. That variable is, in turn, linked to source variables and each of those is linked to its source study.
 
 ## Approach
 
