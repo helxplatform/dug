@@ -309,11 +309,11 @@ spec:
             configMapKeyRef:
               name: dug-configmap
               key: ELASTIC_API_HOST
-        - name: ELASTIC_PORT
+        - name: ELASTIC_API_PORT
           valueFrom:
             configMapKeyRef:
               name: dug-configmap
-              key: ELASTIC_PORT
+              key: ELASTIC_API_PORT
         - name: ELASTIC_USER
           valueFrom:
             configMapKeyRef:

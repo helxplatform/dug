@@ -98,7 +98,7 @@ fi
 #############################################################
 link () {
     if [ $(echo "$*" | grep -c "_variables_") == 1 ]; then
-        ELASTIC_API_HOST=localhost python -m  dug.ingest --tagged $*
+        ELASTIC_API_HOST=${ELASTIC_API_HOST-"localhost"} python -m dug.ingest --tagged $*
     else
         python -m dug.ingest --annotate $*
     fi

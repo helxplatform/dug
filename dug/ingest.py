@@ -36,13 +36,13 @@ class Debreviator:
         for key, value in self.decoder.items ():
             text = text.replace (key, value)
         return text
-    
+
 class TOPMedStudyAnnotator:
     """
-    Annotate TOPMed study data with semantic knowledge graph linkages. 
-    
+    Annotate TOPMed study data with semantic knowledge graph linkages.
+
     """
-    
+
     def __init__(self, config: Config):
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
@@ -51,9 +51,9 @@ class TOPMedStudyAnnotator:
         self.password = config['password']
         self.redis_host = config['redis_host']
         self.redis_port = config['redis_port']
-        self.redis_password = config['redis_password']        
+        self.redis_password = config['redis_password']
         self.debreviator = Debreviator ()
-        
+
     def load_data_dictionary (self, input_file : str) -> Dict:
         """
         This loads a data dictionary. It's unclear if this will be useful going forwar. But for now,
@@ -72,7 +72,7 @@ class TOPMedStudyAnnotator:
 
     def load_csv (self, input_file : str) -> Dict:
         """
-        Load a CSV. We had a CSV representation of some harmonized variables. This  is likely 
+        Load a CSV. We had a CSV representation of some harmonized variables. This  is likely
         superseded by the approach below. Pending confirmation to delete this code.
         """
         response = []
@@ -101,7 +101,7 @@ class TOPMedStudyAnnotator:
           Presumes a harmonized variable list as a CSV file as input.
           A naming convention such that <prefix>_variables_<version>.csv will be the form of the filename.
           An adjacent file called <prefix>_tags_<version.json will exist.
-        
+
           :param input_file: A list of study variables linked to tags, studies, and other relevant data.
           :returns: Returns variables, a list of parsed variable dictionaries and tags, a list of parsed
                     tag definitions linked to the variabels.
@@ -140,25 +140,25 @@ class TOPMedStudyAnnotator:
         return variables, tags
 
     def normalize (self, http_session, curie, url, variable) -> None:
-        """ Given an identifier (curie), use the Translator SRI node normalization service to 
-            find a preferred identifier, equivalent identifiers, and biolink model types for the node. 
-        
+        """ Given an identifier (curie), use the Translator SRI node normalization service to
+            find a preferred identifier, equivalent identifiers, and biolink model types for the node.
+
             :param http_session: A requests session to use for HTTP requests.
             :param curie: The identifier to normalize.
             :param url: The URL to use.
             :param variable: The variable in which to record the normalized identifier.
         """
-        
+
         """ Normalize the identifier with respect to the BioLink Model. """
         try:
             normalized = http_session.get(url).json ()
-            
+
             """ Record normalized results. """
             normalization = normalized.get(curie, {})
             preferred_id = normalization.get ("id", {})
             equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
             biolink_type = normalization.get ("type", [])
-            
+
             """ Build the response. """
             if 'identifier' in preferred_id:
                 variable['identifiers'][preferred_id['identifier']] = {
@@ -170,7 +170,7 @@ class TOPMedStudyAnnotator:
                 logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
         except json.decoder.JSONDecodeError as e:
             logger.error (f"JSONDecoderError normalizing curie: {curie}")
-                
+
     def annotate (self, variables : Dict) -> Dict:
         """
         This operates on a dbGaP data dictionary which is
@@ -185,9 +185,9 @@ class TOPMedStudyAnnotator:
           normalize the resulting identifiers using the Translator normalization API
 
           :param variables: A dictionary of variables.
-          :returns: A dictionary of annotted variables.          
+          :returns: A dictionary of annotted variables.
         """
-        
+
         """
         Initialize and reuse a cached HTTP session for more efficient connection management.
         Use the Redis backend for requests-cache to store results accross executions
@@ -205,7 +205,7 @@ class TOPMedStudyAnnotator:
             logger.debug (variable)
             try:
                 """
-                If the variable has an Xref identifier, normalize it. 
+                If the variable has an Xref identifier, normalize it.
                 This data is only in the CSV formatted harmonized variable data.
                 If that format goes away, delete this.
                 """
@@ -214,18 +214,18 @@ class TOPMedStudyAnnotator:
                                     variable['xref'],
                                     f"{self.normalizer}{variable['xref']}",
                                     variable)
-                    
+
                 """ Annotate ontology terms in the text. """
                 if not 'description' in variable:
                     logger.warn (f"this variable has no description: {json.dumps(variable, indent=2)}")
                     continue
-                
+
                 description = variable['description'].replace ("_", " ")
                 description = self.debreviator.decode (description)
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
-                
+
                 """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
                     for token in span.get('token',[]):
@@ -251,7 +251,7 @@ class TOPMedStudyAnnotator:
 
         :param graph: A KGX formatted graph as dictionary.
         """
-        
+
         """ Load the knowledge graph into KGX and emit to Neo4J. """
         json_transformer = JsonTransformer ()
         json_transformer.load (graph)
@@ -259,9 +259,9 @@ class TOPMedStudyAnnotator:
                              self.db_url,
                              self.username,
                              self.password)
-        db.save_with_unwind()        
+        db.save_with_unwind()
         db.neo4j_report()
-        
+
     def make_edge (self,
                    subj : str,
                    pred : str,
@@ -271,7 +271,7 @@ class TOPMedStudyAnnotator:
     ):
         """
         Create an edge between two nodes.
-        
+
         :param subj: The identifier of the subject.
         :param pred: The predicate linking the subject and object.
         :param obj: The object of the relation.
@@ -290,9 +290,9 @@ class TOPMedStudyAnnotator:
             "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "OBAN:association",
             "category" : category
         }
-    
+
     def make_tagged_kg (self, variables : Dict, tags : Dict) -> Dict:
-        """ Make a Translator standard knowledge graph representing 
+        """ Make a Translator standard knowledge graph representing
         tagged study variables.
         :param variables: The variables to model.
         :param tags: The tags characterizing the variables.
@@ -340,7 +340,7 @@ class TOPMedStudyAnnotator:
                     pred="OBO:RO_0002434",
                     obj=tag_id,
                     edge_label='association',
-                    category=[ "association" ]))                        
+                    category=[ "association" ]))
 
         """ Create nodes and edges to model variables, studies, and their
         relationships to tags. """
@@ -405,7 +405,7 @@ class TOPMedStudyAnnotator:
         }
         edges = graph['edges']
         nodes = graph['nodes']
-        
+
         for index, variable in enumerate(annotations):
             study_id = variable['study_id']
             if index == 0:
@@ -414,7 +414,7 @@ class TOPMedStudyAnnotator:
                     "id" : study_id,
                     "category" : [ "clinical_trial" ]
                 })
-                
+
             """ connect the study and the variable. """
             edges.append (self.make_edge (
                 subj=variable['variable_id'],
@@ -428,7 +428,7 @@ class TOPMedStudyAnnotator:
                 pred="OBO:RO_0002434",
                 obj=variable['variable_id'],
                 category=['has_part']))
-            
+
             """ a node for the variable. """
             nodes.append ({
                 "id" : variable['variable_id'],
@@ -455,7 +455,7 @@ class TOPMedStudyAnnotator:
                     "category" : metadata['type']
                 })
         return graph
-    
+
 class GraphDB:
     def __init__(self, conf):
         self.conf = conf
@@ -464,26 +464,27 @@ class GraphDB:
                                  password=conf['password'])
     def query (self, query):
         return self.gdb.query(query, data_contents=True)
-    
+
 def main ():
-    """ 
-    Configure an annotator. 
     """
+    Configure an annotator.
+    """
+    db_url_default = "http://" + os.environ.get('NEO4J_HOST', 'localhost') + ":" + os.environ.get('NEO4J_PORT', '7474') + "/db/data"
     config = {
         'annotator'      : "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
         'normalizer'     : "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
         'password'       : os.environ['NEO4J_PASSWORD'],
         'username'       : 'neo4j',
-        'db_url'         : "http://localhost:7474/db/data",
+        'db_url'         : db_url_default,
         'redis_host'     : os.environ.get('REDIS_HOST', 'localhost'),
         'redis_port'     : os.environ.get('REDIS_PORT', 6379),
         'redis_password' : os.environ.get('REDIS_PASSWORD', ''),
     }
-    
+
     parser = argparse.ArgumentParser(description='Load edges and nodes into Neo4j via kgx')
     parser.add_argument('--load', help='annotation file to load via kgx')
     parser.add_argument('--annotate', help='annotate TOPMed data dictionary file', default=None)
-    parser.add_argument('--db-url', help='database url', default='http://localhost:7474/db/data')
+    parser.add_argument('--db-url', help='database url', default=db_url_default)
     parser.add_argument('--db-username', help='database username', default='neo4j')
     parser.add_argument('--db-password', help='database password', default=os.environ['NEO4J_PASSWORD'])
     parser.add_argument('--tagged', help='annotate tagged variables')
@@ -498,7 +499,7 @@ def main ():
 
     if args.debug:
         logging.basicConfig(level=logging.DEBUG)
-       
+
     if args.load:
         """ Load an annotated data dictionary and write to a graph database. """
         with open(args.load, 'r') as stream:
@@ -518,7 +519,7 @@ def main ():
 
         """ Annotate an input file using the MonarchInitiative SciGraph named entity extractor and annotator. """
         response = annotator.annotate (variables)
-        
+
         """ Write the annotated variables. """
         output_file = args.annotate.\
                       replace ('.xml', '_tagged.json').\
@@ -577,7 +578,7 @@ def main ():
                             else:
                                 doc['id'] = node_id
                                 text.append (node['name'])
-                                
+
                         doc['name'] = text
                         logger.debug (f"{json.dumps(doc, indent=2)}")
 
@@ -587,7 +588,5 @@ def main ():
                             doc=doc,
                             doc_id=doc['id'])
 
-if __name__ == '__main__':    
+if __name__ == '__main__':
     main ()
-
-
