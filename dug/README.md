@@ -132,7 +132,7 @@ Exposing the Elasticsearch interface to the internet is strongly discouraged for
 To call the API endpoint using curl:
 | Command             | Description           | Example                   |
 | ------------------- | --------------------- | ------------------------- |
-| bin/dug query_api   | Call the REST API.    | bin/dug query_api <query> |
+| bin/dug query_api   | Call the REST API.    | bin/dug query_api {query} |
 
 ## Development
 
