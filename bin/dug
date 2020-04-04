@@ -170,34 +170,39 @@ stack () {
 #############################################################
 test () {
 
-     # Prerequisites: stack must be running.
-     # API must be running.
+    set -e
+    # Prerequisites:
+    #   * Stack must be running via "bin/dug stack".
+    #   * If running from a host pointing at docker-compose, must have
+    #     a docker/.env.dev file with all hostnames set to localhost.
+    
+    # Delete the test index
+    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
+    
+    # Ingest, annotate, load knowledge graph.
+    bin/dug link data/dd.xml
+    bin/dug load data/dd_tagged.json
+    
+    # Crawl model queries, create index, test index.
+    bin/dug crawl
+    bin/dug index
+    
+    # The best format for variables we have is currently
+    # implemented so that, if we pass the additional
+    # --index <arg> flag, it will use the neo4j
+    # database to drive queries, create knoweldge graphs,
+    # create documents, and index those for search.
+    bin/dug link data/topmed_variables_v1.0.csv --index x
+    sleep 4
+    
+    bin/dug query coug # direct to search engine
+    
+    # Query via API
+    bin/dug query_api coug
+    bin/dug query_api copd
+    bin/dug query_api sleep
 
-     # Delete the test index
-     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
-
-     # Ingest, annotate, load knowledge graph.
-     bin/dug link data/dd.xml
-     bin/dug load data/dd_tagged.json
-
-     # Crawl model queries, create index, test index.
-     bin/dug crawl
-     bin/dug index
-
-     # The best format for variables we have is currently
-     # implemented so that, if we pass the additional
-     # --index <arg> flag, it will use the neo4j
-     # database to drive queries, create knoweldge graphs,
-     # create documents, and index those for search.
-     bin/dug link data/topmed_variables_v1.0.csv --index x
-     sleep 4
-
-     bin/dug query coug # direct to search engine
-
-     # Query via API
-     bin/dug query_api coug
-     bin/dug query_api copd
-     bin/dug query_api sleep
+    set +e
 }
 
 #############################################################
