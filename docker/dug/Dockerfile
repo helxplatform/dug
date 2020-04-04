@@ -7,7 +7,9 @@ FROM python:3.7.6-alpine
 
 # Building numpy can get complicated
 # https://www.freecodecamp.org/news/building-python-data-science-container-using-docker/
-ENV PACKAGES="\
+ENV PACKAGES=""
+
+ENV PACKAGES_OLD="\
     dumb-init \
     musl \
     libc6-compat \
@@ -35,13 +37,14 @@ RUN chown -R $UID:$UID $HOME
 
 # Install source code and required packages.
 # Run dug to also install KGX.
+COPY api-requirements.txt .
 RUN \
         apk add curl gettext git && \
         apk add --no-cache --virtual build-dependencies $PACKAGES && \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
         pip install --upgrade pip && \
-        pip install --no-cache-dir -r requirements.txt && \
+	pip install --no-cache-dir -r ../api-requirements.txt && \
         bin/dug dev init  && \
         find . -type f -exec chmod 664 {} \; && \
         find . -type f -iname *.py -exec chmod 775 {} \; && \
@@ -49,6 +52,7 @@ RUN \
         find . -type d -exec chmod 775 {} \; && \
         rm -rf /var/cache/apk/* && \
 	apk del git
+#         pip install --no-cache-dir -r requirements.txt && \
 
 USER $USER
 

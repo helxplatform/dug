@@ -54,6 +54,7 @@
 # Configure the PYTHONPATH
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DUG_HOME=$( dirname $DIR )
+DUGENV=$DUG_HOME/docker/.env
 export PYTHONPATH=$DUG_HOME:$DUG_HOME/kgx
 
 # Ensure the KGX library is installed
@@ -66,28 +67,20 @@ dev () {
     # This must be run once and only once before running the stack.
     # It generates a docker-compose environment file, including
     # passwords for the services.
-    DUGENV=$DUG_HOME/docker/.env
-    init () {
-        HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
-    }
-    # This must be run before each time a component connects to the stack.
-    # It reads configuration settings for the stack, including passwords
-    # and sets them as environment variables so the application will have access to them.
-    conf ()  {
-        if [ ! -f $DUGENV ]; then
-            echo missing $DUGENV - will probably need that.
-            exit 0 #return
-        fi
-        source $DUGENV
-        export $(cut -d= -f1 $DUGENV)
+     init () {
+    	if [[ ! -f $DUGENV ]]; then
+	    echo "generate .env file..."
+	    HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
+	fi
+
+	# This must be run before each time a component connects to the stack.
+	# It reads configuration settings for the stack, including passwords
+	# and sets them as environment variables so the application will have access to them.
+        source $DUGENV.dev
+        export $(cut -d= -f1 $DUGENV.dev)
     }
     $*
 }
-
-if [ "$(echo $* | grep -c 'dev init')" == 0 ]; then
-   echo setting up dev
-   dev conf
-fi
 
 ### INGEST:
 
@@ -163,7 +156,11 @@ api () {
 ##
 #############################################################
 stack () {
-    docker-compose -f $DUG_HOME/docker/docker-compose.yaml up $*
+    source $DUGENV
+    export $(cut -d= -f1 $DUGENV)
+    HOSTNAME=$HOSTNAME docker-compose \
+	    --env-file $DUG_HOME/docker/.env \
+	    -f $DUG_HOME/docker/docker-compose.yaml up $*
 }
 
 #############################################################
@@ -194,6 +191,7 @@ test () {
      # create documents, and index those for search.
      bin/dug link data/topmed_variables_v1.0.csv --index x
      sleep 4
+
      bin/dug query coug # direct to search engine
 
      # Query via API
@@ -214,6 +212,8 @@ query_api () {
            --request POST \
            http://localhost:5551/search
 }
+
+dev init
 
 $*
 
