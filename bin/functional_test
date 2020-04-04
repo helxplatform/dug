@@ -10,7 +10,8 @@
 ##   Executes tests
 ##   Shuts down the stack
 ##
-##   Tested with docker-compose version 1.25.2, build 698e2846
+##   Prerequisites:
+##     Tested with docker-compose version 1.25.2, build 698e2846
 ##
 ###########################################################################
 set -e
@@ -47,23 +48,35 @@ wait_for_elastic () {
     >&2 echo "Elastic Search is up"
 }
 
-mkdir -p test_dir
-cd test_dir
+execute_test () {
+    # Create a fresh test environment.
+    rm -rf test_dir
+    mkdir -p test_dir
+    cd test_dir
+    
+    # Get the  latest source.
+    git clone git@github.com:helxplatform/dug.git
+    cd dug
+    
+    # Configure a fresh Python3 virtual environment.
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    
+    # Start all services.
+    bin/dug stack up &
+    
+    # Wait for service availability.
+    wait_for_elastic localhost:9200
+    
+    # Execute tests.
+    bin/dug test
+    
+    # Shut down all services.
+    bin/dug stack down
+}
 
-git clone git@github.com:helxplatform/dug.git
-cd dug
-
-# Start all services.
-bin/dug stack up &
-
-# Wait for service availability.
-wait_for_elastic localhost:9200
-
-# Execute tests.
-bin/dug test
-
-# Shut down all services.
-bin/dug stack down
+execute_test
 
 exit 0
 
