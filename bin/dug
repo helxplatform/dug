@@ -161,12 +161,11 @@ api () {
 ##
 #############################################################
 stack () {
-    set -x
     source $DUGENV
     export $(cut -d= -f1 $DUGENV)
     HOSTNAME=$HOSTNAME docker-compose \
 	    --env-file $DUG_HOME/docker/.env \
-	    -f $DUG_HOME/docker/docker-compose.yaml up $*
+	    -f $DUG_HOME/docker/docker-compose.yaml -p dug $*
 }
 
 #############################################################
