@@ -142,15 +142,14 @@ A docker-compose is provided that runs four services:
 * Elasticsearch
 * The Dug search OpenAPI
 
+This system can be started with the following command:
+
 | Command             | Description                | Example          |
 | ------------------- | -------------------------- | ---------------- |
-| bin/dug dev init    | Generate docker/.env config| bin/dug dev init |
 | bin/dug stack       | Runs all services          | bin/dug stack    |
-| bin/dug dev conf    | Configure environment vars | bin/dug dev conf |
 
-* Init must be run exactly once before starting the docker-compose the first time.
-* Delete docker/db/* and re-run to reset everything.
-* Conf must be run before any clients that connect to the service to set up environment variables.
+**Developers:** Internal to bin/dug, an environment file is automatically created. That file is in `docker/.env`.
+If you are running in development, and are not using a public IP address and hostname, you'll want to create a separate .env file to allow programs to connect to the docker containers as services. This matters if, for example, you want to run bin/test, as the clients in that test need to know how to connect to each of the services they call. Copy the generated docker/.env to docker/.env.dev. Change all hostnames to `localhost`. That should do it. Be sure to keep the generated passwords from the generated .env the same. 
 
 ## Testing
 
