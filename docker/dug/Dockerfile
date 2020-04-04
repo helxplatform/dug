@@ -9,6 +9,9 @@ FROM python:3.7.6-alpine
 # https://www.freecodecamp.org/news/building-python-data-science-container-using-docker/
 ENV PACKAGES=""
 
+# To build a container able to run processes other than search api that use things like
+# KGX, will likely need to do the larger dependency set. This takes a very long time.
+# Need to debug dependency set and minimize.
 ENV PACKAGES_OLD="\
     dumb-init \
     musl \
@@ -52,7 +55,6 @@ RUN \
         find . -type d -exec chmod 775 {} \; && \
         rm -rf /var/cache/apk/* && \
 	apk del git
-#         pip install --no-cache-dir -r requirements.txt && \
 
 USER $USER
 
