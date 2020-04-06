@@ -3,66 +3,37 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.7.6-alpine
-
-# Building numpy can get complicated
-# https://www.freecodecamp.org/news/building-python-data-science-container-using-docker/
-ENV PACKAGES=""
-
-# To build a container able to run processes other than search api that use things like
-# KGX, will likely need to do the larger dependency set. This takes a very long time.
-# Need to debug dependency set and minimize.
-ENV PACKAGES_OLD="\
-    dumb-init \
-    musl \
-    libc6-compat \
-    linux-headers \
-    build-base \
-    bash \
-    git \
-    ca-certificates \
-    freetype \
-    libgfortran \
-    libgcc \
-    libstdc++ \
-    openblas \
-    tcl \
-    tk \
-"
+FROM python:3.7.6-slim 
 
 # Least privilege: Run as a non-root user.
 ENV USER dug
 ENV HOME /home/$USER
 WORKDIR $HOME
 ENV UID 1000
-RUN adduser -D --home $HOME --shell /bin/bash --uid $UID $USER
-RUN chown -R $UID:$UID $HOME
+RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER && \
+   chown -R $UID:$UID $HOME
 
 # Install source code and required packages.
 # Run dug to also install KGX.
-COPY api-requirements.txt .
 RUN \
-        apk add curl gettext git && \
-        apk add --no-cache --virtual build-dependencies $PACKAGES && \
+    apt update && \
+        apt-get install -y curl gettext git gcc && \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
         pip install --upgrade pip && \
-	pip install --no-cache-dir -r ../api-requirements.txt && \
-        bin/dug dev init  && \
+	pip install --no-cache-dir -r requirements.txt && \
         find . -type f -exec chmod 664 {} \; && \
         find . -type f -iname *.py -exec chmod 775 {} \; && \
         find bin -type f -exec chmod 775 {} \; && \
         find . -type d -exec chmod 775 {} \; && \
         rm -rf /var/cache/apk/* && \
-	apk del git
+	apt-get remove -y --purge  git
 
 USER $USER
-
 ENV PYTHONPATH $HOME/dug
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
 ENV COMMAND=crawl
-
 WORKDIR $HOME/dug
 
 # Define the generic search entrypoint providing elasticsearch connectivity information.

@@ -25,7 +25,7 @@ services:
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT", "dug.api:app" ]
 #    entrypoint: [ "python", "-m", "dug.api", "--port", "5551" ]
 #    volumes:
-#      - $PWD/..:/home/dug/dug
+#      - $PWD:/home/dug/dug
     ports:
       - $API_PORT:$API_PORT
 
