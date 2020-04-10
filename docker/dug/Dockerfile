@@ -16,7 +16,7 @@ RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER && 
 # Install source code and required packages.
 # Run dug to also install KGX.
 RUN \
-    apt update && \
+        apt update && \
         apt-get install -y curl gettext git gcc && \
         git clone https://github.com/helxplatform/dug.git && \
         cd dug && \
@@ -27,7 +27,7 @@ RUN \
         find bin -type f -exec chmod 775 {} \; && \
         find . -type d -exec chmod 775 {} \; && \
         rm -rf /var/cache/apk/* && \
-	apt-get remove -y --purge  git
+        apt-get remove -y --purge  git
 
 USER $USER
 ENV PYTHONPATH $HOME/dug
