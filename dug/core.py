@@ -95,7 +95,7 @@ class Search:
             id=doc_id,
             body=doc)
             
-    def search (self, index, query, fuzziness=1):
+    def search (self, index, query, offset=0, size=None, fuzziness=1):
         query = {
             'match': {
                 'name' : {
@@ -104,10 +104,17 @@ class Search:
                 }
             }
         }
-        return self.es.search(
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body)
+        search_results = self.es.search(
             index=index,
-            body=json.dumps({ 'query': query }),
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'])
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
 
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
