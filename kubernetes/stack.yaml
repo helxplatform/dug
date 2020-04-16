@@ -392,4 +392,5 @@ spec:
     targetPort: 5551
   selector:
     app: dug
-  # type: LoadBalancer
+  type: ClusterIP
+
