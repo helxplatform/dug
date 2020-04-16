@@ -243,6 +243,8 @@ spec:
         #   value: "redlight"
         - name: REDIS_DISABLE_COMMANDS
           value: "FLUSHDB,FLUSHALL"
+        - name: REDIS_PORT
+          value: "6379"
         volumeMounts:
         - mountPath: /bitnami/redis/data
           name: redis
@@ -390,4 +392,4 @@ spec:
     targetPort: 5551
   selector:
     app: dug
-  type: LoadBalancer
+  # type: LoadBalancer

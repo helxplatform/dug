@@ -11,7 +11,7 @@ ENV HOME /home/$USER
 WORKDIR $HOME
 ENV UID 1000
 RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER && \
-   chown -R $UID:$UID $HOME
+        chown -R $UID:$UID $HOME
 
 # Install source code and required packages.
 # Run dug to also install KGX.
@@ -26,8 +26,8 @@ RUN \
         find . -type f -iname *.py -exec chmod 775 {} \; && \
         find bin -type f -exec chmod 775 {} \; && \
         find . -type d -exec chmod 775 {} \; && \
-        rm -rf /var/cache/apk/* && \
-        apt-get remove -y --purge  git
+        chown -R $UID:$UID $HOME && \
+        rm -rf /var/cache/apk/*
 
 USER $USER
 ENV PYTHONPATH $HOME/dug
