@@ -69,7 +69,7 @@ spec:
               mountPath: /scripts/sysctl.sh
               subPath: sysctl.sh
       containers:
-      - image: bitnami/elasticsearch:7.6.1
+      - image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
         imagePullPolicy: Always
         name: elasticsearch
         env:
@@ -81,6 +81,7 @@ spec:
               key: ELASTIC_PASSWORD
         - name: discovery.type
           value: "single-node"
+        - xpack.security.enabled = true
         volumeMounts:
         - mountPath: /bitnami/elasticsearch/data
           name: elasticsearch

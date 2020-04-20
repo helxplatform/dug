@@ -23,4 +23,7 @@ spec:
                 value: "elasticsearch"
               - name: "ELASTIC_API_PORT"
                 value: 9200
+          - envFrom:
+              - secretRef:
+                  name: dug-secrets
           restartPolicy: OnFailure
