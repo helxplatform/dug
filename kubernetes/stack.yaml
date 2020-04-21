@@ -317,7 +317,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: dug-configmap
-              key: ELASTIC_API_PORT
+              key: ELASTIC_PORT
         - name: ELASTIC_USER
           valueFrom:
             configMapKeyRef:

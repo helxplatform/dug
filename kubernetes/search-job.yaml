@@ -17,7 +17,7 @@ spec:
               privileged: true
           containers:
           - name: search
-            image: heliumdatastage/search:latest
+            image: heliumdatastage/dug:latest
             env:
               - name: "ELASTIC_API_HOST"
                 value: "elasticsearch"
