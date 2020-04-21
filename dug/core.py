@@ -125,7 +125,7 @@ class Search:
                 traceback.print_exc ()
                 
     def crawl (self):
-        monarch_endpoint = "https://monarchinitiative.org/searchapi"
+        monarch_endpoint = "https://monarchinitiative.org/searchapi"        
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -139,10 +139,15 @@ class Search:
 
                 ''' Resolve the phenotype to identifiers. '''
                 monarch_query = f"{monarch_endpoint}/{phenotype}"
+                monarch_query = f"https://api.monarchinitiative.org/api/search/entity/{phenotype}?start=0&rows=25&highlight_class=hilite&boost_q=category%3Agenotype%5E-10&boost_q=category%3Avariant%5E-35&boost_q=category%3Apublication%5E-10&prefix=-OMIA&min_match=67%25&category=gene&category=variant&category=genotype&category=phenotype&category=disease&category=goterm&category=pathway&category=anatomy&category=substance&category=individual&category=case&category=publication&category=model&category=anatomical+entity"
                 accept = [ "EFO", "HP" ]
+                logger.debug (f"monarch query: {monarch_query}")
+                #response = requests.get (monarch_query)
+                #logger.debug (f"   {response.text}")
+                #response = response.json ()                
                 response = requests.get (monarch_query).json ()                
-                for doc in response.get('response',[]).get ('docs',[]):
-                    label = doc['label_eng']
+                for doc in response.get('docs',[]): #.get ('docs',[]):
+                    label = doc.get('label_eng',['N/A'])[0]
                     identifier = doc['id']
 
                     if not any(map(lambda v: identifier.startswith(v), accept)):
@@ -214,7 +219,7 @@ if __name__ == '__main__':
                         default=os.environ.get('ELASTIC_API_PORT', 9200))
     args = parser.parse_args ()
     
-    logging.basicConfig(level=logging.INFO)    
+    logging.basicConfig(level=logging.DEBUG)    
     index = "test"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,

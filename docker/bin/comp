@@ -1,20 +1,78 @@
 #!/bin/bash
 
-org=heliumdatastage
+repo=heliumdatastage
 
+function get_ver () {
+    if [ ! -f "bin/.ver" ]
+    then
+        echo "The version file .ver does not exist."
+        echo "Please check for or re-create bin/.ver"
+        return 255
+    fi
+
+    ver=$(< bin/.ver)
+    echo "$ver"
+    return 0
+}
 build () {
     local mod=$1
     if [ -z "$mod" ]; then
         echo module name required
     fi
-    docker build --no-cache $mod -t $org/$mod
+    newversion=$(get_ver)
+    rc=$?
+    if [ $rc -eq 255 ]
+    then
+        echo "Version file .ver not found."
+        echo "Please check for or re-create bin/.ver"
+    fi
+    docker build --no-cache $mod -t $repo/$mod:latest -t $repo/$mod:$newversion
 }
 push () {
     local mod=$1
     if [ -z "$mod" ]; then
         echo module name required
     fi
-    docker push $org/$mod
+    vers=$(get_ver)
+    rc=$?
+    if [ $rc -eq 255 ]
+    then
+        echo "Version file .ver not found."
+        echo "Please check for or re-create bin/.ver"
+    fi
+    docker push $repo/$mod:latest
+    docker push $repo/$mod:$vers
+}
+clean () {
+    images () {
+        pat=$1
+        if [ -z "$pat" ]; then
+            pat=$repo
+        fi
+        echo $pat
+        for i in $(sudo docker images | grep $pat | awk '{ print $3 }' | grep -vi image ); do echo $i; sudo docker rmi -f $i; done
+    }
+    $*
+}
+all () {
+    for mod in $(ls -d */ | grep -v bin | sed s,/,,g); do
+        build $mod
+        push $mod
+    done
+}
+kill () {
+    local mod=$1
+    if [ -z "$mod" ]; then
+        echo module name required
+    fi
+    docker kill -s 9 $mod
+}
+shell () {
+        local mod=$1
+    if [ -z "$mod" ]; then
+        echo module name required
+    fi
+    docker exec -it $mod bash
 }
 
 $*

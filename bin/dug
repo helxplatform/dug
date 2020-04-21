@@ -54,6 +54,7 @@
 # Configure the PYTHONPATH
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DUG_HOME=$( dirname $DIR )
+DUGENV=$DUG_HOME/docker/.env
 export PYTHONPATH=$DUG_HOME:$DUG_HOME/kgx
 
 # Ensure the KGX library is installed
@@ -61,33 +62,30 @@ if [ ! -d $DUG_HOME/kgx ]; then
     git clone https://github.com/NCATS-Tangerine/kgx.git $DUG_HOME/kgx
 fi
 
-# Development tools.
+# Development environment.
 dev () {
-    # This must be run once and only once before running the stack.
-    # It generates a docker-compose environment file, including
-    # passwords for the services.
-    DUGENV=$DUG_HOME/docker/.env
     init () {
-        HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
-    }
-    # This must be run before each time a component connects to the stack.
-    # It reads configuration settings for the stack, including passwords
-    # and sets them as environment variables so the application will have access to them.
-    conf ()  {
-        if [ ! -f $DUGENV ]; then
-            echo missing $DUGENV - will probably need that.
-            exit 0 #return
-        fi
-        source $DUGENV
-        export $(cut -d= -f1 $DUGENV)
+    	if [[ ! -f $DUGENV ]]; then
+            # This must be run once and only once before running the stack.
+            # It generates a docker-compose environment file, including
+            # passwords for the services. This is used when executing docker-compose.
+	    echo "generate .env file..."
+	    HOSTNAME=$HOSTNAME RANDOM=$RANDOM envsubst < $DUG_HOME/docker/.env.template > $DUGENV
+
+            # The .env.template used above specifies service hostnames consistent with the ones
+            # used inside the docker-compose specification. Here, we create a parallel environment
+            # file with hostnames all set to localhost but keeping other settings the same. This allows
+            # tools we run in development to connect to services runnig in compose.
+	    echo "generate .env.dev file..."
+            cat $DUGENV | sed -e "s,neo4j,localhost,g" \
+                              -e "s,elasticsearch,localhost,g" \
+                              -e "s,redis,localhost,g" > $DUGENV.dev
+	fi
+        source $DUGENV.dev
+        export $(cut -d= -f1 $DUGENV.dev)
     }
     $*
 }
-
-if [ "$(echo $* | grep -c 'dev init')" == 0 ]; then
-   echo setting up dev
-   dev conf
-fi
 
 ### INGEST:
 
@@ -163,7 +161,11 @@ api () {
 ##
 #############################################################
 stack () {
-    docker-compose -f $DUG_HOME/docker/docker-compose.yaml up $*
+    source $DUGENV
+    export $(cut -d= -f1 $DUGENV)
+    HOSTNAME=$HOSTNAME docker-compose \
+	    --env-file $DUG_HOME/docker/.env \
+	    -f $DUG_HOME/docker/docker-compose.yaml -p dug $*
 }
 
 #############################################################
@@ -173,33 +175,39 @@ stack () {
 #############################################################
 test () {
 
-     # Prerequisites: stack must be running.
-     # API must be running.
+    set -e
+    # Prerequisites:
+    #   * Stack must be running via "bin/dug stack".
+    #   * If running from a host pointing at docker-compose, must have
+    #     a docker/.env.dev file with all hostnames set to localhost.
+    
+    # Delete the test index
+    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
+    
+    # Ingest, annotate, load knowledge graph.
+    bin/dug link data/dd.xml
+    bin/dug load data/dd_tagged.json
+    
+    # Crawl model queries, create index, test index.
+    bin/dug crawl
+    bin/dug index
+    
+    # The best format for variables we have is currently
+    # implemented so that, if we pass the additional
+    # --index <arg> flag, it will use the neo4j
+    # database to drive queries, create knoweldge graphs,
+    # create documents, and index those for search.
+    bin/dug link data/topmed_variables_v1.0.csv --index x
+    sleep 4
+    
+    bin/dug query coug # direct to search engine
+    
+    # Query via API
+    bin/dug query_api coug
+    bin/dug query_api copd
+    bin/dug query_api sleep
 
-     # Delete the test index
-     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
-
-     # Ingest, annotate, load knowledge graph.
-     bin/dug link data/dd.xml
-     bin/dug load data/dd_tagged.json
-
-     # Crawl model queries, create index, test index.
-     bin/dug crawl
-     bin/dug index
-
-     # The best format for variables we have is currently
-     # implemented so that, if we pass the additional
-     # --index <arg> flag, it will use the neo4j
-     # database to drive queries, create knoweldge graphs,
-     # create documents, and index those for search.
-     bin/dug link data/topmed_variables_v1.0.csv --index x
-     sleep 4
-     bin/dug query coug # direct to search engine
-
-     # Query via API
-     bin/dug query_api coug
-     bin/dug query_api copd
-     bin/dug query_api sleep
+    set +e
 }
 
 #############################################################
@@ -214,6 +222,8 @@ query_api () {
            --request POST \
            http://localhost:5551/search
 }
+
+dev init
 
 $*
 

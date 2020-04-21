@@ -23,8 +23,9 @@ services:
     entrypoint: [ "gunicorn",
                      "--workers=$API_WORKERS", "--name=dug",
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT", "dug.api:app" ]
-    volumes:
-      - $PWD:/home/dug/dug
+#    entrypoint: [ "python", "-m", "dug.api", "--port", "5551" ]
+#    volumes:
+#      - $PWD:/home/dug/dug
     ports:
       - $API_PORT:$API_PORT
 

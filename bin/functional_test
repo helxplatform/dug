@@ -1,0 +1,83 @@
+#!/bin/bash
+
+###########################################################################
+##
+## Dug Functional Test
+##
+##   Clones a Dug GitHub repository
+##   Starts the Dug stack.
+##   Waits for the stack to become available
+##   Executes tests
+##   Shuts down the stack
+##
+##   Prerequisites:
+##     Tested with docker-compose version 1.25.2, build 698e2846
+##
+###########################################################################
+set -e
+set -x
+
+wait_for_elastic () {
+
+    host=$1
+    
+    until $(curl --output /dev/null --silent --head --fail "$host"); do
+        printf '.'
+        sleep 1
+    done
+    
+    # First wait for ES to start...
+    response=$(curl --write-out %{http_code} --silent --output /dev/null "$host")
+    
+    until [ "$response" = "200" ]; do
+        response=$(curl --write-out %{http_code} --silent --output /dev/null "$host")
+        >&2 echo "  -- Elastic Search is unavailable - sleeping"
+        sleep 3
+    done
+    
+    # next wait for ES status to turn to Green
+    health="$(curl -fsSL "$host/_cat/health?h=status")"
+    echo "health: $health"
+    until [[ "$health" == *green* ]]; do
+        echo health $health
+        health=$(curl -fsSL "$host/_cat/health?h=status")
+        >&2 echo "  -- Elastic Search is unavailable - sleeping"
+        sleep 3
+    done
+
+    >&2 echo "Elastic Search is up"
+}
+
+execute_test () {
+    # Create a fresh test environment.
+    rm -rf test_dir
+    mkdir -p test_dir
+    cd test_dir
+    
+    # Get the  latest source.
+    git clone git@github.com:helxplatform/dug.git
+    cd dug
+    
+    # Configure a fresh Python3 virtual environment.
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    
+    # Start all services.
+    bin/dug stack up &
+    
+    # Wait for service availability.
+    wait_for_elastic localhost:9200
+    
+    # Execute tests.
+    bin/dug test
+    
+    # Shut down all services.
+    bin/dug stack down
+}
+
+execute_test
+
+exit 0
+
+
