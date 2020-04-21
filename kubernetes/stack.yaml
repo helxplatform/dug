@@ -81,7 +81,8 @@ spec:
               key: ELASTIC_PASSWORD
         - name: discovery.type
           value: "single-node"
-        - xpack.security.enabled = true
+        - name: xpack.security.enabled
+          value: 'true'
         volumeMounts:
         - mountPath: /bitnami/elasticsearch/data
           name: elasticsearch
