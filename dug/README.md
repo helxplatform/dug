@@ -173,11 +173,17 @@ Until data formats stabilize, the best approach is to have a look at the raw dat
 
 ## Next Steps
 
-These things need attention:
+Recent:
 * [x] Develop Kubernetes artifacts to move from development to a public API.
-* [ ] Add automated unit tests and a Travis build.
 * [x] Apply Plater & Automat to serve the Neo4J as our TOPMed metadata API.
 * [x] Demonstrate a TranQL query incorporating this data with ROBOKOP
+
+Finalizing Phase 1:
+* [ ] Textual descriptions are aggregated into a name field in the JSON document indexed in Elastic. These should be broken out into clearly named fields.
+* [ ] The fields mentioned above should be rendered in the user interface.
+* [ ] Add automated unit tests and a Travis build.
+
+Phase 2:
 * [ ] Use TranQL queries to populate Elasticsearch (as shown elsewhere in this repo).
 * [ ] Several identifiers returned by the Monarch NLP are not found by the SRI normalizer. The good news is, several of these missing identifiers are quite important (BMI, etc) so once we get them included in normalization, our annotation should be improved.
   * Error logs from data dictionary annotation are [here](https://github.com/helxplatform/dug/blob/master/dug/log/dd_norm_fail.log).
