@@ -17,10 +17,20 @@ spec:
               privileged: true
           containers:
           - name: search
-            image: heliumdatastage/search:latest
-          - env:
+            image: heliumdatastage/dug:latest
+            env:
               - name: "ELASTIC_API_HOST"
                 value: "elasticsearch"
               - name: "ELASTIC_API_PORT"
-                value: 9200
+                value: "9200"
+              - name: "ELASTIC_USER"
+                valueFrom:
+                  configMapKeyRef:
+                    name: dug-configmap
+                    key: "ELASTIC_USER"
+              - name: "ELASTIC_PASSWORD"
+                valueFrom:
+                  secretKeyRef:
+                    name: dug-secrets
+                    key: "ELASTIC_PASSWORD"
           restartPolicy: OnFailure
