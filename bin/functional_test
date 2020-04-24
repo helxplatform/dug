@@ -71,7 +71,7 @@ execute_test () {
     pip install -r requirements.txt
     
     # Start all services. detach to avoid container logs here
-    bin/dug stack up -d &
+    bin/dug stack up -d
     
     # Wait for service availability.
     wait_for_elastic localhost:9200
