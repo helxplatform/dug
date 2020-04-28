@@ -65,6 +65,12 @@ execute_test () {
     git clone git@github.com:helxplatform/dug.git
     cd dug
     
+    # Configure volume dirs and set read and write
+    mkdir -p $TEST_DIR/dug/db/elastic
+    mkdir -p $TEST_DIR/dug/db/redis
+    mkdir -p $TEST_DIR/dug/db/neo4j
+    chmod 666 -R $TEST_DIR/dug/db
+    
     # Configure a fresh Python3 virtual environment.
     python3 -m venv venv
     source venv/bin/activate
