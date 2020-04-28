@@ -66,6 +66,7 @@ execute_test () {
     cd dug
     
     # Configure volume dirs and set read and write
+    mkdir -p $TEST_DIR/dug/db
     mkdir -p $TEST_DIR/dug/db/elastic
     mkdir -p $TEST_DIR/dug/db/redis
     mkdir -p $TEST_DIR/dug/db/neo4j
