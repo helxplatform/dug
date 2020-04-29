@@ -88,8 +88,8 @@ execute_test () {
     bin/dug stack down
 }
 
-#execute_test
-bin/testing_jenkins_delete_me.sh func hello world
+execute_test
+
 exit 0
 
 
