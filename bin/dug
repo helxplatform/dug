@@ -161,7 +161,6 @@ api () {
 ##
 #############################################################
 stack () {
-    echo "docker compose params " $*
     source $DUGENV
     export $(cut -d= -f1 $DUGENV)
     HOSTNAME=$HOSTNAME docker-compose \
