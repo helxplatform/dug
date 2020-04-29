@@ -89,7 +89,7 @@ execute_test () {
 }
 
 #execute_test
-$PWD/testing_jenkins_delete_me.sh func hello world
+bin/testing_jenkins_delete_me.sh func hello world
 exit 0
 
 
