@@ -554,39 +554,53 @@ def main ():
             Add the document to the search index.
             """
             for category in [ "phenotypic_feature", "anatomical_entity", "cell_type", "gene", "disease", "biological_process" ]:
-                query = f"match (bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial) return * limit 2000"
-                result = graph.query (query)
-                if result:
-                    for index, row in enumerate(result.rows):
-                        """
-                        We're looking at a single subgraph returned from the query.
-                        Build a document collecting these artifacts.
-                        """
-                        text = []
-                        doc = {}
-                        for node in row:
-                            node_id = node['id']
-                            if node_id.startswith ("TOPMED.VAR:"):
-                                doc['var'] = node_id.replace  ("TOPMED.VAR:", "")
-                            elif node_id.startswith ("TOPMED.STUDY"):
-                                doc['study'] = node_id.replace ("TOPMED.STUDY:", "")
-                                text.append (node['name'])
-                            elif node_id.startswith ("TOPMED.TAG"):
-                                doc['tag'] = node_id.replace ("TOPMED.TAG:", "")
-                                text.append (node['description'])
-                                text.append (node['instructions'])
-                            else:
-                                doc['id'] = node_id
-                                text.append (node['name'])
+                page_size= 10_000
+                path_count_cypher = f"""MATCH 
+                    p=(bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial) 
+                    RETURN count(p) as path_count
+                """
+                get_path_query = lambda skip, limit: f"MATCH" \
+                    f"(bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial)" \
+                    f"RETURN * SKIP {skip} LIMIT {limit}"
+                path_count = graph.query(path_count_cypher)[0][0]
+                logger.debug(f"Found {path_count} paths for ({category})--(abstract_entity)"
+                             "--(clinical_modifier)--(clinical_trial)")
+                for offset in range(0, path_count, page_size):
+                    skip = offset
+                    limit = skip + page_size
+                    query = get_path_query(skip, limit)
+                    result = graph.query (query)
+                    if result:
+                        for index, row in enumerate(result.rows):
+                            """
+                            We're looking at a single subgraph returned from the query.
+                            Build a document collecting these artifacts.
+                            """
+                            text = []
+                            doc = {}
+                            for node in row:
+                                node_id = node['id']
+                                if node_id.startswith ("TOPMED.VAR:"):
+                                    doc['var'] = node_id.replace  ("TOPMED.VAR:", "")
+                                elif node_id.startswith ("TOPMED.STUDY"):
+                                    doc['study'] = node_id.replace ("TOPMED.STUDY:", "")
+                                    text.append (node['name'])
+                                elif node_id.startswith ("TOPMED.TAG"):
+                                    doc['tag'] = node_id.replace ("TOPMED.TAG:", "")
+                                    text.append (node['description'])
+                                    text.append (node['instructions'])
+                                else:
+                                    doc['id'] = node_id
+                                    text.append (node['name'])
 
-                        doc['name'] = text
-                        logger.debug (f"{json.dumps(doc, indent=2)}")
+                            doc['name'] = text
+                            logger.debug (f"{json.dumps(doc, indent=2)}")
 
-                        """ Index the document. """
-                        search.index_doc (
-                            index='test',
-                            doc=doc,
-                            doc_id=doc['id'])
+                            """ Index the document. """
+                            search.index_doc (
+                                index='test',
+                                doc=doc,
+                                doc_id=doc['id'])
 
 if __name__ == '__main__':
     main ()
