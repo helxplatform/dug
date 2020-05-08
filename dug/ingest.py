@@ -576,24 +576,29 @@ def main ():
                             We're looking at a single subgraph returned from the query.
                             Build a document collecting these artifacts.
                             """
-                            text = []
-                            doc = {}
+
+                            """ 
+                            Initialize empty dict with initial values 
+                            set to null so that they'll always exist 
+                            """
+                            doc = {'study_name': '',
+                                   'description': '',
+                                   'instructions': ''}
+
                             for node in row:
                                 node_id = node['id']
                                 if node_id.startswith ("TOPMED.VAR:"):
                                     doc['var'] = node_id.replace  ("TOPMED.VAR:", "")
                                 elif node_id.startswith ("TOPMED.STUDY"):
                                     doc['study'] = node_id.replace ("TOPMED.STUDY:", "")
-                                    text.append (node['name'])
+                                    doc['study_name'] = node['name']
                                 elif node_id.startswith ("TOPMED.TAG"):
                                     doc['tag'] = node_id.replace ("TOPMED.TAG:", "")
-                                    text.append (node['description'])
-                                    text.append (node['instructions'])
+                                    doc['description'] = node['description']
+                                    doc['instructions'] = node['instructions']
                                 else:
                                     doc['id'] = node_id
-                                    text.append (node['name'])
-
-                            doc['name'] = text
+                                    doc['name'] = node['name']
                             logger.debug (f"{json.dumps(doc, indent=2)}")
 
                             """ Index the document. """

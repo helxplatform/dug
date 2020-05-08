@@ -18,7 +18,7 @@ services:
     networks:
       - dug-network
     environment:
-      - ELASTIC_API_HOST=$ELASTIC_API_HOST
+      - ELASTIC_API_HOST=dug_elasticsearch_1
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
     entrypoint: [ "gunicorn",
                      "--workers=$API_WORKERS", "--name=dug",
