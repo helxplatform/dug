@@ -12,7 +12,7 @@ docker run --rm --name dug --net=host -e "ELASTIC_API_HOST=localhost" -e "ELASTI
 
 Automated DockerHub builds trigger two ways:
 
-  * On commits to helxplatform/dug in GitHub, which emits a DockerHub build with the tag latest, and 
+  * On commits to helxplatform/dug in GitHub, which emits a DockerHub build with the tag **latest**, and 
   * When a version tag of the form vn.n.n (e.g. v0.1.2) is pushed to GitHub, which emits a DockerHub build with the same tag.
 
 DockerHub only creates builds with version numbers from tagged GitHub commits. If you push a GitHub commit with a tag it will create both the latest and vn.n.n versions.
