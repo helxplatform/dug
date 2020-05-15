@@ -599,13 +599,16 @@ def main ():
                                 else:
                                     doc['id'] = node_id
                                     doc['name'] = node['name']
+
+                            unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}"
                             logger.debug (f"{json.dumps(doc, indent=2)}")
 
                             """ Index the document. """
                             search.index_doc (
                                 index='test',
                                 doc=doc,
-                                doc_id=doc['id'])
+                                doc_id=unique_doc_id)
+
 
 if __name__ == '__main__':
     main ()
