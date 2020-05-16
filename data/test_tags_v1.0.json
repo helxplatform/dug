@@ -1,0 +1,14 @@
+[{
+    "model": "tags.tag",
+    "pk": 51,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:50:57Z",
+        "title": "VTE",
+        "lower_title": "vte",
+        "description": "Qualitative indicator of venous thromboembolism (VTE) status",
+        "instructions": "Include variables that represent whether or when a subject has experienced VTE. VTE includes both deep venous thrombosis and pulmonary embolism. VTE does not include arterial thrombosis or arterial embolism. Include variables that represent prevalent and/or incident VTE status. Include variables that represent VTE event data, including event status and time-to-event variables. Include variables that indicate age at VTE events, e.g. self-reported age at a VTE event or followup time to a VTE event. Include variables indicating VTE status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. VTE variables included in multiple datasets. Include variables indicating deep vein thrombosis (DVT) status, pulmonary embolism status, and VTE status of unknown type. Include variables that specify VTE type. Do not include variables that indicate possible VTE treatments, e.g. surgical procedures. Do not include variables that indicate medication use related to VTE, e.g. anticoagulant or thrombolytic use.",
+        "creator": 7
+    }
+}
+]
