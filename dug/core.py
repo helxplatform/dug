@@ -97,12 +97,12 @@ class Search:
             
     def search (self, index, query, offset=0, size=None, fuzziness=1):
         query = {
-            'match': {
-                'name' : {
-                    'query' : query,
-                    'fuzziness' : fuzziness
-                }
+            'multi_match': {
+                'query' : query,
+                'fuzziness' : fuzziness,
+                'fields': ['name', 'description', 'instructions']
             }
+
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
