@@ -10,8 +10,8 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  # storageClassName: nfs-dynamic
+      storage: 5Gi
+  storageClassName: dug-nfs
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -129,8 +129,8 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  # storageClassName: nfs-dynamic
+      storage: 5Gi
+  storageClassName: dug-nfs
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -212,8 +212,8 @@ spec:
   - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  # storageClassName: nfs-dynamic
+      storage: 5Gi
+  storageClassName: dug-nfs
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -284,8 +284,8 @@ spec:
 #   - ReadWriteMany
 #   resources:
 #     requests:
-#       storage: 1Gi
-#   # storageClassName: nfs-dynamic
+#       storage: 5Gi
+#   storageClassName: dug-nfs
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -317,7 +317,7 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: dug-configmap
-              key: ELASTIC_PORT
+              key: ELASTIC_API_PORT
         - name: ELASTIC_USER
           valueFrom:
             configMapKeyRef:
@@ -395,4 +395,3 @@ spec:
   selector:
     app: dug
   type: ClusterIP
-
