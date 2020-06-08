@@ -14,11 +14,11 @@ cp dug-configmap-template.properties dug-configmap.properties
 # Ensure kubectl is configured for Kubernetes cluster.
 
 # Execute script to create configmap in cluster.
-./create-dug-configmap.sh
+NAMESPACE="dug" ./create-dug-configmap.sh
 
 # Execute script to create secrets in cluster.
-./create-dug-secrets.sh
+NAMESPACE="dug" ./create-dug-secrets.sh
 
 # Deploy the Dug stack to Kubernetes.
-kubectl apply -f stack.yaml
+kubectl -n dug apply -f stack.yaml
 ```
