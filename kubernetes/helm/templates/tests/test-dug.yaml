@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-dug-test"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - name: dug-test-container
+          image: {{ .Values.dug.web.image }}:{{ .Values.dug.web.image_tag }}
+          command: ["pwd"]
+          # TODO : Add command to bin/dug test here. Current bin/dug has a strict call to dev init which
+          # TODO: is docker based. In this setup environment variables are already configured. So dev init should
+          # TODO: be an explicit call maybe. Right now this test will pass.
+          env:
+            - name: ELASTIC_API_HOST
+              value: {{ .Values.dug.elasticsearch.service_name }}
+            - name: ELASTIC_API_PORT
+              value: {{ .Values.dug.elasticsearch.rest_port | quote }}
+            - name: ELASTIC_USER
+              value: {{ .Values.dug.elasticsearch.db_user }}
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dug.secrets.name }}
+                  key: ELASTIC_PASSWORD
+            - name: NEO4J_HOST
+              value: {{ .Values.dug.neo4j.service_name }}
+            - name: NEO4J_PORT
+              value: {{ .Values.dug.neo4j.http_port | quote }}
+            - name: NEO4J_USER
+              value: {{ .Values.dug.neo4j.db_user }}
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dug.secrets.name }}
+                  key: NEO4J_PASSWORD
+            - name: REDIS_HOST
+              value: {{ .Values.dug.redis.service_name }}
+            - name: REDIS_PORT
+              value: {{ .Values.dug.redis.redis_port | quote }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.dug.secrets.name }}
+                  key: REDIS_PASSWORD
+      restartPolicy: Never
+

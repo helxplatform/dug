@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.dug.redis.app_name }}
+  name: {{ .Values.dug.redis.deployment_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.dug.redis.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.dug.redis.app_name }}
+    spec:
+      containers:
+      - image: {{ .Values.dug.redis.image }}:{{ .Values.dug.redis.image_tag }}
+        name: {{ .Values.dug.redis.app_name }}-container
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.dug.secrets.name }}
+              key: REDIS_PASSWORD
+        - name: REDIS_DISABLE_COMMANDS
+          value: "FLUSHDB,FLUSHALL"
+        - name: REDIS_PORT
+          value: {{ .Values.dug.redis.redis_port | quote }}
+        volumeMounts:
+        - mountPath: /bitnami/redis/data
+          name: redis
+        ports:
+          - containerPort: {{ .Values.dug.redis.redis_port }}
+      volumes:
+      - name: redis
+        persistentVolumeClaim:
+          claimName: {{ .Values.dug.redis.pvc_name }}
