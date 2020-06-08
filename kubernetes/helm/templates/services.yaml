@@ -1,0 +1,80 @@
+apiVersion: v1
+items:
+  # Elastic service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.elasticsearch.app_name }}
+    name: {{ .Values.dug.elasticsearch.service_name }}
+  spec:
+    ports:
+      - name: elastic-rest-port
+        protocol: TCP
+        port: {{ .Values.dug.elasticsearch.rest_port }}
+        targetPort: {{ .Values.dug.elasticsearch.rest_port }}
+      # If this needs to join an elastic cluster.
+      - name: elastic-nodes-com-port
+        protocol: TCP
+        port: {{ .Values.dug.elasticsearch.nodes_com_port }}
+        targetPort: {{ .Values.dug.elasticsearch.nodes_com_port }}
+    selector:
+      app: {{ .Values.dug.elasticsearch.app_name }}
+    type: ClusterIP
+  # Neo4j Service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.neo4j.app_name }}
+    name: {{ .Values.dug.neo4j.service_name }}
+  spec:
+    ports:
+      - name: neo4j-http-port
+        protocol: TCP
+        port: {{ .Values.dug.neo4j.http_port }}
+        targetPort: {{ .Values.dug.neo4j.http_port }}
+      - name: neo4j-https-port
+        protocol: TCP
+        port: {{ .Values.dug.neo4j.https_port }}
+        targetPort: {{ .Values.dug.neo4j.https_port }}
+      - name: neo4j-bolt-port
+        protocol: TCP
+        port: {{ .Values.dug.neo4j.bolt_port }}
+        targetPort: {{ .Values.dug.neo4j.bolt_port }}
+    selector:
+      app: {{ .Values.dug.neo4j.app_name }}
+    type: ClusterIP
+  # Redis
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.redis.app_name }}
+    name: {{ .Values.dug.redis.service_name }}
+  spec:
+    ports:
+      - name: redis-port
+        protocol: TCP
+        port: {{ .Values.dug.redis.redis_port }}
+        targetPort: {{ .Values.dug.redis.redis_port }}
+    selector:
+      app: {{ .Values.dug.redis.app_name }}
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.web.app_name }}
+    name: {{ .Values.dug.web.service_name }}
+  spec:
+    ports:
+      - name: api-port
+        protocol: TCP
+        port: {{ .Values.dug.web.api_port }}
+        targetPort: {{ .Values.dug.web.api_port }}
+    selector:
+      app: {{ .Values.dug.web.app_name }}
+    type: NodePort
+
+kind: List

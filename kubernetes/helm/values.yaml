@@ -1,0 +1,48 @@
+dug:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch
+    image_tag: 7.6.1
+    app_name: elasticsearch
+    pvc_name: elasticsearch
+    service_name: elasticsearch
+    deployment_name: elasticsearch
+    rest_port: 9200
+    nodes_com_port: 9300
+    storage_size: 1G
+    db_user: elastic
+    init_config_name: elasticsearch-initcontainer
+  neo4j:
+    image: bitnami/neo4j
+    image_tag: 3.5.14
+    app_name: neo4j
+    pvc_name: neo4j
+    service_name: neo4j
+    deployment_name: neo4j
+    http_port: 7474
+    https_port: 7473
+    bolt_port: 7687
+    storage_size: 1G
+    db_user: neo4j
+  redis:
+    image: bitnami/redis
+    image_tag: 5.0.8
+    app_name: redis
+    pvc_name: redis
+    service_name: redis
+    deployment_name: redis
+    storage_size: 1G
+    redis_port: 6389
+  web:
+    image: heliumdatastage/dug
+    image_tag: latest
+    app_name: dug
+    service_name: dug
+    deployment_name: dug
+    api_port: 5551
+    debug: false
+  secrets:
+    name: dug-secrets
+  crawl:
+    job_name: search
+    schedule: "*/1 * * * *"
+
