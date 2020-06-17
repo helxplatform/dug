@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from dug.annotate import TOPMedStudyAnnotator
 import argparse
 import logging
 import glob
@@ -100,7 +101,7 @@ class Search:
             'multi_match': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions']
+                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms']
             }
 
         }
@@ -123,9 +124,9 @@ class Search:
             except Exception as e:
                 print (f"-----------> {e}")
                 traceback.print_exc ()
-                
+
     def crawl (self):
-        monarch_endpoint = "https://monarchinitiative.org/searchapi"        
+        monarch_endpoint = "https://monarchinitiative.org/searchapi"
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -144,8 +145,8 @@ class Search:
                 logger.debug (f"monarch query: {monarch_query}")
                 #response = requests.get (monarch_query)
                 #logger.debug (f"   {response.text}")
-                #response = response.json ()                
-                response = requests.get (monarch_query).json ()                
+                #response = response.json ()
+                response = requests.get (monarch_query).json ()
                 for doc in response.get('docs',[]): #.get ('docs',[]):
                     label = doc.get('label_eng',['N/A'])[0]
                     identifier = doc['id']
@@ -166,6 +167,122 @@ class Search:
                         data = query).json ()
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
+
+    def tagged_crawl (self, tags, variables, index, min_score=0.2):
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+
+        self.make_crawlspace ()
+        for tag in tags:
+            # Get subset of variables for this tag
+            tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
+
+            logging.debug(f"Doing variables with tag: {tag['title']}")
+            for identifier in tag["identifiers"]:
+                logging.debug(f"Doing id: {identifier}")
+                ''' Resolve the phenotype to identifiers. '''
+
+                # Boolean switch for whether a knowledge graph has been returned for the current identifier
+                # If no knowledge graphs are returned by TranQL just put a normal record with no nodes/KG
+                has_kg = False
+
+                queries = {"pheno": f"select phenotypic_feature->disease from '/graph/gamma/quick' where phenotypic_feature='{identifier}'",
+                           "disease": f"select d1:disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
+                           "anat": f"select d1:disease-[subclass_of]->d2:disease->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'"}
+
+                # Loop through each query and try to add the answers to the search index
+                for query_name, query in queries.items():
+
+                    # Skip query if a file exists in the crawlspace exists already
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled.")
+                        continue
+
+                    # Submit query to TranQL
+                    logger.info (query)
+                    response = requests.post(
+                        url = tranql_endpoint,
+                        headers = headers,
+                        data = query).json ()
+
+                    # Case: Skip if empty KG
+                    if not len(response["knowledge_graph"]["nodes"]):
+                        logging.debug(f"Did not find a knowledge graph for {query}")
+                        continue
+
+                    # Dump out to file if there's a knowledge graph
+                    with open(filename, 'w') as stream:
+                        json.dump(response, stream, indent=2)
+
+                    # Set boolean flag to true so we know not to put in dummy record after all queries are run
+                    has_kg = True
+
+                    # Get nodes in knowledge graph hashed by ids for easy lookup
+                    nodes = {node["id"]: node for node in response.get('knowledge_graph',{}).get('nodes',[])}
+                    answers = response.get('knowledge_map', {})
+
+                    # Create ES entries for each variable for each answer
+                    for answer in answers:
+                        # Filter out answers that fall below a minimum score
+                        if answer["score"] < min_score:
+                            continue
+                        logger.debug(f"Answer: {answer}")
+
+                        answer_nodes = []
+                        for id, node_bindings in answer["node_bindings"].items():
+                            answer_nodes += [nodes[answer_node] for answer_node in node_bindings]
+                        answer_node_ids = [answer_node["id"] for answer_node in answer_nodes]
+
+                        # Add each variable to ES and add information for nodes and the knowledge graph returned from TranQL
+                        for variable in tagged_variables:
+                            doc = {"name": tag["identifiers"][identifier]["label"],
+                                   "id": identifier,
+                                    "var": variable["variable_id"].replace("TOPMED.VAR:", ""),
+                                    "tag": variable["tag_pk"],
+                                    "description": tag["description"],
+                                    "instructions": tag["instructions"],
+                                    "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
+                                    "study_name": variable["study_name"],
+                                    "nodes": answer_nodes,
+                                    "knowledge_map": answer}
+
+                            logger.debug(f"{json.dumps(doc, indent=2)}")
+                            unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}_{'_'.join(answer_node_ids)}_{query_name}"
+
+                            """ Index the document. """
+                            self.index_doc(
+                                index=index,
+                                doc=doc,
+                                doc_id=unique_doc_id)
+
+                # Write textual entries for variables that didn't return KG for any of their identifiers
+                # Makes sure we don't just drop things that don't return answers from TranQL
+                if not has_kg:
+                    for variable in tagged_variables:
+                        doc = {"name": tag["identifiers"][identifier]["label"],
+                                "id": identifier,
+                                "var": variable["variable_id"].replace("TOPMED.VAR:", ""),
+                                "tag": variable["tag_pk"],
+                                "description": tag["description"],
+                                "instructions": tag["instructions"],
+                                "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
+                                "study_name": variable["study_name"],
+                                "nodes": [],
+                                "knowledge_map": {}}
+
+                        logger.debug(f"No answer returned from TranQL:\n{json.dumps(doc, indent=2)}")
+                        unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}"
+
+                        """ Index the document. """
+                        self.index_doc(
+                            index=index,
+                            doc=doc,
+                            doc_id=unique_doc_id)
+
                         
     def index (self, index):
         self.make_crawlspace ()
@@ -205,11 +322,15 @@ class Search:
                     doc_id=root_id)
                     
 if __name__ == '__main__':
+
+    db_url_default = "http://" + os.environ.get('NEO4J_HOST', 'localhost') + ":" + os.environ.get('NEO4J_PORT',
+                                                                                                  '7474') + "/db/data"
     
     parser = argparse.ArgumentParser(description='TranQL-Search')
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
+    parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
     parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
                         default=False, action='store_true')
     parser.add_argument('--query', help="Query", action="store", dest="query")
@@ -217,6 +338,10 @@ if __name__ == '__main__':
                         default=os.environ.get('ELASTIC_API_HOST', 'localhost'))
     parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port",
                         default=os.environ.get('ELASTIC_API_PORT', 9200))
+
+    parser.add_argument('--db-url', help='database url', default=db_url_default)
+    parser.add_argument('--db-username', help='database username', default='neo4j')
+    parser.add_argument('--db-password', help='database password', default=os.environ['NEO4J_PASSWORD'])
     args = parser.parse_args ()
     
     logging.basicConfig(level=logging.DEBUG)    
@@ -244,3 +369,31 @@ if __name__ == '__main__':
             for hit in val['hits']['hits']:
                 print (hit)
                 print (f"{hit['_source']}")
+
+    elif args.tagged:
+
+        config = {
+            'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
+            'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
+            'password': os.environ['NEO4J_PASSWORD'],
+            'username': 'neo4j',
+            'db_url': db_url_default,
+            'redis_host': os.environ.get('REDIS_HOST', 'localhost'),
+            'redis_port': os.environ.get('REDIS_PORT', 6379),
+            'redis_password': os.environ.get('REDIS_PASSWORD', ''),
+        }
+
+        config['username'] = args.db_username
+        config['password'] = args.db_password
+        config['db_url'] = args.db_url
+
+        # Create annotator object
+        annotator = TOPMedStudyAnnotator(config=config)
+
+        # Annotate tagged variables
+        variables, tags = annotator.load_tagged_variables(args.tagged)
+        tags = annotator.annotate(tags)
+
+        # Append tag info to variables
+        search.tagged_crawl(tags, variables, index)
+
