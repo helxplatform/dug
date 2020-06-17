@@ -331,6 +331,9 @@ if __name__ == '__main__':
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
     parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
+    parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
+                        dest="min_tranql_score",
+                        default=0.2, type=float)
     parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
                         default=False, action='store_true')
     parser.add_argument('--query', help="Query", action="store", dest="query")
@@ -395,5 +398,5 @@ if __name__ == '__main__':
         tags = annotator.annotate(tags)
 
         # Append tag info to variables
-        search.tagged_crawl(tags, variables, index)
+        search.tagged_crawl(tags, variables, index, min_score=args.min_tranql_score)
 
