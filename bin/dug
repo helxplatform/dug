@@ -143,10 +143,7 @@ index () {
 ##
 #############################################################
 index_tranql () {
-    curdir=$PWD
-    cd $DUG_HOME/dug
     python -m dug.core --tagged-crawl $*
-    cd $curdir
 }
 
 
