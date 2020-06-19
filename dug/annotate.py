@@ -141,7 +141,14 @@ class TOPMedStudyAnnotator:
             :param url: The URL to use.
             :param variable: The variable in which to record the normalized identifier.
         """
-
+        """
+        Added blank_preferred_id to keep terms in the KG that fail to normalize.
+        """
+        blank_preferred_id = {
+            "label": "",
+            "equivalent_identifers": [],
+            "type": ['named_thing'] # Default NeoTransformer category
+        }
         """ Normalize the identifier with respect to the BioLink Model. """
         try:
             print(f"TRYIN TO NORMALIZE: {curie}")
@@ -162,8 +169,10 @@ class TOPMedStudyAnnotator:
                     "type" : biolink_type
                 }
             else:
+                variable['identifiers'][curie] = blank_preferred_id
                 logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
         except json.decoder.JSONDecodeError as e:
+            variable['identifiers'][curie] = blank_preferred_id
             logger.error (f"JSONDecoderError normalizing curie: {curie}")
 
     def annotate (self, variables : Dict) -> Dict:
