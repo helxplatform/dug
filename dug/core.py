@@ -18,9 +18,9 @@ class SearchException (Exception):
         self.details = details
 
 class Search:
-    """ Search - 
+    """ Search -
     1. Lexical fuzziness; (a) misspellings - a function of elastic.
-    2. Fuzzy ontologically; 
+    2. Fuzzy ontologically;
        (a) expand based on core queries
          * phenotype->study
          * phenotype->disease->study
@@ -38,7 +38,7 @@ class Search:
             {
                 'host' : self.host,
                 'port' : port
-            }            
+            }
         ]
         logger.debug (f"Authenticating as user {self.username} to host:{self.hosts}")
         self.es = Elasticsearch (hosts=self.hosts,
@@ -56,7 +56,7 @@ class Search:
 
     def clean (self):
         self.es.indices.delete ("*")
-        
+
     def init_indices (self):
         settings = {
             "settings": {
@@ -88,13 +88,13 @@ class Search:
             except Exception as e:
                 logger.error (f"exception: {e}")
                 raise e
-                
+
     def index_doc (self, index, doc, doc_id):
         self.es.index (
             index=index,
             id=doc_id,
             body=doc)
-            
+
     def search (self, index, query, offset=0, size=None, fuzziness=1):
         """
         Query type is now 'query_string'.
@@ -130,9 +130,9 @@ class Search:
             except Exception as e:
                 print (f"-----------> {e}")
                 traceback.print_exc ()
-                
+
     def crawl (self):
-        monarch_endpoint = "https://monarchinitiative.org/searchapi"        
+        monarch_endpoint = "https://monarchinitiative.org/searchapi"
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -151,8 +151,8 @@ class Search:
                 logger.debug (f"monarch query: {monarch_query}")
                 #response = requests.get (monarch_query)
                 #logger.debug (f"   {response.text}")
-                #response = response.json ()                
-                response = requests.get (monarch_query).json ()                
+                #response = response.json ()
+                response = requests.get (monarch_query).json ()
                 for doc in response.get('docs',[]): #.get ('docs',[]):
                     label = doc.get('label_eng',['N/A'])[0]
                     identifier = doc['id']
@@ -173,7 +173,7 @@ class Search:
                         data = query).json ()
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
-                        
+
     def index (self, index):
         self.make_crawlspace ()
         files = glob.glob (f"{self.crawlspace}/*.json")
@@ -210,9 +210,9 @@ class Search:
                     index=index,
                     doc=doc,
                     doc_id=root_id)
-                    
+
 if __name__ == '__main__':
-    
+
     parser = argparse.ArgumentParser(description='TranQL-Search')
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
@@ -225,8 +225,8 @@ if __name__ == '__main__':
     parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port",
                         default=os.environ.get('ELASTIC_API_PORT', 9200))
     args = parser.parse_args ()
-    
-    logging.basicConfig(level=logging.DEBUG)    
+
+    logging.basicConfig(level=logging.DEBUG)
     index = "test"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,

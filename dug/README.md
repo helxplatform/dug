@@ -167,6 +167,15 @@ Once the test is complete, a command line search shows the contents of the index
 ![image](https://user-images.githubusercontent.com/306971/77009780-e939f580-693e-11ea-8a02-ca2fd59d4366.png)
 **Figure 4**: A command line query using the Dug Search OpenAPI to query the Elasticsearch index for a term.
 
+
+## Python Testing
+
+### Configuration
+1) Setup a virtual environment and install the required libs and modules from `requirements.txt`
+2) Clone `kgx` to the root of the repo and run `python setup.py install` inside it
+3) From within the `dug/dug` folder run `python -m pytest` to run unit tests
+
+
 ## Data Formats
 
 Until data formats stabilize, the best approach is to have a look at the raw data [here](https://github.com/helxplatform/dug/tree/master/data).

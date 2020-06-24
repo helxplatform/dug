@@ -2,4 +2,7 @@ docker/.env
 kubernetes/create-dug-secret-out.log
 kubernetes/dug-configmap.properties
 kubernetes/dug-secrets.properties
-
+venv
+kgx
+dug/.mypy_cache
+*.pyc
