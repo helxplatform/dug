@@ -96,13 +96,20 @@ class Search:
             body=doc)
             
     def search (self, index, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
         query = {
-            'multi_match': {
+            'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions']
+                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms'],
+                'quote_field_suffix': ".exact"
             }
-
+            
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
@@ -237,7 +244,7 @@ if __name__ == '__main__':
                 "name" : "fred",
                 "type" : "phenotypic_feature"
             },
-            doc_id=1)        
+            doc_id=1)
     elif args.query:
         val = search.search (index=index, query=args.query)
         if 'hits' in val:
