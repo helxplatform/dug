@@ -11,7 +11,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: dug-nfs
+  storageClassName: dug-storage
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -130,7 +130,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: dug-nfs
+  storageClassName: dug-storage
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -213,7 +213,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: dug-nfs
+  storageClassName: dug-storage
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -285,7 +285,7 @@ spec:
 #   resources:
 #     requests:
 #       storage: 5Gi
-#   storageClassName: dug-nfs
+#   storageClassName: dug-storage
 ---
 apiVersion: apps/v1
 kind: Deployment
