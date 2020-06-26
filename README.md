@@ -38,6 +38,44 @@ In phase 1, we use Neo4J to build queries. In subsequent phases, we integrate ot
 ![image](https://user-images.githubusercontent.com/306971/77681466-bcec2d80-6f6b-11ea-93c5-87eee57d4b66.png)
 **Figure 3**: A TranQL knowledge graph query response. Integrating TOPMed harmonized variables as a Translator service called by TranQL allows us to query the federation of Translator ontological connections as a precursor to indexing. This includes chemical, phenotypic, disease, cell type, genetic, and other ontologies from sources like [ROBOKOP](https://researchsoftwareinstitute.github.io/data-translator/apps/robokop) as well as clinical aggregate data from sources like [ICEES](https://researchsoftwareinstitute.github.io/data-translator/apps/icees). The image above shows a query linking cholesterol to "LDL in Blood" a harmonized TOPMed variable. That variable is, in turn, linked to source variables and each of those is linked to its source study.
 
+## Elasticsearch Logic
+
+Elasticsearch contains the indexed knowledge graphs against which we perform full-text queries.  Our query currently supports conditionals (AND, OR, NOT) as well as exact matching on quoted terms.  Because we don't specify an analyzer in our query or when we index documents, we default to the [standard analyzer](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-standard-analyzer.html), which is recommended for full-text search.  The standard analyzer performs grammar-based tokenization (e.g., splitting up an input string into tokens by several separators including whitespace, commas, hyphens), defined by the [Unicode Standard Annex #29](http://unicode.org/reports/tr29/).
+
+### Example Documents and Query Behavior
+
+Two toy examples of indexed documents, `blood_color` and `blood_shape`, are shown below to demonstrate query behavior.
+
+![image](https://user-images.githubusercontent.com/63300314/85741468-7627e400-b6d0-11ea-849c-7b6da8b630b3.png)
+
+#### Query
+The query searches the fields in all indexed documents to return a matching subset of documents.
+
+```
+query = {
+            'query_string': {
+                'query' : query,
+                'fuzziness' : fuzziness,
+                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms'],
+                'quote_field_suffix': ".exact"
+            }
+        }
+````
+
+#### Tests
+
+| Query|Behavior|
+| :--- |  :---- |
+| **blood** | This returns both documents (`blood_color` and `blood_shape`). |
+| **blood AND magenta**  | This returns only `blood_color`. |
+| **magenta AND cerulean** | This returns `blood_color` even though this might be unexpected.  The words 'magenta' and 'cerulean' appear in the same document in the searched fields, even though they appear in different fields, so the document is still returned. |
+| **blue AND square** | No documents are returned. |
+| **blue and square** | This returns both documents because the 'and' term is treated as just another term instead of an operator because it is not capitalized.  The actual search resolves to **blue OR and OR square** |
+| **"round blood"** | No documents are returned. |
+| **"blood, round"** | This returns `blood_shape`|
+| **"blood round"** | The document `blood_shape` is returned - the standard analyzer performs tokenization based on grammar separators, including commas in this case. |
+
+
 ## Approach
 
 The methodology, from start to finish, reads raw data, annotates it with ontological terms, normalizes those terms, inserts them into a queryable knowledge graph, queries that graph along pre-configured lines, turns the resulting knowledge graphs into documents, and indexes those documents in a full text search engine.

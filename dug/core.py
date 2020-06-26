@@ -20,9 +20,9 @@ class SearchException (Exception):
         self.details = details
 
 class Search:
-    """ Search - 
+    """ Search -
     1. Lexical fuzziness; (a) misspellings - a function of elastic.
-    2. Fuzzy ontologically; 
+    2. Fuzzy ontologically;
        (a) expand based on core queries
          * phenotype->study
          * phenotype->disease->study
@@ -40,7 +40,7 @@ class Search:
             {
                 'host' : self.host,
                 'port' : port
-            }            
+            }
         ]
         logger.debug (f"Authenticating as user {self.username} to host:{self.hosts}")
         self.es = Elasticsearch (hosts=self.hosts,
@@ -58,7 +58,7 @@ class Search:
 
     def clean (self):
         self.es.indices.delete ("*")
-        
+
     def init_indices (self):
         settings = {
             "settings": {
@@ -90,21 +90,28 @@ class Search:
             except Exception as e:
                 logger.error (f"exception: {e}")
                 raise e
-                
+
     def index_doc (self, index, doc, doc_id):
         self.es.index (
             index=index,
             id=doc_id,
             body=doc)
-            
+
     def search (self, index, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
         query = {
-            'multi_match': {
+            'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms']
+                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms'],
+                'quote_field_suffix': ".exact"
             }
-
+            
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
@@ -379,7 +386,7 @@ class Search:
                     index=index,
                     doc=doc,
                     doc_id=root_id)
-                    
+
 if __name__ == '__main__':
 
     db_url_default = "http://" + os.environ.get('NEO4J_HOST', 'localhost') + ":" + os.environ.get('NEO4J_PORT',
@@ -405,8 +412,8 @@ if __name__ == '__main__':
     parser.add_argument('--db-username', help='database username', default='neo4j')
     parser.add_argument('--db-password', help='database password', default=os.environ['NEO4J_PASSWORD'])
     args = parser.parse_args ()
-    
-    logging.basicConfig(level=logging.DEBUG)    
+
+    logging.basicConfig(level=logging.DEBUG)
     index = "test"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,
@@ -424,7 +431,7 @@ if __name__ == '__main__':
                 "name" : "fred",
                 "type" : "phenotypic_feature"
             },
-            doc_id=1)        
+            doc_id=1)
     elif args.query:
         val = search.search (index=index, query=args.query)
         if 'hits' in val:

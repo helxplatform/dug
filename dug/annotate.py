@@ -19,23 +19,25 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 Config = Dict
 
+
 class Debreviator:
-    """ Expand certain abbreviations to increase our hit rate. """
+    """ Expand certain abbreviations to increase our hit rate."""
     def __init__(self):
         self.decoder = {
             "bmi" : "body mass index"
         }
-    def decode (self, text):
-        for key, value in self.decoder.items ():
-            text = text.replace (key, value)
+
+    def decode(self, text):
+        for key, value in self.decoder.items():
+            text = text.replace(key, value)
         return text
+
 
 class TOPMedStudyAnnotator:
     """
     Annotate TOPMed study data with semantic knowledge graph linkages.
 
     """
-
     def __init__(self, config: Config):
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
