@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from dug.annotate import TOPMedStudyAnnotator
+import dug.tranql as tql
 import argparse
 import logging
 import glob
@@ -168,7 +169,7 @@ class Search:
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
 
-    def tagged_crawl (self, tags, variables, index, min_score=0.2):
+    def tagged_crawl (self, tags, variables, index, min_score=0.2, include_node_keys=["id", "name", "synonyms"], include_edge_keys=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -179,22 +180,32 @@ class Search:
         for tag in tags:
             # Get subset of variables for this tag
             tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
+            tag_indexed = False
 
             logging.debug(f"Doing variables with tag: {tag['title']}")
             for identifier in tag["identifiers"]:
+
                 logging.debug(f"Doing id: {identifier}")
                 ''' Resolve the phenotype to identifiers. '''
 
                 # Boolean switch for whether a knowledge graph has been returned for the current identifier
                 # If no knowledge graphs are returned by TranQL just put a normal record with no nodes/KG
-                has_kg = False
+                identifier_indexed = False
 
-                queries = {"pheno": f"select phenotypic_feature->disease from '/graph/gamma/quick' where phenotypic_feature='{identifier}'",
-                           "disease": f"select d1:disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
-                           "anat": f"select d1:disease-[subclass_of]->d2:disease->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'"}
+                queries = {"disease": f"select d1:disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
+                           "anat": f"select d1:disease-[subclass_of]->d2:disease->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'",
+                           "chem_to_disease": f"select d1:chemical_substance->disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
+                           "chem_to_disease_disease": f"select d1:chemical_substance->disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
+                           "chem_to_gene_to_disease": f"select d1:chemical_substance->gene->disease from '/graph/gamma/quick' where d1='{identifier}'",
+                           "phen_to_anat": f"select d1:phenotypic_feature->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'"}
 
                 # Loop through each query and try to add the answers to the search index
                 for query_name, query in queries.items():
+
+                    # Skip identifiers that didn't normalize
+                    if not tag["identifiers"][identifier]["label"]:
+                        logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                        continue
 
                     # Skip query if a file exists in the crawlspace exists already
                     filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
@@ -209,6 +220,8 @@ class Search:
                         headers = headers,
                         data = query).json ()
 
+                    print(response)
+
                     # Case: Skip if empty KG
                     if not len(response["knowledge_graph"]["nodes"]):
                         logging.debug(f"Did not find a knowledge graph for {query}")
@@ -218,72 +231,118 @@ class Search:
                     with open(filename, 'w') as stream:
                         json.dump(response, stream, indent=2)
 
-                    # Set boolean flag to true so we know not to put in dummy record after all queries are run
-                    has_kg = True
-
                     # Get nodes in knowledge graph hashed by ids for easy lookup
-                    nodes = {node["id"]: node for node in response.get('knowledge_graph',{}).get('nodes',[])}
-                    answers = response.get('knowledge_map', {})
+                    kg = tql.QueryKG(response)
 
                     # Create ES entries for each variable for each answer
-                    for answer in answers:
+                    for answer in kg.answers:
+
                         # Filter out answers that fall below a minimum score
-                        if answer["score"] < min_score:
+                        # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
+                        if "score" in answer and answer["score"] < min_score:
                             continue
                         logger.debug(f"Answer: {answer}")
 
-                        answer_nodes = []
-                        for id, node_bindings in answer["node_bindings"].items():
-                            answer_nodes += [nodes[answer_node] for answer_node in node_bindings]
-                        answer_node_ids = [answer_node["id"] for answer_node in answer_nodes]
+                        # Get subgraph containing only information for this answer
+                        try:
+                            # Temporarily surround in try/except because sometimes the answer graphs
+                            # contain invalid references to edges/nodes
+                            # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                            answer_kg = kg.get_answer_subgraph(answer,
+                                                               include_node_keys=include_node_keys,
+                                                               include_edge_keys=include_edge_keys)
 
-                        # Add each variable to ES and add information for nodes and the knowledge graph returned from TranQL
-                        for variable in tagged_variables:
-                            doc = {"name": tag["identifiers"][identifier]["label"],
-                                   "id": identifier,
-                                    "var": variable["variable_id"].replace("TOPMED.VAR:", ""),
-                                    "tag": variable["tag_pk"],
-                                    "description": tag["description"],
-                                    "instructions": tag["instructions"],
-                                    "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
-                                    "study_name": variable["study_name"],
-                                    "nodes": answer_nodes,
-                                    "knowledge_map": answer}
+                            # Get list of nodes for making a unique ID for elastic search
+                            answer_node_ids = list(answer_kg.nodes.keys())
 
-                            logger.debug(f"{json.dumps(doc, indent=2)}")
-                            unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}_{'_'.join(answer_node_ids)}_{query_name}"
+                        except tql.MissingNodeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid node references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of non-preferred id! "
+                                           "See err msg for details.")
+                            continue
+                        except tql.MissingEdgeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid edge references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of invalid edge reference! "
+                                           "See err msg for details.")
+                            continue
 
-                            """ Index the document. """
-                            self.index_doc(
-                                index=index,
-                                doc=doc,
-                                doc_id=unique_doc_id)
+                        # Add each variable to ES with info specific to current answer
+                        self.index_tagged_variables(tag,
+                                                    tagged_variables,
+                                                    index,
+                                                    identifier=identifier,
+                                                    knowledge_graph=answer_kg.kg,
+                                                    query_name=query_name,
+                                                    answer_node_ids=answer_node_ids)
 
-                # Write textual entries for variables that didn't return KG for any of their identifiers
-                # Makes sure we don't just drop things that don't return answers from TranQL
-                if not has_kg:
-                    for variable in tagged_variables:
-                        doc = {"name": tag["identifiers"][identifier]["label"],
-                                "id": identifier,
-                                "var": variable["variable_id"].replace("TOPMED.VAR:", ""),
-                                "tag": variable["tag_pk"],
-                                "description": tag["description"],
-                                "instructions": tag["instructions"],
-                                "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
-                                "study_name": variable["study_name"],
-                                "nodes": [],
-                                "knowledge_map": {}}
+                        # Set boolean flag that at least one answer has been added to elastic for an identifier
+                        # Now we know we don't need to write a dummy record for this identifier
+                        identifier_indexed = True
+                        tag_indexed = True
 
-                        logger.debug(f"No answer returned from TranQL:\n{json.dumps(doc, indent=2)}")
-                        unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}"
+                # Write textual entries for identifiers that didn't return KG from TranQL
+                # Ensures we don't lose the ability to search on tag identifier labels returned from Monarch
+                if not identifier_indexed and tag["identifiers"][identifier]["label"]:
+                    self.index_tagged_variables(tag,
+                                                tagged_variables,
+                                                index,
+                                                identifier=identifier)
 
-                        """ Index the document. """
-                        self.index_doc(
-                            index=index,
-                            doc=doc,
-                            doc_id=unique_doc_id)
+                    # Indicate that tag has been indexed at least once
+                    # Now we know we don't need to write a dummy record for this tag
+                    tag_indexed = True
 
+            # Handle the exceptional case where a tag doesn't actually have any identifiers
+            # (i.e. Monarch didn't know what it was)
+            # We need to add records so we can at least still search on the tag's generic name/description
+            if not tag_indexed:
+                self.index_tagged_variables(tag,
+                                            tagged_variables,
+                                            index)
                         
+    def index_tagged_variables(self, tag, variables, index, identifier="", knowledge_graph={}, query_name="", answer_node_ids=[]):
+        # Internal class helper method for writing a list of tagged variables to Elastic Search
+
+        # Use identifier label as name if identifier exists
+        # Some tags may not have identifiers (e.g. when Monarch fails to return something) so just use empty string
+        name = tag["identifiers"][identifier]["label"] if identifier else ""
+
+        for variable in variables:
+            doc = {"name": name,
+                   "id": identifier,
+                   "var": variable["variable_id"].replace("TOPMED.VAR:", ""),
+                   "tag": variable["tag_pk"],
+                   "description": tag["description"],
+                   "instructions": tag["instructions"],
+                   "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
+                   "study_name": variable["study_name"],
+                   "knowledge_graph": knowledge_graph}
+
+            # Create unique ID
+            if answer_node_ids and query_name:
+                # Case: Variable is created from KG query and needs query and answer nodes to be unique
+                logger.debug("Indexing TranQL query answer...")
+                unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}_{'_'.join(answer_node_ids)}_{query_name}"
+            elif doc['id']:
+                logger.debug("Indexing identifier that didn't return anything from TranQL")
+                # Case: Variable is created from one of a tag's identifiers and identifier can be used as unique
+                unique_doc_id = f"{doc['id']}_{doc['study']}_{doc['var']}"
+            else:
+                # Case: Variable doesn't have any identifiers (monarch failed)
+                # The study name/variable name will be fine for unique
+                logger.debug("Indexing generic tagged variable...")
+                unique_doc_id = f"{doc['study']}_{doc['var']}"
+
+            logger.debug(f"ElasticSearch ID: {unique_doc_id}\n{json.dumps(doc, indent=2)}")
+
+            """ Index the document. """
+            self.index_doc(
+                index=index,
+                doc=doc,
+                doc_id=unique_doc_id)
+
     def index (self, index):
         self.make_crawlspace ()
         files = glob.glob (f"{self.crawlspace}/*.json")
