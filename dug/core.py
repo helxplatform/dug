@@ -108,7 +108,7 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'nodes.name', 'nodes.synonyms'],
+                'fields': ['name', 'description', 'instructions', 'knowledge_graph.knowledge_graph.nodes.name', 'knowledge_graph.knowledge_graph.nodes.synonyms'],
                 'quote_field_suffix': ".exact"
             }
             
