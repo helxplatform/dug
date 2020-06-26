@@ -139,6 +139,16 @@ index () {
 
 #############################################################
 ##
+## Index_tranql: Gather knowledge graphs from TranQL, create indices, and add to search engine.
+##
+#############################################################
+index_tranql () {
+    python -m dug.core --tagged-crawl $*
+}
+
+
+#############################################################
+##
 ## Query: Test the created index with a query.
 ##
 #############################################################

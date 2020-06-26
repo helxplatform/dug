@@ -153,18 +153,17 @@ class TOPMedStudyAnnotator:
         }
         """ Normalize the identifier with respect to the BioLink Model. """
         try:
-            print(f"TRYIN TO NORMALIZE: {curie}")
+            logger.debug(f"Normalizing: {curie}")
             normalized = http_session.get(url).json ()
-            print(f"Normalized: {normalized}")
             """ Record normalized results. """
             normalization = normalized.get(curie, {})
             preferred_id = normalization.get ("id", {})
             equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
             biolink_type = normalization.get ("type", [])
 
-            print(f"Pref id: {preferred_id}")
             """ Build the response. """
             if 'identifier' in preferred_id:
+                logger.debug(f"Preferred id: {preferred_id}")
                 variable['identifiers'][preferred_id['identifier']] = {
                     "label" : preferred_id.get('label',''),
                     "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
@@ -207,7 +206,7 @@ class TOPMedStudyAnnotator:
             connection=redis_connection)
 
 
-        variable_file = open("monarch_results.txt", "w")
+        variable_file = open("normalized_inputs.txt", "w")
 
         """ Annotate and normalize each variable. """
         for variable in variables:
@@ -235,10 +234,6 @@ class TOPMedStudyAnnotator:
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
 
-                print(variable)
-                print(annotations)
-                variable_file.write(f"VARIABLE: {description}\n")
-                variable_file.write(f"{json.dumps(annotations, indent=2)}\n")
 
                 """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
@@ -257,7 +252,6 @@ class TOPMedStudyAnnotator:
             except:
                 traceback.print_exc ()
                 raise
-            variable_file.write(f"NORMALIZED ANNOTATIONS FOR: {description}\n")
             variable_file.write(f"{json.dumps(variable, indent=2)}\n")
         return variables
 
