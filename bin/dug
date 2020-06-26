@@ -217,11 +217,6 @@ test () {
     bin/dug query_api copd
     bin/dug query_api sleep
 
-    bin/dug index_tranql data/topmed_variables_v1.0.csv --min-tranql-score 0.5
-    bin/dug query_api copd
-    bin/dug query_api muscle
-    bin/dug query_api lung
-
     set +e
 }
 
