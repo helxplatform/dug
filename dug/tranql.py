@@ -69,3 +69,92 @@ class QueryKG:
         return edge
 
 
+class InvalidQueryError(BaseException):
+    pass
+
+
+class QueryFactory:
+
+    # Class member list of valid data types that can be included in query
+    data_types = ["phenotypic_feature", "gene", "disease", "chemical_substance",
+                  "drug_exposure", "biological_process", "anatomical_entity"]
+
+    # List of curie prefixes that are valid for certain curie types
+    curie_map = {"disease": ["MONDO", "ORPHANET", "DOID"],
+                 "phenotypic_feature": ["HPO", "EFO"],
+                 "gene": ["HGNC"],
+                 "chemical_substance": ["CHEBI", "PUBCHEM"]}
+
+    def __init__(self, question_graph, source, curie_index=0):
+
+        # List of terms that are going to be connected to make a query
+        self.question_graph = question_graph
+
+        # Index in question graph that will be matched against curies
+        self.curie_index = curie_index
+
+        # Query source (e.g. /schema or /graph/gamma/quick)
+        self.source = source
+
+        # Check to make sure curie index isn't out of range
+        if self.curie_index >= len(self.question_graph):
+            raise InvalidQueryError(f"Invalid query index ({curie_index})! Question graph only "
+                                    f"contains {len(self.question_graph)} entries!")
+
+        # Set the type of the curie for downstream curie checking
+        self.curie_type = self.question_graph[self.curie_index]
+
+        # Validate that all entries in question graph are actually valid types
+        self.validate_factory()
+
+    def validate_factory(self):
+        # Check to make sure all the question types are valid
+        for question in self.question_graph:
+            if not question in QueryFactory.data_types:
+                raise InvalidQueryError(f"Query contains invalid query type: {question}")
+
+    def is_valid_curie(self, curie):
+        # Return whether a curie can be used to create a valid query
+
+        # Handle case where curie type has no limitations
+        if self.curie_type not in QueryFactory.curie_map:
+            return True
+
+        # Otherwise only return true if current query contains one of the acceptable prefixes
+        for curie_prefix in QueryFactory.curie_map[self.curie_type]:
+            if curie.startswith(curie_prefix):
+                return True
+
+        # Curie doesn't start with an acceptable prefix
+        return False
+
+    def get_query(self, curie):
+
+        # Return nothing if not valid curie
+        if not self.is_valid_curie(curie):
+            return None
+
+        question = []
+        seen = []
+        curie_id = ""
+        for i in range(len(self.question_graph)):
+            query_type = self.question_graph[i]
+            if self.question_graph.count(query_type) > 1:
+                # Add alias to beginning of types we've seen before
+                alias = f"{query_type[0:3]}{len([x for x in seen if x == query_type])}"
+                query = f"{alias}:{query_type}"
+            else:
+                alias = query_type
+                query = query_type
+
+            # Set curie id to the alias if this is the correct index
+            if i == self.curie_index:
+                curie_id = alias
+
+            # Append to list of query_types currently in query
+            seen.append(query_type)
+            # Append to list of actual terms that will appear in query
+            question.append(query)
+
+        # Build and return query
+        return f"select {'->'.join(question)} from '{self.source}' where {curie_id}='{curie}'"
