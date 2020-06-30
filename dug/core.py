@@ -176,7 +176,7 @@ class Search:
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
 
-    def tagged_crawl (self, tags, variables, index, min_score=0.2, include_node_keys=["id", "name", "synonyms"], include_edge_keys=[]):
+    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2, include_node_keys=["id", "name", "synonyms"], include_edge_keys=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -199,15 +199,8 @@ class Search:
                 # If no knowledge graphs are returned by TranQL just put a normal record with no nodes/KG
                 identifier_indexed = False
 
-                queries = {"disease": f"select d1:disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
-                           "anat": f"select d1:disease-[subclass_of]->d2:disease->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'",
-                           "chem_to_disease": f"select d1:chemical_substance->disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
-                           "chem_to_disease_disease": f"select d1:chemical_substance->disease_or_phenotypic_feature->d2:disease_or_phenotypic_feature from '/graph/gamma/quick' where d1='{identifier}'",
-                           "chem_to_gene_to_disease": f"select d1:chemical_substance->gene->disease from '/graph/gamma/quick' where d1='{identifier}'",
-                           "phen_to_anat": f"select d1:phenotypic_feature->anatomical_entity from '/graph/gamma/quick' where d1='{identifier}'"}
-
                 # Loop through each query and try to add the answers to the search index
-                for query_name, query in queries.items():
+                for query_name, query_factory in queries.items():
 
                     # Skip identifiers that didn't normalize
                     if not tag["identifiers"][identifier]["label"]:
@@ -220,7 +213,13 @@ class Search:
                         logger.info(f"identifier {identifier} is already crawled.")
                         continue
 
+                    # Skip query if the identifier is not a valid query for the query class
+                    if not query_factory.is_valid_curie(identifier):
+                        logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
+                        continue
+
                     # Submit query to TranQL
+                    query = query_factory.get_query(identifier)
                     logger.info (query)
                     response = requests.post(
                         url = tranql_endpoint,
@@ -463,6 +462,16 @@ if __name__ == '__main__':
         variables, tags = annotator.load_tagged_variables(args.tagged)
         tags = annotator.annotate(tags)
 
+        source = "/graph/gamma/quick"
+        queries = {
+            "disease": tql.QueryFactory(["disease", "phenotypic_feature"], source),
+            "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
+            "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
+            "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
+            "chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
+            "chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
+            "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source)}
+
         # Append tag info to variables
-        search.tagged_crawl(tags, variables, index, min_score=args.min_tranql_score)
+        search.tagged_crawl(tags, variables, index, queries, min_score=args.min_tranql_score)
 
