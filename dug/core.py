@@ -468,8 +468,8 @@ if __name__ == '__main__':
             "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
             "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
-            "chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
-            "chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
+            #"chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
+            #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
             "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source)}
 
         # Append tag info to variables
