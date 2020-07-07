@@ -169,11 +169,7 @@ Once the test is complete, a command line search shows the contents of the index
 
 
 ## Python Testing
-
-### Configuration
-1) Setup a virtual environment and install the required libs and modules from `requirements.txt`
-2) Clone `kgx` to the root of the repo and run `python setup.py install` inside it
-3) From within the `dug/dug` folder run `python -m pytest` to run unit tests
+* To run the python unit tests, type: `bin/dug pytests`
 
 
 ## Data Formats
