@@ -80,7 +80,7 @@ class QueryFactory:
                   "drug_exposure", "biological_process", "anatomical_entity"]
 
     # List of curie prefixes that are valid for certain curie types
-    curie_map = {"disease": ["MONDO", "ORPHANET", "DOID"],
+    curie_map = {"disease": ["MONDO", "ORPHANET", "DOID", "HP"],
                  "phenotypic_feature": ["HPO", "EFO"],
                  "gene": ["HGNC"],
                  "chemical_substance": ["CHEBI", "PUBCHEM"]}
