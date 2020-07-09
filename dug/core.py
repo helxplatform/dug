@@ -108,7 +108,7 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'knowledge_graph.knowledge_graph.nodes.name', 'knowledge_graph.knowledge_graph.nodes.synonyms'],
+                'fields': ['name', 'description', 'instructions', 'search_targets'],
                 'quote_field_suffix': ".exact"
             }
             
@@ -176,7 +176,9 @@ class Search:
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
 
-    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2, include_node_keys=["id", "name", "synonyms"], include_edge_keys=[]):
+    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2,
+                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                      query_exclude_identifiers=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -205,6 +207,11 @@ class Search:
                     # Skip identifiers that didn't normalize
                     if not tag["identifiers"][identifier]["label"]:
                         logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                        continue
+
+                    # Skip identifier if it's in the exclude list
+                    if identifier in query_exclude_identifiers:
+                        logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
                         continue
 
                     # Skip query if a file exists in the crawlspace exists already
@@ -315,6 +322,12 @@ class Search:
         # Some tags may not have identifiers (e.g. when Monarch fails to return something) so just use empty string
         name = tag["identifiers"][identifier]["label"] if identifier else ""
 
+        # Get all the stuff you want to make searchable out of the knowledge graph into one flat array
+        kg_search_targets = []
+        for node in knowledge_graph.get("knowledge_graph", {}).get("nodes", []):
+            kg_search_targets.append(node["name"])
+            kg_search_targets += node["synonyms"]
+
         for variable in variables:
             doc = {"name": name,
                    "id": identifier,
@@ -324,7 +337,8 @@ class Search:
                    "instructions": tag["instructions"],
                    "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
                    "study_name": variable["study_name"],
-                   "knowledge_graph": knowledge_graph}
+                   "knowledge_graph": knowledge_graph,
+                   "search_targets": kg_search_targets}
 
             # Create unique ID
             if answer_node_ids and query_name:
@@ -472,6 +486,14 @@ if __name__ == '__main__':
             #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
             "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source)}
 
+        # List of identifiers to stay away from for now
+        query_exclude_identifiers = ["CHEBI:17336"]
+
         # Append tag info to variables
-        search.tagged_crawl(tags, variables, index, queries, min_score=args.min_tranql_score)
+        search.tagged_crawl(tags,
+                            variables,
+                            index,
+                            queries,
+                            min_score=args.min_tranql_score,
+                            query_exclude_identifiers=query_exclude_identifiers)
 
