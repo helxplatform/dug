@@ -11,25 +11,34 @@ ENV HOME /home/$USER
 WORKDIR $HOME
 ENV UID 1000
 RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER && \
-        chown -R $UID:$UID $HOME
+    chown -R $UID:$UID $HOME
 
-# Install source code and required packages.
-# Run dug to also install KGX.
-RUN \
-        apt update && \
-        apt-get install -y curl gettext git gcc && \
-        git clone https://github.com/helxplatform/dug.git && \
-        cd dug && \
-        pip install --upgrade pip && \
-        pip install --no-cache-dir -r requirements.txt && \
-        git clone https://github.com/NCATS-Tangerine/kgx.git && \
-        cd kgx && python setup.py install && cd .. && \
-        find . -type f -exec chmod 664 {} \; && \
-        find . -type f -iname *.py -exec chmod 775 {} \; && \
-        find bin -type f -exec chmod 775 {} \; && \
-        find . -type d -exec chmod 775 {} \; && \
-        chown -R $UID:$UID $HOME && \
-        rm -rf /var/cache/apk/*
+# Install required packages
+RUN apt update && \
+    apt-get install -y curl gettext git gcc && \
+    mkdir dug
+
+# Copy over the source code
+COPY . dug/
+
+# Run dug to also install KGX
+# NOTE: We're checking out the specific commit for KGX so
+#       dug can run properly
+RUN cd dug && \
+    pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    rm -rf kgx && \
+    git clone https://github.com/NCATS-Tangerine/kgx.git && \
+    cd kgx && \
+    git checkout 97f73164d437a188925e7e3eeb51e35e82ea7c27 && \
+    python setup.py install && \
+    cd .. && \
+    find . -type f -exec chmod 664 {} \; && \
+    find . -type f -iname *.py -exec chmod 775 {} \; && \
+    find bin -type f -exec chmod 775 {} \; && \
+    find . -type d -exec chmod 775 {} \; && \
+    chown -R $UID:$UID $HOME && \
+    rm -rf /var/cache/apk/*
 
 USER $USER
 ENV PYTHONPATH $HOME/dug
