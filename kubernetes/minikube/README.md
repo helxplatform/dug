@@ -23,7 +23,7 @@ kubectl create -f namespace.yaml
 
 Create Storage Class
 ```
-kubectl apply -n dug -f storageclass-minikube.yaml
+kubectl apply -n dug -f storageclass.yaml
 ```
 
 Launch DUG
