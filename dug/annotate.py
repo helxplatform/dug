@@ -270,7 +270,7 @@ class TOPMedStudyAnnotator:
                              self.db_url,
                              self.username,
                              self.password)
-        db.save_with_unwind()
+        db.save()
         db.neo4j_report()
 
     def make_edge (self,
@@ -331,7 +331,7 @@ class TOPMedStudyAnnotator:
                 "name" : tag['title'],
                 "description" : tag['description'],
                 "instructions" : tag['instructions'],
-                "category" : [ "abstract_entity" ]
+                "category" : [ "information_content_entity" ]
             })
             """ Link ontology identifiers we've found for this tag via nlp. """
             for identifier, metadata in tag['identifiers'].items ():
