@@ -484,7 +484,10 @@ if __name__ == '__main__':
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
             #"chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
             #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
-            "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source)}
+            "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source),
+            "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
+            "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
+        }
 
         # List of identifiers to stay away from for now
         query_exclude_identifiers = ["CHEBI:17336"]
