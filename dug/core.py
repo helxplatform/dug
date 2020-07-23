@@ -473,8 +473,11 @@ if __name__ == '__main__':
         annotator = TOPMedStudyAnnotator(config=config)
 
         # Annotate tagged variables
-        variables, tags = annotator.load_tagged_variables(args.tagged)
-        tags = annotator.annotate(tags)
+        #variables, tags = annotator.load_tagged_variables(args.tagged)
+        #tags = annotator.annotate(tags)
+        
+        # Return tags and variables from TranQL
+        variables, tags = annotator.get_variables_from_tranql()
 
         source = "/graph/gamma/quick"
         queries = {
