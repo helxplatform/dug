@@ -252,8 +252,9 @@ class Search:
 
                         # Filter out answers that fall below a minimum score
                         # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
-                        if "score" in answer and answer["score"] < min_score:
-                            continue
+                        # We don't know how this filtering works; let's bring back everything for now, so we keep all synonyms
+                        #if "score" in answer and answer["score"] < min_score:
+                        #    continue
                         logger.debug(f"Answer: {answer}")
 
                         # Get subgraph containing only information for this answer
@@ -327,7 +328,7 @@ class Search:
         for node in knowledge_graph.get("knowledge_graph", {}).get("nodes", []):
             kg_search_targets.append(node["name"])
             kg_search_targets += node["synonyms"]
-
+        # TODO: Add synonyms here
         for variable in variables:
             doc = {"name": name,
                    "id": identifier,
@@ -410,6 +411,7 @@ if __name__ == '__main__':
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
     parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
+    parser.add_argument('--tranql', help='Crawl variables from TranQL', action='store_true')
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
                         dest="min_tranql_score",
                         default=0.2, type=float)
@@ -452,7 +454,7 @@ if __name__ == '__main__':
                 print (hit)
                 print (f"{hit['_source']}")
 
-    elif args.tagged:
+    elif args.tagged or args.tranql:
 
         config = {
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
@@ -472,12 +474,12 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # Annotate tagged variables
-        #variables, tags = annotator.load_tagged_variables(args.tagged)
-        #tags = annotator.annotate(tags)
-        
-        # Return tags and variables from TranQL
-        variables, tags = annotator.get_variables_from_tranql()
+        # If args.tagged, use file.  If args.tranql, use tranql.
+        if args.tagged:
+            variables, tags = annotator.load_tagged_variables(args.tagged)
+            tags = annotator.annotate(tags)
+        else:
+            variables, tags = annotator.get_variables_from_tranql()
 
         source = "/graph/gamma/quick"
         queries = {

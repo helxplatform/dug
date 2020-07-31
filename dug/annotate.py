@@ -488,12 +488,11 @@ class TOPMedStudyAnnotator:
 
         # Build TranQL Query
         source = "/schema"
-        questions = [#"biological_entity",
-                     "abstract_entity",
+        questions = ["information_content_entity",
                      "clinical_modifier",
                      "clinical_trial"]
-        query = f"select {'->'.join(questions)} from '{source}'"
-        single_query = query + f" where abstract_entity = 'TOPMED.TAG:51'"
+        query = f'select {"->".join(questions)} from "{source}"'
+        single_query = query + f" where information_content_entity = 'TOPMED.TAG:51'"
 
         # Put this in while loop to iterate until we are successful in connecting to TranQL
         while True:
@@ -501,7 +500,7 @@ class TOPMedStudyAnnotator:
                 response = s.post(url = tranql_endpoint,
                             data = query)
                 if response.status_code is not 200:
-                    logging.error(f"Encountered error: {response.status_code}.  Trying again...")
+                    logging.error(f"Encountered error: {response.status_code}:{response.reason}.  Trying again...")
                     continue
                 break
             except requests.ConnectionError as e:
@@ -516,9 +515,27 @@ class TOPMedStudyAnnotator:
         studies = list(filter(lambda x: x['id'].startswith("TOPMED.STUDY"),nodes))
 
         # Annotate Tags w/ identifiers
+        identifier_type = "biological_entity"
+        
         for tag in tags:
             tag['title'] = tag.pop('name')
+            # TranQL query to identifiers
+            logger.debug(f"Querying Tag: {tag['title']} with query: {query}")
+            query = f'select {identifier_type}->information_content_entity from "{source}" where information_content_entity = "{tag["id"]}"'
+            response = s.post(url = tranql_endpoint,
+                            data = query).json()
+            logger.debug(response)
+            identifiers = [identifier for identifier in response['knowledge_graph']['nodes'] if identifier['id'] != tag['id']]
             tag['identifiers'] = {}
+            for identifier in identifiers:
+                try:
+                    # change 'name' to 'label' for downstream functionality.
+                    identifier['label'] = identifier.pop('name') 
+                except KeyError as e:
+                    logger.error(f"{e}: Identifier does not have name/label.  Adding blank label")
+                    identifier['label'] = ""
+                tag['identifiers'][identifier['id']] = identifier
+            '''
             tag_edges = [edge for edge in edges if edge['source_id']==tag['id'] and not edge['target_id'].startswith('TOPMED.VAR')]
             identifiers = [tag['target_id'] for tag in tag_edges]
             for identifier in identifiers:
@@ -527,8 +544,7 @@ class TOPMedStudyAnnotator:
                 if 'label' not in value:
                     value['label'] = value.pop('name') # change 'name' to 'label' for downstream processing
                 tag['identifiers'][identifier] = value
-        
-        # TODO: Is it more efficient to get variables thru tags?
+            '''
 
         # Add studies and tag_pk to variables
         for variable in variables:
