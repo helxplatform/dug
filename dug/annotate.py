@@ -8,6 +8,7 @@ import urllib
 import xml.etree.ElementTree as ET
 from kgx import NeoTransformer, JsonTransformer
 from neo4jrestclient.client import GraphDatabase
+import requests
 from requests_cache import CachedSession
 from typing import List, Dict
 import hashlib
@@ -466,6 +467,100 @@ class TOPMedStudyAnnotator:
                     "category" : metadata['type']
                 })
         return graph
+
+    def get_variables_from_tranql(self):
+        '''
+        This function returns the tagged variables,
+        including identifer information,
+        from TranQL.  It is the starting point for
+        indexing documents into ElasticSearch
+        '''
+
+        # Create a session and connect to TranQL
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+        s = requests.Session()
+        s.headers.update(headers)
+        #TODO: Clean up the session object by bringing header, url, and data into attributes of obj
+
+        # Build TranQL Query
+        source = "/schema"
+        questions = ["information_content_entity",
+                     "clinical_modifier",
+                     "clinical_trial"]
+        query = f'select {"->".join(questions)} from "{source}"'
+        single_query = query + f" where information_content_entity = 'TOPMED.TAG:51'"
+
+        # Put this in while loop to iterate until we are successful in connecting to TranQL
+        while True:
+            try:
+                response = s.post(url = tranql_endpoint,
+                            data = query)
+                if response.status_code is not 200:
+                    logging.error(f"Encountered error: {response.status_code}:{response.reason}.  Trying again...")
+                    continue
+                break
+            except requests.ConnectionError as e:
+                logger.error (f"Encountered exception: {e}.  Trying again...")
+
+        # Build List of Dicts
+        response = response.json () # transform to JSON document if successful.
+        nodes = response['knowledge_graph']['nodes']
+        edges = response['knowledge_graph']['edges']
+        tags = list(filter(lambda x: x['id'].startswith("TOPMED.TAG"),nodes))
+        variables = list(filter(lambda x: x['id'].startswith("TOPMED.VAR"),nodes))
+        studies = list(filter(lambda x: x['id'].startswith("TOPMED.STUDY"),nodes))
+
+        # Annotate Tags w/ identifiers
+        identifier_type = "biological_entity"
+        
+        for tag in tags:
+            tag['title'] = tag.pop('name')
+            # TranQL query to identifiers
+            logger.debug(f"Querying Tag: {tag['title']} with query: {query}")
+            query = f'select {identifier_type}->information_content_entity from "{source}" where information_content_entity = "{tag["id"]}"'
+            response = s.post(url = tranql_endpoint,
+                            data = query).json()
+            logger.debug(response)
+            identifiers = [identifier for identifier in response['knowledge_graph']['nodes'] if identifier['id'] != tag['id']]
+            tag['identifiers'] = {}
+            for identifier in identifiers:
+                try:
+                    # change 'name' to 'label' for downstream functionality.
+                    identifier['label'] = identifier.pop('name') 
+                except KeyError as e:
+                    logger.error(f"{e}: Identifier does not have name/label.  Adding blank label")
+                    identifier['label'] = ""
+                tag['identifiers'][identifier['id']] = identifier
+            '''
+            tag_edges = [edge for edge in edges if edge['source_id']==tag['id'] and not edge['target_id'].startswith('TOPMED.VAR')]
+            identifiers = [tag['target_id'] for tag in tag_edges]
+            for identifier in identifiers:
+                # Find identifers in node
+                value = [node for node in nodes if node['id'] == identifier][0] # finds single dictionary
+                if 'label' not in value:
+                    value['label'] = value.pop('name') # change 'name' to 'label' for downstream processing
+                tag['identifiers'][identifier] = value
+            '''
+
+        # Add studies and tag_pk to variables
+        for variable in variables:
+            # Rename
+            variable['variable_id'] = variable.pop('id')
+
+            # Grab from tags
+            associations = [edge['source_id'] for edge in edges if edge['target_id']==variable['variable_id']]
+            variable['tag_pk'] = next(filter(lambda x: x.startswith('TOPMED.TAG'), associations), "").split(":")[1]
+            variable['study_id'] = next(filter(lambda x: x.startswith('TOPMED.STUDY'), associations), "")
+
+            # Grab from studies - only linked to one study name
+            variable['study_name'] = [study['name'] for study in studies if study['id']==variable['study_id']][0]
+
+        # Return tags and variables
+        return variables, tags
 
 class GraphDB:
     def __init__(self, conf):
