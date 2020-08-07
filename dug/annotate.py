@@ -42,6 +42,7 @@ class TOPMedStudyAnnotator:
     def __init__(self, config: Config):
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
+        self.synonym_service = config['synonym_service']
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
@@ -561,6 +562,41 @@ class TOPMedStudyAnnotator:
 
         # Return tags and variables
         return variables, tags
+
+    def add_synonyms_to_identifiers(self, tags):
+        '''
+        This function does the following:
+        - Initialize http_session for NCATS synonym service
+        - list comprehension of all identifiers attached to tags
+        - Add synonyms to all tags
+        '''
+        # Create an http_session like in annotate()
+        redis_connection = redis.StrictRedis (host=self.redis_host,
+                                              port=self.redis_port,
+                                              password=self.redis_password)
+        http_session = CachedSession (
+            cache_name='annotator',
+            backend="redis",
+            connection=redis_connection)
+
+        # Go through identifiers in tags
+        for tag in tags:
+            for identifier in list(tag['identifiers'].keys()):
+                try:
+                    # Get response from synonym service
+                    encoded = urllib.parse.quote (identifier)
+                    url = f"{self.synonym_service}{encoded}"
+                    raw_synonyms = http_session.get(url).json ()
+
+                    # List comprehension for synonyms
+                    synonyms = [synonym['desc'] for synonym in raw_synonyms]
+                    
+                    # Add to tag
+                    tag['identifiers'][identifier]['synonyms'] = synonyms
+                
+                except json.decoder.JSONDecodeError as e:
+                    traceback.print_exc ()
+        return tags
 
 class GraphDB:
     def __init__(self, conf):

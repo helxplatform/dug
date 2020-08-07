@@ -328,6 +328,11 @@ class Search:
         for node in knowledge_graph.get("knowledge_graph", {}).get("nodes", []):
             kg_search_targets.append(node["name"])
             kg_search_targets += node["synonyms"]
+        
+        # Add synonyms if no answers from TranQL
+        if not len(kg_search_targets):
+            kg_search_targets = tag['identifiers'][identifier]['synonyms']
+
         # TODO: Add synonyms here
         for variable in variables:
             doc = {"name": name,
@@ -459,6 +464,7 @@ if __name__ == '__main__':
         config = {
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
             'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
+            'synonym_service': "https://onto.renci.org/synonyms/",
             'password': os.environ['NEO4J_PASSWORD'],
             'username': 'neo4j',
             'db_url': db_url_default,
@@ -480,6 +486,9 @@ if __name__ == '__main__':
             tags = annotator.annotate(tags)
         else:
             variables, tags = annotator.get_variables_from_tranql()
+
+        # Add Synonyms
+        tags = annotator.add_synonyms_to_identifiers(tags)
 
         source = "/graph/gamma/quick"
         queries = {
