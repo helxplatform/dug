@@ -368,6 +368,140 @@ class Search:
                 index=index,
                 doc=doc,
                 doc_id=unique_doc_id)
+    
+    def tagged_crawl_by_hv (self, tags, variables, index, min_score=0.2,
+                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                      query_exclude_identifiers=[]):
+
+        '''
+        This version of tagged crawl starts from preferred identifiers linked to tags
+        (as biological_entity type) and performs all available queries, stashing knowledge graphs
+        at the tag level
+        '''
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+
+        ## Get Queries
+        #TODO: Put this into its own function
+        # Return TranQL schema
+        tranql_schema = requests.get(
+            url="https://tranql.renci.org/tranql/schema",
+            headers = headers
+        ).json ()
+        source = "/schema"
+        start_term = 'biological_entity'
+        
+        queries = [x[1] for x in tranql_schema['schema']['knowledge_graph']['edges'] if x[0] == start_term]
+        queries = list(set(queries))
+        small_queries = ["disease","phenotypic_feature"]
+        for tag in tags:
+            ## TOPMed Studies, Variables
+            studies = {}
+            tag['knowledge_graphs'] = [] # Initialize knowledge graphs section
+
+            tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
+            for variable in tagged_variables:
+                study_id = variable['study_id']
+                study_name = variable['study_name']
+                variable_id = variable['variable_id']
+                
+                if study_id not in studies:  
+                    studies[study_id] = {
+                        "study_id": study_id,
+                        "study_name": study_name,
+                        "variables": [variable_id]
+                    }
+                else:
+                    studies[study_id]['variables'].append(variable_id)
+
+            # If we need to convert to list
+            tag['studies'] = list(studies.values())
+            
+            ## Identifiers
+            for identifier in tag["identifiers"]:
+                logging.debug(f"Doing id: {identifier}")
+                ''' Resolve the phenotype to identifiers. '''
+                
+                # skip identifiers that don't normalize, or are excluded
+                if not tag["identifiers"][identifier]["label"]:
+                    logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                    continue
+                
+                if identifier in query_exclude_identifiers:
+                    logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
+                    continue
+                
+                ## Queries
+                for query_name in small_queries:
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    
+                    # Skip query if a file exists in the crawlspace exists already
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled.")
+                        continue     
+                    
+                    # No checking whether valid query needed, since we're using the API
+
+                    query = f'select {"->".join([start_term,query_name])} from "{source}" where {start_term} = "{identifier}"'
+                    logger.info (query)
+                    response = requests.post(
+                        url = tranql_endpoint,
+                        headers = headers,
+                        data = query).json ()
+
+                    # Skip if no answer    
+                    if not len(response['knowledge_graph']['nodes']):
+                        logging.debug(f"Did not find a knowledge graph for {query}")
+                        continue
+                    
+                    # Dump out to file if there's a knowledge graph
+                    with open(filename, 'w') as stream:
+                        json.dump(response, stream, indent=2)    
+                    
+                    
+                    #Update identifier with TranQL info if necessary
+                    
+                    if 'synonyms' not in tag['identifiers'][identifier]:
+                        tag['identifiers'][identifier] = next(filter(lambda x: x['id']==identifier, response['knowledge_graph']['nodes']), None)
+
+                    # Append to knowledge_graphs list
+                    tag['knowledge_graphs'].append(response['knowledge_graph'])
+
+            '''
+            Index the tag
+            - tag
+            - studies
+            - identifiers
+            - knowledge_graphs
+
+            Save the tag as JSON for reference
+            '''
+            # Get search_targets
+            search_targets = []
+            for identifier in tag['identifiers']:
+                if 'synonyms' in tag['identifiers'][identifier]:
+                    search_targets += tag['identifiers'][identifier]['synonyms']
+
+
+
+            doc = {
+                'tag_id': tag['id'],
+                'pk': tag['pk'],
+                'name': tag['title'],
+                'description': tag['description'],
+                'instructions': tag['instructions'],
+                'search_targets': search_targets,
+                'studies': tag['studies'],
+                'identifiers': tag['identifiers'],
+                'knowledge_graphs': tag['knowledge_graphs'] 
+            }
+
+            with open(f'new_tranql_query/{doc["tag_id"]}.json', 'w') as stream:
+                json.dump(doc, stream, indent=2)
+
 
     def index (self, index):
         self.make_crawlspace ()
@@ -507,10 +641,9 @@ if __name__ == '__main__':
         query_exclude_identifiers = ["CHEBI:17336"]
 
         # Append tag info to variables
-        search.tagged_crawl(tags,
+        search.tagged_crawl_by_hv(tags,
                             variables,
                             index,
-                            queries,
                             min_score=args.min_tranql_score,
                             query_exclude_identifiers=query_exclude_identifiers)
 
