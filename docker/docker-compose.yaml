@@ -84,6 +84,20 @@ services:
     ports:
       - '6379:6379'
 
+  #################################################################################
+  ##
+  ## A scalable, search-engine-boosting platform for developing models to improve
+  ## search results.
+  ##
+  #################################################################################
+  nboost:
+    image: koursaros/nboost:0.3.9-pt
+    networks:
+      - dug-network
+    command: ["--uhost", "localhost", "--uport", "9200"]
+    ports:
+      - '8000:8000'
+
 networks:
   dug-network:
     driver: bridge
