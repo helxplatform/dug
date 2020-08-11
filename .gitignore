@@ -8,3 +8,4 @@ kgx
 dug/.mypy_cache
 *.pyc
 db/*
+dug-search-client
