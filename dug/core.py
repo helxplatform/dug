@@ -429,9 +429,21 @@ class Search:
                 for query_name, query_factory in queries.items():
                     filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
                     
-                    # Skip query if a file exists in the crawlspace exists already
+                    # Skip TranQL query if a file exists in the crawlspace exists already, but add it to the index
                     if os.path.exists(filename):
-                        logger.info(f"identifier {identifier} is already crawled.")
+                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL, adding to index.")
+                        
+                        # Load from 'cache'
+                        with open (filename, 'r') as stream:
+                            kg = json.load(stream)
+
+                        # Add synonyms
+                        for answer in kg['knowledge_graph']['nodes']:
+                            identifier_search_targets.append(answer['name'])
+                            identifier_search_targets += answer['synonyms']
+
+                        # Add to tag
+                        tag['knowledge_graphs'].append(kg['knowledge_graph'])
                         continue     
                     
                     # Skip query if the identifier is not a valid query for the query class
@@ -541,7 +553,7 @@ class Search:
                 'knowledge_graphs': tag['knowledge_graphs']
             }
 
-            with open(f'new_tranql_query/{doc["tag_id"]}.json', 'w') as stream:
+            with open(f'new_doc_structure/{doc["tag_id"]}.json', 'w') as stream:
                 json.dump(doc, stream, indent=2)
 
             # Index the Document, by tag_id
