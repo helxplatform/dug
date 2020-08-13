@@ -108,7 +108,7 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'search_targets'],
+                'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                 'quote_field_suffix': ".exact"
             }
             
@@ -416,9 +416,15 @@ class Search:
             # Deal with identifiers to reduce indexing size
             identifier_list = []
             for identifier in tag['identifiers']:
+                # Deal with Identifiers
                 identifier_dict = tag['identifiers'][identifier]
                 identifier_dict['identifier'] = identifier
                 identifier_list.append(identifier_dict)
+
+                # Add identifier Search Targets
+                if tag["identifiers"][identifier]["label"]:
+                    tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
+                    tag['search_targets'].append(tag['identifiers'][identifier]['label'])
 
             tag['identifier_list'] = identifier_list
 
@@ -435,10 +441,6 @@ class Search:
                 if identifier in query_exclude_identifiers:
                     logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
                     continue
-                
-                # Add identifier Search Targets
-                tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
-                tag['search_targets'].append(tag['identifiers'][identifier]['label'])
 
                 for query_name, query_factory in queries.items():
                     
@@ -538,7 +540,8 @@ class Search:
             'name': tag['title'],
             'description': tag['description'],
             'instructions': tag['instructions'],
-            'search_targets': list(set(tag['search_targets'] + answer_synonyms)), # Make unique if duplicates
+            'search_targets': list(set(tag['search_targets'])), # Make unique if duplicates
+            'optional_targets': answer_synonyms,
             'studies': tag['studies'],
             'identifiers': tag['identifier_list'],
             'knowledge_graph': knowledge_graph
