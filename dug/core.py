@@ -387,8 +387,12 @@ class Search:
         for tag in tags:
             ## TOPMed Studies, Variables
             studies = {}
-            tag['knowledge_graphs'] = [] # Initialize knowledge graphs section
+            
+            ## Search Targets
             tag['search_targets'] = [] # Initialize Search Target section
+            
+            ## Set tag_indexed to False; case where tag does not return KGs from TranQL
+            tag_indexed = False
 
             tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
             for variable in tagged_variables:
@@ -405,10 +409,20 @@ class Search:
                 else:
                     studies[study_id]['variables'].append(variable_id)
 
-            # If we need to convert to list
+            # Convert Studies to a List
             tag['studies'] = list(studies.values())
             
             ## Identifiers
+            # Deal with identifiers to reduce indexing size
+            identifier_list = []
+            for identifier in tag['identifiers']:
+                identifier_dict = tag['identifiers'][identifier]
+                identifier_dict['identifier'] = identifier
+                identifier_list.append(identifier_dict)
+
+            tag['identifier_list'] = identifier_list
+
+            ## Queries
             for identifier in tag["identifiers"]:
                 logging.debug(f"Doing id: {identifier}")
                 ''' Resolve the phenotype to identifiers. '''
@@ -421,62 +435,42 @@ class Search:
                 if identifier in query_exclude_identifiers:
                     logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
                     continue
+                
+                # Add identifier Search Targets
+                tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
+                tag['search_targets'].append(tag['identifiers'][identifier]['label'])
 
-                # If we've made it this far, initialize the search targets for this identifier
-                identifier_search_targets = []
-
-                ## Queries
                 for query_name, query_factory in queries.items():
-                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
-                    
-                    # Skip TranQL query if a file exists in the crawlspace exists already, but add it to the index
-                    if os.path.exists(filename):
-                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL, adding to index.")
-                        
-                        # Load from 'cache'
-                        with open (filename, 'r') as stream:
-                            kg = json.load(stream)
-
-                        # Add synonyms
-                        for answer in kg['knowledge_graph']['nodes']:
-                            identifier_search_targets.append(answer['name'])
-                            identifier_search_targets += answer['synonyms']
-
-                        # Add to tag
-                        tag['knowledge_graphs'].append(kg['knowledge_graph'])
-                        continue     
                     
                     # Skip query if the identifier is not a valid query for the query class
                     if not query_factory.is_valid_curie(identifier):
                         logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
                         continue
-
-                    query = query_factory.get_query(identifier)
-                    logger.info (query)
-                    response = requests.post(
-                        url = tranql_endpoint,
-                        headers = headers,
-                        data = query).json ()
-
-                    # Case: Skip if empty KG 
-                    if not len(response['knowledge_graph']['nodes']):
-                        logging.debug(f"Did not find a knowledge graph for {query}")
-                        continue
                     
-                    # Dump out to file if there's a knowledge graph
-                    with open(filename, 'w') as stream:
-                        json.dump(response, stream, indent=2)    
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+                        with open (filename, 'r') as stream:
+                            response = json.load(stream)
 
-                    # Add to identifier search targets - currently, all identifiers from graph.
-                    for answer in response['knowledge_graph']['nodes']:
-                        identifier_search_targets.append(answer['name'])
-                        identifier_search_targets += answer['synonyms']
+                    else:
+                        query = query_factory.get_query(identifier)
+                        logger.info (query)
+                        response = requests.post(
+                            url = tranql_endpoint,
+                            headers = headers,
+                            data = query).json ()
+
+                        # Case: Skip if empty KG 
+                        if not len(response['knowledge_graph']['nodes']):
+                            logging.debug(f"Did not find a knowledge graph for {query}")
+                            continue # Does this continue out of the loop?
+                        
+                        # Dump out to file if there's a knowledge graph
+                        with open(filename, 'w') as stream:
+                            json.dump(response, stream, indent=2)    
                     
-                    # Add kg to knowledge_graphs list
-                    tag['knowledge_graphs'].append(response['knowledge_graph'])
-
-                    #TODO: I don't think we need this section when using tags? Discuss with Alex.     
-                    '''
                     # Get nodes in knowledge graph hashed by ids for easy lookup
                     kg = tql.QueryKG(response)
 
@@ -513,55 +507,62 @@ class Search:
                             logger.warning("Skipping answer due to presence of invalid edge reference! "
                                            "See err msg for details.")
                             continue
-                            
-                        # Don't index, just append to the structure
-                        tag['knowledge_graphs'].append(answer)
-                    '''
-                # Add search targets to the tag
-                
-                if not len(identifier_search_targets):
-                    tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
-                    tag['search_targets'].append(tag['identifiers'][identifier]['label'])
-                else:
-                    tag['search_targets'] += identifier_search_targets
-            '''
-            Index the tag
-            - tag information
-            - studies
-            - identifiers
-            - search_targets
-            - knowledge_graphs
 
-            Save the tag as JSON for reference
-            '''
-            # Deal with identifiers to reduce indexing size
-            identifier_list = []
-            for identifier in tag['identifiers']:
-                identifier_dict = tag['identifiers'][identifier]
-                identifier_dict['identifier'] = identifier
-                identifier_list.append(identifier_dict)
+                        # Add each variable to ES with info specific to current answer
+                        self.index_tagged_variables_by_tag(tag,
+                                                    index,
+                                                    knowledge_graph=answer_kg.kg,
+                                                    query_name=query_name,
+                                                    answer_node_ids=answer_node_ids)
 
-            doc = {
-                'tag_id': tag['id'],
-                'pk': tag['pk'],
-                'name': tag['title'],
-                'description': tag['description'],
-                'instructions': tag['instructions'],
-                'search_targets': list(set(tag['search_targets'])), # Make unique if duplicates
-                'studies': tag['studies'],
-                'identifiers': identifier_list,
-                'knowledge_graphs': tag['knowledge_graphs']
-            }
+                        # set tag_indexed to True - don't need to index this tag w/o identifiers
+                        tag_indexed = True
 
-            with open(f'new_doc_structure/{doc["tag_id"]}.json', 'w') as stream:
-                json.dump(doc, stream, indent=2)
+            if not tag_indexed:
+                self.index_tagged_variables_by_tag (tag,
+                                            index)
 
-            # Index the Document, by tag_id
-            self.index_doc(
-                index=index,
-                doc=doc,
-                doc_id=doc['tag_id'])
-            
+    def index_tagged_variables_by_tag(self, tag, index, knowledge_graph={}, query_name="", answer_node_ids=[]):
+        # Internal class helper method for writing tags*kg_answers to Elasticsearch
+
+        # Deal with extra synonyms from the answer
+        answer_synonyms = []
+        for node in knowledge_graph.get('knowledge_graph',{}).get('nodes',[]):
+            answer_synonyms.append(node['name'])
+            answer_synonyms += node['synonyms']
+
+        # Create the Doc
+        doc = {
+            'tag_id': tag['id'],
+            'pk': tag['pk'],
+            'name': tag['title'],
+            'description': tag['description'],
+            'instructions': tag['instructions'],
+            'search_targets': list(set(tag['search_targets'] + answer_synonyms)), # Make unique if duplicates
+            'studies': tag['studies'],
+            'identifiers': tag['identifier_list'],
+            'knowledge_graph': knowledge_graph
+        }
+        # Create unique ID
+        if answer_node_ids and query_name:
+            # Case: Variable is created from KG query and needs query and answer nodes to be unique
+            logger.debug("Indexing TranQL query answer...")
+            unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
+        else:
+            # Case: Variable doesn't have any identifiers (monarch failed)
+            # The study name/variable name will be fine for unique
+            logger.debug("Indexing generic tagged variable...")
+            unique_doc_id = doc['tag_id']
+
+        with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
+            json.dump(doc, stream, indent=2)
+
+        """ Index the document. """
+        self.index_doc(
+            index=index,
+            doc=doc,
+            doc_id=unique_doc_id)
+  
     def index (self, index):
         self.make_crawlspace ()
         files = glob.glob (f"{self.crawlspace}/*.json")
