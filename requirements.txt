@@ -57,6 +57,7 @@ neotime==1.7.4
 networkx==2.4
 notebook==6.0.3
 numpy==1.18.1
+ordered-set==4.0.2
 packaging==20.3
 pandas==1.0.1
 pandocfilters==1.4.2
