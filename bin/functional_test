@@ -20,6 +20,7 @@ set -x
 TEST_DIR=$PWD/test_dir
 DUG_TEST_DIR=$TEST_DIR/dug
 DUG_TEST_ENV_FILE=$DUG_TEST_DIR/docker/.env
+BRANCH="${1:-master}"
 
 wait_for_elastic () {
 
@@ -57,12 +58,16 @@ wait_for_elastic () {
 
 execute_test () {
     # Create a fresh test environment.
+    if [ -f $TEST_DIR/dug/db/neo4j/neo4j/conf/neo4j.conf ]; then
+       chmod 755 $TEST_DIR/dug/db/neo4j/neo4j/conf
+       chmod 644 $TEST_DIR/dug/db/neo4j/neo4j/conf/neo4j.conf
+    fi
     rm -rf $TEST_DIR
     mkdir -p $TEST_DIR
     cd $TEST_DIR
     
-    # Get the  latest source.
-    git clone https://github.com/helxplatform/dug.git
+    # Get the latest source of indicated branch.
+    git clone --single-branch --branch $BRANCH https://github.com/helxplatform/dug.git
     cd dug
     
     # Configure volume dirs and set read and write
