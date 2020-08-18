@@ -395,3 +395,51 @@ spec:
   selector:
     app: dug
   type: ClusterIP
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: dug
+  namespace: dug
+spec:
+  prefix: /dug/
+  service: dug
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dug-search-client
+  name: dug-search-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dug-search-client
+  template:
+    metadata:
+      labels:
+        app: dug-search-client
+    spec:
+      containers:
+      - image: heliumdatastage/dug-search-client:81d7d7d
+        imagePullPolicy: Always
+        name: dug-search-client
+        ports:
+          - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dug-search-client
+  name: dug-search-client
+spec:
+  ports:
+  - name: dug-search-client
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  selector:
+    app: dug-search-client
+  type: ClusterIP
