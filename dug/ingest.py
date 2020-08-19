@@ -105,14 +105,14 @@ def main ():
             for category in [ "phenotypic_feature", "anatomical_entity", "cell_type", "gene", "disease", "biological_process" ]:
                 page_size= 10_000
                 path_count_cypher = f"""MATCH 
-                    p=(bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial) 
+                    p=(bioconcept:{category})--(tag:information_content_entity)--(variable:clinical_modifier)--(study:clinical_trial) 
                     RETURN count(p) as path_count
                 """
                 get_path_query = lambda skip, limit: f"MATCH" \
-                    f"(bioconcept:{category})--(tag:abstract_entity)--(variable:clinical_modifier)--(study:clinical_trial)" \
+                    f"(bioconcept:{category})--(tag:information_content_entity)--(variable:clinical_modifier)--(study:clinical_trial)" \
                     f"RETURN * SKIP {skip} LIMIT {limit}"
                 path_count = graph.query(path_count_cypher)[0][0]
-                logger.debug(f"Found {path_count} paths for ({category})--(abstract_entity)"
+                logger.debug(f"Found {path_count} paths for ({category})--(information_content_entity)"
                              "--(clinical_modifier)--(clinical_trial)")
                 for offset in range(0, path_count, page_size):
                     skip = offset
