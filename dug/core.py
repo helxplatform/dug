@@ -108,7 +108,7 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'knowledge_graph.knowledge_graph.nodes.name', 'knowledge_graph.knowledge_graph.nodes.synonyms'],
+                'fields': ['name', 'description', 'instructions', 'search_targets'],
                 'quote_field_suffix': ".exact"
             }
             
@@ -176,7 +176,9 @@ class Search:
                     with open(filename, 'w') as stream:
                         json.dump (response, stream, indent=2)
 
-    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2, include_node_keys=["id", "name", "synonyms"], include_edge_keys=[]):
+    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2,
+                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                      query_exclude_identifiers=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -205,6 +207,11 @@ class Search:
                     # Skip identifiers that didn't normalize
                     if not tag["identifiers"][identifier]["label"]:
                         logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                        continue
+
+                    # Skip identifier if it's in the exclude list
+                    if identifier in query_exclude_identifiers:
+                        logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
                         continue
 
                     # Skip query if a file exists in the crawlspace exists already
@@ -245,8 +252,9 @@ class Search:
 
                         # Filter out answers that fall below a minimum score
                         # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
-                        if "score" in answer and answer["score"] < min_score:
-                            continue
+                        # We don't know how this filtering works; let's bring back everything for now, so we keep all synonyms
+                        #if "score" in answer and answer["score"] < min_score:
+                        #    continue
                         logger.debug(f"Answer: {answer}")
 
                         # Get subgraph containing only information for this answer
@@ -315,6 +323,17 @@ class Search:
         # Some tags may not have identifiers (e.g. when Monarch fails to return something) so just use empty string
         name = tag["identifiers"][identifier]["label"] if identifier else ""
 
+        # Get all the stuff you want to make searchable out of the knowledge graph into one flat array
+        kg_search_targets = []
+        for node in knowledge_graph.get("knowledge_graph", {}).get("nodes", []):
+            kg_search_targets.append(node["name"])
+            kg_search_targets += node["synonyms"]
+        
+        # Add synonyms if no answers from TranQL
+        if not len(kg_search_targets):
+            kg_search_targets = tag['identifiers'][identifier]['synonyms']
+
+        # TODO: Add synonyms here
         for variable in variables:
             doc = {"name": name,
                    "id": identifier,
@@ -324,7 +343,8 @@ class Search:
                    "instructions": tag["instructions"],
                    "study": variable["study_id"].replace("TOPMED.STUDY:", ""),
                    "study_name": variable["study_name"],
-                   "knowledge_graph": knowledge_graph}
+                   "knowledge_graph": knowledge_graph,
+                   "search_targets": kg_search_targets}
 
             # Create unique ID
             if answer_node_ids and query_name:
@@ -396,6 +416,7 @@ if __name__ == '__main__':
     parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
     parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
+    parser.add_argument('--tranql', help='Crawl variables from TranQL', action='store_true')
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
                         dest="min_tranql_score",
                         default=0.2, type=float)
@@ -438,11 +459,12 @@ if __name__ == '__main__':
                 print (hit)
                 print (f"{hit['_source']}")
 
-    elif args.tagged:
+    elif args.tagged or args.tranql:
 
         config = {
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
             'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
+            'synonym_service': "https://onto.renci.org/synonyms/",
             'password': os.environ['NEO4J_PASSWORD'],
             'username': 'neo4j',
             'db_url': db_url_default,
@@ -458,9 +480,15 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # Annotate tagged variables
-        variables, tags = annotator.load_tagged_variables(args.tagged)
-        tags = annotator.annotate(tags)
+        # If args.tagged, use file.  If args.tranql, use tranql.
+        if args.tagged:
+            variables, tags = annotator.load_tagged_variables(args.tagged)
+            tags = annotator.annotate(tags)
+        else:
+            variables, tags = annotator.get_variables_from_tranql()
+
+        # Add Synonyms
+        tags = annotator.add_synonyms_to_identifiers(tags)
 
         source = "/graph/gamma/quick"
         queries = {
@@ -468,10 +496,21 @@ if __name__ == '__main__':
             "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
             "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
-            "chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
-            "chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
-            "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source)}
+            #"chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
+            #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
+            "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source),
+            "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
+            "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
+        }
+
+        # List of identifiers to stay away from for now
+        query_exclude_identifiers = ["CHEBI:17336"]
 
         # Append tag info to variables
-        search.tagged_crawl(tags, variables, index, queries, min_score=args.min_tranql_score)
+        search.tagged_crawl(tags,
+                            variables,
+                            index,
+                            queries,
+                            min_score=args.min_tranql_score,
+                            query_exclude_identifiers=query_exclude_identifiers)
 

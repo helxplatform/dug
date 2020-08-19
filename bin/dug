@@ -176,6 +176,19 @@ api () {
 stack () {
     source $DUGENV
     export $(cut -d= -f1 $DUGENV)
+
+    if [[ ! -f $REDIS_DATA/appendonly.aof  ]]; then
+      echo "Initializing redis with baseline AOF..."
+      cp $DUG_HOME/data/redis/appendonly.aof $REDIS_DATA/
+    fi
+
+    if [[ ! -d $DUG_HOME/dug-search-client ]]; then
+      echo "Initializing DUG search client..."
+      git clone https://github.com/mbwatson/dug-search-client.git $DUG_HOME/dug-search-client
+    fi
+
+    CLIENT_PORT=80 docker-compose -f $DUG_HOME/dug-search-client/docker-compose.yaml $* &
+
     HOSTNAME=$HOSTNAME docker-compose \
 	    --env-file $DUG_HOME/docker/.env \
 	    -f $DUG_HOME/docker/docker-compose.yaml -p dug $*
@@ -193,18 +206,18 @@ test () {
     #   * Stack must be running via "bin/dug stack".
     #   * If running from a host pointing at docker-compose, must have
     #     a docker/.env.dev file with all hostnames set to localhost.
-    
+
     # Delete the test index
     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
-    
+
     # Ingest, annotate, load knowledge graph.
     bin/dug link data/dd.xml
     bin/dug load data/dd_tagged.json
-    
+
     # Crawl model queries, create index, test index.
     bin/dug crawl
     bin/dug index
-    
+
     # The best format for variables we have is currently
     # implemented so that, if we pass the additional
     # --index <arg> flag, it will use the neo4j
@@ -212,15 +225,41 @@ test () {
     # create documents, and index those for search.
     bin/dug link data/topmed_variables_v1.0.csv --index x
     sleep 4
-    
+
     bin/dug query coug # direct to search engine
-    
+
     # Query via API
     bin/dug query_api coug
     bin/dug query_api copd
     bin/dug query_api sleep
 
     set +e
+}
+
+#############################################################
+##
+## Python Tests: Run the python unit tests for DUG
+##
+#############################################################
+pytests () {
+  set -e
+
+  # Create the virtualenv if it doesn't exist already and
+  # install the required modules to the venv
+  if [[ ! -d $DUG_HOME/venv ]]; then
+    # TODO: Check that python3 exists before trying to use it
+    python3 -m venv $DUG_HOME/venv
+    source $DUG_HOME/venv/bin/activate
+    pip install -r $DUG_HOME/requirements.txt
+  fi
+
+  # NOTE: In certain scenarios we'll run the venv/bin/activate
+  # script twice, which is okay, since it's idempotent
+  source $DUG_HOME/venv/bin/activate
+  cd $DUG_HOME/dug/tests && python3 -m pytest
+  deactivate && cd $DUG_HOME
+
+  set +e
 }
 
 #############################################################
