@@ -30,7 +30,6 @@ RUN cd dug && \
     rm -rf kgx && \
     git clone https://github.com/NCATS-Tangerine/kgx.git && \
     cd kgx && \
-    git checkout 97f73164d437a188925e7e3eeb51e35e82ea7c27 && \
     python setup.py install && \
     cd .. && \
     find . -type f -exec chmod 664 {} \; && \
