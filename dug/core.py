@@ -557,8 +557,9 @@ class Search:
             logger.debug("Indexing generic tagged variable...")
             unique_doc_id = doc['tag_id']
 
-        with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
-            json.dump(doc, stream, indent=2)
+        # DEBUG: For writing elasticsearch documents to JSON
+        #with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
+        #    json.dump(doc, stream, indent=2)
 
         """ Index the document. """
         self.index_doc(
