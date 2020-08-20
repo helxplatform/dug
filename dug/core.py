@@ -396,9 +396,9 @@ class Search:
 
             tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
             for variable in tagged_variables:
-                study_id = variable['study_id']
+                study_id = variable['study_id'].replace("TOPMED.STUDY:", "")
                 study_name = variable['study_name']
-                variable_id = variable['variable_id']
+                variable_id = variable['variable_id'].replace("TOPMED.VAR:", "")
                 
                 if study_id not in studies:  
                     studies[study_id] = {
@@ -467,7 +467,7 @@ class Search:
                         # Case: Skip if empty KG 
                         if not len(response['knowledge_graph']['nodes']):
                             logging.debug(f"Did not find a knowledge graph for {query}")
-                            continue # Does this continue out of the loop?
+                            continue # continue out of loop
                         
                         # Dump out to file if there's a knowledge graph
                         with open(filename, 'w') as stream:
