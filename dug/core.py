@@ -133,52 +133,9 @@ class Search:
                 print (f"-----------> {e}")
                 traceback.print_exc ()
 
-    def crawl (self):
-        monarch_endpoint = "https://monarchinitiative.org/searchapi"
-        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
-        headers = {
-            "accept" : "application/json",
-            "Content-Type" : "text/plain"
-        }
-        self.make_crawlspace ()
-        phenotype_list = os.path.join (os.path.dirname (__file__), "conf", "phenotypes.json")
-        with open(phenotype_list) as stream:
-            phenotypes = json.load (stream)
-            for phenotype in phenotypes:
-
-                ''' Resolve the phenotype to identifiers. '''
-                monarch_query = f"{monarch_endpoint}/{phenotype}"
-                monarch_query = f"https://api.monarchinitiative.org/api/search/entity/{phenotype}?start=0&rows=25&highlight_class=hilite&boost_q=category%3Agenotype%5E-10&boost_q=category%3Avariant%5E-35&boost_q=category%3Apublication%5E-10&prefix=-OMIA&min_match=67%25&category=gene&category=variant&category=genotype&category=phenotype&category=disease&category=goterm&category=pathway&category=anatomy&category=substance&category=individual&category=case&category=publication&category=model&category=anatomical+entity"
-                accept = [ "EFO", "HP" ]
-                logger.debug (f"monarch query: {monarch_query}")
-                #response = requests.get (monarch_query)
-                #logger.debug (f"   {response.text}")
-                #response = response.json ()
-                response = requests.get (monarch_query).json ()
-                for doc in response.get('docs',[]): #.get ('docs',[]):
-                    label = doc.get('label_eng',['N/A'])[0]
-                    identifier = doc['id']
-
-                    if not any(map(lambda v: identifier.startswith(v), accept)):
-                        continue
-
-                    filename = f"{self.crawlspace}/{identifier}.json"
-                    if os.path.exists (filename):
-                        logger.info (f"identifier {identifier} is already crawled.")
-                        continue
-
-                    query = f"select phenotypic_feature->disease from '/graph/gamma/quick' where phenotypic_feature='{identifier}'"
-                    logger.info (query)
-                    response = requests.post (
-                        url = tranql_endpoint,
-                        headers = headers,
-                        data = query).json ()
-                    with open(filename, 'w') as stream:
-                        json.dump (response, stream, indent=2)
-
-    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2,
-                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
-                      query_exclude_identifiers=[]):
+    def crawl (self, tags, variables, index, queries, min_score=0.2,
+               include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+               query_exclude_identifiers=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -369,7 +326,7 @@ class Search:
                 doc=doc,
                 doc_id=unique_doc_id)
     
-    def tagged_crawl_by_tag (self, tags, variables, index, queries, min_score=0.2,
+    def crawl_by_tag (self, tags, variables, index, queries, min_score=0.2,
                       include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
                       query_exclude_identifiers=[]):
 
@@ -611,13 +568,35 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='TranQL-Search')
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
-    parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
-    parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
-    parser.add_argument('--tranql', help='Crawl variables from TranQL', action='store_true')
+
+    # Add mutually exclusive group for whether to do normal crawl or whether to crawl by tags
+    crawl_group = parser.add_mutually_exclusive_group()
+    crawl_group.add_argument('--crawl',
+                             help="Crawl tagged variables and add to elastic search index",
+                             default=False,
+                             action='store_true')
+    crawl_group.add_argument('--crawl-by-tag',
+                             help="Crawl tagged variables and organize elastic search by tag",
+                             default=False,
+                             action='store_true',
+                             dest="crawl_by_tag")
+
+    # Add mutually exclusive group for whether crawl inputs are coming from file or TranQL
+    crawl_input_group = parser.add_mutually_exclusive_group()
+    crawl_input_group.add_argument('--crawl-file',
+                                   help='Input file containing things you want to crawl/index',
+                                   dest="crawl_file")
+    crawl_input_group.add_argument('--crawl-tranql',
+                                   help="Boolean for whether to gather crawl inputs from TranQL",
+                                   action='store_true',
+                                   dest="crawl_tranql")
+
+    # Minimum score for Robokop answer to be included in ElasticSearch Index
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
                         dest="min_tranql_score",
                         default=0.2, type=float)
+
     parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
                         default=False, action='store_true')
     parser.add_argument('--query', help="Query", action="store", dest="query")
@@ -639,8 +618,6 @@ if __name__ == '__main__':
 
     if args.clean:
         search.clean ()
-    if args.crawl:
-        search.crawl ()
     if args.index:
         search.index (index)
         search.index_doc (
@@ -657,7 +634,12 @@ if __name__ == '__main__':
                 print (hit)
                 print (f"{hit['_source']}")
 
-    elif args.tagged or args.tranql:
+    elif args.crawl or args.crawl_by_tag:
+
+        # Throw error if user hasn't specified where crawl arguments are coming from
+        if not args.crawl_tranql and not args.crawl_file:
+            parser.error("Crawl must specify whether to get inputs from file "
+                         "(--crawl-file <file>) or TranQL (--crawl-tranql)")
 
         config = {
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
@@ -678,11 +660,11 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # If args.tagged, use file.  If args.tranql, use tranql.
-        if args.tagged:
-            variables, tags = annotator.load_tagged_variables(args.tagged)
+        # Read in variables to crawl either from File or tranql depending on command line option
+        if args.crawl_file:
+            variables, tags = annotator.load_tagged_variables(args.crawl_file)
             tags = annotator.annotate(tags)
-        else:
+        elif args.crawl_tranql:
             variables, tags = annotator.get_variables_from_tranql()
 
         # Add Synonyms
@@ -694,8 +676,6 @@ if __name__ == '__main__':
             "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
             "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
-            #"chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
-            #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
             "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source),
             "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
             "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
@@ -704,11 +684,21 @@ if __name__ == '__main__':
         # List of identifiers to stay away from for now
         query_exclude_identifiers = ["CHEBI:17336"]
 
-        # Append tag info to variables
-        search.tagged_crawl_by_tag(tags,
-                            variables,
-                            index,
-                            queries,
-                            min_score=args.min_tranql_score,
-                            query_exclude_identifiers=query_exclude_identifiers)
+        if args.crawl_by_tag:
+
+            # Append tag info to variables
+            search.crawl_by_tag(tags,
+                                variables,
+                                index,
+                                queries,
+                                min_score=args.min_tranql_score,
+                                query_exclude_identifiers=query_exclude_identifiers)
+        elif args.crawl:
+            # Append tag info to variables
+            search.crawl(tags,
+                         variables,
+                         index,
+                         queries,
+                         min_score=args.min_tranql_score,
+                         query_exclude_identifiers=query_exclude_identifiers)
 
