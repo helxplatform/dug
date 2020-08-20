@@ -108,7 +108,7 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'search_targets'],
+                'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                 'quote_field_suffix': ".exact"
             }
             
@@ -368,7 +368,205 @@ class Search:
                 index=index,
                 doc=doc,
                 doc_id=unique_doc_id)
+    
+    def tagged_crawl_by_tag (self, tags, variables, index, queries, min_score=0.2,
+                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                      query_exclude_identifiers=[]):
 
+        '''
+        This version of tagged crawl starts from preferred identifiers linked to tags
+        (as biological_entity type) and performs all available queries, stashing knowledge graphs
+        at the tag level
+        '''
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+
+        for tag in tags:
+            ## TOPMed Studies, Variables
+            studies = {}
+            
+            ## Search Targets
+            tag['search_targets'] = [] # Initialize Search Target section
+            
+            ## Set tag_indexed to False; case where tag does not return KGs from TranQL
+            tag_indexed = False
+
+            tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
+            for variable in tagged_variables:
+                study_id = variable['study_id'].replace("TOPMED.STUDY:", "")
+                study_name = variable['study_name']
+                variable_id = variable['variable_id'].replace("TOPMED.VAR:", "")
+                
+                if study_id not in studies:  
+                    studies[study_id] = {
+                        "study_id": study_id,
+                        "study_name": study_name,
+                        "variables": [variable_id]
+                    }
+                else:
+                    studies[study_id]['variables'].append(variable_id)
+
+            # Convert Studies to a List
+            tag['studies'] = list(studies.values())
+            
+            ## Identifiers
+            # Deal with identifiers to reduce indexing size
+            identifier_list = []
+            for identifier in tag['identifiers']:
+                # Deal with Identifiers
+                identifier_dict = tag['identifiers'][identifier]
+                identifier_dict['identifier'] = identifier
+                identifier_list.append(identifier_dict)
+
+                # Add identifier Search Targets
+                if tag["identifiers"][identifier]["label"]:
+                    tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
+                    tag['search_targets'].append(tag['identifiers'][identifier]['label'])
+
+            tag['identifier_list'] = identifier_list
+
+            ## Queries
+            for identifier in tag["identifiers"]:
+                logging.debug(f"Doing id: {identifier}")
+                ''' Resolve the phenotype to identifiers. '''
+                
+                # skip identifiers that don't normalize, or are excluded
+                if not tag["identifiers"][identifier]["label"]:
+                    logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                    continue
+                
+                if identifier in query_exclude_identifiers:
+                    logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
+                    continue
+
+                for query_name, query_factory in queries.items():
+                    
+                    # Skip query if the identifier is not a valid query for the query class
+                    if not query_factory.is_valid_curie(identifier):
+                        logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
+                        continue
+                    
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+                        with open (filename, 'r') as stream:
+                            response = json.load(stream)
+
+                    else:
+                        query = query_factory.get_query(identifier)
+                        logger.info (query)
+                        response = requests.post(
+                            url = tranql_endpoint,
+                            headers = headers,
+                            data = query).json ()
+
+                        # Case: Skip if empty KG 
+                        if not len(response['knowledge_graph']['nodes']):
+                            logging.debug(f"Did not find a knowledge graph for {query}")
+                            continue # continue out of loop
+                        
+                        # Dump out to file if there's a knowledge graph
+                        with open(filename, 'w') as stream:
+                            json.dump(response, stream, indent=2)    
+                    
+                    # Get nodes in knowledge graph hashed by ids for easy lookup
+                    kg = tql.QueryKG(response)
+
+                    for answer in kg.answers:
+
+                        # Filter out answers that fall below a minimum score
+                        # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
+                        # We don't know how this filtering works; let's bring back everything for now, so we keep all synonyms
+                        #if "score" in answer and answer["score"] < min_score:
+                        #    continue
+                        logger.debug(f"Answer: {answer}")
+
+                        # Get subgraph containing only information for this answer
+                        try:
+                            # Temporarily surround in try/except because sometimes the answer graphs
+                            # contain invalid references to edges/nodes
+                            # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                            answer_kg = kg.get_answer_subgraph(answer,
+                                                               include_node_keys=include_node_keys,
+                                                               include_edge_keys=include_edge_keys)
+
+                            # Get list of nodes for making a unique ID for elastic search
+                            answer_node_ids = list(answer_kg.nodes.keys())
+
+                        except tql.MissingNodeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid node references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of non-preferred id! "
+                                           "See err msg for details.")
+                            continue
+                        except tql.MissingEdgeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid edge references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of invalid edge reference! "
+                                           "See err msg for details.")
+                            continue
+
+                        # Add each variable to ES with info specific to current answer
+                        self.index_tagged_variables_by_tag(tag,
+                                                    index,
+                                                    knowledge_graph=answer_kg.kg,
+                                                    query_name=query_name,
+                                                    answer_node_ids=answer_node_ids)
+
+                        # set tag_indexed to True - don't need to index this tag w/o identifiers
+                        tag_indexed = True
+
+            if not tag_indexed:
+                self.index_tagged_variables_by_tag (tag,
+                                            index)
+
+    def index_tagged_variables_by_tag(self, tag, index, knowledge_graph={}, query_name="", answer_node_ids=[]):
+        # Internal class helper method for writing tags*kg_answers to Elasticsearch
+
+        # Deal with extra synonyms from the answer
+        answer_synonyms = []
+        for node in knowledge_graph.get('knowledge_graph',{}).get('nodes',[]):
+            answer_synonyms.append(node['name'])
+            answer_synonyms += node['synonyms']
+
+        # Create the Doc
+        doc = {
+            'tag_id': tag['id'],
+            'pk': tag['pk'],
+            'name': tag['title'],
+            'description': tag['description'],
+            'instructions': tag['instructions'],
+            'search_targets': list(set(tag['search_targets'])), # Make unique if duplicates
+            'optional_targets': answer_synonyms,
+            'studies': tag['studies'],
+            'identifiers': tag['identifier_list'],
+            'knowledge_graph': knowledge_graph
+        }
+        # Create unique ID
+        if answer_node_ids and query_name:
+            # Case: Variable is created from KG query and needs query and answer nodes to be unique
+            logger.debug("Indexing TranQL query answer...")
+            unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
+        else:
+            # Case: Variable doesn't have any identifiers (monarch failed)
+            # The study name/variable name will be fine for unique
+            logger.debug("Indexing generic tagged variable...")
+            unique_doc_id = doc['tag_id']
+
+        # DEBUG: For writing elasticsearch documents to JSON
+        #with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
+        #    json.dump(doc, stream, indent=2)
+
+        """ Index the document. """
+        self.index_doc(
+            index=index,
+            doc=doc,
+            doc_id=unique_doc_id)
+  
     def index (self, index):
         self.make_crawlspace ()
         files = glob.glob (f"{self.crawlspace}/*.json")
@@ -507,7 +705,7 @@ if __name__ == '__main__':
         query_exclude_identifiers = ["CHEBI:17336"]
 
         # Append tag info to variables
-        search.tagged_crawl(tags,
+        search.tagged_crawl_by_tag(tags,
                             variables,
                             index,
                             queries,
