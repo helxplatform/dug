@@ -329,8 +329,8 @@ class Search:
             kg_search_targets.append(node["name"])
             kg_search_targets += node["synonyms"]
         
-        # Add synonyms if no answers from TranQL
-        if not len(kg_search_targets):
+        # Add synonyms if no answers from TranQL and tag has identifier
+        if not len(kg_search_targets) and len(name):
             kg_search_targets = tag['identifiers'][identifier]['synonyms']
 
         # TODO: Add synonyms here
