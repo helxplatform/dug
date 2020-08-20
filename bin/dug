@@ -118,18 +118,6 @@ load () {
 
 #############################################################
 ##
-## Crawl: Gather knowledge graphs via queries.
-##
-#############################################################
-crawl () {
-    curdir=$PWD
-    cd $DUG_HOME/dug
-    python -m dug.core --crawl $*
-    cd $curdir
-}
-
-#############################################################
-##
 ## Index: Create indices and add to search engine.
 ##
 #############################################################
@@ -142,13 +130,21 @@ index () {
 
 #############################################################
 ##
-## Index_tranql: Gather knowledge graphs from TranQL, create indices, and add to search engine.
+## Crawl: Gather knowledge graphs from TranQL, create indices, and add to search engine.
 ##
 #############################################################
-index_tranql () {
-    python -m dug.core --tagged-crawl $*
+crawl () {
+    python -m dug.core --crawl $*
 }
 
+#############################################################
+##
+## Crawl_by_tag: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
+##
+#############################################################
+crawl_by_tag () {
+    python -m dug.core --crawl-by-tag $*
+}
 
 #############################################################
 ##
@@ -213,10 +209,6 @@ test () {
     # Ingest, annotate, load knowledge graph.
     bin/dug link data/dd.xml
     bin/dug load data/dd_tagged.json
-
-    # Crawl model queries, create index, test index.
-    bin/dug crawl
-    bin/dug index
 
     # The best format for variables we have is currently
     # implemented so that, if we pass the additional
