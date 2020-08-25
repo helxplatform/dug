@@ -29,7 +29,7 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
-    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test']):
+    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test', 'test_kg']):
         logger.debug (f"Connecting to elasticsearch host: {host} at port: {port}")
         self.indices = indices
         self.crawlspace = "crawl"
@@ -112,6 +112,33 @@ class Search:
                 'quote_field_suffix': ".exact"
             }
             
+        }
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body)
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
+        query = {
+            'query_string': {
+                'query': f'"{unique_id}" AND {query}',
+                'fuzziness': fuzziness,
+                'fields': ['search_targets', 'tag_id'],
+                'quote_field_suffix': ".exact"
+            },
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
@@ -326,7 +353,7 @@ class Search:
                 doc=doc,
                 doc_id=unique_doc_id)
     
-    def crawl_by_tag (self, tags, variables, index, queries, min_score=0.2,
+    def crawl_by_tag (self, tags, variables, tag_index, kg_index, queries, min_score=0.2,
                       include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
                       query_exclude_identifiers=[]):
 
@@ -347,6 +374,7 @@ class Search:
             
             ## Search Targets
             tag['search_targets'] = [] # Initialize Search Target section
+            tag['optional_targets'] = [] # Initialize answer targets
             
             ## Set tag_indexed to False; case where tag does not return KGs from TranQL
             tag_indexed = False
@@ -467,29 +495,23 @@ class Search:
                                            "See err msg for details.")
                             continue
 
-                        # Add each variable to ES with info specific to current answer
-                        self.index_tagged_variables_by_tag(tag,
-                                                    index,
-                                                    knowledge_graph=answer_kg.kg,
-                                                    query_name=query_name,
-                                                    answer_node_ids=answer_node_ids)
+                        # Add answer synonyms to tag's list of optional targets
+                        for node in answer_kg.kg.get('knowledge_graph', {}).get('nodes', []):
+                            tag['optional_targets'].append(node['name'])
+                            tag['optional_targets'] += node['synonyms']
 
-                        # set tag_indexed to True - don't need to index this tag w/o identifiers
-                        tag_indexed = True
+                        # Add answer to knowledge graph ES index
+                        self.index_kg_answer(tag,
+                                             kg_index,
+                                             curie_id=identifier,
+                                             knowledge_graph=answer_kg.kg,
+                                             query_name=query_name,
+                                             answer_node_ids=answer_node_ids)
 
-            if not tag_indexed:
-                self.index_tagged_variables_by_tag (tag,
-                                            index)
+            # Add tag with all info to tag index
+            self.index_tag(tag, tag_index)
 
-    def index_tagged_variables_by_tag(self, tag, index, knowledge_graph={}, query_name="", answer_node_ids=[]):
-        # Internal class helper method for writing tags*kg_answers to Elasticsearch
-
-        # Deal with extra synonyms from the answer
-        answer_synonyms = []
-        for node in knowledge_graph.get('knowledge_graph',{}).get('nodes',[]):
-            answer_synonyms.append(node['name'])
-            answer_synonyms += node['synonyms']
-
+    def index_tag(self, tag, index):
         # Create the Doc
         doc = {
             'tag_id': tag['id'],
@@ -497,22 +519,41 @@ class Search:
             'name': tag['title'],
             'description': tag['description'],
             'instructions': tag['instructions'],
-            'search_targets': list(set(tag['search_targets'])), # Make unique if duplicates
-            'optional_targets': answer_synonyms,
+            'search_targets': list(set(tag['search_targets'])),  # Make unique if duplicates
+            'optional_targets': list(set(tag['optional_targets'])),
             'studies': tag['studies'],
-            'identifiers': tag['identifier_list'],
+            'identifiers': tag['identifier_list']
+        }
+        # DEBUG: For writing elasticsearch documents to JSON
+        #with open(f'new_doc_structure/{tag["id"]}.json', 'w') as stream:
+        #    json.dump(doc, stream, indent=2)
+
+        """ Index the document. """
+        self.index_doc(
+            index=index,
+            doc=doc,
+            doc_id=doc['tag_id'])
+
+    def index_kg_answer(self, tag, index, curie_id, knowledge_graph, query_name, answer_node_ids):
+        answer_synonyms = []
+        for node in knowledge_graph.get('knowledge_graph', {}).get('nodes', []):
+            # Don't add curie synonyms to knowledge graph
+            #  We only want to return KG answer if it relates to user query
+            if node["id"] == curie_id:
+                continue
+            answer_synonyms.append(node['name'])
+            answer_synonyms += node['synonyms']
+
+        # Create the Doc
+        doc = {
+            'tag_id': tag['id'],
+            'pk': tag['pk'],
+            'search_targets': answer_synonyms,  # Make unique if duplicates
             'knowledge_graph': knowledge_graph
         }
         # Create unique ID
-        if answer_node_ids and query_name:
-            # Case: Variable is created from KG query and needs query and answer nodes to be unique
-            logger.debug("Indexing TranQL query answer...")
-            unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
-        else:
-            # Case: Variable doesn't have any identifiers (monarch failed)
-            # The study name/variable name will be fine for unique
-            logger.debug("Indexing generic tagged variable...")
-            unique_doc_id = doc['tag_id']
+        logger.debug("Indexing TranQL query answer...")
+        unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
 
         # DEBUG: For writing elasticsearch documents to JSON
         #with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
@@ -599,7 +640,11 @@ if __name__ == '__main__':
 
     parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
                         default=False, action='store_true')
+
     parser.add_argument('--query', help="Query", action="store", dest="query")
+    parser.add_argument('--query-kg', help="Query Knowledge graph", action="store", dest="query_kg")
+    parser.add_argument('--kg-id', help="Id of Knowledge graph to query", action="store", dest="query_kg_id")
+
     parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host",
                         default=os.environ.get('ELASTIC_API_HOST', 'localhost'))
     parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port",
@@ -611,31 +656,41 @@ if __name__ == '__main__':
     args = parser.parse_args ()
 
     logging.basicConfig(level=logging.DEBUG)
-    index = "test"
+    tag_index = "test"
+    kg_index = "test_kg"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,
-                     indices=[index])
+                     indices=[tag_index, kg_index])
 
     if args.clean:
         search.clean ()
     if args.index:
-        search.index (index)
+        search.index (tag_index)
         search.index_doc (
-            index=index,
+            index=tag_index,
             doc= {
                 "name" : "fred",
                 "type" : "phenotypic_feature"
             },
             doc_id=1)
     elif args.query:
-        val = search.search (index=index, query=args.query)
+        val = search.search (index=tag_index, query=args.query)
         if 'hits' in val:
             for hit in val['hits']['hits']:
                 print (hit)
                 print (f"{hit['_source']}")
-
+    elif args.query_kg:
+        # Throw error if user didn't provide a knowledge graph tag
+        if not args.query_kg_id:
+            parser.error("Must include knowledge graph id (--kg-id <id>) when querying knowledge graph!")
+        print(args.query_kg)
+        print(args.query_kg_id)
+        val = search.search_kg(index=kg_index, unique_id=args.query_kg_id, query=args.query_kg)
+        if 'hits' in val:
+            for hit in val['hits']['hits']:
+                print(hit)
+                print(f"{hit['_source']}")
     elif args.crawl or args.crawl_by_tag:
-
         # Throw error if user hasn't specified where crawl arguments are coming from
         if not args.crawl_tranql and not args.crawl_file:
             parser.error("Crawl must specify whether to get inputs from file "
@@ -689,7 +744,8 @@ if __name__ == '__main__':
             # Append tag info to variables
             search.crawl_by_tag(tags,
                                 variables,
-                                index,
+                                tag_index,
+                                kg_index,
                                 queries,
                                 min_score=args.min_tranql_score,
                                 query_exclude_identifiers=query_exclude_identifiers)
@@ -697,7 +753,7 @@ if __name__ == '__main__':
             # Append tag info to variables
             search.crawl(tags,
                          variables,
-                         index,
+                         tag_index,
                          queries,
                          min_score=args.min_tranql_score,
                          query_exclude_identifiers=query_exclude_identifiers)
