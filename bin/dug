@@ -57,6 +57,9 @@ DUG_HOME=$( dirname $DIR )
 DUGENV=$DUG_HOME/docker/.env
 export PYTHONPATH=$DUG_HOME:$DUG_HOME/kgx
 
+# for debugging
+set -x
+
 # Ensure the KGX library is installed
 if [ ! -d $DUG_HOME/kgx ]; then
     git clone https://github.com/NCATS-Tangerine/kgx.git $DUG_HOME/kgx
@@ -87,6 +90,18 @@ dev () {
     $*
 }
 
+#############################################################
+##
+## Clean: Delete ES indices
+##
+#############################################################
+clean () {
+    curdir=$PWD
+    cd $DUG_HOME/dug
+    python -m dug.core --clean
+    cd $curdir
+}
+
 ### INGEST:
 
 #############################################################
@@ -115,18 +130,6 @@ load () {
 
 #############################################################
 ##
-## Crawl: Gather knowledge graphs via queries.
-##
-#############################################################
-crawl () {
-    curdir=$PWD
-    cd $DUG_HOME/dug
-    python -m dug.core --crawl $*
-    cd $curdir
-}
-
-#############################################################
-##
 ## Index: Create indices and add to search engine.
 ##
 #############################################################
@@ -139,13 +142,21 @@ index () {
 
 #############################################################
 ##
-## Index_tranql: Gather knowledge graphs from TranQL, create indices, and add to search engine.
+## Crawl: Gather knowledge graphs from TranQL, create indices, and add to search engine.
 ##
 #############################################################
-index_tranql () {
-    python -m dug.core --tagged-crawl $*
+crawl () {
+    python -m dug.core --crawl $*
 }
 
+#############################################################
+##
+## Crawl_by_tag: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
+##
+#############################################################
+crawl_by_tag () {
+    python -m dug.core --crawl-by-tag $*
+}
 
 #############################################################
 ##
@@ -154,6 +165,15 @@ index_tranql () {
 #############################################################
 query () {
     python -m dug.core --query $*
+}
+
+#############################################################
+##
+## QueryKG: Test the created knowledge graph index with a query.
+##
+#############################################################
+query_kg () {
+    python -m dug.core --kg-id $1 --query-kg ${@:2}
 }
 
 #############################################################
@@ -206,14 +226,11 @@ test () {
 
     # Delete the test index
     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
+    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test_kg
 
     # Ingest, annotate, load knowledge graph.
     bin/dug link data/dd.xml
     bin/dug load data/dd_tagged.json
-
-    # Crawl model queries, create index, test index.
-    bin/dug crawl
-    bin/dug index
 
     # The best format for variables we have is currently
     # implemented so that, if we pass the additional
@@ -265,11 +282,25 @@ pytests () {
 ##
 #############################################################
 query_api () {
-     query="`echo '{"index" : "test", "query" : "'$1'"}'`"
+     query="`echo '{"index" : "test", "query" : "'$*'"}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
            http://localhost:5551/search
+}
+
+#############################################################
+##
+## Query_KG_API: Query the knowledge-graph index via the search API.
+##
+#############################################################
+query_kg_api () {
+     unique_id=$1
+     query="`echo '{"index" : "test_kg", "query" : "'${@:2}'", "unique_id" : "'$unique_id'"}'`"
+     curl --data "$query" \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search_kg
 }
 
 dev init
