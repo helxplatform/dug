@@ -90,6 +90,18 @@ dev () {
     $*
 }
 
+#############################################################
+##
+## Clean: Delete ES indices
+##
+#############################################################
+clean () {
+    curdir=$PWD
+    cd $DUG_HOME/dug
+    python -m dug.core --clean
+    cd $curdir
+}
+
 ### INGEST:
 
 #############################################################
@@ -157,6 +169,15 @@ query () {
 
 #############################################################
 ##
+## QueryKG: Test the created knowledge graph index with a query.
+##
+#############################################################
+query_kg () {
+    python -m dug.core --kg-id $1 --query-kg ${@:2}
+}
+
+#############################################################
+##
 ## API: Run the OpenAPI search endpoint.
 ##
 #############################################################
@@ -205,6 +226,7 @@ test () {
 
     # Delete the test index
     curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
+    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test_kg
 
     # Ingest, annotate, load knowledge graph.
     bin/dug link data/dd.xml
@@ -260,11 +282,25 @@ pytests () {
 ##
 #############################################################
 query_api () {
-     query="`echo '{"index" : "test", "query" : "'$1'"}'`"
+     query="`echo '{"index" : "test", "query" : "'$*'"}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
            http://localhost:5551/search
+}
+
+#############################################################
+##
+## Query_KG_API: Query the knowledge-graph index via the search API.
+##
+#############################################################
+query_kg_api () {
+     unique_id=$1
+     query="`echo '{"index" : "test_kg", "query" : "'${@:2}'", "unique_id" : "'$unique_id'"}'`"
+     curl --data "$query" \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search_kg
 }
 
 dev init
