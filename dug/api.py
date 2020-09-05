@@ -84,15 +84,15 @@ class DugResource(Resource):
             'result'  : result,
             'message' : message
         }
-            
+
 class DugSearchResource(DugResource):
     """ Execute a search """
-    
+
     """ System initiation. """
     def post(self):
         """
         Execute the configured search.
-        
+
         A natural language word or phrase is the input.
         ---
         tag: search
@@ -120,16 +120,24 @@ class DugSearchResource(DugResource):
                             type: string
 
         """
-        logger.debug (f"search:{json.dumps(request.json)}")
+        logger.debug(f"search:{json.dumps(request.json)}")
         response = {}
         try:
             app.logger.info (f"search: {json.dumps(request.json, indent=2)}")
-            self.validate (request, component="Search")
-            response = self.create_response (
-                result=dug().search (**request.json),
+            self.validate(request, component="Search")
+            boosted = request.json.pop('boosted', False)
+
+            api_request = None
+            if boosted:
+                api_request = dug().search_nboost(**request.json)
+            else:
+                api_request = dug().search(**request.json)
+
+            response = self.create_response(
+                result=api_request,
                 message=f"Search result")
         except Exception as e:
-            response = self.create_response (
+            response = self.create_response(
                 exception=e,
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
@@ -185,7 +193,7 @@ class DugSearchKGResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
-    
+
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
 api.add_resource(DugSearchKGResource, '/search_kg')
@@ -195,7 +203,7 @@ if __name__ == "__main__":
    parser.add_argument('-p', '--port',  type=int, help='Port to run service on.', default=5551)
    parser.add_argument('-d', '--debug', help="Debug log level.", default=False, action='store_true')
    args = parser.parse_args ()
-   
+
    """ Configure """
    if args.debug:
        debug = True

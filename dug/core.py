@@ -111,7 +111,7 @@ class Search:
                 'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                 'quote_field_suffix': ".exact"
             }
-            
+
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
@@ -151,6 +151,34 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+    def search_nboost(self, index, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
+        nboost_query = {
+            'nboost': {
+                'uhost': f"{self.username}:{self.password}@{self.host}",
+                'uport': self.hosts[0]['port'],
+                'cvalues_path': '_source.instructions',
+                'query_path': 'body.query.query_string.query',
+                'size': size,
+                'from': offset,
+            },
+            'query': {
+                'query_string': {
+                    'query': query,
+                    'fuzziness': fuzziness,
+                    'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
+                    'quote_field_suffix': ".exact"
+                }
+            }
+        }
+
+        return requests.post(url=f"http://nboost:8000/{index}/_search", json=nboost_query).json()
 
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
@@ -368,6 +396,7 @@ class Search:
             "Content-Type" : "text/plain"
         }
 
+        self.make_crawlspace ()
         for tag in tags:
             ## TOPMed Studies, Variables
             studies = {}
