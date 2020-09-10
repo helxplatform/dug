@@ -76,5 +76,29 @@ items:
     selector:
       app: {{ .Values.dug.web.app_name }}
     type: NodePort
+  # dug-search-client
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: Mapping
+        name: {{ .Values.dug.search_client.ambassador.map_name }}
+        prefix: {{ .Values.dug.search_client.ambassador.prefix }}
+        service: {{ .Values.dug.search_client.ambassador.app_name }}:{{ .Values.dug.search_client.http_port }}
+    labels:
+      app: {{ .Values.dug.search_client.app_name }}
+    name: {{ .Values.dug.search_client.deployment_name }}
+  spec:
+    ports:
+      - name: search-client-port
+        protocol: TCP
+        port: {{ .Values.dug.search_client.http_port }}
+        targetPort: {{ .Values.dug.search_client.container_port }}
+    selector:
+      app: {{ .Values.dug.search_client.app_name }}
+    type: ClusterIP
 
 kind: List

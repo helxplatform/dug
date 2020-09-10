@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.dug.search_client.app_name }}
+  name: {{ .Values.dug.search_client.deployment_name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.dug.search_client.app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.dug.search_client.app_name }}
+    spec:
+      containers:
+      - image: {{ .Values.dug.search_client.image }}:{{ .Values.dug.search_client.image_tag }}
+        imagePullPolicy: Always
+        name: {{ .Values.dug.search_client.app_name }}-container
+        ports:
+          - containerPort: {{ .Values.dug.search_client.container_port }}
