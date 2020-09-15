@@ -3,7 +3,7 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.7.6-slim
+FROM python:3.8.5-slim
 
 # Least privilege: Run as a non-root user.
 ENV USER dug

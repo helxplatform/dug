@@ -22,6 +22,7 @@ services:
       - dug-network
     environment:
       ELASTIC_API_HOST: "$ELASTIC_API_HOST"
+      NBOOST_API_HOST: "$NBOOST_API_HOST"
       ELASTIC_PASSWORD: "$ELASTIC_PASSWORD"
       FLASK_ENV: "development"
       PYTHONUNBUFFERED: "TRUE"

@@ -36,6 +36,7 @@ class Search:
         self.host = os.environ.get ('ELASTIC_API_HOST', 'localhost')
         self.username = os.environ.get ('ELASTIC_USERNAME', 'elastic')
         self.password = os.environ.get ('ELASTIC_PASSWORD', 'changeme')
+        self.nboost_host = os.environ.get('NBOOST_API_HOST', 'nboost')
         self.hosts = [
             {
                 'host' : self.host,
@@ -178,7 +179,7 @@ class Search:
             }
         }
 
-        return requests.post(url=f"http://nboost:8000/{index}/_search", json=nboost_query).json()
+        return requests.post(url=f"http://{self.nboost_host}:8000/{index}/_search", json=nboost_query).json()
 
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
