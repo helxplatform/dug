@@ -49,6 +49,8 @@ spec:
             secretKeyRef:
               name: {{ .Values.dug.secrets.name }}
               key: REDIS_PASSWORD
+        - name: NBOOST_API_HOST
+          value: {{ .Values.dug.nboost.service_name }}
         ports:
           - containerPort: {{ .Values.dug.web.api_port }}
         command: ["python"]

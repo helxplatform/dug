@@ -80,17 +80,9 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    annotations:
-      getambassador.io/config: |
-        ---
-        apiVersion: ambassador/v1
-        kind: Mapping
-        name: {{ .Values.dug.search_client.ambassador.map_name }}
-        prefix: {{ .Values.dug.search_client.ambassador.prefix }}
-        service: {{ .Values.dug.search_client.ambassador.app_name }}:{{ .Values.dug.search_client.http_port }}
     labels:
       app: {{ .Values.dug.search_client.app_name }}
-    name: {{ .Values.dug.search_client.deployment_name }}
+    name: {{ .Values.dug.search_client.service_name }}
   spec:
     ports:
       - name: search-client-port
@@ -100,5 +92,20 @@ items:
     selector:
       app: {{ .Values.dug.search_client.app_name }}
     type: ClusterIP
-
+  # dug-nboost
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.nboost.app_name }}
+    name: {{ .Values.dug.nboost.service_name }}
+  spec:
+    ports:
+      - name: dug-nboost-port
+        protocol: TCP
+        port: {{ .Values.dug.nboost.api_port }}
+        targetPort: {{ .Values.dug.nboost.api_port }}
+    selector:
+      app: {{ .Values.dug.nboost.app_name }}
+    type: ClusterIP
 kind: List
