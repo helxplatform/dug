@@ -60,3 +60,6 @@ dug:
     image: koursaros/nboost
     image_tag: 0.3.9-pt
     api_port: 8000
+
+  # create_pvcs: true
+
