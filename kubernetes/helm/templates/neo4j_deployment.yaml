@@ -9,6 +9,8 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.dug.neo4j.app_name }}
+  securityContext:
+    fsGroup: 1001
   template:
     metadata:
       labels:
