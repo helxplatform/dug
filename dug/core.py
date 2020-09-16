@@ -787,4 +787,3 @@ if __name__ == '__main__':
                          queries,
                          min_score=args.min_tranql_score,
                          query_exclude_identifiers=query_exclude_identifiers)
-

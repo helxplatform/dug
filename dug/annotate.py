@@ -595,8 +595,7 @@ class TOPMedStudyAnnotator:
                     tag['identifiers'][identifier]['synonyms'] = synonyms
                 
                 except json.decoder.JSONDecodeError as e:
-                    tag['identifiers'][identifier]['synonyms'] = []
-                    logger.error (f"No synonyms returned for: {identifier}")
+                    traceback.print_exc ()
         return tags
 
 class GraphDB:
