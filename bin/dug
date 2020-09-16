@@ -272,6 +272,35 @@ query_api () {
            http://localhost:5551/search
 }
 
+#############################################################
+##
+## Query_NBoost: Query the index via the search API, but
+##               using nboost.
+##
+#############################################################
+query_nboost () {
+     query="`echo '{"index" : "test", "query" : "'$*'", "boosted": 1}'`"
+     curl --data "$query" \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search
+}
+
+#############################################################
+##
+## Query_KG_API: Query the knowledge-graph index via the search API.
+##
+#############################################################
+query_kg_api () {
+     unique_id=$1
+     query="`echo '{"index" : "test_kg", "query" : "'${@:2}'", "unique_id" : "'$unique_id'"}'`"
+     curl --data "$query" \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search_kg
+}
+
+
 dev init
 
 $*

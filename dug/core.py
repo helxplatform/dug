@@ -29,13 +29,14 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
-    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test']):
+    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test', 'test_kg']):
         logger.debug (f"Connecting to elasticsearch host: {host} at port: {port}")
         self.indices = indices
         self.crawlspace = "crawl"
         self.host = os.environ.get ('ELASTIC_API_HOST', 'localhost')
         self.username = os.environ.get ('ELASTIC_USERNAME', 'elastic')
         self.password = os.environ.get ('ELASTIC_PASSWORD', 'changeme')
+        self.nboost_host = os.environ.get('NBOOST_API_HOST', 'nboost')
         self.hosts = [
             {
                 'host' : self.host,
@@ -108,10 +109,10 @@ class Search:
             'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ['name', 'description', 'instructions', 'search_targets'],
+                'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                 'quote_field_suffix': ".exact"
             }
-            
+
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body)
@@ -125,6 +126,61 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
+        query = {
+            'query_string': {
+                'query': f'"{unique_id}" AND {query}',
+                'fuzziness': fuzziness,
+                'fields': ['search_targets', 'tag_id'],
+                'quote_field_suffix': ".exact"
+            },
+        }
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body)
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
+    def search_nboost(self, index, query, offset=0, size=None, fuzziness=1):
+        """
+        Query type is now 'query_string'.
+        query searches multiple fields
+        if search terms are surrounded in quotes, looks for exact matches in any of the fields
+        AND/OR operators are natively supported by elasticesarch queries
+        """
+        nboost_query = {
+            'nboost': {
+                'uhost': f"{self.username}:{self.password}@{self.host}",
+                'uport': self.hosts[0]['port'],
+                'cvalues_path': '_source.instructions',
+                'query_path': 'body.query.query_string.query',
+                'size': size,
+                'from': offset,
+            },
+            'query': {
+                'query_string': {
+                    'query': query,
+                    'fuzziness': fuzziness,
+                    'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
+                    'quote_field_suffix': ".exact"
+                }
+            }
+        }
+
+        return requests.post(url=f"http://{self.nboost_host}:8000/{index}/_search", json=nboost_query).json()
+
     def make_crawlspace (self):
         if not os.path.exists (self.crawlspace):
             try:
@@ -133,52 +189,9 @@ class Search:
                 print (f"-----------> {e}")
                 traceback.print_exc ()
 
-    def crawl (self):
-        monarch_endpoint = "https://monarchinitiative.org/searchapi"
-        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
-        headers = {
-            "accept" : "application/json",
-            "Content-Type" : "text/plain"
-        }
-        self.make_crawlspace ()
-        phenotype_list = os.path.join (os.path.dirname (__file__), "conf", "phenotypes.json")
-        with open(phenotype_list) as stream:
-            phenotypes = json.load (stream)
-            for phenotype in phenotypes:
-
-                ''' Resolve the phenotype to identifiers. '''
-                monarch_query = f"{monarch_endpoint}/{phenotype}"
-                monarch_query = f"https://api.monarchinitiative.org/api/search/entity/{phenotype}?start=0&rows=25&highlight_class=hilite&boost_q=category%3Agenotype%5E-10&boost_q=category%3Avariant%5E-35&boost_q=category%3Apublication%5E-10&prefix=-OMIA&min_match=67%25&category=gene&category=variant&category=genotype&category=phenotype&category=disease&category=goterm&category=pathway&category=anatomy&category=substance&category=individual&category=case&category=publication&category=model&category=anatomical+entity"
-                accept = [ "EFO", "HP" ]
-                logger.debug (f"monarch query: {monarch_query}")
-                #response = requests.get (monarch_query)
-                #logger.debug (f"   {response.text}")
-                #response = response.json ()
-                response = requests.get (monarch_query).json ()
-                for doc in response.get('docs',[]): #.get ('docs',[]):
-                    label = doc.get('label_eng',['N/A'])[0]
-                    identifier = doc['id']
-
-                    if not any(map(lambda v: identifier.startswith(v), accept)):
-                        continue
-
-                    filename = f"{self.crawlspace}/{identifier}.json"
-                    if os.path.exists (filename):
-                        logger.info (f"identifier {identifier} is already crawled.")
-                        continue
-
-                    query = f"select phenotypic_feature->disease from '/graph/gamma/quick' where phenotypic_feature='{identifier}'"
-                    logger.info (query)
-                    response = requests.post (
-                        url = tranql_endpoint,
-                        headers = headers,
-                        data = query).json ()
-                    with open(filename, 'w') as stream:
-                        json.dump (response, stream, indent=2)
-
-    def tagged_crawl (self, tags, variables, index, queries, min_score=0.2,
-                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
-                      query_exclude_identifiers=[]):
+    def crawl (self, tags, variables, index, queries, min_score=0.2,
+               include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+               query_exclude_identifiers=[]):
         tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
@@ -329,8 +342,8 @@ class Search:
             kg_search_targets.append(node["name"])
             kg_search_targets += node["synonyms"]
         
-        # Add synonyms if no answers from TranQL
-        if not len(kg_search_targets):
+        # Add synonyms if no answers from TranQL and tag has identifier
+        if not len(kg_search_targets) and len(name):
             kg_search_targets = tag['identifiers'][identifier]['synonyms']
 
         # TODO: Add synonyms here
@@ -368,7 +381,220 @@ class Search:
                 index=index,
                 doc=doc,
                 doc_id=unique_doc_id)
+    
+    def crawl_by_tag (self, tags, variables, tag_index, kg_index, queries, min_score=0.2,
+                      include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                      query_exclude_identifiers=[]):
 
+        '''
+        This version of tagged crawl starts from preferred identifiers linked to tags
+        (as biological_entity type) and performs all available queries, stashing knowledge graphs
+        at the tag level
+        '''
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+
+        self.make_crawlspace ()
+        for tag in tags:
+            ## TOPMed Studies, Variables
+            studies = {}
+            
+            ## Search Targets
+            tag['search_targets'] = [] # Initialize Search Target section
+            tag['optional_targets'] = [] # Initialize answer targets
+            
+            ## Set tag_indexed to False; case where tag does not return KGs from TranQL
+            tag_indexed = False
+
+            tagged_variables = [variable for variable in variables if int(variable["tag_pk"]) == int(tag["pk"])]
+            for variable in tagged_variables:
+                study_id = variable['study_id'].replace("TOPMED.STUDY:", "")
+                study_name = variable['study_name']
+                variable_id = variable['variable_id'].replace("TOPMED.VAR:", "")
+                
+                if study_id not in studies:  
+                    studies[study_id] = {
+                        "study_id": study_id,
+                        "study_name": study_name,
+                        "variables": [variable_id]
+                    }
+                else:
+                    studies[study_id]['variables'].append(variable_id)
+
+            # Convert Studies to a List
+            tag['studies'] = list(studies.values())
+            
+            ## Identifiers
+            # Deal with identifiers to reduce indexing size
+            identifier_list = []
+            for identifier in tag['identifiers']:
+                # Deal with Identifiers
+                identifier_dict = tag['identifiers'][identifier]
+                identifier_dict['identifier'] = identifier
+                identifier_list.append(identifier_dict)
+
+                # Add identifier Search Targets
+                if tag["identifiers"][identifier]["label"]:
+                    tag['search_targets'] += tag['identifiers'][identifier].get('synonyms',[])
+                    tag['search_targets'].append(tag['identifiers'][identifier]['label'])
+
+            tag['identifier_list'] = identifier_list
+
+            ## Queries
+            for identifier in tag["identifiers"]:
+                logging.debug(f"Doing id: {identifier}")
+                ''' Resolve the phenotype to identifiers. '''
+                
+                # skip identifiers that don't normalize, or are excluded
+                if not tag["identifiers"][identifier]["label"]:
+                    logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                    continue
+                
+                if identifier in query_exclude_identifiers:
+                    logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
+                    continue
+
+                for query_name, query_factory in queries.items():
+                    
+                    # Skip query if the identifier is not a valid query for the query class
+                    if not query_factory.is_valid_curie(identifier):
+                        logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
+                        continue
+                    
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+                        with open (filename, 'r') as stream:
+                            response = json.load(stream)
+
+                    else:
+                        query = query_factory.get_query(identifier)
+                        logger.info (query)
+                        response = requests.post(
+                            url = tranql_endpoint,
+                            headers = headers,
+                            data = query).json ()
+
+                        # Case: Skip if empty KG 
+                        if not len(response['knowledge_graph']['nodes']):
+                            logging.debug(f"Did not find a knowledge graph for {query}")
+                            continue # continue out of loop
+                        
+                        # Dump out to file if there's a knowledge graph
+                        with open(filename, 'w') as stream:
+                            json.dump(response, stream, indent=2)    
+                    
+                    # Get nodes in knowledge graph hashed by ids for easy lookup
+                    kg = tql.QueryKG(response)
+
+                    for answer in kg.answers:
+
+                        # Filter out answers that fall below a minimum score
+                        # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
+                        # We don't know how this filtering works; let's bring back everything for now, so we keep all synonyms
+                        #if "score" in answer and answer["score"] < min_score:
+                        #    continue
+                        logger.debug(f"Answer: {answer}")
+
+                        # Get subgraph containing only information for this answer
+                        try:
+                            # Temporarily surround in try/except because sometimes the answer graphs
+                            # contain invalid references to edges/nodes
+                            # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                            answer_kg = kg.get_answer_subgraph(answer,
+                                                               include_node_keys=include_node_keys,
+                                                               include_edge_keys=include_edge_keys)
+
+                            # Get list of nodes for making a unique ID for elastic search
+                            answer_node_ids = list(answer_kg.nodes.keys())
+
+                        except tql.MissingNodeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid node references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of non-preferred id! "
+                                           "See err msg for details.")
+                            continue
+                        except tql.MissingEdgeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid edge references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of invalid edge reference! "
+                                           "See err msg for details.")
+                            continue
+
+                        # Add answer synonyms to tag's list of optional targets
+                        for node in answer_kg.kg.get('knowledge_graph', {}).get('nodes', []):
+                            tag['optional_targets'].append(node['name'])
+                            tag['optional_targets'] += node['synonyms']
+
+                        # Add answer to knowledge graph ES index
+                        self.index_kg_answer(tag,
+                                             kg_index,
+                                             curie_id=identifier,
+                                             knowledge_graph=answer_kg.kg,
+                                             query_name=query_name,
+                                             answer_node_ids=answer_node_ids)
+
+            # Add tag with all info to tag index
+            self.index_tag(tag, tag_index)
+
+    def index_tag(self, tag, index):
+        # Create the Doc
+        doc = {
+            'tag_id': tag['id'],
+            'pk': tag['pk'],
+            'name': tag['title'],
+            'description': tag['description'],
+            'instructions': tag['instructions'],
+            'search_targets': list(set(tag['search_targets'])),  # Make unique if duplicates
+            'optional_targets': list(set(tag['optional_targets'])),
+            'studies': tag['studies'],
+            'identifiers': tag['identifier_list']
+        }
+        # DEBUG: For writing elasticsearch documents to JSON
+        #with open(f'new_doc_structure/{tag["id"]}.json', 'w') as stream:
+        #    json.dump(doc, stream, indent=2)
+
+        """ Index the document. """
+        self.index_doc(
+            index=index,
+            doc=doc,
+            doc_id=doc['tag_id'])
+
+    def index_kg_answer(self, tag, index, curie_id, knowledge_graph, query_name, answer_node_ids):
+        answer_synonyms = []
+        for node in knowledge_graph.get('knowledge_graph', {}).get('nodes', []):
+            # Don't add curie synonyms to knowledge graph
+            #  We only want to return KG answer if it relates to user query
+            if node["id"] == curie_id:
+                continue
+            answer_synonyms.append(node['name'])
+            answer_synonyms += node['synonyms']
+
+        # Create the Doc
+        doc = {
+            'tag_id': tag['id'],
+            'pk': tag['pk'],
+            'search_targets': answer_synonyms,  # Make unique if duplicates
+            'knowledge_graph': knowledge_graph
+        }
+        # Create unique ID
+        logger.debug("Indexing TranQL query answer...")
+        unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
+
+        # DEBUG: For writing elasticsearch documents to JSON
+        #with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
+        #    json.dump(doc, stream, indent=2)
+
+        """ Index the document. """
+        self.index_doc(
+            index=index,
+            doc=doc,
+            doc_id=unique_doc_id)
+  
     def index (self, index):
         self.make_crawlspace ()
         files = glob.glob (f"{self.crawlspace}/*.json")
@@ -413,16 +639,42 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description='TranQL-Search')
     parser.add_argument('--clean', help="Clean", default=False, action='store_true')
-    parser.add_argument('--crawl', help="Crawl", default=False, action='store_true')
     parser.add_argument('--index', help="Index", default=False, action='store_true')
-    parser.add_argument('--tagged-crawl', help='Crawl tagged variables', dest="tagged")
-    parser.add_argument('--tranql', help='Crawl variables from TranQL', action='store_true')
+
+    # Add mutually exclusive group for whether to do normal crawl or whether to crawl by tags
+    crawl_group = parser.add_mutually_exclusive_group()
+    crawl_group.add_argument('--crawl',
+                             help="Crawl tagged variables and add to elastic search index",
+                             default=False,
+                             action='store_true')
+    crawl_group.add_argument('--crawl-by-tag',
+                             help="Crawl tagged variables and organize elastic search by tag",
+                             default=False,
+                             action='store_true',
+                             dest="crawl_by_tag")
+
+    # Add mutually exclusive group for whether crawl inputs are coming from file or TranQL
+    crawl_input_group = parser.add_mutually_exclusive_group()
+    crawl_input_group.add_argument('--crawl-file',
+                                   help='Input file containing things you want to crawl/index',
+                                   dest="crawl_file")
+    crawl_input_group.add_argument('--crawl-tranql',
+                                   help="Boolean for whether to gather crawl inputs from TranQL",
+                                   action='store_true',
+                                   dest="crawl_tranql")
+
+    # Minimum score for Robokop answer to be included in ElasticSearch Index
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
                         dest="min_tranql_score",
                         default=0.2, type=float)
+
     parser.add_argument('--index_p1', help="Index - Phase 1 - local graph database rather than Translator query.",
                         default=False, action='store_true')
+
     parser.add_argument('--query', help="Query", action="store", dest="query")
+    parser.add_argument('--query-kg', help="Query Knowledge graph", action="store", dest="query_kg")
+    parser.add_argument('--kg-id', help="Id of Knowledge graph to query", action="store", dest="query_kg_id")
+
     parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host",
                         default=os.environ.get('ELASTIC_API_HOST', 'localhost'))
     parser.add_argument('--elastic-port', help="Elasticsearch port", action="store", dest="elasticsearch_port",
@@ -434,32 +686,45 @@ if __name__ == '__main__':
     args = parser.parse_args ()
 
     logging.basicConfig(level=logging.DEBUG)
-    index = "test"
+    tag_index = "test"
+    kg_index = "test_kg"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,
-                     indices=[index])
+                     indices=[tag_index, kg_index])
 
     if args.clean:
         search.clean ()
-    if args.crawl:
-        search.crawl ()
     if args.index:
-        search.index (index)
+        search.index (tag_index)
         search.index_doc (
-            index=index,
+            index=tag_index,
             doc= {
                 "name" : "fred",
                 "type" : "phenotypic_feature"
             },
             doc_id=1)
     elif args.query:
-        val = search.search (index=index, query=args.query)
+        val = search.search (index=tag_index, query=args.query)
         if 'hits' in val:
             for hit in val['hits']['hits']:
                 print (hit)
                 print (f"{hit['_source']}")
-
-    elif args.tagged or args.tranql:
+    elif args.query_kg:
+        # Throw error if user didn't provide a knowledge graph tag
+        if not args.query_kg_id:
+            parser.error("Must include knowledge graph id (--kg-id <id>) when querying knowledge graph!")
+        print(args.query_kg)
+        print(args.query_kg_id)
+        val = search.search_kg(index=kg_index, unique_id=args.query_kg_id, query=args.query_kg)
+        if 'hits' in val:
+            for hit in val['hits']['hits']:
+                print(hit)
+                print(f"{hit['_source']}")
+    elif args.crawl or args.crawl_by_tag:
+        # Throw error if user hasn't specified where crawl arguments are coming from
+        if not args.crawl_tranql and not args.crawl_file:
+            parser.error("Crawl must specify whether to get inputs from file "
+                         "(--crawl-file <file>) or TranQL (--crawl-tranql)")
 
         config = {
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
@@ -480,11 +745,11 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # If args.tagged, use file.  If args.tranql, use tranql.
-        if args.tagged:
-            variables, tags = annotator.load_tagged_variables(args.tagged)
+        # Read in variables to crawl either from File or tranql depending on command line option
+        if args.crawl_file:
+            variables, tags = annotator.load_tagged_variables(args.crawl_file)
             tags = annotator.annotate(tags)
-        else:
+        elif args.crawl_tranql:
             variables, tags = annotator.get_variables_from_tranql()
 
         # Add Synonyms
@@ -496,8 +761,6 @@ if __name__ == '__main__':
             "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
             "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
-            #"chem_to_disease_pheno": tql.QueryFactory(["chemical_substance", "disease", "phenotypic_feature"], source),
-            #"chem_to_gene_to_disease": tql.QueryFactory(["chemical_substance", "gene", "disease"], source),
             "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source),
             "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
             "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
@@ -506,11 +769,21 @@ if __name__ == '__main__':
         # List of identifiers to stay away from for now
         query_exclude_identifiers = ["CHEBI:17336"]
 
-        # Append tag info to variables
-        search.tagged_crawl(tags,
-                            variables,
-                            index,
-                            queries,
-                            min_score=args.min_tranql_score,
-                            query_exclude_identifiers=query_exclude_identifiers)
+        if args.crawl_by_tag:
 
+            # Append tag info to variables
+            search.crawl_by_tag(tags,
+                                variables,
+                                tag_index,
+                                kg_index,
+                                queries,
+                                min_score=args.min_tranql_score,
+                                query_exclude_identifiers=query_exclude_identifiers)
+        elif args.crawl:
+            # Append tag info to variables
+            search.crawl(tags,
+                         variables,
+                         tag_index,
+                         queries,
+                         min_score=args.min_tranql_score,
+                         query_exclude_identifiers=query_exclude_identifiers)

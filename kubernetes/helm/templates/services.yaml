@@ -76,5 +76,36 @@ items:
     selector:
       app: {{ .Values.dug.web.app_name }}
     type: NodePort
-
+  # dug-search-client
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.search_client.app_name }}
+    name: {{ .Values.dug.search_client.service_name }}
+  spec:
+    ports:
+      - name: search-client-port
+        protocol: TCP
+        port: {{ .Values.dug.search_client.http_port }}
+        targetPort: {{ .Values.dug.search_client.container_port }}
+    selector:
+      app: {{ .Values.dug.search_client.app_name }}
+    type: ClusterIP
+  # dug-nboost
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: {{ .Values.dug.nboost.app_name }}
+    name: {{ .Values.dug.nboost.service_name }}
+  spec:
+    ports:
+      - name: dug-nboost-port
+        protocol: TCP
+        port: {{ .Values.dug.nboost.api_port }}
+        targetPort: {{ .Values.dug.nboost.api_port }}
+    selector:
+      app: {{ .Values.dug.nboost.app_name }}
+    type: ClusterIP
 kind: List

@@ -21,7 +21,7 @@ dug:
     http_port: 7474
     https_port: 7473
     bolt_port: 7687
-    storage_size: 1G
+    storage_size: 5G
     db_user: neo4j
   redis:
     image: bitnami/redis
@@ -52,7 +52,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: 45d78d9-dev
+    image_tag: 45d78d9
   nboost:
     app_name: dug-nboost
     deployment_name: dug-nboost
