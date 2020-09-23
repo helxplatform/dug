@@ -40,6 +40,13 @@ dug:
     deployment_name: dug
     api_port: 5551
     debug: false
+    ambassador:
+      search:
+        map_name: dug-search
+        prefix: /search
+      search_kg:
+        map_name: dug-search-kg
+        prefix: /search_kg
   secrets:
     name: dug-secrets
   crawl:
@@ -53,6 +60,10 @@ dug:
     container_port: 8080
     image: heliumdatastage/dug-search-client
     image_tag: 45d78d9
+    ambassador:
+      ui:
+        map_name: dug-ui
+        prefix: /ui
   nboost:
     app_name: dug-nboost
     deployment_name: dug-nboost
@@ -60,3 +71,5 @@ dug:
     image: koursaros/nboost
     image_tag: 0.3.9-pt
     api_port: 8000
+
+# create_pvcs: true
