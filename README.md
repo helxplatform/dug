@@ -16,7 +16,8 @@ Dug's **ingest** uses the [Biolink](https://biolink.github.io/biolink-model/) up
 Dug's **integration** phase uses Translator's Plater and Automat to generate a Reasoner Standard API compliant service and integrates that service into TranQL. This enables queries that span TOPMed, ROBOKOP, and other reasoners.
 
 Dug's **indexing & search** phase query the graph infrastructure and analyze the resulting graphs. These are used to create documents associating natural language terms with annotations and the annotated variables and studies.
-![image](https://user-images.githubusercontent.com/306971/76716786-dc7f8c80-6707-11ea-9571-069f27dc5a23.png)
+![image](https://user-images.githubusercontent.com/306971/94348055-4eb22180-0007-11eb-8093-4e321735ebaf.png)
+
 
 Dug will then generate Translator knowledge sources for the annotated variables and present them for query via TranQL.
 
