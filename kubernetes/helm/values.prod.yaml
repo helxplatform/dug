@@ -3,7 +3,7 @@ dug:
     image: docker.elastic.co/elasticsearch/elasticsearch
     image_tag: 7.9.1
     app_name: elasticsearch
-    pvc_name: elasticsearch
+    pvc_name: dug-elasticsearch-pvc
     service_name: elasticsearch
     deployment_name: elasticsearch
     rest_port: 9200
@@ -15,7 +15,7 @@ dug:
     image: bitnami/neo4j
     image_tag: 3.5.14
     app_name: neo4j
-    pvc_name: neo4j
+    pvc_name: dug-neo4j-pvc
     service_name: neo4j
     deployment_name: neo4j
     http_port: 7474
@@ -27,7 +27,7 @@ dug:
     image: bitnami/redis
     image_tag: 5.0.8
     app_name: redis
-    pvc_name: redis
+    pvc_name: dug-redis-pvc
     service_name: redis
     deployment_name: redis
     storage_size: 5G
@@ -59,7 +59,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: e6f37a3-dev
+    image_tag: e6f37a3
     ambassador:
       ui:
         map_name: dug-ui
