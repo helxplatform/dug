@@ -36,7 +36,7 @@ spec:
               name: {{ .Values.dug.secrets.name }}
               key: ELASTIC_PASSWORD
         - name: ES_JAVA_OPTS
-          value: "-Xms2g -Xmx2g"
+          value: "-Xms{{ .Values.dug.elasticsearch.xms }} -Xmx{{ .Values.dug.elasticsearch.xmx }}"
         - name: discovery.type
           value: "single-node"
         - name: xpack.security.enabled
