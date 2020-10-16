@@ -123,3 +123,4 @@ webencodings==0.5.1
 Werkzeug==1.0.0
 widgetsnbextension==3.5.1
 zipp==3.1.0
+jsonlines>=1.2.0
