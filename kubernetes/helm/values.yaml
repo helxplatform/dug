@@ -21,6 +21,9 @@ dug:
       ingest: "true"
       data: "true"
     replica_count: 3
+    liveness:
+      initial_delay: 30
+      check_interval: 10
   neo4j:
     image: bitnami/neo4j
     image_tag: 3.5.14

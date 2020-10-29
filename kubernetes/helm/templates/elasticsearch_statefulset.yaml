@@ -44,8 +44,8 @@ spec:
         livenessProbe:
           tcpSocket:
             port: {{ .Values.dug.elasticsearch.nodes_com_port }}
-          initialDelaySeconds: 30
-          periodSeconds: 10
+          initialDelaySeconds: {{ .Values.dug.elasticsearch.liveness.initial_delay }}
+          periodSeconds: {{ .Values.dug.elasticsearch.liveness.check_interval }}
         volumeMounts:
         - name: elasticsearch-data
           mountPath: /usr/share/elasticsearch/data
