@@ -20,7 +20,7 @@ items:
         targetPort: {{ .Values.dug.elasticsearch.nodes_com_port }}
     selector:
       app: {{ .Values.dug.elasticsearch.app_name }}
-    type: ClusterIP
+    clusterIP: None
   # Neo4j Service
 - apiVersion: v1
   kind: Service
