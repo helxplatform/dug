@@ -72,7 +72,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: e6f37a3
+    image_tag: 5d443f9
     ambassador:
       ui:
         map_name: dug-ui
