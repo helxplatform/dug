@@ -115,7 +115,7 @@ class Search:
 
         }
         body = json.dumps({'query': query})
-        total_items = self.es.count(body=body)
+        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,
@@ -142,7 +142,7 @@ class Search:
             },
         }
         body = json.dumps({'query': query})
-        total_items = self.es.count(body=body)
+        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,

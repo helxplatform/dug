@@ -14,6 +14,8 @@ spec:
       labels:
         app: {{ .Values.dug.neo4j.app_name }}
     spec:
+      securityContext:
+        fsGroup: 1001
       containers:
       - image: {{ .Values.dug.neo4j.image }}:{{ .Values.dug.neo4j.image_tag }}
         name: {{ .Values.dug.neo4j.app_name }}-container

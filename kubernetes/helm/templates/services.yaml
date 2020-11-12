@@ -20,7 +20,7 @@ items:
         targetPort: {{ .Values.dug.elasticsearch.nodes_com_port }}
     selector:
       app: {{ .Values.dug.elasticsearch.app_name }}
-    type: ClusterIP
+    clusterIP: None
   # Neo4j Service
 - apiVersion: v1
   kind: Service
@@ -64,6 +64,32 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
+    annotations:
+      getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: Mapping
+        name: {{ .Values.dug.web.ambassador.search.map_name }}
+        prefix: {{ .Values.dug.web.ambassador.search.prefix }}
+        service: {{ .Values.dug.web.service_name }}:{{ .Values.dug.web.api_port }}
+        rewrite: {{ .Values.dug.web.ambassador.search.prefix }}
+        cors:
+          origins: "*"
+          methods: POST, OPTIONS
+          headers:
+            - Content-Type
+        ---
+        apiVersion: ambassador/v1
+        kind: Mapping
+        name: {{ .Values.dug.web.ambassador.search_kg.map_name }}
+        prefix: {{ .Values.dug.web.ambassador.search_kg.prefix }}
+        service: {{ .Values.dug.web.service_name }}:{{ .Values.dug.web.api_port }}
+        rewrite: {{ .Values.dug.web.ambassador.search_kg.prefix }}
+        cors:
+          origins: "*"
+          methods: POST, OPTIONS
+          headers:
+            - Content-Type
     labels:
       app: {{ .Values.dug.web.app_name }}
     name: {{ .Values.dug.web.service_name }}
@@ -80,6 +106,14 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
+    annotations:
+      getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: Mapping
+        name: {{ .Values.dug.search_client.ambassador.ui.map_name }}
+        prefix: {{ .Values.dug.search_client.ambassador.ui.prefix }}
+        service: {{ .Values.dug.search_client.service_name }}:{{ .Values.dug.search_client.http_port }}
     labels:
       app: {{ .Values.dug.search_client.app_name }}
     name: {{ .Values.dug.search_client.service_name }}

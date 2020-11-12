@@ -1,3 +1,4 @@
+{{ if .Values.dug.create_pvcs }}
 apiVersion: v1
 items:
 - apiVersion: v1
@@ -40,3 +41,4 @@ items:
         storage: {{ .Values.dug.redis.storage_size }}
     storageClassName: dug-storage
 kind: List
+{{ end }}
