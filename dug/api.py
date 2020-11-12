@@ -142,7 +142,7 @@ class DugSearchResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
-      
+
 class DugSearchKGResource(DugResource):
     """ Execute a search """
 
@@ -196,6 +196,7 @@ class DugSearchKGResource(DugResource):
 
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
+api.add_resource(DugSearchKGResource, '/search_kg')
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='Dug Search API')
