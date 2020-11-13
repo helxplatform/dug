@@ -164,7 +164,7 @@ class Search:
             'nboost': {
                 'uhost': f"{self.username}:{self.password}@{self.host}",
                 'uport': self.hosts[0]['port'],
-                'cvalues_path': '_source.instructions',
+                'cvalues_path': '_source.description',
                 'query_path': 'body.query.query_string.query',
                 'size': size,
                 'from': offset,
