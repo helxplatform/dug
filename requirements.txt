@@ -55,7 +55,7 @@ neo4jrestclient==2.1.1
 neobolt==1.7.16
 neotime==1.7.4
 networkx==2.4
-notebook==6.0.3
+notebook==6.1.5
 numpy==1.18.1
 ordered-set==4.0.2
 packaging==20.3
