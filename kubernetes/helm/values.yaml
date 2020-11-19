@@ -35,6 +35,7 @@ dug:
     https_port: 7473
     bolt_port: 7687
     storage_size: 1G
+    storage_class: dug-storage
     db_user: neo4j
   redis:
     image: bitnami/redis
@@ -44,6 +45,7 @@ dug:
     service_name: redis
     deployment_name: redis
     storage_size: 5G
+    storage_class: dug-storage
     redis_port: 6389
   web:
     image: heliumdatastage/dug
