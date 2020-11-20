@@ -35,6 +35,7 @@ dug:
     https_port: 7473
     bolt_port: 7687
     storage_size: 1G
+    storage_class: dug-storage
     db_user: neo4j
   redis:
     image: bitnami/redis
@@ -44,10 +45,11 @@ dug:
     service_name: redis
     deployment_name: redis
     storage_size: 5G
+    storage_class: dug-storage
     redis_port: 6389
   web:
     image: heliumdatastage/dug
-    image_tag: develop-v0.0.25
+    image_tag: develop-v0.0.55
     app_name: dug
     service_name: dug
     deployment_name: dug
@@ -72,7 +74,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: 5d443f9-dev
+    image_tag: 4d78c08-dev
     ambassador:
       ui:
         map_name: dug-ui
@@ -84,5 +86,6 @@ dug:
     image: koursaros/nboost
     image_tag: 0.3.9-pt
     api_port: 8000
+    model: nboost/pt-biobert-base-msmarco
 
   # create_pvcs: true
