@@ -43,6 +43,7 @@ class TOPMedStudyAnnotator:
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
         self.synonym_service = config['synonym_service']
+        self.ontology_metadata = config['ontology_metadata']
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
@@ -115,14 +116,17 @@ class TOPMedStudyAnnotator:
                 row = better_row
                 logger.debug (f"{json.dumps(row, indent=2)}")
                 variables.append ({
-                    "study_id"               : f"TOPMED.STUDY:{row['study_full_accession']}",
-                    "tag_pk"                 : row['tag_pk'],
+                    "id"                     : f"{row['variable_full_accession']}",
+                    "name"                   : "",
+                    "description"            : "",
+                    "identifiers"            : [f"TOPMED.TAG:{row['tag_pk']}"],
+                    "dataset_id"             : row['dataset_full_accession'],
+                    "dataset_name"           : "",
+                    "dataset_description"    : "",
+                    "study_id"               : f"{row['study_full_accession']}",
                     "study_name"             : row['study_name'],
-                    "study_version"          : row['study_version'],
-                    "dataset_full_accession" : row['dataset_full_accession'],
-                    "variable_id"            : f"TOPMED.VAR:{row['variable_full_accession']}",
-                    "variable_phv"           : row['variable_phv'],
-                    "identifiers"            : {}
+                    "study_description"      : "" 
+                    
                 })
 
         tags = []
@@ -150,7 +154,7 @@ class TOPMedStudyAnnotator:
         """
         blank_preferred_id = {
             "label": "",
-            "equivalent_identifers": [],
+            "equivalent_identifiers": [],
             "type": ['named_thing'] # Default NeoTransformer category
         }
         """ Normalize the identifier with respect to the BioLink Model. """
@@ -192,7 +196,7 @@ class TOPMedStudyAnnotator:
           normalize the resulting identifiers using the Translator normalization API
 
           :param variables: A dictionary of variables.
-          :returns: A dictionary of annotted variables.
+          :returns: A dictionary of annotated variables.
         """
 
         """
@@ -210,7 +214,11 @@ class TOPMedStudyAnnotator:
 
         variable_file = open("normalized_inputs.txt", "w")
 
-        """ Annotate and normalize each variable. """
+        # Initialize return dict
+        concepts = {}
+        norm_fails = open("norm_fails.txt", "w")
+
+        """ Annotate and normalize each tag. """
         for variable in variables:
             logger.debug (variable)
             try:
@@ -232,6 +240,8 @@ class TOPMedStudyAnnotator:
 
                 description = variable['description'].replace ("_", " ")
                 description = self.debreviator.decode (description)
+
+                # Annotation
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
@@ -239,8 +249,8 @@ class TOPMedStudyAnnotator:
 
                 """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
+                    search_text = span.get('text',None) # Always a string
                     for token in span.get('token',[]):
-                        normalized = {}
                         curie = token.get('id', None)
                         if not curie:
                             continue
@@ -249,13 +259,48 @@ class TOPMedStudyAnnotator:
                                         f"{self.normalizer}{curie}",
                                         variable)
 
+                        # Skip if failing normalization
+                        #TODO Address this failing normalization.
+                        if curie not in variable['identifiers']:
+                            norm_fails.write(f"{curie}\n")
+                            continue
+
+                        # Add concepts
+                        term = token.get('terms', None) # Always a list
+                        if curie not in concepts:
+                            concepts[curie] = {
+                                "id": curie,
+                                "name": term[0],
+                                "description": "",
+                                "type": curie.split(":")[0],
+                                "search_terms": [search_text] + term,
+                                "identifiers": {
+                                    curie: variable['identifiers'][curie]
+                                }
+                            }
+                        else:
+                            concepts[curie]["search_terms"].extend([search_text] + term)
+
             except json.decoder.JSONDecodeError as e:
                 traceback.print_exc ()
             except:
                 traceback.print_exc ()
                 raise
             variable_file.write(f"{json.dumps(variable, indent=2)}\n")
-        return variables
+
+            # Create TOPMed tag in concepts
+            concepts[variable['id']] = {
+                "id": variable['id'],
+                "name": variable['title'],
+                "description": f"{description}. {variable['instructions']}",
+                "type": "TOPMed", #TODO: remove this hardcode
+                "search_terms": [],
+                "identifiers" : variable['identifiers']
+            }
+        
+
+
+        return concepts
 
     def write (self, graph : Dict) -> None:
         """
@@ -472,7 +517,7 @@ class TOPMedStudyAnnotator:
     def get_variables_from_tranql(self):
         '''
         This function returns the tagged variables,
-        including identifer information,
+        including identifier information,
         from TranQL.  It is the starting point for
         indexing documents into ElasticSearch
         '''
@@ -540,7 +585,7 @@ class TOPMedStudyAnnotator:
             tag_edges = [edge for edge in edges if edge['source_id']==tag['id'] and not edge['target_id'].startswith('TOPMED.VAR')]
             identifiers = [tag['target_id'] for tag in tag_edges]
             for identifier in identifiers:
-                # Find identifers in node
+                # Find identifiers in node
                 value = [node for node in nodes if node['id'] == identifier][0] # finds single dictionary
                 if 'label' not in value:
                     value['label'] = value.pop('name') # change 'name' to 'label' for downstream processing
@@ -563,7 +608,7 @@ class TOPMedStudyAnnotator:
         # Return tags and variables
         return variables, tags
 
-    def add_synonyms_to_identifiers(self, tags):
+    def add_synonyms_to_identifiers(self, concepts):
         '''
         This function does the following:
         - Initialize http_session for NCATS synonym service
@@ -580,8 +625,8 @@ class TOPMedStudyAnnotator:
             connection=redis_connection)
 
         # Go through identifiers in tags
-        for tag in tags:
-            for identifier in list(tag['identifiers'].keys()):
+        for concept in concepts:
+            for identifier in list(concepts[concept]['identifiers'].keys()):
                 try:
                     # Get response from synonym service
                     encoded = urllib.parse.quote (identifier)
@@ -591,13 +636,64 @@ class TOPMedStudyAnnotator:
                     # List comprehension for synonyms
                     synonyms = [synonym['desc'] for synonym in raw_synonyms]
                     
-                    # Add to tag
-                    tag['identifiers'][identifier]['synonyms'] = synonyms
+                    # Add to identifier
+                    concepts[concept]['identifiers'][identifier]['synonyms'] = synonyms
+                    
+                    # Add to search terms
+                    concepts[concept]['search_terms'] += synonyms
                 
                 except json.decoder.JSONDecodeError as e:
-                    tag['identifiers'][identifier]['synonyms'] = []
+                    concepts[concept]['identifiers'][identifier]['synonyms'] = []
                     logger.error (f"No synonyms returned for: {identifier}")
-        return tags
+        return concepts
+    
+    def clean_concepts(self, concepts):
+        '''
+        This function does the following:
+        - Make search terms within concepts unique
+        - Write concepts to a debug file
+        - Add more identifiers to variables for Proof of Concept
+        - Add name/description to ontology IDs
+        '''
+        # Create an http_session like in annotate()
+        redis_connection = redis.StrictRedis (host=self.redis_host,
+                                              port=self.redis_port,
+                                              password=self.redis_password)
+        http_session = CachedSession (
+            cache_name='annotator',
+            backend="redis",
+            connection=redis_connection)
+        
+        # Clean Concepts
+        for concept in concepts:
+            concepts[concept]['search_terms'] = list(set(list(concepts[concept]['search_terms'])))
+        
+        # Add Name and description
+        for concept in concepts:
+            try:
+                # Get response from synonym service
+                encoded = urllib.parse.quote (concept)
+                url = f"{self.ontology_metadata}{encoded}"
+                response = http_session.get(url).json ()
+
+                # List comprehension for synonyms
+                name = response.get('label','')
+                description = response.get('definition','')
+                
+                # Add to concept
+                if len(name):
+                    concepts[concept]['name'] = name
+                if len(description):
+                    concepts[concept]['description'] = description
+            
+            except json.decoder.JSONDecodeError as e:
+                logger.error (f"No labels returned for: {concept}")
+        
+        # Write to file
+        concept_file = open("concept_file.json", "w")
+        concept_file.write(f"{json.dumps(concepts, indent=2)}")
+        
+        return concepts
 
 class GraphDB:
     def __init__(self, conf):

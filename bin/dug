@@ -282,7 +282,7 @@ pytests () {
 ##
 #############################################################
 query_api () {
-     query="`echo '{"index" : "test", "query" : "'$*'"}'`"
+     query="`echo '{"index" : "concepts_index", "query" : "'$*'"}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
@@ -311,7 +311,7 @@ query_nboost () {
 #############################################################
 query_kg_api () {
      unique_id=$1
-     query="`echo '{"index" : "test_kg", "query" : "'${@:2}'", "unique_id" : "'$unique_id'"}'`"
+     query="`echo '{"index" : "kg_index", "query" : "'${@:2}'", "unique_id" : "'$unique_id'"}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \

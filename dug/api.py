@@ -131,7 +131,7 @@ class DugSearchResource(DugResource):
             if boosted:
                 api_request = dug().search_nboost(**request.json)
             else:
-                api_request = dug().search(**request.json)
+                api_request = dug().search_concepts(**request.json)
 
             response = self.create_response(
                 result=api_request,
@@ -193,10 +193,60 @@ class DugSearchKGResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
+class DugSearchVarResource(DugResource):
+    """ Execute a search """
+
+    """ System initiation. """
+
+    def post(self):
+        """
+        Execute the configured search.
+
+        A natural language word or phrase is the input.
+        ---
+        tag: search_kg
+        description: Search for a string across knowledge graphs
+        requestBody:
+            description: Search request
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/SearchVar'
+        responses:
+            '200':
+                description: Success
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            example: "Nominal search"
+            '400':
+                description: Malformed message
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+
+        """
+        logger.debug(f"search_kg:{json.dumps(request.json)}")
+        response = {}
+        try:
+            app.logger.info(f"search_kg: {json.dumps(request.json, indent=2)}")
+            self.validate(request, component="Search")
+            response = self.create_response(
+                result=dug().search_variables(**request.json),
+                message=f"Search result")
+        except Exception as e:
+            response = self.create_response(
+                exception=e,
+                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+        return response
 
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
 api.add_resource(DugSearchKGResource, '/search_kg')
+api.add_resource(DugSearchVarResource, '/search_var')
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='Dug Search API')
