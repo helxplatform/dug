@@ -232,7 +232,7 @@ class DugSearchVarResource(DugResource):
         logger.debug(f"search_kg:{json.dumps(request.json)}")
         response = {}
         try:
-            app.logger.info(f"search_kg: {json.dumps(request.json, indent=2)}")
+            app.logger.info(f"search_var: {json.dumps(request.json, indent=2)}")
             self.validate(request, component="Search")
             response = self.create_response(
                 result=dug().search_variables(**request.json),
