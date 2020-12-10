@@ -720,7 +720,7 @@ class Search:
                             data = query).json ()
 
                         # Case: Skip if empty KG 
-                        if not len(response['knowledge_graph']['nodes']):
+                        if not len(response.get('knowledge_graph',{}).get('nodes',[])):
                             logging.debug(f"Did not find a knowledge graph for {query}")
                             continue # continue out of loop
                         
