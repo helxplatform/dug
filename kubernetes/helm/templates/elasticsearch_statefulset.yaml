@@ -34,7 +34,9 @@ spec:
             defaultMode: 0755
         - name: elasticsearch-certs
           secret:
-            secretName: elastic-certificates
+            secretName: {{ .Values.dug.elasticsearch.certs_secret }}
+      securityContext:
+        fsGroup: 1001
       containers:
       - image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
         name: {{ .Values.dug.elasticsearch.app_name }}-container
