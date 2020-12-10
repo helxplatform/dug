@@ -89,7 +89,7 @@ pyzmq==19.0.0
 qtconsole==4.7.1
 QtPy==1.9.0
 rdflib==5.0.0
-rdflib-jsonld==0.4.0
+rdflib-jsonld==0.5.0
 redis==3.4.1
 requests==2.22.0
 requests-cache==0.5.2

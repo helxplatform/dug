@@ -153,7 +153,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_nboost(self, index, query, offset=0, size=None, fuzziness=1):
+    def search_nboost(self, index, query, offset=0, size=10, fuzziness=1):
         """
         Query type is now 'query_string'.
         query searches multiple fields
@@ -164,10 +164,11 @@ class Search:
             'nboost': {
                 'uhost': f"{self.username}:{self.password}@{self.host}",
                 'uport': self.hosts[0]['port'],
-                'cvalues_path': '_source.instructions',
+                'cvalues_path': '_source.description',
                 'query_path': 'body.query.query_string.query',
                 'size': size,
                 'from': offset,
+                'default_topk': size
             },
             'query': {
                 'query_string': {

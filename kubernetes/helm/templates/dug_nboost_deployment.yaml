@@ -20,3 +20,5 @@ spec:
         name: {{ .Values.dug.nboost.app_name }}-container
         ports:
           - containerPort: {{ .Values.dug.nboost.api_port }}
+        args:
+        - --model_dir={{ .Values.dug.nboost.model }}
