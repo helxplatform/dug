@@ -1,0 +1,1462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./datadict_v2.xsl"?>
+<data_table id="pht000001.v1" study_id="phs000001.v1" participant_set="1" date_created="Fri Oct 31 16:21:40 2008">
+
+<variable id="phv00000029.v1">
+	<name>agecont</name>
+	<description>Age at last participant contact (in person or via telephone)</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00020783.v1">
+	<name>agedraw</name>
+	<description>Age at time of blood draw</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00000027.v1">
+	<name>agephot</name>
+	<description>Age at last photograph</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00000025.v1">
+	<name>agequal</name>
+	<description>Age at the qualifying visit</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00000026.v1">
+	<name>agerand</name>
+	<description>Age at the randomization (1-4 months after the qualifying visit)</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00000028.v1">
+	<name>agevis</name>
+	<description>Age (of person) at last visit to clinic</description>
+	<type>Num</type>
+	<unit>year</unit>
+</variable>
+
+<variable id="phv00000173.v1">
+	<name>amdstat</name>
+	<description>AMD status</description>
+	<type>Char</type>
+</variable>
+
+<variable id="phv00000136.v1">
+	<name>angina00</name>
+	<description>History of angina (at follow-up year 0)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000137.v1">
+	<name>angina03</name>
+	<description>History of angina (at follow-up year 3)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000138.v1">
+	<name>angina04</name>
+	<description>History of angina (at follow-up year 4)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000139.v1">
+	<name>angina05</name>
+	<description>History of angina (at follow-up year 5)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000140.v1">
+	<name>angina06</name>
+	<description>History of angina (at follow-up year 6)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000141.v1">
+	<name>angina07</name>
+	<description>History of angina (at follow-up year 7)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000142.v1">
+	<name>angina08</name>
+	<description>History of angina (at follow-up year 8)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000143.v1">
+	<name>angina09</name>
+	<description>History of angina (at follow-up year 9)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000144.v1">
+	<name>angina10</name>
+	<description>History of angina (at follow-up year 10)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000145.v1">
+	<name>angina11</name>
+	<description>History of angina (at follow-up year 11)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000146.v1">
+	<name>angina12</name>
+	<description>History of angina (at follow-up year 12)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000147.v1">
+	<name>angina13</name>
+	<description>History of angina (at follow-up year 13)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000148.v1">
+	<name>asp00</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 0)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000149.v1">
+	<name>asp03</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 3)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000150.v1">
+	<name>asp04</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 4)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000151.v1">
+	<name>asp05</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 5)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000152.v1">
+	<name>asp06</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 6)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000153.v1">
+	<name>asp07</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 7)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000154.v1">
+	<name>asp08</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 8)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000155.v1">
+	<name>asp09</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 9)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000156.v1">
+	<name>asp10</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 10)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000157.v1">
+	<name>asp11</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 11)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000158.v1">
+	<name>asp12</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 12)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000159.v1">
+	<name>asp13</name>
+	<description>Aspirin use over 5x a week for at least 3 months (at follow-up year 13)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Never</value>
+	<value code="1">&lt;5 years</value>
+	<value code="2">&gt;=5 and &lt;10 years</value>
+	<value code="3">&gt;=10 and &lt;20 years</value>
+	<value code="4">&gt;=20 years</value>
+</variable>
+
+<variable id="phv00000160.v1">
+	<name>aspcur00</name>
+	<description>Currently taking aspirin regularly (at follow-up year 0)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000161.v1">
+	<name>aspcur03</name>
+	<description>Currently taking aspirin regularly (at follow-up year 3)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000162.v1">
+	<name>aspcur04</name>
+	<description>Currently taking aspirin regularly (at follow-up year 4)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000163.v1">
+	<name>aspcur05</name>
+	<description>Currently taking aspirin regularly (at follow-up year 5)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000164.v1">
+	<name>aspcur06</name>
+	<description>Currently taking aspirin regularly (at follow-up year 6)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000165.v1">
+	<name>aspcur07</name>
+	<description>Currently taking aspirin regularly (at follow-up year 7)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000166.v1">
+	<name>aspcur08</name>
+	<description>Currently taking aspirin regularly (at follow-up year 8)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000167.v1">
+	<name>aspcur09</name>
+	<description>Currently taking aspirin regularly (at follow-up year 9)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000168.v1">
+	<name>aspcur10</name>
+	<description>Currently taking aspirin regularly (at follow-up year 10)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000169.v1">
+	<name>aspcur11</name>
+	<description>Currently taking aspirin regularly (at follow-up year 11)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000170.v1">
+	<name>aspcur12</name>
+	<description>Currently taking aspirin regularly (at follow-up year 12)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000171.v1">
+	<name>aspcur13</name>
+	<description>Currently taking aspirin regularly (at follow-up year 13)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000060.v1">
+	<name>bmi00</name>
+	<description>Body-mass index (at follow-up year 0)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000061.v1">
+	<name>bmi03</name>
+	<description>Body-mass index (at follow-up year 3)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000062.v1">
+	<name>bmi04</name>
+	<description>Body-mass index (at follow-up year 4)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000063.v1">
+	<name>bmi05</name>
+	<description>Body-mass index (at follow-up year 5)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000064.v1">
+	<name>bmi06</name>
+	<description>Body-mass index (at follow-up year 6)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000065.v1">
+	<name>bmi07</name>
+	<description>Body-mass index (at follow-up year 7)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000066.v1">
+	<name>bmi08</name>
+	<description>Body-mass index (at follow-up year 8)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000067.v1">
+	<name>bmi09</name>
+	<description>Body-mass index (at follow-up year 9)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000068.v1">
+	<name>bmi10</name>
+	<description>Body-mass index (at follow-up year 10)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000069.v1">
+	<name>bmi11</name>
+	<description>Body-mass index (at follow-up year 11)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000070.v1">
+	<name>bmi12</name>
+	<description>Body-mass index (at follow-up year 12)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000071.v1">
+	<name>bmi13</name>
+	<description>Body-mass index (at follow-up year 13)</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000122.v1">
+	<name>cancer00</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 0)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000123.v1">
+	<name>cancer01</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 1)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000124.v1">
+	<name>cancer02</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 2)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000125.v1">
+	<name>cancer03</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 3)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000126.v1">
+	<name>cancer04</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 4)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000127.v1">
+	<name>cancer05</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 5)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000128.v1">
+	<name>cancer06</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 6)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000129.v1">
+	<name>cancer07</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 7)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000130.v1">
+	<name>cancer08</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 8)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000131.v1">
+	<name>cancer09</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 9)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000132.v1">
+	<name>cancer10</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 10)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000133.v1">
+	<name>cancer11</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 11)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000134.v1">
+	<name>cancer12</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 12)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000135.v1">
+	<name>cancer13</name>
+	<description>History of cancer (in follow-up, only newly developed cancers were documented) (at follow-up year 13)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000015.v1">
+	<name>cataract</name>
+	<description>Cataract phenotype</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Absent</value>
+	<value code="10">Questionable</value>
+	<value code="2">Nuclear alone</value>
+	<value code="3">Cortical alone</value>
+	<value code="4">PSC alone</value>
+	<value code="5">Nuclear/Cortical</value>
+	<value code="6">Nuclear/PSC</value>
+	<value code="7">Cortical/PSC</value>
+	<value code="8">Nuclear/Cortical/PSC</value>
+	<value code="9">Cataract Surgery/No specific type</value>
+</variable>
+
+<variable id="phv00000172.v1">
+	<name>CNTRMTAK</name>
+	<description>Centrum use</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000002.v1">
+	<name>consent</name>
+	<description>Participant&#39;s consent status</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Participant consents to any study</value>
+	<value code="2">Participant consents only to studies of AMD and cataract</value>
+</variable>
+
+<variable id="phv00000021.v1">
+	<name>cor</name>
+	<description>Cortical opacity phenotype</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Absent</value>
+	<value code="1">Present</value>
+	<value code="2">Cataract Surgery</value>
+	<value code="3">Questionable</value>
+</variable>
+
+<variable id="phv00000108.v1">
+	<name>diab00</name>
+	<description>History of diabetes (at follow-up year 0)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000109.v1">
+	<name>diab01</name>
+	<description>History of diabetes (at follow-up year 1)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000110.v1">
+	<name>diab02</name>
+	<description>History of diabetes (at follow-up year 2)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000111.v1">
+	<name>diab03</name>
+	<description>History of diabetes (at follow-up year 3)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000112.v1">
+	<name>diab04</name>
+	<description>History of diabetes (at follow-up year 4)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000113.v1">
+	<name>diab05</name>
+	<description>History of diabetes (at follow-up year 5)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000114.v1">
+	<name>diab06</name>
+	<description>History of diabetes (at follow-up year 6)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000115.v1">
+	<name>diab07</name>
+	<description>History of diabetes (at follow-up year 7)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000116.v1">
+	<name>diab08</name>
+	<description>History of diabetes (at follow-up year 8)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000117.v1">
+	<name>diab09</name>
+	<description>History of diabetes (at follow-up year 9)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000118.v1">
+	<name>diab10</name>
+	<description>History of diabetes (at follow-up year 10)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000119.v1">
+	<name>diab11</name>
+	<description>History of diabetes (at follow-up year 11)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000120.v1">
+	<name>diab12</name>
+	<description>History of diabetes (at follow-up year 12)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000121.v1">
+	<name>diab13</name>
+	<description>History of diabetes (at follow-up year 13)</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="N">no</value>
+	<value code="Y">yes</value>
+</variable>
+
+<variable id="phv00000096.v1">
+	<name>dias00</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 0)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000097.v1">
+	<name>dias03</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 3)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000098.v1">
+	<name>dias04</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 4)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000099.v1">
+	<name>dias05</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 5)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000100.v1">
+	<name>dias06</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 6)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000101.v1">
+	<name>dias07</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 7)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000102.v1">
+	<name>dias08</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 8)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000103.v1">
+	<name>dias09</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 9)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000104.v1">
+	<name>dias10</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 10)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000105.v1">
+	<name>dias11</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 11)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000106.v1">
+	<name>dias12</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 12)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000107.v1">
+	<name>dias13</name>
+	<description>Sitting diastolic blood pressure (at follow-up year 13)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000036.v1">
+	<name>height00</name>
+	<description>Height in inches (at follow-up year 0)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000037.v1">
+	<name>height03</name>
+	<description>Height in inches (at follow-up year 3)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000038.v1">
+	<name>height04</name>
+	<description>Height in inches (at follow-up year 4)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000039.v1">
+	<name>height05</name>
+	<description>Height in inches (at follow-up year 5)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000040.v1">
+	<name>height06</name>
+	<description>Height in inches (at follow-up year 6)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000041.v1">
+	<name>height07</name>
+	<description>Height in inches (at follow-up year 7)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000042.v1">
+	<name>height08</name>
+	<description>Height in inches (at follow-up year 8)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000043.v1">
+	<name>height09</name>
+	<description>Height in inches (at follow-up year 9)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000044.v1">
+	<name>height10</name>
+	<description>Height in inches (at follow-up year 10)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000045.v1">
+	<name>height11</name>
+	<description>Height in inches (at follow-up year 11)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000046.v1">
+	<name>height12</name>
+	<description>Height in inches (at follow-up year 12)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000047.v1">
+	<name>height13</name>
+	<description>Height in inches (at follow-up year 13)</description>
+	<type>Num</type>
+	<unit>inch</unit>
+</variable>
+
+<variable id="phv00000020.v1">
+	<name>lcor</name>
+	<description>Cortical opacity phenotype - left eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="COR-A">Absent</value>
+	<value code="COR-B">Present</value>
+	<value code="COR-C">Surgery</value>
+	<value code="COR-D">Questionable</value>
+</variable>
+
+<variable id="phv00000008.v1">
+	<name>lcorbase</name>
+	<description>Baseline cortical opacity percentage (full visible lens) - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000010.v1">
+	<name>lcorscore</name>
+	<description>Predicted cortical opacity percentage (full visible lens) - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000017.v1">
+	<name>lnuc</name>
+	<description>Nuclear opacity phenotype - left eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="NUC-A">Absent</value>
+	<value code="NUC-B">Present</value>
+	<value code="NUC-C">Surgery</value>
+	<value code="NUC-D">Questionable</value>
+</variable>
+
+<variable id="phv00000004.v1">
+	<name>lnucbase</name>
+	<description>Baseline nuclear opacity score - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000006.v1">
+	<name>lnucscore</name>
+	<description>Predicted nuclear opacity score - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000023.v1">
+	<name>Lpsc</name>
+	<description>PSC opacity phenotype - left eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="PSC-A">Absent</value>
+	<value code="PSC-B">Present</value>
+	<value code="PSC-C">Surgery</value>
+	<value code="PSC-D">Questionable</value>
+</variable>
+
+<variable id="phv00000012.v1">
+	<name>lpscbase</name>
+	<description>Baseline PSC opacity percentage (central 5 mm) - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000014.v1">
+	<name>lpscscore</name>
+	<description>Predicted PSC opacity percentage (central 5 mm) - left eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000032.v1">
+	<name>MARITAL</name>
+	<description>Marital status</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">married</value>
+	<value code="2">divorced/separated</value>
+	<value code="3">widowed</value>
+	<value code="4">never married</value>
+</variable>
+
+<variable id="phv00000018.v1">
+	<name>nuc</name>
+	<description>Nuclear opacity phenotype</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Absent</value>
+	<value code="1">Present</value>
+	<value code="2">Cataract Surgery</value>
+	<value code="3">Questionable</value>
+</variable>
+
+<variable id="phv00000024.v1">
+	<name>Psc</name>
+	<description>PSC opacity phenotype</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="0">Absent</value>
+	<value code="1">Present</value>
+	<value code="2">Cataract Surgery</value>
+	<value code="3">Questionable</value>
+</variable>
+
+<variable id="phv00000033.v1">
+	<name>RACE</name>
+	<description>Race</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">white,non-hispanic</value>
+	<value code="2">black, non-hispanic</value>
+	<value code="3">hispanic</value>
+	<value code="4">Asian or Pacific Islander</value>
+	<value code="5">other</value>
+</variable>
+
+<variable id="phv00000019.v1">
+	<name>rcor</name>
+	<description>Cortical opacity phenotype - right eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="COR-A">Absent</value>
+	<value code="COR-B">Present</value>
+	<value code="COR-C">Surgery</value>
+	<value code="COR-D">Questionable</value>
+</variable>
+
+<variable id="phv00000007.v1">
+	<name>rcorbase</name>
+	<description>Baseline cortical opacity percentage (full visible lens) - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000009.v1">
+	<name>rcorscore</name>
+	<description>Predicted cortical opacity percentage (full visible lens) - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000016.v1">
+	<name>rnuc</name>
+	<description>Nuclear opacity phenotype - right eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="NUC-A">Absent</value>
+	<value code="NUC-B">Present</value>
+	<value code="NUC-C">Surgery</value>
+	<value code="NUC-D">Questionable</value>
+</variable>
+
+<variable id="phv00000003.v1">
+	<name>rnucbase</name>
+	<description>Baseline nuclear opacity score - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000005.v1">
+	<name>rnucscore</name>
+	<description>Predicted nuclear opacity score - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000022.v1">
+	<name>rpsc</name>
+	<description>PSC opacity phenotype - right eye</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="PSC-A">Absent</value>
+	<value code="PSC-B">Present</value>
+	<value code="PSC-C">Surgery</value>
+	<value code="PSC-D">Questionable</value>
+</variable>
+
+<variable id="phv00000011.v1">
+	<name>rpscbase</name>
+	<description>Baseline PSC opacity percentage (central 5 mm) - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000013.v1">
+	<name>rpscscore</name>
+	<description>Predicted PSC opacity percentage (central 5 mm) - right eye</description>
+	<type>Num</type>
+</variable>
+
+<variable id="phv00000035.v1">
+	<name>SCHOOL</name>
+	<description>Highest level of school completed</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">grade 11 or less</value>
+	<value code="2">high school graduate</value>
+	<value code="3">some college or associate degree</value>
+	<value code="4">bachelors degree</value>
+	<value code="5">postgraduate work</value>
+	<value code="6">refused to answer</value>
+</variable>
+
+<variable id="phv00000034.v1">
+	<name>SEX</name>
+	<description>Gender</description>
+	<type>Char</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="F">female</value>
+	<value code="M">male</value>
+</variable>
+
+<variable id="phv00000072.v1">
+	<name>smk00</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 0)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000073.v1">
+	<name>smk03</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 3)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000074.v1">
+	<name>smk04</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 4)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000075.v1">
+	<name>smk05</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 5)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000076.v1">
+	<name>smk06</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 6)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000077.v1">
+	<name>smk07</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 7)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000078.v1">
+	<name>smk08</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 8)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000079.v1">
+	<name>smk09</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 9)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000080.v1">
+	<name>smk10</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 10)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000081.v1">
+	<name>smk11</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 11)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000082.v1">
+	<name>smk12</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 12)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000083.v1">
+	<name>smk13</name>
+	<description>Smoking status (based on having smoked for at least 6 months) (at follow-up year 13)</description>
+	<type>Num</type>
+	<value code="0">No Research Use Permitted: including HapMap, pedigree-linking, and genotype control subjects</value>
+	<value code="1">Never smoked</value>
+	<value code="2">Former smoker</value>
+	<value code="3">Current smoker</value>
+</variable>
+
+<variable id="phv00000001.v1">
+	<name>specnum</name>
+	<description>Specimen number</description>
+	<type>Char</type>
+</variable>
+
+<variable id="phv00000084.v1">
+	<name>syst00</name>
+	<description>Sitting systolic blood pressure (at follow-up year 0)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000085.v1">
+	<name>syst03</name>
+	<description>Sitting systolic blood pressure (at follow-up year 3)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000086.v1">
+	<name>syst04</name>
+	<description>Sitting systolic blood pressure (at follow-up year 4)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000087.v1">
+	<name>syst05</name>
+	<description>Sitting systolic blood pressure (at follow-up year 5)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000088.v1">
+	<name>syst06</name>
+	<description>Sitting systolic blood pressure (at follow-up year 6)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000089.v1">
+	<name>syst07</name>
+	<description>Sitting systolic blood pressure (at follow-up year 7)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000090.v1">
+	<name>syst08</name>
+	<description>Sitting systolic blood pressure (at follow-up year 8)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000091.v1">
+	<name>syst09</name>
+	<description>Sitting systolic blood pressure (at follow-up year 9)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000092.v1">
+	<name>syst10</name>
+	<description>Sitting systolic blood pressure (at follow-up year 10)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000093.v1">
+	<name>syst11</name>
+	<description>Sitting systolic blood pressure (at follow-up year 11)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000094.v1">
+	<name>syst12</name>
+	<description>Sitting systolic blood pressure (at follow-up year 12)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000095.v1">
+	<name>syst13</name>
+	<description>Sitting systolic blood pressure (at follow-up year 13)</description>
+	<type>Num</type>
+	<unit>mmHg</unit>
+</variable>
+
+<variable id="phv00000031.v1">
+	<name>trt</name>
+	<description>AREDS treatment</description>
+	<type>Char</type>
+</variable>
+
+<variable id="phv00000048.v1">
+	<name>weight00</name>
+	<description>Weight in pounds (at follow-up year 0)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000049.v1">
+	<name>weight03</name>
+	<description>Weight in pounds (at follow-up year 3)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000050.v1">
+	<name>weight04</name>
+	<description>Weight in pounds (at follow-up year 4)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000051.v1">
+	<name>weight05</name>
+	<description>Weight in pounds (at follow-up year 5)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000052.v1">
+	<name>weight06</name>
+	<description>Weight in pounds (at follow-up year 6)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000053.v1">
+	<name>weight07</name>
+	<description>Weight in pounds (at follow-up year 7)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000054.v1">
+	<name>weight08</name>
+	<description>Weight in pounds (at follow-up year 8)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000055.v1">
+	<name>weight09</name>
+	<description>Weight in pounds (at follow-up year 9)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000056.v1">
+	<name>weight10</name>
+	<description>Weight in pounds (at follow-up year 10)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000057.v1">
+	<name>weight11</name>
+	<description>Weight in pounds (at follow-up year 11)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000058.v1">
+	<name>weight12</name>
+	<description>Weight in pounds (at follow-up year 12)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000059.v1">
+	<name>weight13</name>
+	<description>Weight in pounds (at follow-up year 13)</description>
+	<type>Num</type>
+	<unit>pound</unit>
+</variable>
+
+<variable id="phv00000030.v1">
+	<name>ZZRCAMDC</name>
+	<description>Baseline AMD category</description>
+	<type>Char</type>
+</variable>
+
+</data_table>
