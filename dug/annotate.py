@@ -4,9 +4,10 @@ import logging
 import os
 import redis
 import traceback
+import re
 import urllib
 import xml.etree.ElementTree as ET
-from kgx import NeoTransformer, JsonTransformer
+#from kgx import NeoTransformer, JsonTransformer
 from neo4jrestclient.client import GraphDatabase
 import requests
 from requests_cache import CachedSession
@@ -19,6 +20,15 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 Config = Dict
+
+
+def parse_study_name_from_filename(filename):
+    # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
+    dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
+    match = re.match(dbgap_file_pattern, filename)
+    if match is not None:
+        return match.group(1)
+    return None
 
 
 class Debreviator:
@@ -43,6 +53,7 @@ class TOPMedStudyAnnotator:
         self.normalizer = config['normalizer']
         self.annotator = config['annotator']
         self.synonym_service = config['synonym_service']
+        self.ontology_metadata = config['ontology_metadata']
         self.db_url = config['db_url']
         self.username = config['username']
         self.password = config['password']
@@ -59,12 +70,27 @@ class TOPMedStudyAnnotator:
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
+        dataset_id = root.attrib['id']
+        participant_set = root.attrib['participant_set']
+
+        # Parse study name from filehandle
+        study_name = parse_study_name_from_filename(input_file)
+        if study_name is None:
+            err_msg = f"Unable to parse DbGaP study name from data dictionary: {input_file}!"
+            logger.error(err_msg)
+            raise IOError(err_msg)
+
         return [{
-            "study_id"    : study_id,
-            "variable_id" : variable.attrib['id'],
-            "variable"    : variable.find ('name').text,
-            "description" : variable.find ('description').text.lower (),
-            "identifiers" : {}
+            "id"                    : f"{variable.attrib['id']}.p{participant_set}",
+            "identifiers"          : {},
+            "name"                 : variable.find ('name').text,
+            "description"          : variable.find ('description').text.lower(),
+            "dataset_id"           : dataset_id,
+            "dataset_name"         : "",
+            "dataset_description"  : "",
+            "study_id"             : f"{study_id}.p{participant_set}",
+            "study_name"           : study_name,
+            "study_description"    : ""
         } for variable in root.iter('variable') ]
 
     def load_csv (self, input_file : str) -> Dict:
@@ -113,17 +139,21 @@ class TOPMedStudyAnnotator:
             for row in reader:
                 better_row = { k.strip () : v for  k, v in row.items () }
                 row = better_row
-                logger.debug (f"{json.dumps(row, indent=2)}")
+                logger.debug(f"{json.dumps(row, indent=2)}")
                 variables.append ({
-                    "study_id"               : f"TOPMED.STUDY:{row['study_full_accession']}",
-                    "tag_pk"                 : row['tag_pk'],
+                    "id"                     : f"{row['variable_full_accession']}",
+                    "name"                   : row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
+                    "description"            : row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
+                    "identifiers"            : [f"TOPMED.TAG:{row['tag_pk']}"],
+                    "dataset_id"             : row['dataset_full_accession'],
+                    "dataset_name"           : "",
+                    "dataset_description"    : "",
+                    "study_id"               : f"{row['study_full_accession']}",
                     "study_name"             : row['study_name'],
-                    "study_version"          : row['study_version'],
-                    "dataset_full_accession" : row['dataset_full_accession'],
-                    "variable_id"            : f"TOPMED.VAR:{row['variable_full_accession']}",
-                    "variable_phv"           : row['variable_phv'],
-                    "identifiers"            : {}
+                    "study_description"      : "" 
+                    
                 })
+                logger.debug(f"{json.dumps(variables[-1], indent=2)}")
 
         tags = []
         with open(tags_input_file, "r") as stream:
@@ -134,9 +164,12 @@ class TOPMedStudyAnnotator:
             del tag[f]
             tag['id'] = f"TOPMED.TAG:{tag['pk']}"
             tag['identifiers'] = {}
+            tag['is_variable_tag'] = True
+            tag['type'] = 'TOPMed'
+
         return variables, tags
 
-    def normalize (self, http_session, curie, url, variable) -> None:
+    def normalize(self, http_session, curie, url, variable) -> None:
         """ Given an identifier (curie), use the Translator SRI node normalization service to
             find a preferred identifier, equivalent identifiers, and biolink model types for the node.
 
@@ -150,7 +183,7 @@ class TOPMedStudyAnnotator:
         """
         blank_preferred_id = {
             "label": "",
-            "equivalent_identifers": [],
+            "equivalent_identifiers": [],
             "type": ['named_thing'] # Default NeoTransformer category
         }
         """ Normalize the identifier with respect to the BioLink Model. """
@@ -192,7 +225,7 @@ class TOPMedStudyAnnotator:
           normalize the resulting identifiers using the Translator normalization API
 
           :param variables: A dictionary of variables.
-          :returns: A dictionary of annotted variables.
+          :returns: A dictionary of annotated variables.
         """
 
         """
@@ -210,7 +243,11 @@ class TOPMedStudyAnnotator:
 
         variable_file = open("normalized_inputs.txt", "w")
 
-        """ Annotate and normalize each variable. """
+        # Initialize return dict
+        concepts = {}
+        norm_fails = open("norm_fails.txt", "w")
+
+        """ Annotate and normalize each tag. """
         for variable in variables:
             logger.debug (variable)
             try:
@@ -232,6 +269,8 @@ class TOPMedStudyAnnotator:
 
                 description = variable['description'].replace ("_", " ")
                 description = self.debreviator.decode (description)
+
+                # Annotation
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
@@ -239,8 +278,8 @@ class TOPMedStudyAnnotator:
 
                 """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
+                    search_text = span.get('text',None) # Always a string
                     for token in span.get('token',[]):
-                        normalized = {}
                         curie = token.get('id', None)
                         if not curie:
                             continue
@@ -249,13 +288,49 @@ class TOPMedStudyAnnotator:
                                         f"{self.normalizer}{curie}",
                                         variable)
 
+                        # Skip if failing normalization
+                        #TODO Address this failing normalization.
+                        if curie not in variable['identifiers']:
+                            norm_fails.write(f"{curie}\n")
+                            continue
+
+                        # Add concepts
+                        term = token.get('terms', None) # Always a list
+                        if curie not in concepts:
+                            concepts[curie] = {
+                                "id": curie,
+                                "name": term[0],
+                                "description": "",
+                                "type": curie.split(":")[0],
+                                "search_terms": [search_text] + term,
+                                "identifiers": {
+                                    curie: variable['identifiers'][curie]
+                                }
+                            }
+                        else:
+                            concepts[curie]["search_terms"].extend([search_text] + term)
+
             except json.decoder.JSONDecodeError as e:
                 traceback.print_exc ()
             except:
                 traceback.print_exc ()
                 raise
             variable_file.write(f"{json.dumps(variable, indent=2)}\n")
-        return variables
+
+            # Optionally create a concept when variable is actually a pre-harmonized variable tag (e.g. TOPMed tags)
+            if "is_variable_tag" in variable:
+                concepts[variable['id']] = {
+                    "id": variable['id'],
+                    "name": variable['title'],
+                    "description": f"{description}. {variable['instructions']}",
+                    "type": variable["type"],
+                    "search_terms": [],
+                    "identifiers" : variable['identifiers']
+                }
+        
+
+
+        return concepts
 
     def write (self, graph : Dict) -> None:
         """
@@ -472,7 +547,7 @@ class TOPMedStudyAnnotator:
     def get_variables_from_tranql(self):
         '''
         This function returns the tagged variables,
-        including identifer information,
+        including identifier information,
         from TranQL.  It is the starting point for
         indexing documents into ElasticSearch
         '''
@@ -540,7 +615,7 @@ class TOPMedStudyAnnotator:
             tag_edges = [edge for edge in edges if edge['source_id']==tag['id'] and not edge['target_id'].startswith('TOPMED.VAR')]
             identifiers = [tag['target_id'] for tag in tag_edges]
             for identifier in identifiers:
-                # Find identifers in node
+                # Find identifiers in node
                 value = [node for node in nodes if node['id'] == identifier][0] # finds single dictionary
                 if 'label' not in value:
                     value['label'] = value.pop('name') # change 'name' to 'label' for downstream processing
@@ -563,7 +638,7 @@ class TOPMedStudyAnnotator:
         # Return tags and variables
         return variables, tags
 
-    def add_synonyms_to_identifiers(self, tags):
+    def add_synonyms_to_identifiers(self, concepts):
         '''
         This function does the following:
         - Initialize http_session for NCATS synonym service
@@ -580,8 +655,8 @@ class TOPMedStudyAnnotator:
             connection=redis_connection)
 
         # Go through identifiers in tags
-        for tag in tags:
-            for identifier in list(tag['identifiers'].keys()):
+        for concept in concepts:
+            for identifier in list(concepts[concept]['identifiers'].keys()):
                 try:
                     # Get response from synonym service
                     encoded = urllib.parse.quote (identifier)
@@ -591,13 +666,64 @@ class TOPMedStudyAnnotator:
                     # List comprehension for synonyms
                     synonyms = [synonym['desc'] for synonym in raw_synonyms]
                     
-                    # Add to tag
-                    tag['identifiers'][identifier]['synonyms'] = synonyms
+                    # Add to identifier
+                    concepts[concept]['identifiers'][identifier]['synonyms'] = synonyms
+                    
+                    # Add to search terms
+                    concepts[concept]['search_terms'] += synonyms
                 
                 except json.decoder.JSONDecodeError as e:
-                    tag['identifiers'][identifier]['synonyms'] = []
+                    concepts[concept]['identifiers'][identifier]['synonyms'] = []
                     logger.error (f"No synonyms returned for: {identifier}")
-        return tags
+        return concepts
+    
+    def clean_concepts(self, concepts):
+        '''
+        This function does the following:
+        - Make search terms within concepts unique
+        - Write concepts to a debug file
+        - Add more identifiers to variables for Proof of Concept
+        - Add name/description to ontology IDs
+        '''
+        # Create an http_session like in annotate()
+        redis_connection = redis.StrictRedis (host=self.redis_host,
+                                              port=self.redis_port,
+                                              password=self.redis_password)
+        http_session = CachedSession (
+            cache_name='annotator',
+            backend="redis",
+            connection=redis_connection)
+        
+        # Clean Concepts
+        for concept in concepts:
+            concepts[concept]['search_terms'] = list(set(list(concepts[concept]['search_terms'])))
+        
+        # Add Name and description
+        for concept in concepts:
+            try:
+                # Get response from synonym service
+                encoded = urllib.parse.quote (concept)
+                url = f"{self.ontology_metadata}{encoded}"
+                response = http_session.get(url).json ()
+
+                # List comprehension for synonyms
+                name = response.get('label','')
+                description = response.get('definition','')
+                
+                # Add to concept
+                if len(name):
+                    concepts[concept]['name'] = name
+                if len(description):
+                    concepts[concept]['description'] = description
+            
+            except json.decoder.JSONDecodeError as e:
+                logger.error (f"No labels returned for: {concept}")
+        
+        # Write to file
+        concept_file = open("concept_file.json", "w")
+        concept_file.write(f"{json.dumps(concepts, indent=2)}")
+        
+        return concepts
 
 class GraphDB:
     def __init__(self, conf):

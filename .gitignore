@@ -11,3 +11,12 @@ db/*
 dug-search-client
 crawl
 normalized_inputs.txt
+*DS_Store
+*.idea
+concept_file.json
+norm_fails.txt
+variable_file.json
+test_dir/
+monarch_results.txt
+
+

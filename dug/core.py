@@ -6,7 +6,6 @@ import logging
 import glob
 import json
 import requests
-import sys
 import traceback
 import os
 
@@ -29,7 +28,7 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
-    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['test', 'test_kg']):
+    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200, indices=['concepts_index', 'variables_index', 'kg_index']):
         logger.debug (f"Connecting to elasticsearch host: {host} at port: {port}")
         self.indices = indices
         self.crawlspace = "crawl"
@@ -61,7 +60,10 @@ class Search:
         self.es.indices.delete ("*")
 
     def init_indices (self):
-        settings = {
+        settings = {}
+        
+        # kg_index
+        settings['kg_index'] = {
             "settings": {
                 "number_of_shards": 1,
                 "number_of_replicas": 0
@@ -77,6 +79,61 @@ class Search:
                 }
             }
         }
+
+        # concepts_index
+        settings['concepts_index'] = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": 0
+            }, 
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text"},
+                    "description": {"type": "text"},
+                    "type": {"type": "keyword"},
+                    "search_terms": {"type": "text"},
+                    "identifiers": {
+                        "properties": {
+                            "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                            "label": {"type": "text"},
+                            "equivalent_identifiers": {"type": "keyword"},
+                            "type": {"type": "keyword"},
+                            "synonyms": {"type": "text"}
+                            }
+                    },
+                    "optional_terms": {"type": "text"}
+                }
+            }
+        }
+
+        # concepts_index
+        settings['variables_index'] = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": 0
+            }, 
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text"},
+                    "description": {"type": "text"},
+                    "search_terms": {"type": "text"},
+                    "identifiers": {"type": "keyword"},
+                    "dataset_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "dataset_name": {"type": "text"},
+                    "dataset_description": {"type": "text"},
+                    "study_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "study_name": {"type": "text"},
+                    "study_description": {"type": "text"}
+                }
+            }
+        }
+
         logger.info (f"creating indices: {self.indices}")
         for index in self.indices:
             try:
@@ -85,7 +142,7 @@ class Search:
                 else:
                     result = self.es.indices.create (
                         index=index,
-                        body=settings,
+                        body=settings[index],
                         ignore=400)
                     logger.info (f"result created index {index}: {result}")
             except Exception as e:
@@ -126,6 +183,67 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
+    def search_concepts (self, index, query, offset=0, size=None, fuzziness=1):
+        """
+        Match query for simplicity, default OR
+        """
+        query = {
+            'multi_match': {
+                'query' : query,
+                'fuzziness' : fuzziness,
+                'fields': ["name", "description", "search_terms","optional_terms"]
+            },
+        }
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body, index=index)
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
+    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1):
+        """
+        In variable seach, the concept MUST match one of the indentifiers in the list
+        The query can match search_terms (hence, "should") for ranking.
+        """
+        query = {
+            'bool': {
+                'must': [
+                    {
+                        "match": {
+                            "identifiers": concept
+                        }
+                    }
+                ],
+                'should': [
+                    {
+                        'match': {
+                            "search_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body, index=index)
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
     def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
         """
         Query type is now 'query_string'.
@@ -137,7 +255,7 @@ class Search:
             'query_string': {
                 'query': f'"{unique_id}" AND {query}',
                 'fuzziness': fuzziness,
-                'fields': ['search_targets', 'tag_id'],
+                'fields': ['search_targets', 'concept_id'],
                 'quote_field_suffix': ".exact"
             },
         }
@@ -236,7 +354,7 @@ class Search:
 
                     # Skip query if the identifier is not a valid query for the query class
                     if not query_factory.is_valid_curie(identifier):
-                        logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
+                        logger.info(f"identifier {identifier} is not valid for query type {query_name}. Skipping!")
                         continue
 
                     # Submit query to TranQL
@@ -462,7 +580,7 @@ class Search:
                     
                     # Skip query if the identifier is not a valid query for the query class
                     if not query_factory.is_valid_curie(identifier):
-                        logger.info(f"identifer {identifier} is not valid for query type {query_name}. Skipping!")
+                        logger.info(f"identifier {identifier} is not valid for query type {query_name}. Skipping!")
                         continue
                     
                     filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
@@ -542,6 +660,127 @@ class Search:
             # Add tag with all info to tag index
             self.index_tag(tag, tag_index)
 
+    def crawl_by_concept (self, concepts, concept_index, kg_index, queries, min_score=0.2,
+                        include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
+                        query_exclude_identifiers=[]):
+
+        '''
+        This version of tagged crawl starts from identifiers within concepts.
+        If an ontological term, the concept will only have one ontology identifier: itself
+        If it is, for instance, a TOPMed phenotype concept, there will be multiple ontology identifiers.
+        '''
+        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
+        headers = {
+            "accept" : "application/json",
+            "Content-Type" : "text/plain"
+        }
+
+        self.make_crawlspace ()
+        for concept in concepts:
+            concepts[concept]['optional_terms'] = [] # Initialize answer targets
+            
+            ## Set tag_indexed to False; case where tag does not return KGs from TranQL
+            concept_indexed = False
+
+            ## Queries
+            for identifier in concepts[concept]["identifiers"]:
+                logging.debug(f"Doing id: {identifier}")
+                ''' Resolve the phenotype to identifiers. '''
+                
+                # skip identifiers that don't normalize, or are excluded
+                if not concepts[concept]["identifiers"][identifier]["label"]:
+                    logging.debug(f"Skipping non-normalized identifier: {identifier}")
+                    continue
+                
+                if identifier in query_exclude_identifiers:
+                    logging.debug(f"Skipping TranQL query for exclude listed identifier: {identifier}")
+                    continue
+
+                for query_name, query_factory in queries.items():
+                    
+                    # Skip query if the identifier is not a valid query for the query class
+                    if not query_factory.is_valid_curie(identifier):
+                        logger.info(f"identifier {identifier} is not valid for query type {query_name}. Skipping!")
+                        continue
+                    
+                    filename = f"{self.crawlspace}/{identifier}_{query_name}.json"
+                    # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+                    if os.path.exists(filename):
+                        logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+                        with open (filename, 'r') as stream:
+                            response = json.load(stream)
+
+                    else:
+                        query = query_factory.get_query(identifier)
+                        logger.info (query)
+                        response = requests.post(
+                            url = tranql_endpoint,
+                            headers = headers,
+                            data = query).json ()
+
+                        # Case: Skip if empty KG 
+                        if not len(response['knowledge_graph']['nodes']):
+                            logging.debug(f"Did not find a knowledge graph for {query}")
+                            continue # continue out of loop
+                        
+                        # Dump out to file if there's a knowledge graph
+                        with open(filename, 'w') as stream:
+                            json.dump(response, stream, indent=2)    
+                    
+                    # Get nodes in knowledge graph hashed by ids for easy lookup
+                    kg = tql.QueryKG(response)
+
+                    for answer in kg.answers:
+
+                        # Filter out answers that fall below a minimum score
+                        # TEMPORARY: Robokop stopped including scores temporarily so ignore these for time being
+                        # We don't know how this filtering works; let's bring back everything for now, so we keep all synonyms
+                        #if "score" in answer and answer["score"] < min_score:
+                        #    continue
+                        logger.debug(f"Answer: {answer}")
+
+                        # Get subgraph containing only information for this answer
+                        try:
+                            # Temporarily surround in try/except because sometimes the answer graphs
+                            # contain invalid references to edges/nodes
+                            # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                            answer_kg = kg.get_answer_subgraph(answer,
+                                                            include_node_keys=include_node_keys,
+                                                            include_edge_keys=include_edge_keys)
+
+                            # Get list of nodes for making a unique ID for elastic search
+                            answer_node_ids = list(answer_kg.nodes.keys())
+
+                        except tql.MissingNodeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid node references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of non-preferred id! "
+                                        "See err msg for details.")
+                            continue
+                        except tql.MissingEdgeReferenceError:
+                            # TEMPORARY: Skip answers that have invalid edge references
+                            # Need this to be fixed in Robokop
+                            logger.warning("Skipping answer due to presence of invalid edge reference! "
+                                        "See err msg for details.")
+                            continue
+
+                        # Add answer synonyms to tag's list of optional targets
+                        for node in answer_kg.kg.get('knowledge_graph', {}).get('nodes', []):
+                            concepts[concept]['optional_terms'].append(node['name'])
+                            concepts[concept]['optional_terms'] += node['synonyms']
+
+                        # Add answer to knowledge graph ES index
+                        self.index_kg_answer(concepts[concept],
+                                            kg_index,
+                                            curie_id=identifier,
+                                            knowledge_graph=answer_kg.kg,
+                                            query_name=query_name,
+                                            answer_node_ids=answer_node_ids)
+
+            # Add tag with all info to tag index
+            self.index_concept(concepts[concept], concepts_index)
+
+
     def index_tag(self, tag, index):
         # Create the Doc
         doc = {
@@ -565,7 +804,31 @@ class Search:
             doc=doc,
             doc_id=doc['tag_id'])
 
-    def index_kg_answer(self, tag, index, curie_id, knowledge_graph, query_name, answer_node_ids):
+    def index_concept(self, concept, index):
+        """ Index the document. """
+        identifier_dict = concept['identifiers']
+        concept['identifiers'] = []
+        # Rearrange identifiers
+        for identifier in identifier_dict:
+            r_identifier = identifier_dict[identifier]
+            r_identifier['id'] = identifier
+            concept['identifiers'].append(r_identifier)
+        
+        # Make optional_terms unique
+        concept['optional_terms'] = list(set(concept['optional_terms'])) 
+        self.index_doc(
+            index=index,
+            doc=concept,
+            doc_id=concept['id'])
+    
+    def index_variables(self, variables, index):
+        for variable in variables:
+            self.index_doc(
+                index=index,
+                doc=variable,
+                doc_id=variable['id'])
+
+    def index_kg_answer(self, concept, index, curie_id, knowledge_graph, query_name, answer_node_ids):
         answer_synonyms = []
         for node in knowledge_graph.get('knowledge_graph', {}).get('nodes', []):
             # Don't add curie synonyms to knowledge graph
@@ -577,14 +840,13 @@ class Search:
 
         # Create the Doc
         doc = {
-            'tag_id': tag['id'],
-            'pk': tag['pk'],
+            'concept_id': concept['id'],
             'search_targets': answer_synonyms,  # Make unique if duplicates
             'knowledge_graph': knowledge_graph
         }
         # Create unique ID
         logger.debug("Indexing TranQL query answer...")
-        unique_doc_id = f"{doc['tag_id']}_{'_'.join(answer_node_ids)}_{query_name}"
+        unique_doc_id = f"{doc['concept_id']}_{'_'.join(answer_node_ids)}_{query_name}"
 
         # DEBUG: For writing elasticsearch documents to JSON
         #with open(f'new_doc_structure/{unique_doc_id}.json', 'w') as stream:
@@ -653,16 +915,17 @@ if __name__ == '__main__':
                              default=False,
                              action='store_true',
                              dest="crawl_by_tag")
+    crawl_group.add_argument('--crawl-by-concept',
+                             help="Crawl tagged variables and organize elastic search by concept",
+                             default=False,
+                             action='store_true',
+                             dest="crawl_by_concept")
 
     # Add mutually exclusive group for whether crawl inputs are coming from file or TranQL
     crawl_input_group = parser.add_mutually_exclusive_group()
     crawl_input_group.add_argument('--crawl-file',
                                    help='Input file containing things you want to crawl/index',
                                    dest="crawl_file")
-    crawl_input_group.add_argument('--crawl-tranql',
-                                   help="Boolean for whether to gather crawl inputs from TranQL",
-                                   action='store_true',
-                                   dest="crawl_tranql")
 
     # Minimum score for Robokop answer to be included in ElasticSearch Index
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
@@ -674,7 +937,9 @@ if __name__ == '__main__':
 
     parser.add_argument('--query', help="Query", action="store", dest="query")
     parser.add_argument('--query-kg', help="Query Knowledge graph", action="store", dest="query_kg")
-    parser.add_argument('--kg-id', help="Id of Knowledge graph to query", action="store", dest="query_kg_id")
+    parser.add_argument('--kg-id', help="ID of Knowledge graph to query", action="store", dest="query_kg_id")
+    parser.add_argument('--query-variables', help="Query Variables Index", action="store", dest="query_variables")
+    parser.add_argument('--concept-id', help="ID of concept to query", action = "store", dest = "query_concept_id")
 
     parser.add_argument('--elastic-host', help="Elasticsearch host", action="store", dest="elasticsearch_host",
                         default=os.environ.get('ELASTIC_API_HOST', 'localhost'))
@@ -687,25 +952,17 @@ if __name__ == '__main__':
     args = parser.parse_args ()
 
     logging.basicConfig(level=logging.DEBUG)
-    tag_index = "test"
-    kg_index = "test_kg"
+    concepts_index = "concepts_index"
+    variables_index = "variables_index"
+    kg_index = "kg_index"
     search = Search (host=args.elasticsearch_host,
                      port=args.elasticsearch_port,
-                     indices=[tag_index, kg_index])
+                     indices=[concepts_index, variables_index, kg_index])
 
     if args.clean:
         search.clean ()
-    if args.index:
-        search.index (tag_index)
-        search.index_doc (
-            index=tag_index,
-            doc= {
-                "name" : "fred",
-                "type" : "phenotypic_feature"
-            },
-            doc_id=1)
     elif args.query:
-        val = search.search (index=tag_index, query=args.query)
+        val = search.search (index=concepts_index, query=args.query)
         if 'hits' in val:
             for hit in val['hits']['hits']:
                 print (hit)
@@ -721,9 +978,21 @@ if __name__ == '__main__':
             for hit in val['hits']['hits']:
                 print(hit)
                 print(f"{hit['_source']}")
-    elif args.crawl or args.crawl_by_tag:
+    elif args.query_variables:
+        # Throw error if user didn't provide a knowledge graph tag
+        if not args.query_concept_id:
+            parser.error("Must include concept id (--concept-id <id>) when querying variables!")
+        print(args.query_variables)
+        print(args.query_concept_id)
+        val = search.search_variables(index=variables_index, concept=args.query_concept_id, query=args.query_variables)
+        if 'hits' in val:
+            for hit in val['hits']['hits']:
+                print(hit)
+                print(f"{hit['_source']}")
+    
+    elif args.crawl or args.crawl_by_tag or args.crawl_by_concept:
         # Throw error if user hasn't specified where crawl arguments are coming from
-        if not args.crawl_tranql and not args.crawl_file:
+        if not args.crawl_file:
             parser.error("Crawl must specify whether to get inputs from file "
                          "(--crawl-file <file>) or TranQL (--crawl-tranql)")
 
@@ -731,6 +1000,7 @@ if __name__ == '__main__':
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
             'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
             'synonym_service': "https://onto.renci.org/synonyms/",
+            'ontology_metadata': "https://api.monarchinitiative.org/api/ontology/term/",
             'password': os.environ['NEO4J_PASSWORD'],
             'username': 'neo4j',
             'db_url': db_url_default,
@@ -746,17 +1016,40 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # Read in variables to crawl either from File or tranql depending on command line option
-        if args.crawl_file:
+        # Use file extension to determine how to parse for now
+        # Eventually we'll need something more sophisticated as we get more types
+        if args.crawl_file.endswith(".csv"):
+            # Read in pre-harmonized variables (tagged variables we're calling them) from csv
             variables, tags = annotator.load_tagged_variables(args.crawl_file)
-            tags = annotator.annotate(tags)
-        elif args.crawl_tranql:
-            variables, tags = annotator.get_variables_from_tranql()
+            concepts = annotator.annotate(tags)
+        elif args.crawl_file.endswith(".xml"):
+            # Parse variables from dbgap data dictionary xml file
+            variables = annotator.load_data_dictionary(args.crawl_file)
+            concepts = annotator.annotate(variables)
 
-        # Add Synonyms
-        tags = annotator.add_synonyms_to_identifiers(tags)
+        # Add Synonyms - this is slow: 30 secs
+        concepts = annotator.add_synonyms_to_identifiers(concepts)
 
-        source = "/graph/gamma/quick"
+        ''' New - Clean up after POC'''
+        # Clean concepts and add ontology descriptors - this is slow: 60 secs
+        concepts = annotator.clean_concepts(concepts)
+        
+        # TODO: Add more identifiers to variables based on Topmed tag in identifiers slot, for Proof of concept.
+        # ##### Not sure if this is what we want to do.  Maybe delete this chunk after POC.
+        for variable in variables:
+            for identifier in variable['identifiers']:
+                if identifier.startswith("TOPMED"):# if TOPMED identifier, expand
+                    new_vars = list(concepts[identifier]['identifiers'].keys())
+                    variable['identifiers'].extend(new_vars)
+
+            # Make unique
+            variable['identifiers'] = list(set(list(variable['identifiers'])))
+
+        variable_file = open("variable_file.json", "w")
+        variable_file.write(f"{json.dumps(variables, indent=2)}")
+        ''' End New for POC '''
+
+        source = "/graph/gamma/quick" #TODO: NOV 25 - Since we have synonyms, we can change this to /schema, probably.
         queries = {
             "disease": tql.QueryFactory(["disease", "phenotypic_feature"], source),
             "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], source),
@@ -771,7 +1064,6 @@ if __name__ == '__main__':
         query_exclude_identifiers = ["CHEBI:17336"]
 
         if args.crawl_by_tag:
-
             # Append tag info to variables
             search.crawl_by_tag(tags,
                                 variables,
@@ -780,11 +1072,23 @@ if __name__ == '__main__':
                                 queries,
                                 min_score=args.min_tranql_score,
                                 query_exclude_identifiers=query_exclude_identifiers)
+
         elif args.crawl:
-            # Append tag info to variables
             search.crawl(tags,
                          variables,
                          tag_index,
                          queries,
                          min_score=args.min_tranql_score,
                          query_exclude_identifiers=query_exclude_identifiers)
+        
+        elif args.crawl_by_concept:
+            search.crawl_by_concept(
+                concepts,
+                concepts_index,
+                kg_index,
+                queries,
+                min_score=args.min_tranql_score,
+                query_exclude_identifiers=query_exclude_identifiers)
+
+            # TODO: Index the Variables separately (this doesn't require crawling)
+            search.index_variables(variables,variables_index)
