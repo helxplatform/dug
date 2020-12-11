@@ -6,7 +6,6 @@ import logging
 import glob
 import json
 import requests
-import sys
 import traceback
 import os
 
@@ -720,7 +719,7 @@ class Search:
                             data = query).json ()
 
                         # Case: Skip if empty KG 
-                        if not len(response.get('knowledge_graph',{}).get('nodes',[])):
+                        if not len(response['knowledge_graph']['nodes']):
                             logging.debug(f"Did not find a knowledge graph for {query}")
                             continue # continue out of loop
                         
@@ -927,10 +926,6 @@ if __name__ == '__main__':
     crawl_input_group.add_argument('--crawl-file',
                                    help='Input file containing things you want to crawl/index',
                                    dest="crawl_file")
-    crawl_input_group.add_argument('--crawl-tranql',
-                                   help="Boolean for whether to gather crawl inputs from TranQL",
-                                   action='store_true',
-                                   dest="crawl_tranql")
 
     # Minimum score for Robokop answer to be included in ElasticSearch Index
     parser.add_argument('--min-tranql-score', help='Minimum score to consider an answer from TranQL',
@@ -966,15 +961,6 @@ if __name__ == '__main__':
 
     if args.clean:
         search.clean ()
-    if args.index:
-        search.index (tag_index)
-        search.index_doc (
-            index=tag_index,
-            doc= {
-                "name" : "fred",
-                "type" : "phenotypic_feature"
-            },
-            doc_id=1)
     elif args.query:
         val = search.search (index=concepts_index, query=args.query)
         if 'hits' in val:
@@ -1006,7 +992,7 @@ if __name__ == '__main__':
     
     elif args.crawl or args.crawl_by_tag or args.crawl_by_concept:
         # Throw error if user hasn't specified where crawl arguments are coming from
-        if not args.crawl_tranql and not args.crawl_file:
+        if not args.crawl_file:
             parser.error("Crawl must specify whether to get inputs from file "
                          "(--crawl-file <file>) or TranQL (--crawl-tranql)")
 
@@ -1030,13 +1016,16 @@ if __name__ == '__main__':
         # Create annotator object
         annotator = TOPMedStudyAnnotator(config=config)
 
-        # Read in variables to crawl either from File or tranql depending on command line option
-        if args.crawl_file:
+        # Use file extension to determine how to parse for now
+        # Eventually we'll need something more sophisticated as we get more types
+        if args.crawl_file.endswith(".csv"):
+            # Read in pre-harmonized variables (tagged variables we're calling them) from csv
             variables, tags = annotator.load_tagged_variables(args.crawl_file)
-            concepts = annotator.annotate(tags) 
-        # TODO: NOV 25 - Decide whether to keep crawl from TranQL.  I vote no.
-        elif args.crawl_tranql:
-            variables, tags = annotator.get_variables_from_tranql()
+            concepts = annotator.annotate(tags)
+        elif args.crawl_file.endswith(".xml"):
+            # Parse variables from dbgap data dictionary xml file
+            variables = annotator.load_data_dictionary(args.crawl_file)
+            concepts = annotator.annotate(variables)
 
         # Add Synonyms - this is slow: 30 secs
         concepts = annotator.add_synonyms_to_identifiers(concepts)
