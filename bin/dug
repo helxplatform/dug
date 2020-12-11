@@ -167,6 +167,29 @@ crawl_by_concept () {
     python -m dug.core --crawl-by-concept $*
 }
 
+
+#############################################################
+##
+## Crawl_by_dir: do a crawl_by_concept on all csv and xml files in a directory one at a time
+##
+#############################################################
+crawl_dir () {
+    input_dir=$1
+    # Report how many files are in dir
+    echo "Crawling directory: $1"
+    init_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
+    echo "Found $init_files files to crawl"
+
+    # Loop through all files that match pattern, do crawl by concept, and then delete file if finished successfully
+    find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' -exec python -m dug.core --crawl-by-concept --crawl-file {} \; -exec rm {} \;
+
+    # Count total number of files left that match pattern
+    final_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
+    completed_files=$(( $init_files - $final_files ))
+    echo "Successfully completed $completed_files crawls"
+    echo "$(( $init_files - $completed_files)) files could not be crawled"
+}
+
 #############################################################
 ##
 ## Query: Test the created index with a query.
