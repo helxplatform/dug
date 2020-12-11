@@ -4,9 +4,10 @@ import logging
 import os
 import redis
 import traceback
+import re
 import urllib
 import xml.etree.ElementTree as ET
-from kgx import NeoTransformer, JsonTransformer
+#from kgx import NeoTransformer, JsonTransformer
 from neo4jrestclient.client import GraphDatabase
 import requests
 from requests_cache import CachedSession
@@ -19,6 +20,15 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 Config = Dict
+
+
+def parse_study_name_from_filename(filename):
+    # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
+    dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
+    match = re.match(dbgap_file_pattern, filename)
+    if match is not None:
+        return match.group(1)
+    return None
 
 
 class Debreviator:
@@ -60,12 +70,26 @@ class TOPMedStudyAnnotator:
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
+        dataset_id = root.attrib['id']
+
+        # Parse study name from filehandle
+        study_name = parse_study_name_from_filename(input_file)
+        if study_name is None:
+            err_msg = f"Unable to parse DbGaP study name from data dictionary: {input_file}!"
+            logger.error(err_msg)
+            raise IOError(err_msg)
+
         return [{
-            "study_id"    : study_id,
-            "variable_id" : variable.attrib['id'],
-            "variable"    : variable.find ('name').text,
-            "description" : variable.find ('description').text.lower (),
-            "identifiers" : {}
+            "id"                    : f"{study_id}_{dataset_id}_{variable.attrib['id']}",
+            "identifiers"          : {},
+            "name"                 : variable.find ('name').text,
+            "description"          : variable.find ('description').text.lower(),
+            "dataset_id"           : dataset_id,
+            "dataset_name"         : "",
+            "dataset_description"  : "",
+            "study_id"             : study_id,
+            "study_name"           : study_name,
+            "study_description"    : ""
         } for variable in root.iter('variable') ]
 
     def load_csv (self, input_file : str) -> Dict:
@@ -138,9 +162,12 @@ class TOPMedStudyAnnotator:
             del tag[f]
             tag['id'] = f"TOPMED.TAG:{tag['pk']}"
             tag['identifiers'] = {}
+            tag['is_variable_tag'] = True
+            tag['type'] = 'TOPMed'
+
         return variables, tags
 
-    def normalize (self, http_session, curie, url, variable) -> None:
+    def normalize(self, http_session, curie, url, variable) -> None:
         """ Given an identifier (curie), use the Translator SRI node normalization service to
             find a preferred identifier, equivalent identifiers, and biolink model types for the node.
 
@@ -288,15 +315,16 @@ class TOPMedStudyAnnotator:
                 raise
             variable_file.write(f"{json.dumps(variable, indent=2)}\n")
 
-            # Create TOPMed tag in concepts
-            concepts[variable['id']] = {
-                "id": variable['id'],
-                "name": variable['title'],
-                "description": f"{description}. {variable['instructions']}",
-                "type": "TOPMed", #TODO: remove this hardcode
-                "search_terms": [],
-                "identifiers" : variable['identifiers']
-            }
+            # Optionally create a concept when variable is actually a pre-harmonized variable tag (e.g. TOPMed tags)
+            if "is_variable_tag" in variable:
+                concepts[variable['id']] = {
+                    "id": variable['id'],
+                    "name": variable['title'],
+                    "description": f"{description}. {variable['instructions']}",
+                    "type": variable["type"],
+                    "search_terms": [],
+                    "identifiers" : variable['identifiers']
+                }
         
 
 
