@@ -160,6 +160,15 @@ crawl_by_tag () {
 
 #############################################################
 ##
+## Crawl_by_tag: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
+##
+#############################################################
+crawl_by_concept () {
+    python -m dug.core --crawl-by-concept $*
+}
+
+#############################################################
+##
 ## Query: Test the created index with a query.
 ##
 #############################################################
