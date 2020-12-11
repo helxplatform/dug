@@ -71,6 +71,7 @@ class TOPMedStudyAnnotator:
         root = tree.getroot()
         study_id = root.attrib['study_id']
         dataset_id = root.attrib['id']
+        participant_set = root.attrib['participant_set']
 
         # Parse study name from filehandle
         study_name = parse_study_name_from_filename(input_file)
@@ -80,14 +81,14 @@ class TOPMedStudyAnnotator:
             raise IOError(err_msg)
 
         return [{
-            "id"                    : f"{study_id}_{dataset_id}_{variable.attrib['id']}",
+            "id"                    : f"{variable.attrib['id']}.p{participant_set}",
             "identifiers"          : {},
             "name"                 : variable.find ('name').text,
             "description"          : variable.find ('description').text.lower(),
             "dataset_id"           : dataset_id,
             "dataset_name"         : "",
             "dataset_description"  : "",
-            "study_id"             : study_id,
+            "study_id"             : f"{study_id}.p{participant_set}",
             "study_name"           : study_name,
             "study_description"    : ""
         } for variable in root.iter('variable') ]
