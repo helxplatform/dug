@@ -138,11 +138,11 @@ class TOPMedStudyAnnotator:
             for row in reader:
                 better_row = { k.strip () : v for  k, v in row.items () }
                 row = better_row
-                logger.debug (f"{json.dumps(row, indent=2)}")
+                logger.debug(f"{json.dumps(row, indent=2)}")
                 variables.append ({
                     "id"                     : f"{row['variable_full_accession']}",
-                    "name"                   : "",
-                    "description"            : "",
+                    "name"                   : row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
+                    "description"            : row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
                     "identifiers"            : [f"TOPMED.TAG:{row['tag_pk']}"],
                     "dataset_id"             : row['dataset_full_accession'],
                     "dataset_name"           : "",
@@ -152,6 +152,7 @@ class TOPMedStudyAnnotator:
                     "study_description"      : "" 
                     
                 })
+                logger.debug(f"{json.dumps(variables[-1], indent=2)}")
 
         tags = []
         with open(tags_input_file, "r") as stream:
