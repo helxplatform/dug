@@ -183,7 +183,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_concepts (self, index, query, offset=0, size=None, fuzziness=1):
+    def search_concepts (self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         Match query for simplicity, default OR
         """
@@ -191,6 +191,7 @@ class Search:
             'multi_match': {
                 'query' : query,
                 'fuzziness' : fuzziness,
+                'prefix_length': prefix_length,
                 'fields': ["name", "description", "search_terms","optional_terms"]
             },
         }
@@ -206,7 +207,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1):
+    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
         The query can match search_terms (hence, "should") for ranking.
@@ -225,7 +226,8 @@ class Search:
                         'match': {
                             "search_terms": {
                                 "query": query,
-                                "fuzziness": fuzziness
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
                             }
                         }
                     }
@@ -244,7 +246,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         Query type is now 'query_string'.
         query searches multiple fields
@@ -255,6 +257,7 @@ class Search:
             'query_string': {
                 'query': f'"{unique_id}" AND {query}',
                 'fuzziness': fuzziness,
+                'prefix_length': prefix_length,
                 'fields': ['search_targets', 'concept_id'],
                 'quote_field_suffix': ".exact"
             },
@@ -292,6 +295,7 @@ class Search:
                 'query_string': {
                     'query': query,
                     'fuzziness': fuzziness,
+                    'prefix_length': prefix_length,
                     'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                     'quote_field_suffix': ".exact"
                 }
