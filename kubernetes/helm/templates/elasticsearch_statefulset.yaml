@@ -93,7 +93,9 @@ spec:
       name: elasticsearch-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: {{ .Values.dug.elasticsearch.storage_class }}
+      {{- if .Values.dug.elasticsearch.storage_class }}
+        storageClassName: {{ .Values.dug.elasticsearch.storage_class }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.dug.elasticsearch.storage_size }}

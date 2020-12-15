@@ -13,7 +13,9 @@ items:
     resources:
       requests:
         storage: {{ .Values.dug.neo4j.storage_size }}
+    {{- if .Values.dug.neo4j.storage_class }}
     storageClassName: {{ .Values.dug.neo4j.storage_class }}
+    {{- end }}
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
@@ -26,6 +28,8 @@ items:
     resources:
       requests:
         storage: {{ .Values.dug.redis.storage_size }}
+    {{- if .Values.dug.redis.storage_class }}
     storageClassName: {{ .Values.dug.redis.storage_class }}
+    {{- end }}
 kind: List
 {{ end }}

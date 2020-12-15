@@ -12,7 +12,8 @@ dug:
     rest_port: 9200
     nodes_com_port: 9300
     storage_size: 5Gi
-    storage_class: standard
+    # Specify a storageclass to use if not using the cluster default.
+    # storage_class: standard
     db_user: elastic
     init_config_name: elasticsearch-initcontainer
     xmx: 2g
@@ -37,7 +38,7 @@ dug:
     https_port: 7473
     bolt_port: 7687
     storage_size: 1G
-    storage_class: standard
+    # storage_class: standard
     db_user: neo4j
   redis:
     image: bitnami/redis
@@ -47,7 +48,7 @@ dug:
     service_name: redis
     deployment_name: redis
     storage_size: 5G
-    storage_class: standard
+    # storage_class: standard
     redis_port: 6389
   web:
     image: heliumdatastage/dug
