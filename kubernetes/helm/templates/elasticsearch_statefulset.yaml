@@ -49,7 +49,7 @@ spec:
           initialDelaySeconds: {{ .Values.dug.elasticsearch.liveness.initial_delay }}
           periodSeconds: {{ .Values.dug.elasticsearch.liveness.check_interval }}
         volumeMounts:
-        - name: elasticsearch-data
+        - name: {{ .Values.dug.elasticsearch.app_name }}-data
           mountPath: /usr/share/elasticsearch/data
         - name: elasticsearch-certs
           readOnly: true
