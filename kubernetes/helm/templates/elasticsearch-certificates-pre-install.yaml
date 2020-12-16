@@ -115,5 +115,5 @@ metadata:
 data:
   delete_es_certs_secret.sh: |
         yum -y install kubernetes-client && \
-        kubectl -n {{ .Release.Namespace }} delete secret {{ .Values.dug.elasticsearch.certs_secret }}
+        kubectl -n {{ .Release.Namespace }} delete secret {{ .Values.dug.elasticsearch.certs_secret }} --ignore-not-found=true
 {{- end }}
