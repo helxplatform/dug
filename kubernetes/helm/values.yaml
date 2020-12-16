@@ -49,7 +49,7 @@ dug:
     redis_port: 6389
   web:
     image: heliumdatastage/dug
-    image_tag: develop-v0.0.55
+    image_tag: develop-v0.0.62
     app_name: dug
     service_name: dug
     deployment_name: dug
@@ -74,7 +74,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: 4d78c08-dev
+    image_tag: 366a10f-dev
     ambassador:
       ui:
         map_name: dug-ui
