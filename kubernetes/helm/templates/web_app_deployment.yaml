@@ -73,7 +73,7 @@ data:
         wait_for()
         {
           echo -n "waiting for $1"
-          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $ELASTIC_API_HOST:$ELASTIC_API_PORT)" != "$4" ]]
+          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $2:$3)" != "$4" ]]
           do
             printf '.'
             sleep 5
