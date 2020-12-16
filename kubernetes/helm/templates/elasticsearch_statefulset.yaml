@@ -90,7 +90,9 @@ spec:
         {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: elasticsearch-data
+      name: {{ .Values.dug.elasticsearch.app_name }}-data
+      labels:
+        app: {{ .Values.dug.elasticsearch.app_name }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       {{- if .Values.dug.elasticsearch.storage_class }}
