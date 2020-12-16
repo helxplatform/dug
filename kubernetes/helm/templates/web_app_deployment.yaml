@@ -53,10 +53,36 @@ spec:
           value: {{ .Values.dug.nboost.service_name }}
         ports:
           - containerPort: {{ .Values.dug.web.api_port }}
-        command: ["python"]
-        args:
-         - "-m"
-         - "dug.api"
-        {{ if .Values.dug.web.debug }}
-         - "--debug"
-        {{ end }}
+        command: ["/bin/bash", "-c", "/app/run-dug-and-crawl.sh"]
+        volumeMounts:
+        - name: scripts-vol
+          mountPath: /app
+      volumes:
+        - name: scripts-vol
+          configMap:
+            name: dug-scripts-configmap
+            defaultMode: 0775
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dug-scripts-configmap
+data:
+  run-dug-and-crawl.sh: |
+        set -m
+        wait_for()
+        {
+          echo -n "waiting for $1"
+          while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' $ELASTIC_API_HOST:$ELASTIC_API_PORT)" != "401" ]]
+          do
+            printf '.'
+            sleep 5
+          done
+        }
+        wait_for elasticsearch $ELASTIC_API_HOST $ELASTIC_API_PORT 401
+        python -m dug.api {{ if .Values.dug.web.debug }}--debug{{ end }} &
+        wait_for dug {{ .Values.dug.web.service_name }} {{ .Values.dug.web.api_port }} 404
+        cp docker/.env.template docker/.env.dev
+        env >> docker/.env.dev
+        bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+        fg
