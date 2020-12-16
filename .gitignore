@@ -11,3 +11,4 @@ db/*
 dug-search-client
 crawl
 normalized_inputs.txt
+.DS_Store
