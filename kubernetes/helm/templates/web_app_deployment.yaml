@@ -84,5 +84,5 @@ data:
         wait_for dug {{ .Values.dug.web.service_name }} {{ .Values.dug.web.api_port }} 404
         cp docker/.env.template docker/.env.dev
         env >> docker/.env.dev
-        bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
+        {{ .Values.dug.web.crawl_command }}
         fg

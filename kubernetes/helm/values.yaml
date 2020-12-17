@@ -65,6 +65,7 @@ dug:
       search_kg:
         map_name: dug-search-kg
         prefix: /search_kg
+    crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
   secrets:
     name: dug-secrets
   search_client:
