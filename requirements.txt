@@ -74,7 +74,7 @@ prompt-toolkit==3.0.4
 ptyprocess==0.6.0
 py==1.8.1
 Pygments==2.6.1
-PyJSG==0.10.0
+PyJSG==0.11.6
 pyparsing==2.4.6
 pyrsistent==0.15.7
 PyShEx==0.7.14
