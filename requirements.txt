@@ -1,6 +1,6 @@
 alabaster==0.7.12
 aniso8601==8.0.0
-antlr4-python3-runtime==4.8
+antlr4-python3-runtime==4.9
 appnope==0.1.0
 attrs==19.3.0
 Babel==2.8.0
@@ -94,7 +94,7 @@ redis==3.4.1
 requests==2.22.0
 requests-cache==0.5.2
 Send2Trash==1.5.0
-ShExJSG==0.7.0
+ShExJSG==0.7.1
 six==1.14.0
 snowballstemmer==2.0.0
 sparql-slurper==0.3.3
