@@ -246,7 +246,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
         """
         Query type is now 'query_string'.
         query searches multiple fields
@@ -257,7 +257,6 @@ class Search:
             'query_string': {
                 'query': f'"{unique_id}" AND {query}',
                 'fuzziness': fuzziness,
-                'prefix_length': prefix_length,
                 'fields': ['search_targets', 'concept_id'],
                 'quote_field_suffix': ".exact"
             },
