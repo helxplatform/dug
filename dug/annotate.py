@@ -85,7 +85,7 @@ class TOPMedStudyAnnotator:
             "identifiers"          : {},
             "name"                 : variable.find ('name').text,
             "description"          : variable.find ('description').text.lower(),
-            "dataset_id"           : dataset_id,
+            "dataset_id"           : f"{dataset_id}.p{participant_set}",
             "dataset_name"         : "",
             "dataset_description"  : "",
             "study_id"             : f"{study_id}.p{participant_set}",
