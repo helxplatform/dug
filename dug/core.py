@@ -154,6 +154,13 @@ class Search:
             index=index,
             id=doc_id,
             body=doc)
+    
+    def update_doc (self, index, doc, doc_id):
+        self.es.update (
+            index=index,
+            id=doc_id,
+            body=doc
+        )
 
     def search (self, index, query, offset=0, size=None, fuzziness=1):
         """
