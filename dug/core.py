@@ -154,6 +154,13 @@ class Search:
             index=index,
             id=doc_id,
             body=doc)
+    
+    def update_doc (self, index, doc, doc_id):
+        self.es.update (
+            index=index,
+            id=doc_id,
+            body=doc
+        )
 
     def search (self, index, query, offset=0, size=None, fuzziness=1):
         """
@@ -826,10 +833,19 @@ class Search:
     
     def index_variables(self, variables, index):
         for variable in variables:
-            self.index_doc(
-                index=index,
-                doc=variable,
-                doc_id=variable['id'])
+            if not self.es.exists(index,variable['id']):
+                self.index_doc(
+                    index=index,
+                    doc=variable,
+                    doc_id=variable['id'])
+            else:
+                results = self.es.get(index, variable['id'])
+                identifiers = results['_source']['identifiers'] + variable['identifiers'] 
+                doc = {"doc" :{}}
+                doc['doc']['identifiers'] = identifiers
+                self.update_doc(index = index, doc = doc, doc_id = variable['id'])
+
+                
 
     def index_kg_answer(self, concept, index, curie_id, knowledge_graph, query_name, answer_node_ids):
         answer_synonyms = []
