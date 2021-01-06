@@ -1,0 +1,119 @@
+{{- if .Values.dug.elasticsearch.create_certs_secret -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+  annotations:
+    "helm.sh/hook": pre-install,post-delete
+    "helm.sh/hook-weight": "1"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.dug.elasticsearch.app_name }}-create-list-secrets-role
+  annotations:
+    "helm.sh/hook": pre-install,post-delete
+    "helm.sh/hook-weight": "2"
+rules:
+- apiGroups:
+  - ''
+  resources:
+    - secrets
+  verbs:
+    - create
+    - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.dug.elasticsearch.app_name }}-create-list-secrets-rolebinding
+  annotations:
+    "helm.sh/hook": pre-install,post-delete
+    "helm.sh/hook-weight": "3"
+roleRef:
+  kind: Role
+  name: {{ .Values.dug.elasticsearch.app_name }}-create-list-secrets-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+      containers:
+      - name: {{ .Values.dug.elasticsearch.app_name }}-elasticsearch-pre-install
+        image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
+        command: ["/bin/bash", "-c", "/app/create_es_certs.sh"]
+        volumeMounts:
+        - name: create-script-vol
+          mountPath: /app
+      volumes:
+        - name: create-script-vol
+          configMap:
+            name: create-script-configmap
+            defaultMode: 0775
+      restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: create-script-configmap
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "4"
+data:
+  create_es_certs.sh: |
+        yum -y install kubernetes-client && \
+        elasticsearch-certutil ca --out /tmp/elastic-stack-ca.p12 --pass '' && \
+        elasticsearch-certutil cert --name security-master --dns security-master --ca /tmp/elastic-stack-ca.p12 --pass '' --ca-pass '' --out /tmp/elastic-certificates.p12 && \
+        kubectl -n {{ .Release.Namespace }} create secret generic {{ .Values.dug.elasticsearch.certs_secret }} --from-file=/tmp/elastic-certificates.p12 && \
+        rm -f /tmp/elastic-certificates.p12 /tmp/elastic-certificate.pem /tmp/elastic-certificate.crt /tmp/elastic-stack-ca.p12
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "10"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      serviceAccountName: {{ .Values.dug.elasticsearch.app_name }}-es-certs-pre-install-serviceaccount
+      containers:
+      - name: {{ .Values.dug.elasticsearch.app_name }}-elasticsearch-post-delete
+        image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
+        command: ["/bin/bash", "-c", "/app/delete_es_certs_secret.sh"]
+        volumeMounts:
+        - name: delete-script-vol
+          mountPath: /app
+      volumes:
+        - name: delete-script-vol
+          configMap:
+            name: delete-script-configmap
+            defaultMode: 0775
+      restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delete-script-configmap
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "4"
+data:
+  delete_es_certs_secret.sh: |
+        yum -y install kubernetes-client && \
+        kubectl -n {{ .Release.Namespace }} delete secret {{ .Values.dug.elasticsearch.certs_secret }} --ignore-not-found=true
+{{- end }}

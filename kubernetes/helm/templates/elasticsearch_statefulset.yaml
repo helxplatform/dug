@@ -34,7 +34,9 @@ spec:
             defaultMode: 0755
         - name: elasticsearch-certs
           secret:
-            secretName: elastic-certificates
+            secretName: {{ .Values.dug.elasticsearch.certs_secret }}
+      securityContext:
+        fsGroup: 1001
       containers:
       - image: {{ .Values.dug.elasticsearch.image }}:{{ .Values.dug.elasticsearch.image_tag }}
         name: {{ .Values.dug.elasticsearch.app_name }}-container
@@ -47,7 +49,7 @@ spec:
           initialDelaySeconds: {{ .Values.dug.elasticsearch.liveness.initial_delay }}
           periodSeconds: {{ .Values.dug.elasticsearch.liveness.check_interval }}
         volumeMounts:
-        - name: elasticsearch-data
+        - name: {{ .Values.dug.elasticsearch.app_name }}-data
           mountPath: /usr/share/elasticsearch/data
         - name: elasticsearch-certs
           readOnly: true
@@ -88,10 +90,14 @@ spec:
         {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: elasticsearch-data
+      name: {{ .Values.dug.elasticsearch.app_name }}-data
+      labels:
+        app: {{ .Values.dug.elasticsearch.app_name }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: {{ .Values.dug.elasticsearch.storage_class }}
+      {{- if .Values.dug.elasticsearch.storage_class }}
+        storageClassName: {{ .Values.dug.elasticsearch.storage_class }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.dug.elasticsearch.storage_size }}

@@ -5,28 +5,17 @@ items:
   kind: PersistentVolumeClaim
   metadata:
     labels:
-      app: {{ .Values.dug.elasticsearch.app_name }}
-    name: {{ .Values.dug.elasticsearch.pvc_name }}
-  spec:
-    accessModes:
-    - ReadWriteMany
-    resources:
-      requests:
-        storage: {{ .Values.dug.elasticsearch.storage_size }}
-    storageClassName: {{ .Values.dug.elasticsearch.storage_class }}
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    labels:
       app: {{ .Values.dug.neo4j.app_name }}
     name: {{ .Values.dug.neo4j.pvc_name }}
   spec:
     accessModes:
-      - ReadWriteMany
+      - ReadWriteOnce
     resources:
       requests:
         storage: {{ .Values.dug.neo4j.storage_size }}
+    {{- if .Values.dug.neo4j.storage_class }}
     storageClassName: {{ .Values.dug.neo4j.storage_class }}
+    {{- end }}
 - apiVersion: v1
   kind: PersistentVolumeClaim
   metadata:
@@ -35,10 +24,12 @@ items:
     name: {{ .Values.dug.redis.pvc_name }}
   spec:
     accessModes:
-      - ReadWriteMany
+      - ReadWriteOnce
     resources:
       requests:
         storage: {{ .Values.dug.redis.storage_size }}
+    {{- if .Values.dug.redis.storage_class }}
     storageClassName: {{ .Values.dug.redis.storage_class }}
+    {{- end }}
 kind: List
 {{ end }}

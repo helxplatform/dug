@@ -4,13 +4,16 @@ dug:
     image_tag: 7.9.1
     app_name: elasticsearch
     pvc_name: dug-elasticsearch-pvc
+    certs_secret: elastic-certificates
+    create_certs_secret: true
     service_name: elasticsearch
     statefulset_name: dug-elasticsearch
     initial_master_name: dug-elasticsearch-0
     rest_port: 9200
     nodes_com_port: 9300
     storage_size: 5Gi
-    storage_class: dug-storage
+    # Specify a storageclass to use if not using the cluster default.
+    # storage_class: standard
     db_user: elastic
     init_config_name: elasticsearch-initcontainer
     xmx: 2g
@@ -35,7 +38,7 @@ dug:
     https_port: 7473
     bolt_port: 7687
     storage_size: 1G
-    storage_class: dug-storage
+    # storage_class: standard
     db_user: neo4j
   redis:
     image: bitnami/redis
@@ -45,11 +48,11 @@ dug:
     service_name: redis
     deployment_name: redis
     storage_size: 5G
-    storage_class: dug-storage
+    # storage_class: standard
     redis_port: 6389
   web:
     image: heliumdatastage/dug
-    image_tag: develop-v0.0.55
+    image_tag: master-v1.0.1
     app_name: dug
     service_name: dug
     deployment_name: dug
@@ -62,11 +65,9 @@ dug:
       search_kg:
         map_name: dug-search-kg
         prefix: /search_kg
+    crawl_command: bin/dug crawl_by_tag --crawl-file data/topmed_variables_v1.0.csv
   secrets:
     name: dug-secrets
-  crawl:
-    job_name: search
-    schedule: "*/1 * * * *"
   search_client:
     app_name: dug-search-client
     deployment_name: dug-search-client
@@ -74,7 +75,7 @@ dug:
     http_port: 80
     container_port: 8080
     image: heliumdatastage/dug-search-client
-    image_tag: 4d78c08-dev
+    image_tag: v1.0.0
     ambassador:
       ui:
         map_name: dug-ui
@@ -88,4 +89,4 @@ dug:
     api_port: 8000
     model: nboost/pt-biobert-base-msmarco
 
-  # create_pvcs: true
+  create_pvcs: true
