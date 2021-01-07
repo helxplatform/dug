@@ -165,7 +165,7 @@ class TOPMedStudyAnnotator:
             tag['id'] = f"TOPMED.TAG:{tag['pk']}"
             tag['identifiers'] = {}
             tag['is_variable_tag'] = True
-            tag['type'] = 'TOPMed'
+            tag['type'] = 'TOPMed Phenotype Concept'
 
         return variables, tags
 
@@ -301,6 +301,7 @@ class TOPMedStudyAnnotator:
                                 "id": curie,
                                 "name": term[0],
                                 "description": "",
+                                "type": "",
                                 "search_terms": [search_text] + term,
                                 "identifiers": {
                                     curie: variable['identifiers'][curie]
