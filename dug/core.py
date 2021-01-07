@@ -1019,7 +1019,7 @@ if __name__ == '__main__':
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
             'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
             'synonym_service': "https://onto.renci.org/synonyms/",
-            'ontology_metadata': "https://api.monarchinitiative.org/api/ontology/term/",
+            'ontology_metadata': "https://api.monarchinitiative.org/api/bioentity/",
             'password': os.environ['NEO4J_PASSWORD'],
             'username': 'neo4j',
             'db_url': db_url_default,
