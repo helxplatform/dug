@@ -301,7 +301,6 @@ class TOPMedStudyAnnotator:
                                 "id": curie,
                                 "name": term[0],
                                 "description": "",
-                                "type": curie.split(":")[0],
                                 "search_terms": [search_text] + term,
                                 "identifiers": {
                                     curie: variable['identifiers'][curie]
@@ -708,13 +707,16 @@ class TOPMedStudyAnnotator:
 
                 # List comprehension for synonyms
                 name = response.get('label','')
-                description = response.get('definition','')
+                description = '' if not response.get('description',None) else response.get('description','')
+                ontology_type = '' if not response.get('category', None) else response.get('category','')[0]
                 
                 # Add to concept
                 if len(name):
                     concepts[concept]['name'] = name
                 if len(description):
                     concepts[concept]['description'] = description
+                if len(ontology_type):
+                    concepts[concept]['type'] = ontology_type
             
             except json.decoder.JSONDecodeError as e:
                 logger.error (f"No labels returned for: {concept}")
