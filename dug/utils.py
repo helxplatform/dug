@@ -165,8 +165,8 @@ class BioLinkPURLerizer:
       @staticmethod
       def get_curie_purl(curie):
             # Split into prefix and suffix
-            suffix = curie.split(":")[0]
-            prefix = curie.split(":")[1]
+            suffix = curie.split(":")[1]
+            prefix = curie.split(":")[0]
 
             # Check to see if the prefix exists in the hash
             if prefix not in BioLinkPURLerizer.biolink_lookup:

@@ -253,7 +253,7 @@ class TOPMedStudyAnnotator:
                                     variable)
 
                 """ Annotate ontology terms in the text. """
-                if 'element_desc' not in variable and "descripton" not in variable:
+                if 'element_desc' not in variable and 'description' not in variable:
                     logger.warn (f"this variable has no description: {json.dumps(variable, indent=2)}")
                     continue
 
