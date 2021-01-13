@@ -22,6 +22,16 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 Config = Dict
 
 
+def get_dbgap_var_link(study_id, variable_id):
+    base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi"
+    return f'{base_url}?study_id={study_id}&phv=${variable_id}'
+
+
+def get_dbgap_study_link(study_id):
+    base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi"
+    return f'{base_url}?study_id={study_id}'
+
+
 def parse_study_name_from_filename(filename):
     # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
     dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
@@ -70,7 +80,6 @@ class TOPMedStudyAnnotator:
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
-        dataset_id = root.attrib['id']
         participant_set = root.attrib['participant_set']
 
         # Parse study name from filehandle
@@ -80,43 +89,23 @@ class TOPMedStudyAnnotator:
             logger.error(err_msg)
             raise IOError(err_msg)
 
-        return [{
-            "id"                    : f"{variable.attrib['id']}.p{participant_set}",
-            "identifiers"          : {},
-            "name"                 : variable.find ('name').text,
-            "description"          : variable.find ('description').text.lower(),
-            "dataset_id"           : f"{dataset_id}.p{participant_set}",
-            "dataset_name"         : "",
-            "dataset_description"  : "",
-            "study_id"             : f"{study_id}.p{participant_set}",
-            "study_name"           : study_name,
-            "study_description"    : ""
-        } for variable in root.iter('variable') ]
+        variables = [{
+            "element_id"        : f"{variable.attrib['id']}.p{participant_set}",
+            "element_name"      : variable.find ('name').text,
+            "element_desc"      : variable.find ('description').text.lower(),
+            "collection_id"     : f"{study_id}.p{participant_set}",
+            "collection_name"   : study_name,
+            "collection_desc"   : "",
+            "data_type": "dbGap_variable",
+            "identifiers": {}
+        } for variable in root.iter('variable')]
 
-    def load_csv (self, input_file : str) -> Dict:
-        """
-        Load a CSV. We had a CSV representation of some harmonized variables. This  is likely
-        superseded by the approach below. Pending confirmation to delete this code.
-        """
-        response = []
-        with open(input_file, newline='') as csvfile:
-            reader = csv.DictReader(csvfile, delimiter='\t',)
-            for row in reader:
-                logger.debug (row)
-                """ VARNAME	VARDESC	TYPE	UNITS	VARIABLE_SOURCE	SOURCE_VARIABLE_ID	VARIABLE_MAPPING	VALUES """
-                variable_source = row['VARIABLE_SOURCE']
-                source_variable_id = row['SOURCE_VARIABLE_ID']
-                response.append ({
-                    "study_id"      : 'TODO-???',
-                    "variable_id"   : row['VARNAME'],
-                    "variable_name" : row['VARNAME'],
-                    "description"   : row['VARDESC'],
-                    "type"          : row['TYPE'],
-                    "units"         : row['UNITS'],
-                    "xref"          : f"{variable_source}:{source_variable_id}",
-                    "identifiers"   : {}
-                })
-        return response
+        # Create DBGaP links as study/variable actions
+        for variable in variables:
+            variable["element_action"] = get_dbgap_study_link(study_id = variable["collection_id"])
+            variable["collection_action"] = get_dbgap_var_link(study_id = variable["collection_id"],
+                                                               variable_id=variable["element_id"])
+        return variables
 
     def load_tagged_variables (self, input_file : str) -> Dict:
         """
@@ -141,21 +130,23 @@ class TOPMedStudyAnnotator:
                 row = better_row
                 logger.debug(f"{json.dumps(row, indent=2)}")
                 variables.append ({
-                    "id"                     : f"{row['variable_full_accession']}",
-                    "name"                   : row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
-                    "description"            : row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
-                    "identifiers"            : [f"TOPMED.TAG:{row['tag_pk']}"],
-                    "dataset_id"             : row['dataset_full_accession'],
-                    "dataset_name"           : "",
-                    "dataset_description"    : "",
-                    "study_id"               : f"{row['study_full_accession']}",
-                    "study_name"             : row['study_name'],
-                    "study_description"      : "" 
-                    
+                    "element_id"                     : f"{row['variable_full_accession']}",
+                    "element_name"                   : row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
+                    "element_desc"            : row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
+                    "collection_id"               : f"{row['study_full_accession']}",
+                    "collection_name"             : row['study_name'],
+                    "collection_desc"      : "",
+                    "data_type": "dbGap_variable",
+                    "identifiers": [f"TOPMED.TAG:{row['tag_pk']}"]
                 })
                 logger.debug(f"{json.dumps(variables[-1], indent=2)}")
 
-        tags = []
+        # Create DBGaP links as study/variable actions
+        for variable in variables:
+            variable["element_action"] = get_dbgap_study_link(study_id=variable["collection_id"])
+            variable["collection_action"] = get_dbgap_var_link(study_id=variable["collection_id"],
+                                                               variable_id=variable["element_id"])
+        # Create concepts for each tag
         with open(tags_input_file, "r") as stream:
             tags = json.load (stream)
         for tag in tags:
@@ -240,7 +231,6 @@ class TOPMedStudyAnnotator:
             backend="redis",
             connection=redis_connection)
 
-
         variable_file = open("normalized_inputs.txt", "w")
 
         # Initialize return dict
@@ -249,7 +239,7 @@ class TOPMedStudyAnnotator:
 
         """ Annotate and normalize each tag. """
         for variable in variables:
-            logger.debug (variable)
+            logger.debug(variable)
             try:
                 """
                 If the variable has an Xref identifier, normalize it.
@@ -263,18 +253,19 @@ class TOPMedStudyAnnotator:
                                     variable)
 
                 """ Annotate ontology terms in the text. """
-                if not 'description' in variable:
+                if 'element_desc' not in variable and "descripton" not in variable:
                     logger.warn (f"this variable has no description: {json.dumps(variable, indent=2)}")
                     continue
 
-                description = variable['description'].replace ("_", " ")
+                # Use different desc field based on whether we're dealing with a variable tag vs. just a normal variable
+                description_field = "description" if "is_variable_tag" in variable else "element_desc"
+                description = variable[description_field].replace ("_", " ")
                 description = self.debreviator.decode (description)
 
                 # Annotation
                 encoded = urllib.parse.quote (description)
                 url = f"{self.annotator}{encoded}"
                 annotations = http_session.get(url).json ()
-
 
                 """ Normalize each ontology identifier from the annotation. """
                 for span in annotations.get('spans',[]):
@@ -327,8 +318,6 @@ class TOPMedStudyAnnotator:
                     "search_terms": [],
                     "identifiers" : variable['identifiers']
                 }
-        
-
 
         return concepts
 
@@ -727,6 +716,7 @@ class TOPMedStudyAnnotator:
         concept_file.write(f"{json.dumps(concepts, indent=2)}")
         
         return concepts
+
 
 class GraphDB:
     def __init__(self, conf):
