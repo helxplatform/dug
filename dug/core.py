@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from dug.annotate import TOPMedStudyAnnotator
+from dug.utils import BioLinkPURLerizer
 import dug.tranql as tql
 import argparse
 import logging
@@ -104,7 +105,8 @@ class Search:
                             "synonyms": {"type": "text"}
                             }
                     },
-                    "optional_terms": {"type": "text"}
+                    "optional_terms": {"type": "text"},
+                    "concept_action": {"type": "text"}
                 }
             }
         }
@@ -119,17 +121,17 @@ class Search:
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "name": {"type": "text"},
-                    "description": {"type": "text"},
+                    "element_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "element_name": {"type": "text"},
+                    "element_desc": {"type": "text"},
+                    "element_action": {"type": "text"},
                     "search_terms": {"type": "text"},
                     "identifiers": {"type": "keyword"},
-                    "dataset_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "dataset_name": {"type": "text"},
-                    "dataset_description": {"type": "text"},
-                    "study_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "study_name": {"type": "text"},
-                    "study_description": {"type": "text"}
+                    "collection_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "collection_name": {"type": "text"},
+                    "collection_desc": {"type": "text"},
+                    "collection_action": {"type": "text"},
+                    "data_type": {"type", "text"},
                 }
             }
         }
@@ -833,17 +835,17 @@ class Search:
     
     def index_variables(self, variables, index):
         for variable in variables:
-            if not self.es.exists(index,variable['id']):
+            if not self.es.exists(index,variable['element_id']):
                 self.index_doc(
                     index=index,
                     doc=variable,
-                    doc_id=variable['id'])
+                    doc_id=variable['element_id'])
             else:
-                results = self.es.get(index, variable['id'])
+                results = self.es.get(index, variable['element_id'])
                 identifiers = results['_source']['identifiers'] + variable['identifiers'] 
                 doc = {"doc" :{}}
                 doc['doc']['identifiers'] = identifiers
-                self.update_doc(index = index, doc = doc, doc_id = variable['id'])
+                self.update_doc(index = index, doc = doc, doc_id = variable['element_id'])
 
                 
 
@@ -1049,10 +1051,16 @@ if __name__ == '__main__':
         # Add Synonyms - this is slow: 30 secs
         concepts = annotator.add_synonyms_to_identifiers(concepts)
 
+        # Add concept actions (i.e. external links). ATM, it makes a link to the ontology identifier PURL
+        # Could be cooler stuff in the future but this'll do for now, pig.
+        for concept in concepts:
+            ontology_purl = BioLinkPURLerizer.get_curie_purl(concept)
+            concept["concept_action"] = ontology_purl if ontology_purl is not None else ""
+
         ''' New - Clean up after POC'''
         # Clean concepts and add ontology descriptors - this is slow: 60 secs
         concepts = annotator.clean_concepts(concepts)
-        
+
         # TODO: Add more identifiers to variables based on Topmed tag in identifiers slot, for Proof of concept.
         # ##### Not sure if this is what we want to do.  Maybe delete this chunk after POC.
         for variable in variables:
