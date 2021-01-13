@@ -24,7 +24,7 @@ Config = Dict
 
 def get_dbgap_var_link(study_id, variable_id):
     base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi"
-    return f'{base_url}?study_id={study_id}&phv=${variable_id}'
+    return f'{base_url}?study_id={study_id}&phv={variable_id}'
 
 
 def get_dbgap_study_link(study_id):
@@ -102,9 +102,9 @@ class TOPMedStudyAnnotator:
 
         # Create DBGaP links as study/variable actions
         for variable in variables:
-            variable["element_action"] = get_dbgap_study_link(study_id = variable["collection_id"])
-            variable["collection_action"] = get_dbgap_var_link(study_id = variable["collection_id"],
-                                                               variable_id=variable["element_id"])
+            variable["collection_action"] = get_dbgap_study_link(study_id = variable["collection_id"])
+            variable["element_action"] = get_dbgap_var_link(study_id = variable["collection_id"],
+                                                               variable_id=variable["element_id"].split(".")[0].split("phv")[1])
         return variables
 
     def load_tagged_variables (self, input_file : str) -> Dict:

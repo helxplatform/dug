@@ -111,7 +111,7 @@ class Search:
             }
         }
 
-        # concepts_index
+        # variables_index
         settings['variables_index'] = {
             "settings": {
                 "index.mapping.coerce": "false",
@@ -131,7 +131,7 @@ class Search:
                     "collection_name": {"type": "text"},
                     "collection_desc": {"type": "text"},
                     "collection_action": {"type": "text"},
-                    "data_type": {"type", "text"},
+                    "data_type": {"type": "text"},
                 }
             }
         }
@@ -1055,7 +1055,7 @@ if __name__ == '__main__':
         # Could be cooler stuff in the future but this'll do for now, pig.
         for concept in concepts:
             ontology_purl = BioLinkPURLerizer.get_curie_purl(concept)
-            concept["concept_action"] = ontology_purl if ontology_purl is not None else ""
+            concepts[concept]["concept_action"] = ontology_purl if ontology_purl is not None else ""
 
         ''' New - Clean up after POC'''
         # Clean concepts and add ontology descriptors - this is slow: 60 secs
