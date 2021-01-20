@@ -194,14 +194,15 @@ class Search:
 
     def search_concepts (self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
-        Match query for simplicity, default OR
+        Changed to query_string for and/or and exact matches with quotations.
         """
         query = {
-            'multi_match': {
+            'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'prefix_length': prefix_length,
-                'fields': ["name", "description", "search_terms","optional_terms"]
+                'fuzzy_prefix_length': prefix_length,
+                'fields': ["name", "description", "search_terms", "optional_terms"],
+                'quote_field_suffix': ".exact"
             },
         }
         body = json.dumps({'query': query})
@@ -226,7 +227,7 @@ class Search:
                 'must': [
                     {
                         "match": {
-                            "identifiers": concept
+                            "identifiers.keyword": concept
                         }
                     }
                 ],
