@@ -257,18 +257,26 @@ class Search:
 
     def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
         """
-        Query type is now 'query_string'.
-        query searches multiple fields
-        if search terms are surrounded in quotes, looks for exact matches in any of the fields
-        AND/OR operators are natively supported by elasticesarch queries
+        In knowledge graph search seach, the concept MUST match the unique ID
+        The query MUST match search_targets.  The updated query allows for
+        fuzzy matching and for the default OR behavior for the query.
         """
         query = {
-            'query_string': {
-                'query': f'"{unique_id}" AND {query}',
-                'fuzziness': fuzziness,
-                'fields': ['search_targets', 'concept_id'],
-                'quote_field_suffix': ".exact"
-            },
+            "bool": {
+                "must": [
+                    {"term": {
+                        "concept_id.keyword": unique_id
+                        }
+                    },
+                    {"match": {
+                        "search_targets": {
+		                    "query": query,
+		                    "fuzziness": fuzziness
+		                }
+                    }
+                    }
+                ]
+            }
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body, index=index)
