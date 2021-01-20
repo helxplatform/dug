@@ -224,24 +224,19 @@ class Search:
         """
         query = {
             'bool': {
-                'must': [
-                    {
+                'must': {
                         "match": {
-                            "identifiers.keyword": concept
+                            "identifiers": concept
                         }
+                    },
+                'should': {
+                    'query_string': {
+                        "query": query,
+                        "fuzziness": fuzziness,
+                        "fuzzy_prefix_length": prefix_length,
+                        "default_field": "search_terms"
                     }
-                ],
-                'should': [
-                    {
-                        'match': {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                            }
-                        }
-                    }
-                ]
+                }
             }
         }
         body = json.dumps({'query': query})
@@ -256,7 +251,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         In knowledge graph search seach, the concept MUST match the unique ID
         The query MUST match search_targets.  The updated query allows for
@@ -269,12 +264,12 @@ class Search:
                         "concept_id.keyword": unique_id
                         }
                     },
-                    {"match": {
-                        "search_targets": {
-		                    "query": query,
-		                    "fuzziness": fuzziness
+                    {'query_string': {
+                        "query": query,
+                        "fuzziness": fuzziness,
+                        "fuzzy_prefix_length": prefix_length,
+                        "default_field": "search_targets"
 		                }
-                    }
                     }
                 ]
             }
