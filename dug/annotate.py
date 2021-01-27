@@ -178,29 +178,32 @@ class TOPMedStudyAnnotator:
             "type": ['named_thing'] # Default NeoTransformer category
         }
         """ Normalize the identifier with respect to the BioLink Model. """
-        try:
-            logger.debug(f"Normalizing: {curie}")
-            normalized = http_session.get(url).json ()
-            """ Record normalized results. """
-            normalization = normalized.get(curie, {})
-            preferred_id = normalization.get ("id", {})
-            equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
-            biolink_type = normalization.get ("type", [])
 
-            """ Build the response. """
-            if 'identifier' in preferred_id:
-                logger.debug(f"Preferred id: {preferred_id}")
-                variable['identifiers'][preferred_id['identifier']] = {
-                    "label" : preferred_id.get('label',''),
-                    "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
-                    "type" : biolink_type
-                }
-            else:
-                variable['identifiers'][curie] = blank_preferred_id
-                logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
-        except json.decoder.JSONDecodeError as e:
+        logger.debug(f"Normalizing: {curie}")
+        normalized = http_session.get(url).json ()
+
+        """ Record normalized results. """
+        normalization = normalized.get(curie, {})
+        if normalization is None:
             variable['identifiers'][curie] = blank_preferred_id
-            logger.error (f"JSONDecoderError normalizing curie: {curie}")
+            logger.error (f"Normalization service did not return normalization for: {curie}")
+            return
+
+        preferred_id = normalization.get ("id", {})
+        equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
+        biolink_type = normalization.get ("type", [])
+
+        """ Build the response. """
+        if 'identifier' in preferred_id:
+            logger.debug(f"Preferred id: {preferred_id}")
+            variable['identifiers'][preferred_id['identifier']] = {
+                "label" : preferred_id.get('label',''),
+                "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
+                "type" : biolink_type
+            }
+        else:
+            variable['identifiers'][curie] = blank_preferred_id
+            logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
 
     def annotate (self, variables : Dict) -> Dict:
         """
