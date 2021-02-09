@@ -233,10 +233,15 @@ stack () {
 
     if [[ ! -d $DUG_HOME/dug-search-client ]]; then
       echo "Initializing DUG search client..."
-      git clone --single-branch --branch concept_group_ui https://github.com/helxplatform/dug-search-client.git $DUG_HOME/dug-search-client
+      git clone --single-branch --branch develop https://github.com/helxplatform/dug-search-client.git $DUG_HOME/dug-search-client
+      cat <<- EOF > $DUG_HOME/dug-search-client/.env
+REACT_APP_DUG_URL=http://127.0.0.1:5551
+CLIENT_PORT=3030
+PUBLIC_URL=/ui
+EOF
     fi
 
-    CLIENT_PORT=80 docker-compose -f $DUG_HOME/dug-search-client/docker-compose.yaml $* &
+    CLIENT_PORT=80 docker-compose -f $DUG_HOME/dug-search-client/docker-compose-dev.yaml $* &
 
     HOSTNAME=$HOSTNAME docker-compose \
 	    --env-file $DUG_HOME/docker/.env \

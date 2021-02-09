@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from dug.annotate import TOPMedStudyAnnotator
+from dug.utils import BioLinkPURLerizer
 import dug.tranql as tql
 import argparse
 import logging
@@ -104,12 +105,13 @@ class Search:
                             "synonyms": {"type": "text"}
                             }
                     },
-                    "optional_terms": {"type": "text"}
+                    "optional_terms": {"type": "text"},
+                    "concept_action": {"type": "text"}
                 }
             }
         }
 
-        # concepts_index
+        # variables_index
         settings['variables_index'] = {
             "settings": {
                 "index.mapping.coerce": "false",
@@ -119,17 +121,17 @@ class Search:
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "name": {"type": "text"},
-                    "description": {"type": "text"},
+                    "element_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "element_name": {"type": "text"},
+                    "element_desc": {"type": "text"},
+                    "element_action": {"type": "text"},
                     "search_terms": {"type": "text"},
                     "identifiers": {"type": "keyword"},
-                    "dataset_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "dataset_name": {"type": "text"},
-                    "dataset_description": {"type": "text"},
-                    "study_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "study_name": {"type": "text"},
-                    "study_description": {"type": "text"}
+                    "collection_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
+                    "collection_name": {"type": "text"},
+                    "collection_desc": {"type": "text"},
+                    "collection_action": {"type": "text"},
+                    "data_type": {"type": "text"},
                 }
             }
         }
@@ -154,6 +156,13 @@ class Search:
             index=index,
             id=doc_id,
             body=doc)
+    
+    def update_doc (self, index, doc, doc_id):
+        self.es.update (
+            index=index,
+            id=doc_id,
+            body=doc
+        )
 
     def search (self, index, query, offset=0, size=None, fuzziness=1):
         """
@@ -183,15 +192,17 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_concepts (self, index, query, offset=0, size=None, fuzziness=1):
+    def search_concepts (self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
-        Match query for simplicity, default OR
+        Changed to query_string for and/or and exact matches with quotations.
         """
         query = {
-            'multi_match': {
+            'query_string': {
                 'query' : query,
                 'fuzziness' : fuzziness,
-                'fields': ["name", "description", "search_terms","optional_terms"]
+                'fuzzy_prefix_length': prefix_length,
+                'fields': ["name", "description", "search_terms", "optional_terms"],
+                'quote_field_suffix': ".exact"
             },
         }
         body = json.dumps({'query': query})
@@ -206,30 +217,26 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1):
+    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
         The query can match search_terms (hence, "should") for ranking.
         """
         query = {
             'bool': {
-                'must': [
-                    {
+                'must': {
                         "match": {
                             "identifiers": concept
                         }
+                    },
+                'should': {
+                    'query_string': {
+                        "query": query,
+                        "fuzziness": fuzziness,
+                        "fuzzy_prefix_length": prefix_length,
+                        "default_field": "search_terms"
                     }
-                ],
-                'should': [
-                    {
-                        'match': {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness
-                            }
-                        }
-                    }
-                ]
+                }
             }
         }
         body = json.dumps({'query': query})
@@ -244,20 +251,28 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1):
+    def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
-        Query type is now 'query_string'.
-        query searches multiple fields
-        if search terms are surrounded in quotes, looks for exact matches in any of the fields
-        AND/OR operators are natively supported by elasticesarch queries
+        In knowledge graph search seach, the concept MUST match the unique ID
+        The query MUST match search_targets.  The updated query allows for
+        fuzzy matching and for the default OR behavior for the query.
         """
         query = {
-            'query_string': {
-                'query': f'"{unique_id}" AND {query}',
-                'fuzziness': fuzziness,
-                'fields': ['search_targets', 'concept_id'],
-                'quote_field_suffix': ".exact"
-            },
+            "bool": {
+                "must": [
+                    {"term": {
+                        "concept_id.keyword": unique_id
+                        }
+                    },
+                    {'query_string': {
+                        "query": query,
+                        "fuzziness": fuzziness,
+                        "fuzzy_prefix_length": prefix_length,
+                        "default_field": "search_targets"
+		                }
+                    }
+                ]
+            }
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body, index=index)
@@ -292,6 +307,7 @@ class Search:
                 'query_string': {
                     'query': query,
                     'fuzziness': fuzziness,
+                    'prefix_length': prefix_length,
                     'fields': ['name', 'description', 'instructions', 'search_targets', 'optional_targets'],
                     'quote_field_suffix': ".exact"
                 }
@@ -823,10 +839,19 @@ class Search:
     
     def index_variables(self, variables, index):
         for variable in variables:
-            self.index_doc(
-                index=index,
-                doc=variable,
-                doc_id=variable['id'])
+            if not self.es.exists(index,variable['element_id']):
+                self.index_doc(
+                    index=index,
+                    doc=variable,
+                    doc_id=variable['element_id'])
+            else:
+                results = self.es.get(index, variable['element_id'])
+                identifiers = results['_source']['identifiers'] + variable['identifiers'] 
+                doc = {"doc" :{}}
+                doc['doc']['identifiers'] = identifiers
+                self.update_doc(index = index, doc = doc, doc_id = variable['element_id'])
+
+                
 
     def index_kg_answer(self, concept, index, curie_id, knowledge_graph, query_name, answer_node_ids):
         answer_synonyms = []
@@ -1000,7 +1025,7 @@ if __name__ == '__main__':
             'annotator': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content=",
             'normalizer': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie=",
             'synonym_service': "https://onto.renci.org/synonyms/",
-            'ontology_metadata': "https://api.monarchinitiative.org/api/ontology/term/",
+            'ontology_metadata': "https://api.monarchinitiative.org/api/bioentity/",
             'password': os.environ['NEO4J_PASSWORD'],
             'username': 'neo4j',
             'db_url': db_url_default,
@@ -1030,10 +1055,16 @@ if __name__ == '__main__':
         # Add Synonyms - this is slow: 30 secs
         concepts = annotator.add_synonyms_to_identifiers(concepts)
 
+        # Add concept actions (i.e. external links). ATM, it makes a link to the ontology identifier PURL
+        # Could be cooler stuff in the future but this'll do for now, pig.
+        for concept in concepts:
+            ontology_purl = BioLinkPURLerizer.get_curie_purl(concept)
+            concepts[concept]["concept_action"] = ontology_purl if ontology_purl is not None else ""
+
         ''' New - Clean up after POC'''
         # Clean concepts and add ontology descriptors - this is slow: 60 secs
         concepts = annotator.clean_concepts(concepts)
-        
+
         # TODO: Add more identifiers to variables based on Topmed tag in identifiers slot, for Proof of concept.
         # ##### Not sure if this is what we want to do.  Maybe delete this chunk after POC.
         for variable in variables:
