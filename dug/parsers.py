@@ -5,6 +5,7 @@ import os
 import xml.etree.ElementTree as ET
 import dug.utils as utils
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,7 +34,7 @@ class DugElement:
         return self.__dict__
 
     def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.ComplexHandler)
+        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
 
 
 class DugConcept:
@@ -54,7 +55,7 @@ class DugConcept:
         return self.__dict__
 
     def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.ComplexHandler)
+        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
 
 
 class DbGaPParser:
