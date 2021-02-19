@@ -137,7 +137,7 @@ class Search:
                     "collection_name": {"type": "text"},
                     "collection_desc": {"type": "text"},
                     "collection_action": {"type": "text"},
-                    "data_type": {"type": "text"},
+                    "data_type": {"type": "text", "fields": {"keyword": {"type": "keyword"}}} # typed as keyword for bucket aggs
                 }
             }
         }
@@ -195,10 +195,19 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables(self, index, concept, query, offset=0, size=None, fuzziness=1, prefix_length=3):
+    def search_variables(self, index, concept, query, data_type=None, size=None, offset=0, fuzziness=1, prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
         The query can match search_terms (hence, "should") for ranking.
+        
+        Results Return
+        The search result is returned in JSON format {collection_id:[elements]}
+
+        Filter
+        If a data_type is passed in, the result will be filtered to only contain
+        the passed-in data type.
+
+        
         """
         query = {
             'bool': {
@@ -226,8 +235,44 @@ class Search:
             from_=offset,
             size=size
         )
-        search_results.update({'total_items': total_items['count']})
-        return search_results
+
+        # Refactor Results using filter
+        new_results = {}
+        for elem in search_results['hits']['hits']:
+            elem_type =  elem['_source']['data_type']
+            if elem_type == None or elem_type == data_type:
+                elem_id = elem['_source']['element_id']
+                coll_id = elem['_source']['collection_id']
+                if coll_id not in new_results:
+                    new_results[coll_id] = [elem_id]
+                else:
+                    new_results[coll_id].append(elem_id)
+
+        return new_results
+
+    def agg_data_type(self, index, size=0):
+        """
+        In variable seach, the concept MUST match one of the indentifiers in the list
+        The query can match search_terms (hence, "should") for ranking.
+        """
+        aggs = {
+            "data_type": {
+                "terms": {
+                    "field":"data_type.keyword",
+                    "size": 100
+                }
+            }
+        }
+        body = json.dumps({'aggs': aggs})
+
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            size=size
+        )
+        data_type_list = [data_type['key'] for data_type in search_results['aggregations']['data_type']['buckets']]
+        search_results.update({'data type list': data_type_list})
+        return data_type_list
 
     def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
