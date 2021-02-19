@@ -240,7 +240,7 @@ class Search:
         new_results = {}
         for elem in search_results['hits']['hits']:
             elem_type =  elem['_source']['data_type']
-            if elem_type == None or elem_type == data_type:
+            if data_type == None or elem_type == data_type or data_type=="":
                 elem_id = elem['_source']['element_id']
                 coll_id = elem['_source']['collection_id']
                 if coll_id not in new_results:

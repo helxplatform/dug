@@ -197,8 +197,9 @@ query_nboost () {
 #############################################################
 query_var_api () {
      concept_id=$1
-     data_type=$2
-     query="`echo '{"index" : "variables_index", "query" : "'${@:3}'", "concept" : "'$concept_id'", "data_type" : "'$data_type'"}'`"
+     size=$2
+     data_type=$3
+     query="`echo '{"index" : "variables_index", "query" : "'${@:4}'", "concept" : "'$concept_id'", "data_type" : "'$data_type'", "size": '$size'}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
