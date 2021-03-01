@@ -68,12 +68,20 @@ class Search:
                 "number_of_replicas": 0
             },
             "mappings": {
+                "dynamic": "strict",
                 "properties": {
-                    "name": {
-                        "type": "text"
+                    "concept_id": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
                     },
-                    "type": {
-                        "type": "text"
+                    "search_targets": {"type": "text"},
+                    "knowledge_graph": {
+                        "type": "object",
+                        "enabled": False
                     }
                 }
             }
@@ -296,14 +304,14 @@ class Search:
 
     def crawl(self, concepts, concept_index, kg_index, queries, min_score=0.2,
               include_node_keys=["id", "name", "synonyms"], include_edge_keys=[],
-              query_exclude_identifiers=[]):
+              query_exclude_identifiers=[],
+              tranql_endpoint="http://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"):
 
         '''
         This version of tagged crawl starts from identifiers within concepts.
         If an ontological term, the concept will only have one ontology identifier: itself
         If it is, for instance, a TOPMed phenotype concept, there will be multiple ontology identifiers.
         '''
-        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
         headers = {
             "accept" : "application/json",
             "Content-Type" : "text/plain"
@@ -353,7 +361,7 @@ class Search:
                             data = query).json ()
 
                         # Case: Skip if empty KG 
-                        if not len(response['knowledge_graph']['nodes']):
+                        if not len(response['message']['knowledge_graph']['nodes']):
                             logging.debug(f"Did not find a knowledge graph for {query}")
                             continue # continue out of loop
                         
@@ -399,10 +407,9 @@ class Search:
                             continue
 
                         # Add answer synonyms to tag's list of optional targets
-                        for node in answer_kg.kg.get('knowledge_graph', {}).get('nodes', []):
+                        for node_id, node in answer_kg.kg.get('knowledge_graph', {}).get('nodes', {}).items() :
                             concepts[concept]['optional_terms'].append(node['name'])
-                            concepts[concept]['optional_terms'] += node['synonyms']
-
+                            concepts[concept]['optional_terms'] += node['synonyms'] or []
                         # Add answer to knowledge graph ES index
                         self.index_kg_answer(concepts[concept],
                                              kg_index,
@@ -447,13 +454,13 @@ class Search:
 
     def index_kg_answer(self, concept, index, curie_id, knowledge_graph, query_name, answer_node_ids):
         answer_synonyms = []
-        for node in knowledge_graph.get('knowledge_graph', {}).get('nodes', []):
+        for node_id, node in knowledge_graph.get('knowledge_graph', {}).get('nodes', {}).items():
             # Don't add curie synonyms to knowledge graph
             #  We only want to return KG answer if it relates to user query
             if node["id"] == curie_id:
                 continue
             answer_synonyms.append(node['name'])
-            answer_synonyms += node['synonyms']
+            answer_synonyms += node.get('synonyms') or []
 
         # Create the Doc
         doc = {
