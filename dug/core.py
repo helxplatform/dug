@@ -112,8 +112,7 @@ class Search:
                         }
                     },
                     "optional_terms": {"type": "text"},
-                    "concept_action": {"type": "text"},
-                    "data_types": {"type": "text", "fields": {"keyword": {"type": "keyword"}}} # for filtering
+                    "concept_action": {"type": "text"}
                 }
             }
         }
@@ -196,49 +195,6 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables_internal(self, index, concept, query, size=None, offset=0, fuzziness=1, prefix_length=3):
-        """
-        In variable seach, the concept MUST match one of the indentifiers in the list
-        The query can match search_terms (hence, "should") for ranking.
-        
-        Results Return
-        The search result is returned in JSON format {collection_id:[elements]}
-
-        Filter
-        If a data_type is passed in, the result will be filtered to only contain
-        the passed-in data type.
-
-        
-        """
-        query = {
-            'bool': {
-                'must': {
-                    "match": {
-                        "identifiers": concept
-                    }
-                },
-                'should': {
-                    'query_string': {
-                        "query": query,
-                        "fuzziness": fuzziness,
-                        "fuzzy_prefix_length": prefix_length,
-                        "default_field": "search_terms"
-                    }
-                }
-            }
-        }
-        body = json.dumps({'query': query})
-        total_items = self.es.count(body=body, index=index)
-        search_results = self.es.search(
-            index=index,
-            body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
-            from_=offset,
-            size=size
-        )
-    
-        return search_results
-
     def search_variables(self, index, concept, query, size=None, data_type=None, offset=0, fuzziness=1, prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
@@ -271,7 +227,6 @@ class Search:
             }
         }
         body = json.dumps({'query': query})
-        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,
