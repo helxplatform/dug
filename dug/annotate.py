@@ -168,7 +168,7 @@ class TOPMedStudyAnnotator:
         blank_preferred_id = {
             "label": "",
             "equivalent_identifiers": [],
-            "type": ['named_thing'] # Default NeoTransformer category
+            "type": ['biolink:NamedThing'] # Default NeoTransformer category
         }
         """ Normalize the identifier with respect to the BioLink Model. """
 
