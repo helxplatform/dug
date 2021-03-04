@@ -25,10 +25,14 @@ class DugElement:
         self.collection_action = ""
         self.concepts = []
         self.search_terms = []
-        self.ml_ready_description = desc
+        self.ml_ready_desc = desc
 
     def add_concept(self, concept):
         self.concepts.append(concept)
+
+    def clean(self):
+        self.concepts = list(set(self.concepts))
+        self.search_terms = list(set(self.search_terms))
 
     def jsonable(self):
         return self.__dict__
@@ -50,6 +54,13 @@ class DugConcept:
         self.search_terms = []
         self.optional_terms = []
         self.ml_ready_desc = desc
+
+    def add_identifier(self, ident):
+        self.identifiers.append(ident)
+
+    def clean(self):
+        self.search_terms = list(set(self.search_terms))
+        self.optional_terms = list(set(self.optional_terms))
 
     def jsonable(self):
         return self.__dict__
@@ -76,7 +87,6 @@ class DbGaPParser:
             logger.error(err_msg)
             raise IOError(err_msg)
 
-        concepts = []
         elements = []
         for variable in root.iter('variable'):
             elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
@@ -95,7 +105,7 @@ class DbGaPParser:
             elements.append(elem)
 
         # You don't actually create any concepts
-        return elements, concepts
+        return elements
 
 
 class TOPMedTagParser:
@@ -162,7 +172,7 @@ class TOPMedTagParser:
                 elem.add_concept(concepts[row['tag_pk']])
                 logger.debug(elem)
 
-        return elements, concepts
+        return list(concepts.values()) + elements
 
 
 # Register parsers with parser factory
