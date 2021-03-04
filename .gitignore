@@ -20,3 +20,5 @@ test_dir/
 monarch_results.txt
 anno_fails.txt
 
+# PyEnv
+.python-version
