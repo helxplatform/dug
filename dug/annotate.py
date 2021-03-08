@@ -1,6 +1,10 @@
 import json
 import logging
 import urllib
+import os
+import requests
+
+import dug.tranql as tql
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +56,8 @@ class DugAnnotator:
             # Skip adding id if it doesn't normalize
             if norm_id is None:
                 # Add identifier to list of non-normalized identifiers
-                self.stat_helper.record_norm_fail(identifier)
+                #self.stat_helper.record_norm_fail(identifier)
+                # TODO: Write normalization fails out to file
                 continue
 
             # Add synonyms to identifier
@@ -70,6 +75,82 @@ class DugAnnotator:
         return list(processed_identifiers.values())
 
 
+class ConceptExpander:
+    def __init__(self, url, min_tranql_score=0.2):
+        self.url = url
+        self.min_tranql_score = min_tranql_score
+        self.include_node_keys = ["id", "name", "synonyms"]
+        self.include_edge_keys = []
+        self.tranql_headers = {"accept": "application/json", "Content-Type": "text/plain"}
+
+    def is_acceptable_answer(self, answer):
+        return True
+
+    def expand_identifier(self, identifier, query_factory, kg_filename):
+
+        answer_kgs = []
+
+        # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+        if os.path.exists(kg_filename):
+            logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+            with open(kg_filename, 'r') as stream:
+                response = json.load(stream)
+        else:
+            query = query_factory.get_query(identifier)
+            logger.info(query)
+            response = requests.post(
+                url=self.url,
+                headers=self.tranql_headers,
+                data=query).json()
+
+            # Case: Skip if empty KG
+            if not len(response['knowledge_graph']['nodes']):
+                logging.debug(f"Did not find a knowledge graph for {query}")
+                return []
+
+            # Dump out to file if there's a knowledge graph
+            with open(kg_filename, 'w') as stream:
+                json.dump(response, stream, indent=2)
+
+        # Get nodes in knowledge graph hashed by ids for easy lookup
+        kg = tql.QueryKG(response)
+
+        for answer in kg.answers:
+            # Filter out answers that don't meet some criteria
+            # Right now just don't filter anything
+            logger.debug(f"Answer: {answer}")
+            if not self.is_acceptable_answer(answer):
+                logger.warning("Skipping answer as it failed one or more acceptance criteria. See log for details.")
+                continue
+
+            # Get subgraph containing only information for this answer
+            try:
+                # Temporarily surround in try/except because sometimes the answer graphs
+                # contain invalid references to edges/nodes
+                # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                answer_kg = kg.get_answer_subgraph(answer,
+                                                   include_node_keys=self.include_node_keys,
+                                                   include_edge_keys=self.include_edge_keys)
+
+                # Add subgraph to list of acceptable answers to query
+                answer_kgs.append(answer_kg)
+
+            except tql.MissingNodeReferenceError:
+                # TEMPORARY: Skip answers that have invalid node references
+                # Need this to be fixed in Robokop
+                logger.warning("Skipping answer due to presence of non-preferred id! "
+                               "See err msg for details.")
+                continue
+            except tql.MissingEdgeReferenceError:
+                # TEMPORARY: Skip answers that have invalid edge references
+                # Need this to be fixed in Robokop
+                logger.warning("Skipping answer due to presence of invalid edge reference! "
+                               "See err msg for details.")
+                continue
+
+        return answer_kgs
+
+
 class Preprocessor:
     """"Class for preprocessing strings so they are better interpreted by NLP steps"""
 
@@ -83,8 +164,7 @@ class Preprocessor:
             text = text.replace(key, value)
 
         # Remove any stopwords
-        for stopword in self.stopwords:
-            text = text.replace(stopword, "")
+        text = " ".join([word for word in text.split() if word not in self.stopwords])
         return text
 
 
@@ -112,10 +192,10 @@ class Annotator:
 
                 biolink_types = token.get('category')
                 label = token.get('terms')[0]
-                identifiers.append(dm.Identifier(id=curie,
-                                                 label=label,
-                                                 types=biolink_types,
-                                                 search_text=search_text))
+                identifiers.append(Identifier(id=curie,
+                                              label=label,
+                                              types=biolink_types,
+                                              search_text=search_text))
         return identifiers
 
 
