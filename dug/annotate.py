@@ -18,7 +18,7 @@ class Identifier:
         self.label = label
         self.description = description
         self.types = types
-        self.search_text = search_text
+        self.search_text = [search_text] if search_text else []
         self.equivalent_identifiers = []
         self.synonyms = []
         self.purl = None
@@ -27,8 +27,24 @@ class Identifier:
     def id_type(self):
         return self.id.split(":")[0]
 
-    def __eq__(self, other):
-        return self.id == other.id
+    def add_search_text(self, text):
+        # Add text only if it's unique and if not empty string
+        if text and text not in self.search_text:
+            self.search_text.append(text)
+
+    def get_searchable_dict(self):
+        # Return a version of the identifier compatible with what's in ElasticSearch
+        es_ident = {
+            'id': self.id,
+            'label': self.label,
+            'equivalent_identifiers': self.equivalent_identifiers,
+            'type': self.types,
+            'synonyms': self.synonyms
+        }
+        return es_ident
+
+    def jsonable(self):
+        return self.__dict__
 
 
 class DugAnnotator:
@@ -38,6 +54,8 @@ class DugAnnotator:
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_helper = ontology_helper
+        self.norm_fails_file = "norm_fails.txt"
+        self.anno_fails_file = "anno_fails.txt"
 
     def annotate(self, text, http_session):
 
@@ -47,6 +65,11 @@ class DugAnnotator:
         # Fetch identifiers
         raw_identifiers = self.annotator.annotate(text, http_session)
 
+        # Write out to file if text fails to annotate
+        if not raw_identifiers:
+            with open(self.anno_fails_file, "a") as fh:
+                fh.write(f'{text}\n')
+
         processed_identifiers = {}
         for identifier in raw_identifiers:
 
@@ -55,9 +78,9 @@ class DugAnnotator:
 
             # Skip adding id if it doesn't normalize
             if norm_id is None:
-                # Add identifier to list of non-normalized identifiers
-                #self.stat_helper.record_norm_fail(identifier)
-                # TODO: Write normalization fails out to file
+                # Write out to file if identifier doesn't normalize
+                with open(self.norm_fails_file, "a") as fh:
+                    fh.write(f'{identifier.id}\n')
                 continue
 
             # Add synonyms to identifier
