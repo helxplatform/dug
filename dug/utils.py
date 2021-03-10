@@ -14,6 +14,9 @@ class ObjectFactory:
             raise ValueError(key)
         return builder(**kwargs)
 
+    def get_builder_types(self):
+        return list(self._builders.keys())
+
 
 def complex_handler(obj):
     if hasattr(obj, 'jsonable'):

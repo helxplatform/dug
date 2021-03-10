@@ -23,6 +23,10 @@ class SearchException(Exception):
         self.details = details
 
 
+class ParserNotFoundException(Exception):
+    pass
+
+
 class Search:
     """ Search -
     1. Lexical fuzziness; (a) misspellings - a function of elastic.
@@ -492,6 +496,18 @@ class Crawler:
                     concept.add_kg_answer(answer, query_name=query_name)
 
 
+def get_parser(parser_type):
+    # User parser factor to get a specific type of parser
+    try:
+        return parsers.factory.create(parser_type)
+    except ValueError:
+        # If the parser type doesn't exist throw a more helpful exception than just value error
+        err_msg = f"Cannot find parser of type '{parser_type}'\n" \
+            f"Supported parsers: {', '.join(parsers.factory.get_builder_types())}"
+        logger.error(err_msg)
+        raise ParserNotFoundException(err_msg)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='DUG-Search Crawler')
 
@@ -553,7 +569,7 @@ if __name__ == '__main__':
                                             ontology_helper=ontology_helper)
 
         # Get input parser based on input type
-        parser = parsers.factory.create(args.parser_type)
+        parser = get_parser(args.parser_type)
 
 
         # Initialize crawler
