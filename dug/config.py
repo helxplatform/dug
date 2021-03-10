@@ -38,10 +38,11 @@ ontology_helper = {
     'url': "https://api.monarchinitiative.org/api/bioentity/"
 }
 
-# TranQL config options
-min_tranql_score = 0.0
+# Redlist of identifiers not to expand via TranQL
+tranql_exclude_identifiers = ["CHEBI:17336"]
+
+# TranQL queries used to expand identifiers
 tranql_source = "/graph/gamma/quick"
-tranql_query_exclude_identifiers = ["CHEBI:17336"]
 tranql_queries = {
     "disease": tql.QueryFactory(["disease", "phenotypic_feature"], tranql_source),
     "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], tranql_source),
@@ -50,4 +51,9 @@ tranql_queries = {
     "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], tranql_source),
     "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], tranql_source),
     "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], tranql_source)
+}
+
+concept_expander = {
+    'url': "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
+    'min_tranql_score': 0.0
 }
