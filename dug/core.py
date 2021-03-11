@@ -382,6 +382,8 @@ class Crawler:
         # Annotate elements
         self.annotate_elements()
 
+        exit(0)
+
         # Expand concepts
         concept_file = open(f"{self.crawlspace}/concept_file.json", "w")
         for concept_id, concept in self.concepts.items():
@@ -416,6 +418,8 @@ class Crawler:
 
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
+            variable_file.write(f"{element}\n")
+            print(element)
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
@@ -438,7 +442,6 @@ class Crawler:
                 element.add_concept(concept_to_add)
 
         # Write elements out to file
-        variable_file.write(f"{json.dumps(self.elements, indent=2)}")
         variable_file.close()
 
     def annotate_element(self, element):
@@ -562,11 +565,17 @@ if __name__ == '__main__':
         synonym_finder  = anno.SynonymFinder(**cfg.synonym_service)
         ontology_helper = anno.OntologyHelper(**cfg.ontology_helper)
         tranqlizer      = anno.ConceptExpander(**cfg.concept_expander)
-        dug_annotator   = anno.DugAnnotator(preprocessor=preprocessor,
+
+        # Greenlist of ontology identifiers that can fail normalization and still be valid
+        ontology_greenlist = cfg.ontology_greenlist if hasattr(cfg,"ontology_greenlist") else []
+
+        # DugAnnotator combines all annotation components into single annotator
+        dug_annotator = anno.DugAnnotator(preprocessor=preprocessor,
                                             annotator=annotator,
                                             normalizer=normalizer,
                                             synonym_finder=synonym_finder,
-                                            ontology_helper=ontology_helper)
+                                            ontology_helper=ontology_helper,
+                                            ontology_greenlist=ontology_greenlist)
 
         # Get input parser based on input type
         parser = get_parser(args.parser_type)

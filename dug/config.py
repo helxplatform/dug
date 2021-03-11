@@ -57,3 +57,6 @@ concept_expander = {
     'url': "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
     'min_tranql_score': 0.0
 }
+
+# List of ontology types that can be used even if they fail normalization
+ontology_greenlist = ["PATO", "CHEBI", "MONDO", "UBERON", "HP", "MESH", "UMLS"]

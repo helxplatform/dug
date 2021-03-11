@@ -21,7 +21,7 @@ class Identifier:
         self.search_text = [search_text] if search_text else []
         self.equivalent_identifiers = []
         self.synonyms = []
-        self.purl = None
+        self.purl = ""
 
     @property
     def id_type(self):
@@ -48,12 +48,13 @@ class Identifier:
 
 
 class DugAnnotator:
-    def __init__(self, preprocessor, annotator, normalizer, synonym_finder, ontology_helper):
+    def __init__(self, preprocessor, annotator, normalizer, synonym_finder, ontology_helper, ontology_greenlist=[]):
         self.preprocessor = preprocessor
         self.annotator = annotator
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_helper = ontology_helper
+        self.ontology_greenlist = ontology_greenlist
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
 
@@ -70,7 +71,7 @@ class DugAnnotator:
             with open(self.anno_fails_file, "a") as fh:
                 fh.write(f'{text}\n')
 
-        processed_identifiers = {}
+        processed_identifiers = []
         for identifier in raw_identifiers:
 
             # Normalize identifier using normalization service
@@ -81,7 +82,13 @@ class DugAnnotator:
                 # Write out to file if identifier doesn't normalize
                 with open(self.norm_fails_file, "a") as fh:
                     fh.write(f'{identifier.id}\n')
-                continue
+
+                # Discard non-normalized ident if not in greenlist
+                if identifier.id_type not in self.ontology_greenlist:
+                    continue
+
+                # If it is in greenlist just keep moving forward
+                norm_id = identifier
 
             # Add synonyms to identifier
             norm_id.synonyms = self.synonym_finder.get_synonyms(norm_id.id, http_session)
@@ -94,8 +101,9 @@ class DugAnnotator:
 
             # Get pURL for ontology identifer for more info
             norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
+            processed_identifiers.append(norm_id)
 
-        return list(processed_identifiers.values())
+        return processed_identifiers
 
 
 class ConceptExpander:
