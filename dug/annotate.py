@@ -208,7 +208,7 @@ class Preprocessor:
         """
         Apply debreviator to replace abbreviations and other characters
 
-        >>> pp = Preprocessor({"foo": "bar"}, ["baz "])
+        >>> pp = Preprocessor({"foo": "bar"}, ["baz"])
         >>> pp.preprocess("Hello foo")
         'Hello bar'
 
