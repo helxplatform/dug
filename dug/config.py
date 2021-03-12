@@ -49,8 +49,8 @@ tranql_queries = {
     "anat": tql.QueryFactory(["disease", "anatomical_entity"], tranql_source),
     "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], tranql_source),
     "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], tranql_source),
-    "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], tranql_source),
-    "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], tranql_source)
+    #"anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], tranql_source),
+    #"anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], tranql_source)
 }
 
 concept_expander = {
