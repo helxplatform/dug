@@ -211,8 +211,9 @@ class TOPMedTagParser:
 
                 # Create DBGaP links as study/variable actions
                 elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
-                elem.element_action = utils.get_dbgap_var_link(study_id=elem.collection_id,
-                                                               variable_id=elem.id.split(".")[0].split("phv")[1])
+                elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
+                                                       variable_id=elem.id.split(".")[0].split("phv")[1])
+
                 # Add concept parsed from tag file to element
                 concept_group = row['tag_pk']
                 if concept_group not in concepts:
@@ -221,6 +222,9 @@ class TOPMedTagParser:
                     logger.error(err_msg)
                     raise IOError(err_msg)
                 elem.add_concept(concepts[row['tag_pk']])
+
+                # Add element to list of elements
+                elements.append(elem)
                 logger.debug(elem)
 
         return list(concepts.values()) + elements
