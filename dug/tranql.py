@@ -77,7 +77,7 @@ class QueryKG:
         curie_ids = self.get_curie_ids()
         for node in self.kg.get('knowledge_graph', {}).get('nodes', []):
             if include_curie or node['id'] not in curie_ids:
-                node_names.append(node['names'])
+                node_names.append(node['name'])
         return node_names
 
     def get_node_synonyms(self, include_curie=True):
@@ -85,11 +85,16 @@ class QueryKG:
         curie_ids = self.get_curie_ids()
         for node in self.kg.get('knowledge_graph', {}).get('nodes', []):
             if include_curie or node['id'] not in curie_ids:
-                node_synonyms += node['synonyms']
+                node_synonyms += node.get('synonyms', [])
         return node_synonyms
 
     def get_curie_ids(self):
         return [node['curie'] for node in self.question.get('nodes', []) if 'curie' in node]
+
+    def get_kg(self):
+        # Parse out the KG in whatever form we want
+        # TODO: Make this parse out old-style json so ui doesn't break
+        return self.kg
 
 
 class InvalidQueryError(BaseException):
