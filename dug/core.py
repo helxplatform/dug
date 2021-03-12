@@ -375,7 +375,7 @@ class Crawler:
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
-            if isinstance(element, parsers.DugElement):
+            if isinstance(element, parsers.DugElement) and self.element_type is not None:
                 element.type = self.element_type
 
         # Annotate elements
@@ -415,7 +415,8 @@ class Crawler:
 
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
-            variable_file.write(f"{element}\n")
+            if isinstance(element, parsers.DugElement):
+                variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
