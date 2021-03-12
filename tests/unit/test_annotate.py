@@ -145,6 +145,7 @@ def test_normalizer(normalizer_api):
     )
 
     normalizer = Normalizer(url)
+    output = normalizer.normalize(identifier, normalizer_api)
     pytest.fail("The normalize method needs to be fixed")
 
 
