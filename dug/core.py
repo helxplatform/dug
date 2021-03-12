@@ -301,7 +301,6 @@ class Search:
             doc_id=concept.id)
 
     def index_element(self, elem, index):
-
         if not self.es.exists(index, elem.id):
             # If the element doesn't exist, add it directly
             self.index_doc(
@@ -326,7 +325,7 @@ class Search:
         doc = {
             'concept_id': concept_id,
             'search_targets': list(set(search_targets)),
-            'knowledge_graph': kg_answer.kg
+            'knowledge_graph': kg_answer.get_kg()
         }
 
         # Create unique ID
@@ -382,8 +381,6 @@ class Crawler:
         # Annotate elements
         self.annotate_elements()
 
-        exit(0)
-
         # Expand concepts
         concept_file = open(f"{self.crawlspace}/concept_file.json", "w")
         for concept_id, concept in self.concepts.items():
@@ -419,7 +416,6 @@ class Crawler:
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
             variable_file.write(f"{element}\n")
-            print(element)
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
@@ -483,7 +479,7 @@ class Crawler:
                 continue
 
             # Use pre-defined queries to search for related knowledge graphs that include the identifier
-            for query_name, query_factory in self.tranql_queries:
+            for query_name, query_factory in self.tranql_queries.items():
 
                 # Skip query if the identifier is not a valid query for the query class
                 if not query_factory.is_valid_curie(ident_id):
@@ -492,7 +488,7 @@ class Crawler:
 
                 # Fetch kg and answer
                 kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
-                answers = tranqlizer.expand_identifier(identifier, query_factory, kg_outfile)
+                answers = tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
 
                 # Add any answer knowledge graphs to
                 for answer in answers:
@@ -605,7 +601,7 @@ if __name__ == '__main__':
             search.index_concept(concept, index=concepts_index)
 
             # Index knowledge graph answers for each concept
-            for kg_answer_id, kg_answer in concept.kg_answers:
+            for kg_answer_id, kg_answer in concept.kg_answers.items():
                 search.index_kg_answer(concept_id=concept_id,
                                        kg_answer=kg_answer,
                                        index=kg_index,
