@@ -74,7 +74,7 @@ class DugConcept:
         else:
             self.identifiers[ident.id] = ident
 
-    def add_answer(self, answer, query_name):
+    def add_kg_answer(self, answer, query_name):
         answer_node_ids = list(answer.nodes.keys())
         answer_id = f'{"_".join(answer_node_ids)}_{query_name}'
         if answer_id not in self.kg_answers:
@@ -88,7 +88,7 @@ class DugConcept:
         # Traverse set of identifiers to determine set of search terms
         search_terms = self.search_terms
         for ident_id, ident in self.identifiers.items():
-            search_terms.extend([ident.label, ident.description, ident.search_text] + ident.synonyms)
+            search_terms.extend([ident.label, ident.description] + ident.search_text + ident.synonyms)
         self.search_terms = list(set(search_terms))
 
     def set_optional_terms(self):
@@ -149,8 +149,8 @@ class DbGaPParser:
 
             # Create DBGaP links as study/variable actions
             elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
-            elem.element_action = utils.get_dbgap_var_link(study_id=elem.collection_id,
-                                                           variable_id=elem.id.split(".")[0].split("phv")[1])
+            elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
+                                                   variable_id=elem.id.split(".")[0].split("phv")[1])
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
