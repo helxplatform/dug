@@ -1087,8 +1087,8 @@ if __name__ == '__main__':
             "anat": tql.QueryFactory(["disease", "anatomical_entity"], source),
             "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], source),
             "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], source),
-            "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
-            "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
+            # "anat_to_disease": tql.QueryFactory(["anatomical_entity", "disease"], source),
+            # "anat_to_pheno": tql.QueryFactory(["anatomical_entity", "phenotypic_feature"], source)
         }
 
         # List of identifiers to stay away from for now
