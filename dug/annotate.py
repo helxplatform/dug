@@ -13,10 +13,12 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Identifier:
-    def __init__(self, id, label, types=[], search_text="", description=""):
+    def __init__(self, id, label, types=None, search_text="", description=""):
         self.id = id
         self.label = label
         self.description = description
+        if types is None:
+            types = []
         self.types = types
         self.search_text = [search_text] if search_text else []
         self.equivalent_identifiers = []
@@ -48,7 +50,15 @@ class Identifier:
 
 
 class DugAnnotator:
-    def __init__(self, preprocessor, annotator, normalizer, synonym_finder, ontology_helper, ontology_greenlist=[]):
+    def __init__(
+            self,
+            preprocessor: "Preprocessor",
+            annotator: "Annotator",
+            normalizer: "Normalizer",
+            synonym_finder: "SynonymFinder",
+            ontology_helper: "OntologyHelper",
+            ontology_greenlist=[],
+    ):
         self.preprocessor = preprocessor
         self.annotator = annotator
         self.normalizer = normalizer
@@ -185,18 +195,37 @@ class ConceptExpander:
 class Preprocessor:
     """"Class for preprocessing strings so they are better interpreted by NLP steps"""
 
-    def __init__(self, debreviator=None, stopwords=[]):
-        self.decoder = {"bmi": "body mass index", "_": " "} if debreviator is None else debreviator
+    def __init__(self, debreviator=None, stopwords=None):
+        if debreviator is None:
+            debreviator = self.default_debreviator_factory()
+        self.decoder = debreviator
+
+        if stopwords is None:
+            stopwords = []
         self.stopwords = stopwords
 
-    def preprocess(self, text):
-        # Apply debreviator to replace abbreviations and other characters
+    def preprocess(self, text: str) -> str:
+        """
+        Apply debreviator to replace abbreviations and other characters
+
+        >>> pp = Preprocessor({"foo": "bar"}, ["baz"])
+        >>> pp.preprocess("Hello foo")
+        'Hello bar'
+
+        >>> pp.preprocess("Hello baz world")
+        'Hello world'
+        """
+
         for key, value in self.decoder.items():
             text = text.replace(key, value)
 
         # Remove any stopwords
         text = " ".join([word for word in text.split() if word not in self.stopwords])
         return text
+
+    @staticmethod
+    def default_debreviator_factory():
+        return {"bmi": "body mass index", "_": " "}
 
 
 class Annotator:
@@ -238,7 +267,7 @@ class Normalizer:
         # Use RENCI's normalization API service to get the preferred version of an identifier
         logger.debug(f"Normalizing: {identifier.id}")
         curie = identifier.id
-        url = f"{self.url}{identifier}"
+        url = f"{self.url}{identifier.id}"
         normalized = http_session.get(url).json()
 
         """ Record normalized results. """
@@ -258,8 +287,8 @@ class Normalizer:
 
         logger.debug(f"Preferred id: {preferred_id}")
         identifier.id = preferred_id
-        identifier.label = preferred_id.get('label', ''),
-        identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers],
+        identifier.label = preferred_id.get('label', '')
+        identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]
         identifier.types = biolink_type
         return identifier
 
@@ -484,3 +513,7 @@ class BioLinkPURLerizer:
             return None
 
         return f"{BioLinkPURLerizer.biolink_lookup[prefix]}{suffix}"
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

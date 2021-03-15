@@ -371,7 +371,7 @@ class Crawler:
         self.make_crawlspace()
 
         # Read in elements from parser
-        self.elements = parser.parse(self.crawl_file)
+        self.elements = self.parser.parse(self.crawl_file)
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
