@@ -145,7 +145,20 @@ EOF
 pytests () {
   set -e
 
-  cd $DUG_HOME && python3 -m pytest
+  # Create the virtualenv if it doesn't exist already and
+  # install the required modules to the venv
+  if [[ ! -d $DUG_HOME/venv ]]; then
+    # TODO: Check that python3 exists before trying to use it
+    python3 -m venv $DUG_HOME/venv
+    source $DUG_HOME/venv/bin/activate
+    pip install -r $DUG_HOME/requirements.txt
+  fi
+
+  # NOTE: In certain scenarios we'll run the venv/bin/activate
+  # script twice, which is okay, since it's idempotent
+  source $DUG_HOME/venv/bin/activate
+  cd $DUG_HOME/dug/tests && python3 -m pytest
+  deactivate && cd $DUG_HOME
 
   set +e
 }
