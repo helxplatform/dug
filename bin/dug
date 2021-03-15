@@ -145,7 +145,7 @@ EOF
 pytests () {
   set -e
 
-# Create the virtualenv if it doesn't exist already and
+  # Create the virtualenv if it doesn't exist already and
   # install the required modules to the venv
   if [[ ! -d $DUG_HOME/venv ]]; then
     # TODO: Check that python3 exists before trying to use it
