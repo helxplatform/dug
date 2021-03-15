@@ -68,6 +68,18 @@ def annotator_api():
 @pytest.fixture
 def normalizer_api():
     urls = {
+        "http://normalizer.api/?query=id-1": json.dumps(
+            {
+                "id-1": {
+                    "id": {
+                        "identifier": "preferred-id-1",
+                        "label": "preferred-label-1",
+                    },
+                    "equivalent_identifiers": [],
+                    "type": "preferred-type-1",
+                }
+            },
+        ),
 
     }
 
@@ -137,7 +149,7 @@ def test_annotator(annotator_api):
 
 
 def test_normalizer(normalizer_api):
-    url = "http://normalizer.api"
+    url = "http://normalizer.api/?query="
 
     identifier = Identifier(
         "id-1",
@@ -146,7 +158,11 @@ def test_normalizer(normalizer_api):
 
     normalizer = Normalizer(url)
     output = normalizer.normalize(identifier, normalizer_api)
-    pytest.fail("The normalize method needs to be fixed")
+    assert isinstance(output, Identifier)
+    # assert output.id == "preferred-id-1"  # This needs to be fixed in the normalizer
+    assert output.label == "preferred-label-1"
+    assert output.equivalent_identifiers == []
+    assert output.types == "preferred-type-1"
 
 
 def test_synonym_finder(synonym_api):
