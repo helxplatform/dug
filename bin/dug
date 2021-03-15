@@ -145,7 +145,7 @@ EOF
 pytests () {
   set -e
 
-  cd $DUG_HOME && pytest
+  cd $DUG_HOME && python3 -m pytest
 
   set +e
 }
