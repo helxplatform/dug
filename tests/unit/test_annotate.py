@@ -6,8 +6,8 @@ from typing import Dict, List
 import pytest
 from requests import Session
 
-from dug.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper, \
-    BioLinkPURLerizer
+from dug.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
+import urllib.parse
 
 
 class ApiService:
@@ -32,10 +32,10 @@ class MockResponse:
 
 class MockApiService:
     def __init__(self, urls: Dict[str, str]):
-        self._urls = urls
+        self.urls = urls
 
     def get(self, url):
-        text = self._urls.get(url)
+        text = self.urls.get(url)
         if text is None:
             return MockResponse(text="{}", code=404)
         return MockResponse(text)
@@ -43,21 +43,133 @@ class MockApiService:
 
 @pytest.fixture
 def annotator_api():
+    base_url = "http://annotator.api/?query={query}"
+
+    def _(keyword):
+        return base_url.format(
+            query=urllib.parse.quote(keyword)
+        )
 
     urls = {
-        "http://annotator.api/?query=hello": json.dumps({
-                "spans": [
-                    {
-                        "text": "",
-                        "token": [{
-                            "id": "id-1",
-                            "category": "",
-                            "terms": ["label-1"]
-                        }]
-                    },
-                ],
-            },
-        ),
+        _("heart attack"): json.dumps({
+            "content": "heart attack",
+            "spans": [
+                {
+                    "start": 0,
+                    "end": 5,
+                    "text": "heart",
+                    "token": [
+                        {
+                            "id": "UBERON:0015230",
+                            "category": [
+                                "anatomical entity"
+                            ],
+                            "terms": [
+                                "dorsal vessel heart"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 5,
+                    "text": "heart",
+                    "token": [
+                        {
+                            "id": "UBERON:0007100",
+                            "category": [
+                                "anatomical entity"
+                            ],
+                            "terms": [
+                                "primary circulatory organ"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 5,
+                    "text": "heart",
+                    "token": [
+                        {
+                            "id": "UBERON:0015228",
+                            "category": [
+                                "anatomical entity"
+                            ],
+                            "terms": [
+                                "circulatory organ"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 5,
+                    "text": "heart",
+                    "token": [
+                        {
+                            "id": "ZFA:0000114",
+                            "category": [
+                                "anatomical entity"
+                            ],
+                            "terms": [
+                                "heart"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 5,
+                    "text": "heart",
+                    "token": [
+                        {
+                            "id": "UBERON:0000948",
+                            "category": [
+                                "anatomical entity"
+                            ],
+                            "terms": [
+                                "heart"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 12,
+                    "text": "heart attack",
+                    "token": [
+                        {
+                            "id": "MONDO:0005068",
+                            "category": [
+                                "disease"
+                            ],
+                            "terms": [
+                                "myocardial infarction (disease)"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "start": 0,
+                    "end": 12,
+                    "text": "heart attack",
+                    "token": [
+                        {
+                            "id": "HP:0001658",
+                            "category": [
+                                "phenotype",
+                                "quality"
+                            ],
+                            "terms": [
+                                "Myocardial infarction"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+    ),
     }
 
     return MockApiService(
@@ -67,16 +179,34 @@ def annotator_api():
 
 @pytest.fixture
 def normalizer_api():
+    base_url = "http://normalizer.api/?curie={curie}"
+
+    def _(curie):
+        return base_url.format(
+            curie=urllib.parse.quote(curie),
+        )
+
     urls = {
-        "http://normalizer.api/?query=id-1": json.dumps(
+        _("UBERON:0007100"): json.dumps(
             {
-                "id-1": {
+                "UBERON:0007100": {
                     "id": {
-                        "identifier": "preferred-id-1",
-                        "label": "preferred-label-1",
+                        "identifier": "UBERON:0007100",
+                        "label": "primary circulatory organ"
                     },
-                    "equivalent_identifiers": [],
-                    "type": "preferred-type-1",
+                    "equivalent_identifiers": [
+                        {
+                            "identifier": "UBERON:0007100",
+                            "label": "primary circulatory organ"
+                        }
+                    ],
+                    "type": [
+                        "biolink:AnatomicalEntity",
+                        "biolink:OrganismalEntity",
+                        "biolink:BiologicalEntity",
+                        "biolink:NamedThing",
+                        "biolink:Entity"
+                    ]
                 }
             },
         ),
@@ -90,24 +220,76 @@ def normalizer_api():
 
 @pytest.fixture
 def synonym_api():
-    return MockApiService(urls={
-        "http://synonyms.api/?query=abc": json.dumps([
-            {"desc": "synonym-1"},
-            {"desc": "synonym-2"},
-        ])
+    base_url = "http://synonyms.api/?curie={curie}"
 
+    def _(curie):
+        return base_url.format(
+            curie=urllib.parse.quote(curie),
+        )
+    return MockApiService(urls={
+        _("UBERON:0007100"): json.dumps([
+            {
+                "desc": "adult heart",
+                "scope": "RELATED",
+                "syn_type": None,
+                "xref": ""
+            }
+        ])
     })
 
 
 @pytest.fixture()
 def ontology_api():
-    return MockApiService(urls={
-        "http://ontology.api/?query=abc": json.dumps({
-            "label": "label-1",
-            "description": "desc-1",
-            "category": ["ontology-1"],
+    base_url = "http://ontology.api/?curie={curie}"
 
-        })
+    def _(curie):
+        return base_url.format(
+            curie=urllib.parse.quote(curie),
+        )
+
+    return MockApiService(urls={
+        _("UBERON:0007100"): json.dumps(
+            {
+                "taxon": {
+                    "id": None,
+                    "label": None
+                },
+                "association_counts": None,
+                "xrefs": [
+                    "SPD:0000130",
+                    "FBbt:00003154",
+                    "TADS:0000147"
+                ],
+                "description": "A hollow, muscular organ, which, by contracting rhythmically, keeps up the circulation of the blood or analogs[GO,modified].",
+                "types": None,
+                "synonyms": [
+                    {
+                        "val": "dorsal tube",
+                        "pred": "synonym",
+                        "xrefs": None
+                    },
+                    {
+                        "val": "adult heart",
+                        "pred": "synonym",
+                        "xrefs": None
+                    },
+                    {
+                        "val": "heart",
+                        "pred": "synonym",
+                        "xrefs": None
+                    }
+                ],
+                "deprecated": None,
+                "replaced_by": None,
+                "consider": None,
+                "id": "UBERON:0007100",
+                "label": "primary circulatory organ",
+                "iri": "http://purl.obolibrary.org/obo/UBERON_0007100",
+                "category": [
+                    "anatomical entity"
+                ]
+            }
+        )
     })
 
 
@@ -141,46 +323,54 @@ def test_annotator(annotator_api):
     url = "http://annotator.api/?query="
 
     annotator = Annotator(url)
-    text = "hello"
+    text = "heart attack"
     identifiers: List[Identifier] = annotator.annotate(text, annotator_api)
 
-    assert len(identifiers) == 1
+    assert len(identifiers) == 7
     assert isinstance(identifiers[0], Identifier)
 
 
 def test_normalizer(normalizer_api):
-    url = "http://normalizer.api/?query="
+    url = "http://normalizer.api/?curie="
 
     identifier = Identifier(
-        "id-1",
-        "label-1",
+        "UBERON:0007100",
+        label='primary circulatory organ',
+        types=['anatomical entity'],
+        description="",
+        search_text=['heart'],
     )
 
     normalizer = Normalizer(url)
     output = normalizer.normalize(identifier, normalizer_api)
     assert isinstance(output, Identifier)
-    # assert output.id == "preferred-id-1"  # This needs to be fixed in the normalizer
-    assert output.label == "preferred-label-1"
-    assert output.equivalent_identifiers == []
-    assert output.types == "preferred-type-1"
+    assert output.id == 'UBERON:0007100'
+    assert output.label == "primary circulatory organ"
+    assert output.equivalent_identifiers == ['UBERON:0007100']
+    assert output.types == [
+        'biolink:AnatomicalEntity', 'biolink:OrganismalEntity', 'biolink:BiologicalEntity',
+        'biolink:NamedThing', 'biolink:Entity'
+    ]
 
 
 def test_synonym_finder(synonym_api):
-    curie = "abc"
-    url = f"http://synonyms.api/?query="
+    curie = "UBERON:0007100"
+    url = f"http://synonyms.api/?curie="
 
     finder = SynonymFinder(url)
     result = finder.get_synonyms(
         curie,
         synonym_api,
     )
-    assert result == ['synonym-1', 'synonym-2']
+    assert result == ["adult heart"]
 
 
 def test_ontology_helper(ontology_api):
-    curie = "abc"
-    url = "http://ontology.api/?query="
+    curie = "UBERON:0007100"
+    url = "http://ontology.api/?curie="
 
     helper = OntologyHelper(url)
-    result = helper.get_ontology_info(curie, ontology_api)
-    assert ("label-1", "desc-1", "ontology-1") == result
+    name, description, ontology_type = helper.get_ontology_info(curie, ontology_api)
+    assert name == 'primary circulatory organ'
+    assert description == 'A hollow, muscular organ, which, by contracting rhythmically, keeps up the circulation of the blood or analogs[GO,modified].'
+    assert ontology_type == 'anatomical entity'
