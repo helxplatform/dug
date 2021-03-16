@@ -267,7 +267,7 @@ class Normalizer:
         # Use RENCI's normalization API service to get the preferred version of an identifier
         logger.debug(f"Normalizing: {identifier.id}")
         curie = identifier.id
-        url = f"{self.url}{identifier.id}"
+        url = f"{self.url}{urllib.parse.quote(identifier.id)}"
         normalized = http_session.get(url).json()
 
         """ Record normalized results. """
@@ -286,10 +286,11 @@ class Normalizer:
             return None
 
         logger.debug(f"Preferred id: {preferred_id}")
-        identifier.id = preferred_id
+        identifier.id = preferred_id.get('identifier', '')
         identifier.label = preferred_id.get('label', '')
         identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]
         identifier.types = biolink_type
+
         return identifier
 
 
