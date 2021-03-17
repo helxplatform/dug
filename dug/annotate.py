@@ -1,8 +1,12 @@
 import json
 import logging
-import urllib
+import urllib.parse
 import os
+from copy import copy
+from typing import TypeVar, Generic, Union, List, Optional
+
 import requests
+from requests import Session
 
 import dug.tranql as tql
 
@@ -228,22 +232,53 @@ class Preprocessor:
         return {"bmi": "body mass index", "_": " "}
 
 
-class Annotator:
-    def __init__(self, url):
+Input = TypeVar("Input")
+Output = TypeVar("Output")
+
+
+class ApiClient(Generic[Input, Output]):
+
+    def make_request(self, value: Input, http_session: Session):
+        raise NotImplementedError()
+
+    def handle_response(self, response: Union[dict, list]) -> Output:
+        raise NotImplementedError()
+
+    def __call__(self, value: Input, http_session: Session) -> Output:
+
+        response = self.make_request(value, http_session)
+
+        result = self.handle_response(response)
+
+        return result
+
+
+class Annotator(ApiClient[str, List[Identifier]]):
+    """
+    Use monarch API service to fetch ontology IDs found in text
+    """
+
+    def __init__(self, url: str, url_params: Optional[dict] = None):
         self.url = url
+        if url_params is None:
+            url_params = dict()
+        self.url_params = url_params
 
     def annotate(self, text, http_session):
-        # Use monarch API service to fetch ontology IDs found in text
-        # Return list of identifiers
         logger.debug(f"Annotating: {text}")
+        return self(text, http_session)
+
+    def make_request(self, value: Input, http_session: Session):
+        url = self.url
+        params = dict(content=value)
+        params.update(self.url_params)
+
+        return http_session.get(url, params=params).json()
+
+    def handle_response(self, response: dict) -> List[Identifier]:
         identifiers = []
-
-        # Call annotation service
-        url = f"{self.url}{urllib.parse.quote(text)}"
-        annotations = http_session.get(url).json()
-
         """ Parse each identifier and initialize identifier object """
-        for span in annotations.get('spans', []):
+        for span in response.get('spans', []):
             search_text = span.get('text', None)
             for token in span.get('token', []):
                 curie = token.get('id', None)
@@ -515,6 +550,8 @@ class BioLinkPURLerizer:
 
         return f"{BioLinkPURLerizer.biolink_lookup[prefix]}{suffix}"
 
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

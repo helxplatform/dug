@@ -1,57 +1,49 @@
-import json
 from copy import copy
-from dataclasses import dataclass
-from typing import Dict, List
+from typing import List
 
 import pytest
 from requests import Session
 
+from dug import config
 from dug.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
-import urllib.parse
 
 
-class ApiService:
+def test_identifier():
+    ident_1 = Identifier(
+        "PrimaryIdent:1", "first identifier", types=[], search_text="", description=""
+    )
 
-    def __init__(self, url_template: str, session: Session):
-        self.url = url_template
-        self.session = session
-
-    def __call__(self, **query_args) -> dict:
-        url = self.url.format(**query_args)
-        return self.session.get(url).json()
+    assert "PrimaryIdent" == ident_1.id_type
 
 
-@dataclass
-class MockResponse:
-    text: str
-    code: int = 200
+@pytest.mark.parametrize(
+    "preprocessor,input_text,expected_text",
+    [
+        (Preprocessor(), "Hello_world", "Hello world"),
+        (Preprocessor({"Hello": "Hi"}, ["placeholder"]), "Hello placeholder world", "Hi world"),
+    ]
+)
+def test_preprocessor_preprocess(preprocessor, input_text, expected_text):
+    original_text = copy(input_text)
+    output_text = preprocessor.preprocess(input_text)
 
-    def json(self):
-        return json.loads(self.text)
-
-
-class MockApiService:
-    def __init__(self, urls: Dict[str, str]):
-        self.urls = urls
-
-    def get(self, url):
-        text = self.urls.get(url)
-        if text is None:
-            return MockResponse(text="{}", code=404)
-        return MockResponse(text)
+    assert input_text == original_text  # Don't modify in-place
+    assert output_text == expected_text
 
 
-@pytest.fixture
-def annotator_api():
-    base_url = "http://annotator.api/?query={query}"
+def test_annotator_init():
+    url = config.annotator["url"]
+    url_params = config.annotator["url_params"]
 
-    def _(keyword):
-        return base_url.format(
-            query=urllib.parse.quote(keyword)
-        )
+    annotator = Annotator(**config.annotator)
+    assert annotator.url == url
+    assert annotator.url_params == url_params
 
-    urls = {
-        _("heart attack"): json.dumps({
+
+def test_annotator_handle_response():
+    annotator = Annotator('foo', {})
+
+    response = {
             "content": "heart attack",
             "spans": [
                 {
@@ -168,161 +160,20 @@ def annotator_api():
                     ]
                 }
             ]
-        },
-    ),
-    }
+        }
 
-    return MockApiService(
-        urls=urls,
-    )
+    identifiers: List[Identifier] = annotator.handle_response(response)
 
-
-@pytest.fixture
-def normalizer_api():
-    base_url = "http://normalizer.api/?curie={curie}"
-
-    def _(curie):
-        return base_url.format(
-            curie=urllib.parse.quote(curie),
-        )
-
-    urls = {
-        _("UBERON:0007100"): json.dumps(
-            {
-                "UBERON:0007100": {
-                    "id": {
-                        "identifier": "UBERON:0007100",
-                        "label": "primary circulatory organ"
-                    },
-                    "equivalent_identifiers": [
-                        {
-                            "identifier": "UBERON:0007100",
-                            "label": "primary circulatory organ"
-                        }
-                    ],
-                    "type": [
-                        "biolink:AnatomicalEntity",
-                        "biolink:OrganismalEntity",
-                        "biolink:BiologicalEntity",
-                        "biolink:NamedThing",
-                        "biolink:Entity"
-                    ]
-                }
-            },
-        ),
-
-    }
-
-    return MockApiService(
-        urls=urls,
-    )
+    assert len(identifiers) == 7
+    assert isinstance(identifiers[0], Identifier)
 
 
-@pytest.fixture
-def synonym_api():
-    base_url = "http://synonyms.api/?curie={curie}"
+def test_annotator_call(annotator_api):
+    url = "http://annotator.api/"
+    url_params = None
 
-    def _(curie):
-        return base_url.format(
-            curie=urllib.parse.quote(curie),
-        )
-    return MockApiService(urls={
-        _("UBERON:0007100"): json.dumps([
-            {
-                "desc": "adult heart",
-                "scope": "RELATED",
-                "syn_type": None,
-                "xref": ""
-            }
-        ])
-    })
+    annotator = Annotator(url, url_params)
 
-
-@pytest.fixture()
-def ontology_api():
-    base_url = "http://ontology.api/?curie={curie}"
-
-    def _(curie):
-        return base_url.format(
-            curie=urllib.parse.quote(curie),
-        )
-
-    return MockApiService(urls={
-        _("UBERON:0007100"): json.dumps(
-            {
-                "taxon": {
-                    "id": None,
-                    "label": None
-                },
-                "association_counts": None,
-                "xrefs": [
-                    "SPD:0000130",
-                    "FBbt:00003154",
-                    "TADS:0000147"
-                ],
-                "description": "A hollow, muscular organ, which, by contracting rhythmically, keeps up the circulation of the blood or analogs[GO,modified].",
-                "types": None,
-                "synonyms": [
-                    {
-                        "val": "dorsal tube",
-                        "pred": "synonym",
-                        "xrefs": None
-                    },
-                    {
-                        "val": "adult heart",
-                        "pred": "synonym",
-                        "xrefs": None
-                    },
-                    {
-                        "val": "heart",
-                        "pred": "synonym",
-                        "xrefs": None
-                    }
-                ],
-                "deprecated": None,
-                "replaced_by": None,
-                "consider": None,
-                "id": "UBERON:0007100",
-                "label": "primary circulatory organ",
-                "iri": "http://purl.obolibrary.org/obo/UBERON_0007100",
-                "category": [
-                    "anatomical entity"
-                ]
-            }
-        )
-    })
-
-
-def test_identifier():
-
-    ident_1 = Identifier(
-        "PrimaryIdent:1", "first identifier", types=[], search_text="", description=""
-    )
-
-    assert "PrimaryIdent" == ident_1.id_type
-
-
-@pytest.mark.parametrize(
-    "preprocessor,input_text,expected_text",
-    [
-        (Preprocessor(), "Hello_world", "Hello world"),
-        (Preprocessor({"Hello": "Hi"}, ["placeholder"]), "Hello placeholder world", "Hi world"),
-    ]
-
-)
-def test_preprocessor_preprocess(preprocessor, input_text, expected_text):
-
-    original_text = copy(input_text)
-    output_text = preprocessor.preprocess(input_text)
-
-    assert input_text == original_text  # Don't modify in-place
-    assert output_text == expected_text
-
-
-def test_annotator(annotator_api):
-    url = "http://annotator.api/?query="
-
-    annotator = Annotator(url)
     text = "heart attack"
     identifiers: List[Identifier] = annotator.annotate(text, annotator_api)
 
