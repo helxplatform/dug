@@ -20,12 +20,12 @@ preprocessor = {
 
 # Annotator config that will be passed to annotate.Annotator constructor
 annotator = {
-    'url': "https://api.monarchinitiative.org/api/nlp/annotate/entities",
+    'url': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
 }
 
 # Normalizer config that will be passed to annotate.Normalizer constructor
 normalizer = {
-   'url': "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
+    'url': "https://nodenormalization-sri.renci.org/get_normalized_nodes?curie="
 }
 
 # Synonym service config that will be passed to annotate.SynonymHelper constructor
