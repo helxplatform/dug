@@ -2,7 +2,6 @@ from copy import copy
 from typing import List
 
 import pytest
-from requests import Session
 
 from dug import config
 from dug.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
@@ -33,15 +32,13 @@ def test_preprocessor_preprocess(preprocessor, input_text, expected_text):
 
 def test_annotator_init():
     url = config.annotator["url"]
-    url_params = config.annotator["url_params"]
 
     annotator = Annotator(**config.annotator)
     assert annotator.url == url
-    assert annotator.url_params == url_params
 
 
 def test_annotator_handle_response():
-    annotator = Annotator('foo', {})
+    annotator = Annotator('foo')
 
     response = {
             "content": "heart attack",
@@ -162,17 +159,16 @@ def test_annotator_handle_response():
             ]
         }
 
-    identifiers: List[Identifier] = annotator.handle_response(response)
+    identifiers: List[Identifier] = annotator.handle_response(None, response)
 
     assert len(identifiers) == 7
     assert isinstance(identifiers[0], Identifier)
 
 
 def test_annotator_call(annotator_api):
-    url = "http://annotator.api/"
-    url_params = None
+    url = "http://annotator.api/?content="
 
-    annotator = Annotator(url, url_params)
+    annotator = Annotator(url)
 
     text = "heart attack"
     identifiers: List[Identifier] = annotator.annotate(text, annotator_api)
