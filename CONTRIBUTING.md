@@ -10,6 +10,9 @@ pip install -r requirements.txt
 pip install .
 ```
 
+## Env Vars
+
+Running `bin/dug dev init` will set up a .env file with the necessary environment variables that Dug needs
 ## Testing
 
 Tests are developed using [pytest]().
@@ -52,7 +55,6 @@ bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv
 Now that you have crawled some data, 
 
 ```shell
-source docker/dev.env
 python3 -m dug.api
 ```
 
