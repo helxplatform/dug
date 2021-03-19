@@ -1,8 +1,12 @@
 import json
 import logging
-import urllib
+import urllib.parse
 import os
+from copy import copy
+from typing import TypeVar, Generic, Union, List, Optional, Tuple
+
 import requests
+from requests import Session
 
 import dug.tranql as tql
 
@@ -228,22 +232,48 @@ class Preprocessor:
         return {"bmi": "body mass index", "_": " "}
 
 
-class Annotator:
-    def __init__(self, url):
+Input = TypeVar("Input")
+Output = TypeVar("Output")
+
+
+class ApiClient(Generic[Input, Output]):
+
+    def make_request(self, value: Input, http_session: Session):
+        raise NotImplementedError()
+
+    def handle_response(self, value, response: Union[dict, list]) -> Output:
+        raise NotImplementedError()
+
+    def __call__(self, value: Input, http_session: Session) -> Output:
+        response = self.make_request(value, http_session)
+
+        result = self.handle_response(value, response)
+
+        return result
+
+
+class Annotator(ApiClient[str, List[Identifier]]):
+    """
+    Use monarch API service to fetch ontology IDs found in text
+    """
+
+    def __init__(self, url: str):
         self.url = url
 
     def annotate(self, text, http_session):
-        # Use monarch API service to fetch ontology IDs found in text
-        # Return list of identifiers
         logger.debug(f"Annotating: {text}")
+        return self(text, http_session)
+
+    def make_request(self, value: Input, http_session: Session):
+        value = urllib.parse.quote(value)
+        url = f'{self.url}{value}'
+
+        return http_session.get(url).json()
+
+    def handle_response(self, value, response: dict) -> List[Identifier]:
         identifiers = []
-
-        # Call annotation service
-        url = f"{self.url}{urllib.parse.quote(text)}"
-        annotations = http_session.get(url).json()
-
         """ Parse each identifier and initialize identifier object """
-        for span in annotations.get('spans', []):
+        for span in response.get('spans', []):
             search_text = span.get('text', None)
             for token in span.get('token', []):
                 curie = token.get('id', None)
@@ -259,18 +289,24 @@ class Annotator:
         return identifiers
 
 
-class Normalizer:
+class Normalizer(ApiClient[Identifier, Identifier]):
     def __init__(self, url):
         self.url = url
 
-    def normalize(self, identifier, http_session):
+    def normalize(self, identifier: Identifier, http_session: Session):
         # Use RENCI's normalization API service to get the preferred version of an identifier
         logger.debug(f"Normalizing: {identifier.id}")
-        curie = identifier.id
-        url = f"{self.url}{urllib.parse.quote(identifier.id)}"
-        normalized = http_session.get(url).json()
+        return self(identifier, http_session)
 
+    def make_request(self, value: Identifier, http_session: Session) -> dict:
+        curie = value.id
+        url = f"{self.url}{urllib.parse.quote(curie)}"
+        normalized = http_session.get(url).json()
+        return normalized
+
+    def handle_response(self, identifier: Identifier, normalized: dict) -> Identifier:
         """ Record normalized results. """
+        curie = identifier.id
         normalization = normalized.get(curie, {})
         if normalization is None:
             logger.error(f"Normalization service did not return normalization for: {curie}")
@@ -294,49 +330,59 @@ class Normalizer:
         return identifier
 
 
-class SynonymFinder:
-    def __init__(self, url):
+class SynonymFinder(ApiClient[str, List[str]]):
+
+    def __init__(self, url: str):
         self.url = url
 
-    def get_synonyms(self, curie, http_session):
+    def get_synonyms(self, curie: str, http_session):
         '''
         This function uses the NCATS translator service to return a list of synonyms for
         curie id
         '''
 
+        return self(curie, http_session)
+
+    def make_request(self, curie: str, http_session: Session):
+
         # Get response from synonym service
         url = f"{self.url}{urllib.parse.quote(curie)}"
 
         try:
-            raw_synonyms = http_session.get(url).json()
-
-            # List comprehension unpack all synonyms into a list
-            return [synonym['desc'] for synonym in raw_synonyms]
-
+            response = http_session.get(url).json()
+            return response
         except json.decoder.JSONDecodeError as e:
             logger.error(f"No synonyms returned for: {curie}")
             return []
 
+    def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
+        # List comprehension unpack all synonyms into a list
+        return [synonym['desc'] for synonym in raw_synonyms]
 
-class OntologyHelper:
+
+class OntologyHelper(ApiClient[str, Tuple[str, str, str]]):
     def __init__(self, url):
         self.url = url
 
-    def get_ontology_info(self, curie, http_session):
+    def make_request(self, curie: str, http_session: Session):
         url = f"{self.url}{urllib.parse.quote(curie)}"
         try:
             response = http_session.get(url).json()
-
-            # List comprehension for synonyms
-            name = response.get('label', '')
-            description = '' if not response.get('description', None) else response.get('description', '')
-            ontology_type = '' if not response.get('category', None) else response.get('category', '')[0]
-
-            return name, description, ontology_type
-
+            return response
         except json.decoder.JSONDecodeError as e:
             logger.error(f"No labels returned for: {curie}")
-            return '', '', ''
+            return {}
+
+    def handle_response(self, curie: str, response: dict) -> Tuple[str,str,str]:
+        # List comprehension for synonyms
+        name = response.get('label', '')
+        description = '' if not response.get('description', None) else response.get('description', '')
+        ontology_type = '' if not response.get('category', None) else response.get('category', '')[0]
+
+        return name, description, ontology_type
+
+    def get_ontology_info(self, curie, http_session):
+        return self(curie, http_session)
 
 
 class BioLinkPURLerizer:
@@ -515,6 +561,8 @@ class BioLinkPURLerizer:
 
         return f"{BioLinkPURLerizer.biolink_lookup[prefix]}{suffix}"
 
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
