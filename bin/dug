@@ -197,11 +197,25 @@ query_nboost () {
 #############################################################
 query_var_api () {
      concept_id=$1
-     query="`echo '{"index" : "variable_index", "query" : "'${@:2}'", "concept" : "'$concept_id'"}'`"
+     size=$2
+     data_type=$3
+     query="`echo '{"index" : "variables_index", "query" : "'${@:4}'", "concept" : "'$concept_id'", "data_type" : "'$data_type'", "size": '$size'}'`"
      curl --data "$query" \
            --header "Content-Type: application/json" \
            --request POST \
            http://localhost:5551/search_var
+}
+
+#############################################################
+##
+## Data_Types_API: Return the aggregate data types of all elements.
+##
+#############################################################
+query_datatypes_api () {
+     curl --data '{"index": "variables_index"}' \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/agg_data_types
 }
 
 #############################################################

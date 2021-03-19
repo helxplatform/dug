@@ -243,10 +243,32 @@ class DugSearchVarResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
+
+class DugAggDataType(DugResource):
+    """ Execute a search """
+
+    """ System initiation. """
+
+    def post(self):
+        logger.debug(f"data_type:{json.dumps(request.json)}")
+        response = {}
+        try:
+            app.logger.info(f"data_type: {json.dumps(request.json, indent=2)}")
+            self.validate(request, component="Search")
+            response = self.create_response(
+                result=dug().agg_data_type(**request.json),
+                message=f"Aggregate result")
+        except Exception as e:
+            response = self.create_response(
+                exception=e,
+                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+        return response
+
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
 api.add_resource(DugSearchKGResource, '/search_kg')
 api.add_resource(DugSearchVarResource, '/search_var')
+api.add_resource(DugAggDataType, '/agg_data_types')
 
 if __name__ == "__main__":
    parser = argparse.ArgumentParser(description='Dug Search API')
