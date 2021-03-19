@@ -7,7 +7,11 @@ To install from source code:
 ```shell
 git clone git@github.com:helxplatform/dug.git && cd dug
 pip install -r requirements.txt
-pip install .
+
+bin/dug init
+
+# Forthcoming: 
+# pip install -e .
 ```
 
 ## Env Vars
