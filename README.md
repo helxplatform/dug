@@ -9,62 +9,6 @@ While other approaches to searching this data exist, our focus is semantic searc
 
 To achieve this, we annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) allowing study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
 
-## Installation
-
-### PyPI
-Dug is published on Python Packaging Index and can be installed with `pip install dug-test`
-
-### Source
-To install from source code:
-
-```shell
-git clone git@github.com:helxplatform/dug.git && cd dug
-pip install -r requirements.txt
-pip install .
-```
-
-## Testing
-
-Tests are developed using [pytest](). 
-
-The test suite includes doctests, unit tests in `tests/unit`, and integration tests in `tests/integration`.
-The doctests and unit tests will always be runnable, but many of the integration tests expect some backend service (e.g. elasticsearch) to be running.
-
-The entire test suite can be run with `python -m pytest` or, to only run unit tests, `python -m pytest tests/unit`
-
-## Usage
-
-### Backend
-
-Dug uses several backend services
-
-```shell
-cd docker
-docker-compose --env-file dev.env -f docker-compose.yaml up elasticsearch nboost neo4j redis
-```
-
-## Crawling
-```shell
-source docker/dev.env
-python3 -m dug.core --crawl
-```
-
-```shell
-python -m dug.core --crawl-by-concept --crawl-file data/topmed_variables_v1.0.csv
-```
-
-`bin/dug crawl_by_concept --crawl-file data/topmed_variables_v1.0.csv`
-
-## API server
-
-Now that you have crawled some data, 
-
-```shell
-source docker/dev.env
-python3 -m dug.api
-```
-
-
 ## The Dug Framework
 
 Dug's **ingest** uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search. It uses Monarch Initiative APIs to perform named entity recognition on natural language prose to extract ontology identifiers. It also uses Translator normalization services to find preferred identifiers and Biolink types for each extracted identifier. The final step of ingest is to represent the annotated data in a Neo4J graph database.
