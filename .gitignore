@@ -4,8 +4,7 @@ kubernetes/create-dug-secret-out.log
 kubernetes/dug-configmap.properties
 kubernetes/dug-secrets.properties
 venv
-kgx
-dug/.mypy_cache
+src/dug/.mypy_cache
 *.pyc
 db/*
 dug-search-client
@@ -22,3 +21,6 @@ anno_fails.txt
 
 # PyEnv
 .python-version
+
+# Build
+**/*.egg-info

@@ -588,7 +588,7 @@ def get_parser(parser_type):
         raise ParserNotFoundException(err_msg)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='DUG-Search Crawler')
 
     # Add option for crawl file
@@ -687,3 +687,7 @@ if __name__ == '__main__':
                                        kg_answer=kg_answer,
                                        index=kg_index,
                                        id_suffix=kg_answer_id)
+
+
+if __name__ == '__main__':
+    main()

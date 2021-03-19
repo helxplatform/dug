@@ -3,12 +3,11 @@ import json
 import jsonschema
 import logging
 import os
-import requests
 import sys
 import traceback
 import yaml
 from flasgger import Swagger
-from flask import Flask, jsonify, g, Response, request
+from flask import Flask, g, Response, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from dug.core import Search

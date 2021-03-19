@@ -1,7 +1,5 @@
-import pytest
-
 from dug.annotate import Identifier
-from dug.parsers import DugElement, DugConcept, DbGaPParser
+from dug.parsers import DugElement, DugConcept
 
 
 def test_dug_concept():

@@ -125,6 +125,7 @@ class DbGaPParser:
 
     @staticmethod
     def parse(input_file):
+        logger.debug(input_file)
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']

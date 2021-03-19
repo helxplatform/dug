@@ -1,3 +1,4 @@
+#!/bin/bash
 #############################################################
 ##
 ## Dug is semantic search framework for digging in dark data
@@ -33,21 +34,15 @@
 ##       usage: bin/dug test
 ##
 #############################################################
-#!/bin/bash
 
 # Configure the PYTHONPATH
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DUG_HOME=$( dirname $DIR )
 DUGENV=$DUG_HOME/docker/.env
-export PYTHONPATH=$DUG_HOME:$DUG_HOME/kgx
+export PYTHONPATH=$DUG_HOME
 
 # for debugging
 set -x
-
-# Ensure the KGX library is installed
-if [ ! -d $DUG_HOME/kgx ]; then
-    git clone https://github.com/NCATS-Tangerine/kgx.git $DUG_HOME/kgx
-fi
 
 # Development environment.
 dev () {
