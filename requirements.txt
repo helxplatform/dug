@@ -36,7 +36,7 @@ ipywidgets==7.5.1
 isodate==0.6.0
 itsdangerous==1.1.0
 jedi==0.16.0
-Jinja2==2.11.1
+Jinja2==2.11.3
 jsonasobj==1.2.1
 jsonschema==3.2.0
 jupyter==1.0.0
