@@ -91,13 +91,21 @@ crawl () {
 #############################################################
 crawl_dir () {
     input_dir=$1
+    parser_type=$2
+    element_type=$3
+    
+    # set element_type to parser_type if not set
+    if [ -z "$element_type"]; then
+        element_type=$parser_type
+    fi
+    
     # Report how many files are in dir
     echo "Crawling directory: $1"
     init_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
     echo "Found $init_files files to crawl"
 
     # Loop through all files that match pattern, do crawl by concept, and then delete file if finished successfully
-    find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' -exec python -m dug.core --crawl-file {} \; -exec rm {} \;
+    find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' -exec python -m dug.core --crawl-file {} --parser-type $parser_type --element-type $element_type \; -exec rm {} \;
 
     # Count total number of files left that match pattern
     final_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
