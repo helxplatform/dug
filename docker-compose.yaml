@@ -30,8 +30,8 @@ services:
                      "--workers=$API_WORKERS", "--name=dug",
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
                      "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "dug.api:app" ]
-    volumes:
-      - $PWD/dug:/home/dug/dug/dug/
+#    volumes:
+#      - $PWD/dug:/home/dug/dug/dug/
     ports:
       - $API_PORT:$API_PORT
 
