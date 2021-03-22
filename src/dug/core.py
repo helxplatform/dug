@@ -569,7 +569,7 @@ class Crawler:
 
                 # Fetch kg and answer
                 kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
-                answers = tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
+                answers = self.tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
 
                 # Add any answer knowledge graphs to
                 for answer in answers:

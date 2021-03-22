@@ -1,0 +1,109 @@
+version: '3.0'
+
+#################################################################################
+##
+## A service stack for the Dug semantic search framework.
+##
+#################################################################################
+services:
+
+  #################################################################################
+  ##
+  ## The OpenAPI endpoint for search. This is the only service to be
+  ## exposed beyond the internal network.
+  ##
+  #################################################################################
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    networks:
+      - dug-network
+    environment:
+      ELASTIC_API_HOST: "$ELASTIC_API_HOST"
+      NBOOST_API_HOST: "$NBOOST_API_HOST"
+      ELASTIC_PASSWORD: "$ELASTIC_PASSWORD"
+      FLASK_ENV: "development"
+      PYTHONUNBUFFERED: "TRUE"
+    entrypoint: [ "gunicorn",
+                     "--workers=$API_WORKERS", "--name=dug",
+                     "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
+                     "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "dug.api:app" ]
+    volumes:
+      - $PWD/dug:/home/dug/dug/dug/
+    ports:
+      - $API_PORT:$API_PORT
+
+  #################################################################################
+  ##
+  ## A search engine providing scalable indexing and full text search.
+  ##
+  #################################################################################
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    networks:
+      - dug-network
+    environment:
+      - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+    volumes:
+      - $ELASTIC_DATA:/bitnami/elasticsearch/data
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+
+  #################################################################################
+  ##
+  ## A graph database provides query over linked data to drive indexing.
+  ##
+  #################################################################################
+  neo4j:
+    image: bitnami/neo4j:3.5.14
+    networks:
+      - dug-network
+    environment:
+      - NEO4J_PASSWORD=$NEO4J_PASSWORD
+      - NEO4J_HOST=$HOSTNAME
+    volumes:
+      - $NEO4J_DATA:/bitnami
+    ports:
+      - '7474:7474'
+      - '7473:7473'
+      - '7687:7687'
+
+  #################################################################################
+  ##
+  ## A memory cache for results of high volume service requests.
+  ##
+  #################################################################################
+  redis:
+    image: 'bitnami/redis:5.0.8'
+    networks:
+      - dug-network
+    environment:
+      - REDIS_PASSWORD=$REDIS_PASSWORD
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    volumes:
+      - $REDIS_DATA:/bitnami/redis/data
+    ports:
+      - '6379:6379'
+
+  #################################################################################
+  ##
+  ## A scalable, search-engine-boosting platform for developing models to improve
+  ## search results.
+  ##
+  #################################################################################
+  nboost:
+    image: koursaros/nboost:0.3.9-pt
+    networks:
+      - dug-network
+    ports:
+      - '8000:8000'
+
+networks:
+  dug-network:
+    driver: bridge
+
