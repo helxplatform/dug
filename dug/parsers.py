@@ -205,7 +205,7 @@ class TOPMedTagParser:
                 elem = DugElement(elem_id=row['variable_full_accession'],
                                   name=row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
                                   desc=row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
-                                  elem_type="TOPMedTag",
+                                  elem_type="DbGaP",
                                   collection_id=row['study_full_accession'],
                                   collection_name=row['study_name'])
 
