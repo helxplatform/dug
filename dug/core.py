@@ -372,7 +372,7 @@ class Search:
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
-        if self.es.exists(index,concept['id']):
+        if self.es.exists(index,concept.id):
             return
         """ Index the document. """
         self.index_doc(
