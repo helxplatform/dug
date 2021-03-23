@@ -17,11 +17,14 @@ def is_elastic_up():
     ]
     username = os.environ.get('ELASTIC_USERNAME')
     password = os.environ.get('ELASTIC_PASSWORD')
-    es = Elasticsearch(
-        hosts=hosts,
-        http_auth=(username, password)
-    )
-    return es.ping()
+    try:
+        es = Elasticsearch(
+            hosts=hosts,
+            http_auth=(username, password)
+        )
+        return es.ping()
+    except Exception as _e:
+        return False
 
 
 @pytest.mark.skipif(not is_elastic_up(), reason="ElasticSearch is down")
