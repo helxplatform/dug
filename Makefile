@@ -16,18 +16,15 @@ install:
 	${PYTHON} -m pip install -r requirements.txt
 	${PYTHON} -m pip install -e .
 
-reinstall: clean install
-
 test:
 	# TODO spin up docker-compose backend for integration tests?
 	${PYTHON} -m pytest tests/unit
 
-build: reinstall test
+build:
 	${PYTHON} -m pip install --upgrade build
 	${PYTHON} -m build --sdist --wheel .
 
-image: reinstall test
+image:
 	docker build -t dug-make-test:${VERSION} -f Dockerfile .
 
-stack:
-	docker-compose up api
+all: clean install test build image
