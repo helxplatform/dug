@@ -17,6 +17,11 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    depends_on:
+      - elasticsearch
+      - neo4j
+      - redis
+      - nboost
     restart: always
     networks:
       - dug-network

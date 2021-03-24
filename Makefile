@@ -21,5 +21,5 @@ image:
 	# TODO get version from src/dug/_version.py
 	docker build -t dug-make-test:${VERSION} -f Dockerfile .
 
-backend:
-	docker-compose up elasticsearch, nboost, neo4j, redis
+stack:
+	docker-compose up api
