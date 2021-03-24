@@ -10,3 +10,8 @@ db
 # Python Envs
 .venv
 .python-version
+
+# Build artifacts
+build/
+dist/
+**/*.egg-info
