@@ -125,7 +125,7 @@ class QueryKG:
         # TODO: Make this parse out old-style json so ui doesn't break
         old_kg_model = {
             "knowledge_map": [],
-            "knowlege_graph": {
+            "knowledge_graph": {
                 "nodes": [],
                 "edges": [],
             },
@@ -162,8 +162,8 @@ class QueryKG:
                     old_binding[binding_type][q_id] = old_binding[binding_type].get(q_id,[])
                     old_binding[binding_type][q_id] = kg_ids
             old_kg_model["knowledge_map"].append(old_binding)
-        old_kg_model["knowlege_graph"]["nodes"] = self.get_nodes()
-        old_kg_model["knowlege_graph"]["edges"] = self.get_edges()
+        old_kg_model["knowledge_graph"]["nodes"] = self.get_nodes()
+        old_kg_model["knowledge_graph"]["edges"] = self.get_edges()
         return old_kg_model
 
 
