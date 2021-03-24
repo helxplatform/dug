@@ -1,6 +1,6 @@
 PYTHON       := /usr/bin/env python3
 VERSION_FILE := ./src/dug/_version.py
-VERSION      := $(shell cat ${VERSION_FILE} | cut -d " " -f 3)
+VERSION      := $(shell cut -d " " -f 3 ${VERSION_FILE})
 
 .PHONY: install clean test build image stack publish
 
