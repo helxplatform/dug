@@ -7,6 +7,7 @@ VERSION      := $(shell cat ${VERSION_FILE} | cut -d " " -f 3)
 clean:
 	rm -rf build
 	rm -rf dist
+	rm -rf src/dug.egg-info
 	${PYTHON} -m pip uninstall -y dug
 	${PYTHON} -m pip uninstall -y -r requirements.txt
 
@@ -15,15 +16,17 @@ install:
 	${PYTHON} -m pip install -r requirements.txt
 	${PYTHON} -m pip install -e .
 
+reinstall: clean install
+
 test:
 	# TODO spin up docker-compose backend for integration tests?
 	${PYTHON} -m pytest tests/unit
 
-build: clean install test
+build: reinstall test
 	${PYTHON} -m pip install --upgrade build
 	${PYTHON} -m build --sdist --wheel .
 
-image: clean install test
+image: reinstall test
 	docker build -t dug-make-test:${VERSION} -f Dockerfile .
 
 stack:
