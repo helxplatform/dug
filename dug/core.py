@@ -76,12 +76,20 @@ class Search:
                 "number_of_replicas": 0
             },
             "mappings": {
+                "dynamic": "strict",
                 "properties": {
-                    "name": {
-                        "type": "text"
+                    "concept_id": {
+                        "type": "text",
+                        "fields": {
+                            "keyword": {
+                                "type": "keyword"
+                            }
+                        }
                     },
-                    "type": {
-                        "type": "text"
+                    "search_targets": {"type": "text"},
+                    "knowledge_graph": {
+                        "type": "object",
+                        "enabled": False
                     }
                 }
             }
@@ -569,7 +577,7 @@ class Crawler:
 
                 # Fetch kg and answer
                 kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
-                answers = tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
+                answers = self.tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
 
                 # Add any answer knowledge graphs to
                 for answer in answers:

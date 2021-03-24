@@ -149,7 +149,7 @@ class ConceptExpander:
                 data=query).json()
 
             # Case: Skip if empty KG
-            if not len(response['knowledge_graph']['nodes']):
+            if not len(response["message"]['knowledge_graph']['nodes']):
                 logging.debug(f"Did not find a knowledge graph for {query}")
                 return []
 
