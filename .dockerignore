@@ -1,0 +1,12 @@
+db
+
+# Intellij
+.idea
+
+# Git
+.git
+.gitignore
+
+# Python Envs
+.venv
+.python-version
