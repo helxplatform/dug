@@ -70,7 +70,7 @@ class QueryKG:
 
     def get_node(self, node_id, include_node_keys=[]):
         # Return node with optionally subsetted information
-        # Trapi 1.0 has {"id": "xxx", "name": "xxx", "attributes" : {"name": "publication", "value": "xxx",...}}
+        # Trapi 1.0 has {"id": "xxx", "name": "xxx", "attributes" : [{"name": "publication", "value": "xxx"...}, {},...]}
         node = self._parse_attributes(self.nodes[node_id])
         node.update({k: v for k, v in self.nodes[node_id].items() if k != "attributes"})
 
