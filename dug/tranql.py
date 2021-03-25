@@ -87,6 +87,7 @@ class QueryKG:
         edge.update({k: v for k, v in self.edges[edge_id].items() if k != "attributes"})
 
         edge["id"] = edge_id
+        edge["publications"] = edge.get("publications", [])
         # Optionally subset to include only certain info
         if include_edge_keys:
             edge = {key: edge.get(key) for key in include_edge_keys}
