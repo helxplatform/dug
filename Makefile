@@ -2,7 +2,9 @@ PYTHON       := /usr/bin/env python3
 VERSION_FILE := ./src/dug/_version.py
 VERSION      := $(shell cut -d " " -f 3 ${VERSION_FILE})
 
-.PHONY: install clean test build image stack publish
+.PHONY: clean install test build image
+
+all: clean install test build image
 
 clean:
 	rm -rf build
@@ -26,5 +28,3 @@ build:
 
 image:
 	docker build -t dug-make-test:${VERSION} -f Dockerfile .
-
-all: clean install test build image
