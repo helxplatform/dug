@@ -18,7 +18,7 @@ MarkupSafe==1.1.1
 mistune==0.8.4
 pyrsistent==0.16.0
 pytz==2019.3
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.23.0
 six==1.14.0
 urllib3==1.25.8
