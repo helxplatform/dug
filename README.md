@@ -9,6 +9,67 @@ While other approaches to searching this data exist, our focus is semantic searc
 
 To achieve this, we annotate study metadata with terms from [biomedical ontologies](http://www.obofoundry.org/), contextualize them within a unifying [upper ontology](https://biolink.github.io/biolink-model/) allowing study data to be federated with [larger knowledge graphs](https://researchsoftwareinstitute.github.io/data-translator/), and create a full text search index based on those knowledge graphs.
 
+## Quickstart
+
+To install Dug in your local environment , run `make install`.
+Alternatively, 
+
+```shell
+pip install -r requirements.txt
+pip install -e .
+```
+
+To run the tests , run `make test`. Alternatively,
+
+```shell
+pytest .
+```
+
+(The makefile currently only executes unit tests,
+whereas running pytest in the root directory will execute unit tests, integration tests, and doctests)
+
+To bring up the backend services, first configure environment variables:
+
+```shell
+DATA_DIR=/path/to/dug-data-storage envsubst < .env.template > .env
+```
+
+Then you can bring up the stack in docker-compose:
+
+```shell
+docker-compose up
+```
+
+If you're running outside the docker container, you have to make sure the env vars are set.
+Also, make sure all hostnames are correct for the environment you're running in. For example:
+
+```shell
+source .env
+NEO4J_HOST=localhost
+ELASTIC_API_HOST=localhost
+REDIS_HOST=localhost
+```
+
+(These values are already set up correctly in the running docker container if using docker-compose)
+
+Then you can actually run the crawler:
+
+```shell
+dug --crawl-file data/test_variables_v1.0.csv --parser-type="TOPMedTag"
+````
+
+After crawling, you can query Dug's REST API:
+```shell
+query="`echo '{"index" : "concepts_index", "query" : "heart attack"}'`"
+
+curl --data "$query" \
+     --header "Content-Type: application/json" \
+     --request POST \
+     http://localhost:5551/search
+```
+
+There is no CLI interface to search currently yet. 
+
 ## The Dug Framework
 
 Dug's **ingest** uses the [Biolink](https://biolink.github.io/biolink-model/) upper ontology to annotate knowledge graphs and structure queries used to drive full text indexing and search. It uses Monarch Initiative APIs to perform named entity recognition on natural language prose to extract ontology identifiers. It also uses Translator normalization services to find preferred identifiers and Biolink types for each extracted identifier. The final step of ingest is to represent the annotated data in a Neo4J graph database.
