@@ -164,7 +164,13 @@ class QueryKG:
                     old_binding[binding_type][q_id] = kg_ids
             old_kg_model["knowledge_map"].append(old_binding)
         old_kg_model["knowledge_graph"]["nodes"] = self.get_nodes()
+        for node in old_kg_model["knowledge_graph"]["nodes"]:
+            # adds id for node name if no name is present
+            node["name"] = node["name"] if node["name"] else node["id"]
         old_kg_model["knowledge_graph"]["edges"] = self.get_edges()
+        for edge in old_kg_model["knowledge_graph"]["edges"]:
+            # adds predicate as type for edges
+            edge["type"] = edge["predicate"]
         return old_kg_model
 
 
