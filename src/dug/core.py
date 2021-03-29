@@ -1,4 +1,13 @@
+import argparse
 import json
+import logging
+import os
+import traceback
+
+import pluggy
+import redis
+import requests
+from elasticsearch import Elasticsearch
 import logging
 import os
 import sys
@@ -11,9 +20,10 @@ import requests
 from elasticsearch import Elasticsearch
 from requests_cache import CachedSession
 
-import dug.annotate as anno
-import dug.config as cfg
-import dug.parsers as parsers
+from dug import annotate as anno
+from dug import config as cfg
+from dug import hookspecs
+from dug import parsers
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -22,6 +32,14 @@ stdout_log_handler.setFormatter(formatter)
 logger.addHandler(stdout_log_handler)
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
+
+
+def get_plugin_manager() -> pluggy.PluginManager:
+    pm = pluggy.PluginManager("dug")
+    pm.add_hookspecs(hookspecs)
+    pm.load_setuptools_entrypoints("eggsample")
+    pm.register(parsers)
+    return pm
 
 
 class SearchException(Exception):
@@ -460,7 +478,7 @@ class Crawler:
         self.make_crawlspace()
 
         # Read in elements from parser
-        self.elements = self.parser.parse(self.crawl_file)
+        self.elements = self.parser(self.crawl_file)
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
@@ -585,7 +603,22 @@ class Crawler:
                     concept.add_kg_answer(answer, query_name=query_name)
 
 
-def get_parser(parser_type):
+def get_parser(hook, parser_name):
+    """Get the parser from all parsers registered via the define_parsers hook"""
+
+    available_parsers = {}
+    hook.define_parsers(parser_dict=available_parsers)
+    parser = available_parsers.get(parser_name.lower())
+    if parser is not None:
+        return parser
+
+    err_msg = f"Cannot find parser of type '{parser_name}'\n" \
+              f"Supported parsers: {', '.join(available_parsers.keys())}"
+    logger.error(err_msg)
+    raise ParserNotFoundException(err_msg)
+
+
+def get_parser_old(parser_type):
     # User parser factor to get a specific type of parser
     try:
         return parsers.factory.create(parser_type)
@@ -612,18 +645,18 @@ class Dug:
     def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
         target = Path(target_name).resolve()
-        parser = get_parser(parser_type)
-        self._crawl(target, parser, element_type)
+        # TODO get_parser here
+        self._crawl(target, parser_type, element_type)
 
-    def _crawl(self, target: Path, parser, element_type):
+    def _crawl(self, target: Path, parser_type: str, element_type):
 
         if target.is_file():
-            self._crawl_file(target, parser, element_type)
+            self._crawl_file(target, parser_type, element_type)
         else:
             for child in target.iterdir():
-                self._crawl(child, parser, element_type)
+                self._crawl(child, parser_type, element_type)
 
-    def _crawl_file(self, target: Path, parser, element_type):
+    def _crawl_file(self, target: Path, parser_type: str, element_type):
 
         # Configure redis so we can fetch things from cache when needed
         redis_connection = redis.StrictRedis(host=cfg.redis_host,
@@ -652,6 +685,11 @@ class Dug:
                                           synonym_finder=synonym_finder,
                                           ontology_helper=ontology_helper,
                                           ontology_greenlist=ontology_greenlist)
+
+        pm = get_plugin_manager()
+
+        # Get input parser based on input type
+        parser = get_parser(pm.hook, parser_type)
 
         # Initialize crawler
         crawler = Crawler(crawl_file=str(target),
