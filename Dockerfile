@@ -20,6 +20,7 @@ RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER
 USER $USER
 WORKDIR $HOME
 
+ENV PATH="$HOME/.local/bin:$PATH"
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
 
@@ -28,11 +29,6 @@ RUN mkdir dug
 COPY --chown=$USER . dug/
 WORKDIR $HOME/dug
 
-# Set up the Python environment
-# See https://pythonspeed.com/articles/activate-virtualenv-dockerfile/
-ENV VIRTUAL_ENV=$HOME/dug/.venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN make install
 
 # Run it

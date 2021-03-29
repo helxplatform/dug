@@ -1,8 +1,9 @@
 PYTHON       := /usr/bin/env python3
 VERSION_FILE := ./src/dug/_version.py
 VERSION      := $(shell cut -d " " -f 3 ${VERSION_FILE})
+DOCKER_TAG   := dug-make-test:${VERSION}
 
-.PHONY: clean install test build image
+.PHONY: clean install test build image reinstall
 
 all: clean install test build image
 
@@ -18,13 +19,17 @@ install:
 	${PYTHON} -m pip install -r requirements.txt
 	${PYTHON} -m pip install .
 
+reinstall: clean install
+
 test:
 	# TODO spin up docker-compose backend for integration tests?
 	${PYTHON} -m pytest tests/unit
 
 build:
+	echo "Building distribution packages for version $(VERSION)"
 	${PYTHON} -m pip install --upgrade build
 	${PYTHON} -m build --sdist --wheel .
 
 image:
-	docker build -t dug-make-test:${VERSION} -f Dockerfile .
+	echo "Building docker image: $(DOCKER_TAG)"
+	docker build -t ${DOCKER_TAG} -f Dockerfile .
