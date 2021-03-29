@@ -23,6 +23,7 @@ reinstall: clean install
 
 test:
 	# TODO spin up docker-compose backend for integration tests?
+	${PYTHON} -m pytest --doctest-modules src
 	${PYTHON} -m pytest tests/unit
 
 build:

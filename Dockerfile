@@ -20,7 +20,7 @@ RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER
 USER $USER
 WORKDIR $HOME
 
-ENV PATH="$HOME/.local/bin:$PATH"
+ENV PATH=$HOME/.local/bin:$PATH
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
 
