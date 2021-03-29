@@ -11,8 +11,7 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 ## Quickstart
 
-To install Dug in your local environment , run `make install`.
-Alternatively, 
+To install Dug in your environment , run `make install`. Alternatively, 
 
 ```shell
 pip install -r requirements.txt
@@ -31,7 +30,7 @@ whereas running pytest in the root directory will execute unit tests, integratio
 To bring up the backend services, first configure environment variables:
 
 ```shell
-DATA_DIR=/path/to/dug-data-storage envsubst < .env.template > .env
+DATA_DIR=/path/to/dug-data-storage RANDOM=$RANDOM envsubst < .env.template > .env
 ```
 
 Then you can bring up the stack in docker-compose:
@@ -50,9 +49,9 @@ ELASTIC_API_HOST=localhost
 REDIS_HOST=localhost
 ```
 
-(These values are already set up correctly in the running docker container if using docker-compose)
+(These values are already set up in the running docker container)
 
-Then you can actually run the crawler:
+Then you can actually crawl the data:
 
 ```shell
 dug --crawl-file data/test_variables_v1.0.csv --parser-type="TOPMedTag"
