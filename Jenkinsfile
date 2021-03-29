@@ -18,7 +18,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh '''
-                make build image
+                make build
                 '''
             }
         }
