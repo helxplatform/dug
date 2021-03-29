@@ -15,19 +15,5 @@ pipeline {
                 '''
             }
         }
-        stage('Build') {
-            when {
-                anyOf {
-                    branch 'master'
-                    branch 'develop'
-                }
-            }
-            steps {
-                sh '''
-                make build
-                make publish
-                '''
-            }
-        }
     }
 }
