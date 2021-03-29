@@ -17,11 +17,15 @@ pipeline {
         }
         stage('Build') {
             when {
-                branch('master', 'develop')
+                anyOf {
+                    branch 'master'
+                    branch 'develop'
+                }
             }
             steps {
                 sh '''
                 make build
+                make publish
                 '''
             }
         }
