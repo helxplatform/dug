@@ -16,6 +16,9 @@ pipeline {
             }
         }
         stage('Build') {
+            when {
+                branch('master', 'develop')
+            }
             steps {
                 sh '''
                 make build
