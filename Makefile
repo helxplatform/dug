@@ -16,7 +16,7 @@ clean:
 install:
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install -r requirements.txt
-	${PYTHON} -m pip install -e .
+	${PYTHON} -m pip install .
 
 test:
 	# TODO spin up docker-compose backend for integration tests?
