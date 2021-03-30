@@ -53,8 +53,17 @@ class DugElement:
 
 
 class DugConcept:
-    # Basic class for holding information about concepts that are used to organize elements
-    # All Concepts map to at least one element
+    """
+    Basic class for holding information about concepts that are used to organize elements
+    All Concepts map to at least one element
+
+    Tags or labels that represent a higher level of abstraction of ontology to categorize elements
+
+    Each DugElement belongs to one or more DugConcepts.
+
+    "Concept" is our own internal designation and does not necessarily correspond to other uses of "concept" in the industry
+    """
+
     def __init__(self, concept_id, name, desc, concept_type):
         self.id = concept_id
         self.name = name
