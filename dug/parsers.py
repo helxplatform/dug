@@ -10,9 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 class DugElement:
-    # Basic class for holding information for an object you want to make searchable via Dug
-    # Could be a DbGaP variable, DICOM image, App, or really anything
-    # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
+    """
+    Basic class for holding information for an object you want to make searchable via Dug
+    Could be a DbGaP variable, DICOM image, App, or really anything
+    Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
+
+    "Element" is our own internal designation and does not necessarily correspond to other uses of "element" in the industry
+    """
+
     def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc=""):
         self.id = elem_id
         self.name = name
