@@ -41,6 +41,9 @@ RUN cd dug && \
     rm -rf /var/cache/apk/*
 
 USER $USER
+
+RUN touch $HOME/dug/docker/.env
+
 ENV PYTHONPATH $HOME/dug
 ENV ELASTIC_API_HOST=
 ENV ELASTIC_API_PORT=
