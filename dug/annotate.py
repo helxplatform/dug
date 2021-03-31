@@ -1,731 +1,568 @@
-import csv
 import json
 import logging
+import urllib.parse
 import os
-import redis
-import traceback
-import re
-import urllib
-import xml.etree.ElementTree as ET
-#from kgx import NeoTransformer, JsonTransformer
-from neo4jrestclient.client import GraphDatabase
-import requests
-from requests_cache import CachedSession
-from typing import List, Dict
-import hashlib
+from copy import copy
+from typing import TypeVar, Generic, Union, List, Optional, Tuple
 
-logger = logging.getLogger (__name__)
+import requests
+from requests import Session
+
+import dug.tranql as tql
+
+logger = logging.getLogger(__name__)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-Config = Dict
 
+class Identifier:
+    def __init__(self, id, label, types=None, search_text="", description=""):
+        self.id = id
+        self.label = label
+        self.description = description
+        if types is None:
+            types = []
+        self.types = types
+        self.search_text = [search_text] if search_text else []
+        self.equivalent_identifiers = []
+        self.synonyms = []
+        self.purl = ""
 
-def get_dbgap_var_link(study_id, variable_id):
-    base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi"
-    return f'{base_url}?study_id={study_id}&phv={variable_id}'
+    @property
+    def id_type(self):
+        return self.id.split(":")[0]
 
+    def add_search_text(self, text):
+        # Add text only if it's unique and if not empty string
+        if text and text not in self.search_text:
+            self.search_text.append(text)
 
-def get_dbgap_study_link(study_id):
-    base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi"
-    return f'{base_url}?study_id={study_id}'
-
-
-def parse_study_name_from_filename(filename):
-    # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-    dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
-    match = re.match(dbgap_file_pattern, filename)
-    if match is not None:
-        return match.group(1)
-    return None
-
-
-class Debreviator:
-    """ Expand certain abbreviations to increase our hit rate."""
-    def __init__(self):
-        self.decoder = {
-            "bmi" : "body mass index"
+    def get_searchable_dict(self):
+        # Return a version of the identifier compatible with what's in ElasticSearch
+        es_ident = {
+            'id': self.id,
+            'label': self.label,
+            'equivalent_identifiers': self.equivalent_identifiers,
+            'type': self.types,
+            'synonyms': self.synonyms
         }
+        return es_ident
 
-    def decode(self, text):
+    def jsonable(self):
+        return self.__dict__
+
+
+class DugAnnotator:
+    def __init__(
+            self,
+            preprocessor: "Preprocessor",
+            annotator: "Annotator",
+            normalizer: "Normalizer",
+            synonym_finder: "SynonymFinder",
+            ontology_helper: "OntologyHelper",
+            ontology_greenlist=[],
+    ):
+        self.preprocessor = preprocessor
+        self.annotator = annotator
+        self.normalizer = normalizer
+        self.synonym_finder = synonym_finder
+        self.ontology_helper = ontology_helper
+        self.ontology_greenlist = ontology_greenlist
+        self.norm_fails_file = "norm_fails.txt"
+        self.anno_fails_file = "anno_fails.txt"
+
+    def annotate(self, text, http_session):
+
+        # Preprocess text (debraviate, remove stopwords, etc.)
+        text = self.preprocessor.preprocess(text)
+
+        # Fetch identifiers
+        raw_identifiers = self.annotator.annotate(text, http_session)
+
+        # Write out to file if text fails to annotate
+        if not raw_identifiers:
+            with open(self.anno_fails_file, "a") as fh:
+                fh.write(f'{text}\n')
+
+        processed_identifiers = []
+        for identifier in raw_identifiers:
+
+            # Normalize identifier using normalization service
+            norm_id = self.normalizer.normalize(identifier, http_session)
+
+            # Skip adding id if it doesn't normalize
+            if norm_id is None:
+                # Write out to file if identifier doesn't normalize
+                with open(self.norm_fails_file, "a") as fh:
+                    fh.write(f'{identifier.id}\n')
+
+                # Discard non-normalized ident if not in greenlist
+                if identifier.id_type not in self.ontology_greenlist:
+                    continue
+
+                # If it is in greenlist just keep moving forward
+                norm_id = identifier
+
+            # Add synonyms to identifier
+            norm_id.synonyms = self.synonym_finder.get_synonyms(norm_id.id, http_session)
+
+            # Get canonical label, name, and description from ontology metadata service
+            name, desc, ontology_type = self.ontology_helper.get_ontology_info(norm_id.id, http_session)
+            norm_id.label = name
+            norm_id.description = desc
+            norm_id.type = ontology_type
+
+            # Get pURL for ontology identifer for more info
+            norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
+            processed_identifiers.append(norm_id)
+
+        return processed_identifiers
+
+
+class ConceptExpander:
+    def __init__(self, url, min_tranql_score=0.2):
+        self.url = url
+        self.min_tranql_score = min_tranql_score
+        self.include_node_keys = ["id", "name", "synonyms"]
+        self.include_edge_keys = []
+        self.tranql_headers = {"accept": "application/json", "Content-Type": "text/plain"}
+
+    def is_acceptable_answer(self, answer):
+        return True
+
+    def expand_identifier(self, identifier, query_factory, kg_filename):
+
+        answer_kgs = []
+
+        # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
+        if os.path.exists(kg_filename):
+            logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
+            with open(kg_filename, 'r') as stream:
+                response = json.load(stream)
+        else:
+            query = query_factory.get_query(identifier)
+            logger.info(query)
+            response = requests.post(
+                url=self.url,
+                headers=self.tranql_headers,
+                data=query).json()
+
+            # Case: Skip if empty KG
+            if not len(response['knowledge_graph']['nodes']):
+                logging.debug(f"Did not find a knowledge graph for {query}")
+                return []
+
+            # Dump out to file if there's a knowledge graph
+            with open(kg_filename, 'w') as stream:
+                json.dump(response, stream, indent=2)
+
+        # Get nodes in knowledge graph hashed by ids for easy lookup
+        kg = tql.QueryKG(response)
+
+        for answer in kg.answers:
+            # Filter out answers that don't meet some criteria
+            # Right now just don't filter anything
+            logger.debug(f"Answer: {answer}")
+            if not self.is_acceptable_answer(answer):
+                logger.warning("Skipping answer as it failed one or more acceptance criteria. See log for details.")
+                continue
+
+            # Get subgraph containing only information for this answer
+            try:
+                # Temporarily surround in try/except because sometimes the answer graphs
+                # contain invalid references to edges/nodes
+                # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                answer_kg = kg.get_answer_subgraph(answer,
+                                                   include_node_keys=self.include_node_keys,
+                                                   include_edge_keys=self.include_edge_keys)
+
+                # Add subgraph to list of acceptable answers to query
+                answer_kgs.append(answer_kg)
+
+            except tql.MissingNodeReferenceError:
+                # TEMPORARY: Skip answers that have invalid node references
+                # Need this to be fixed in Robokop
+                logger.warning("Skipping answer due to presence of non-preferred id! "
+                               "See err msg for details.")
+                continue
+            except tql.MissingEdgeReferenceError:
+                # TEMPORARY: Skip answers that have invalid edge references
+                # Need this to be fixed in Robokop
+                logger.warning("Skipping answer due to presence of invalid edge reference! "
+                               "See err msg for details.")
+                continue
+
+        return answer_kgs
+
+
+class Preprocessor:
+    """"Class for preprocessing strings so they are better interpreted by NLP steps"""
+
+    def __init__(self, debreviator=None, stopwords=None):
+        if debreviator is None:
+            debreviator = self.default_debreviator_factory()
+        self.decoder = debreviator
+
+        if stopwords is None:
+            stopwords = []
+        self.stopwords = stopwords
+
+    def preprocess(self, text: str) -> str:
+        """
+        Apply debreviator to replace abbreviations and other characters
+
+        >>> pp = Preprocessor({"foo": "bar"}, ["baz"])
+        >>> pp.preprocess("Hello foo")
+        'Hello bar'
+
+        >>> pp.preprocess("Hello baz world")
+        'Hello world'
+        """
+
         for key, value in self.decoder.items():
             text = text.replace(key, value)
+
+        # Remove any stopwords
+        text = " ".join([word for word in text.split() if word not in self.stopwords])
         return text
 
+    @staticmethod
+    def default_debreviator_factory():
+        return {"bmi": "body mass index", "_": " "}
 
-class TOPMedStudyAnnotator:
+
+Input = TypeVar("Input")
+Output = TypeVar("Output")
+
+
+class ApiClient(Generic[Input, Output]):
+
+    def make_request(self, value: Input, http_session: Session):
+        raise NotImplementedError()
+
+    def handle_response(self, value, response: Union[dict, list]) -> Output:
+        raise NotImplementedError()
+
+    def __call__(self, value: Input, http_session: Session) -> Output:
+        response = self.make_request(value, http_session)
+
+        result = self.handle_response(value, response)
+
+        return result
+
+
+class Annotator(ApiClient[str, List[Identifier]]):
     """
-    Annotate TOPMed study data with semantic knowledge graph linkages.
-
+    Use monarch API service to fetch ontology IDs found in text
     """
-    def __init__(self, config: Config):
-        self.normalizer = config['normalizer']
-        self.annotator = config['annotator']
-        self.synonym_service = config['synonym_service']
-        self.ontology_metadata = config['ontology_metadata']
-        self.db_url = config['db_url']
-        self.username = config['username']
-        self.password = config['password']
-        self.redis_host = config['redis_host']
-        self.redis_port = config['redis_port']
-        self.redis_password = config['redis_password']
-        self.debreviator = Debreviator ()
 
-    def load_data_dictionary (self, input_file : str) -> Dict:
-        """
-        This loads a data dictionary. It's unclear if this will be useful going forwar. But for now,
-        it demonstrates how much of the rest of the  pipeline might be applied to data dictionaries.
-        """
-        tree = ET.parse(input_file)
-        root = tree.getroot()
-        study_id = root.attrib['study_id']
-        participant_set = root.attrib['participant_set']
+    def __init__(self, url: str):
+        self.url = url
 
-        # Parse study name from filehandle
-        study_name = parse_study_name_from_filename(input_file)
-        if study_name is None:
-            err_msg = f"Unable to parse DbGaP study name from data dictionary: {input_file}!"
-            logger.error(err_msg)
-            raise IOError(err_msg)
+    def annotate(self, text, http_session):
+        logger.debug(f"Annotating: {text}")
+        return self(text, http_session)
 
-        variables = [{
-            "element_id"        : f"{variable.attrib['id']}.p{participant_set}",
-            "element_name"      : variable.find ('name').text,
-            "element_desc"      : variable.find ('description').text.lower(),
-            "collection_id"     : f"{study_id}.p{participant_set}",
-            "collection_name"   : study_name,
-            "collection_desc"   : "",
-            "data_type": "dbGap_variable",
-            "identifiers": {}
-        } for variable in root.iter('variable')]
+    def make_request(self, value: Input, http_session: Session):
+        value = urllib.parse.quote(value)
+        url = f'{self.url}{value}'
 
-        # Create DBGaP links as study/variable actions
-        for variable in variables:
-            variable["collection_action"] = get_dbgap_study_link(study_id = variable["collection_id"])
-            variable["element_action"] = get_dbgap_var_link(study_id = variable["collection_id"],
-                                                               variable_id=variable["element_id"].split(".")[0].split("phv")[1])
-        return variables
+        return http_session.get(url).json()
 
-    def load_tagged_variables (self, input_file : str) -> Dict:
-        """
-        Load tagged variables.
-          Presumes a harmonized variable list as a CSV file as input.
-          A naming convention such that <prefix>_variables_<version>.csv will be the form of the filename.
-          An adjacent file called <prefix>_tags_<version.json will exist.
+    def handle_response(self, value, response: dict) -> List[Identifier]:
+        identifiers = []
+        """ Parse each identifier and initialize identifier object """
+        for span in response.get('spans', []):
+            search_text = span.get('text', None)
+            for token in span.get('token', []):
+                curie = token.get('id', None)
+                if not curie:
+                    continue
 
-          :param input_file: A list of study variables linked to tags, studies, and other relevant data.
-          :returns: Returns variables, a list of parsed variable dictionaries and tags, a list of parsed
-                    tag definitions linked to the variabels.
-        """
-        tags_input_file = input_file.replace (".csv", ".json").replace ("_variables_", "_tags_")
-        if not os.path.exists (tags_input_file):
-            raise ValueError (f"Accompanying tags file: {tags_input_file} must exist.")
-        variables = []
-        headers = "tag_pk 	tag_title 	variable_phv 	variable_full_accession 	dataset_full_accession 	study_full_accession 	study_name 	study_phs 	study_version 	created 	modified"
-        with open(input_file, newline='') as csvfile:
-            reader = csv.DictReader(csvfile, delimiter='\t',)
-            for row in reader:
-                better_row = { k.strip () : v for  k, v in row.items () }
-                row = better_row
-                logger.debug(f"{json.dumps(row, indent=2)}")
-                variables.append ({
-                    "element_id"                     : f"{row['variable_full_accession']}",
-                    "element_name"                   : row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
-                    "element_desc"            : row['variable_desc'] if 'variable_name' in row else row['variable_full_accession'],
-                    "collection_id"               : f"{row['study_full_accession']}",
-                    "collection_name"             : row['study_name'],
-                    "collection_desc"      : "",
-                    "data_type": "dbGap_variable",
-                    "identifiers": [f"TOPMED.TAG:{row['tag_pk']}"]
-                })
-                logger.debug(f"{json.dumps(variables[-1], indent=2)}")
+                biolink_types = token.get('category')
+                label = token.get('terms')[0]
+                identifiers.append(Identifier(id=curie,
+                                              label=label,
+                                              types=biolink_types,
+                                              search_text=search_text))
+        return identifiers
 
-        # Create DBGaP links as study/variable actions
-        for variable in variables:
-            variable["element_action"] = get_dbgap_study_link(study_id=variable["collection_id"])
-            variable["collection_action"] = get_dbgap_var_link(study_id=variable["collection_id"],
-                                                               variable_id=variable["element_id"])
-        # Create concepts for each tag
-        with open(tags_input_file, "r") as stream:
-            tags = json.load (stream)
-        for tag in tags:
-            for f, v in tag['fields'].items ():
-                tag[f] = v
-            del tag[f]
-            tag['id'] = f"TOPMED.TAG:{tag['pk']}"
-            tag['identifiers'] = {}
-            tag['is_variable_tag'] = True
-            tag['type'] = 'TOPMed Phenotype Concept'
 
-        return variables, tags
+class Normalizer(ApiClient[Identifier, Identifier]):
+    def __init__(self, url):
+        self.url = url
 
-    def normalize(self, http_session, curie, url, variable) -> None:
-        """ Given an identifier (curie), use the Translator SRI node normalization service to
-            find a preferred identifier, equivalent identifiers, and biolink model types for the node.
+    def normalize(self, identifier: Identifier, http_session: Session):
+        # Use RENCI's normalization API service to get the preferred version of an identifier
+        logger.debug(f"Normalizing: {identifier.id}")
+        return self(identifier, http_session)
 
-            :param http_session: A requests session to use for HTTP requests.
-            :param curie: The identifier to normalize.
-            :param url: The URL to use.
-            :param variable: The variable in which to record the normalized identifier.
-        """
-        """
-        Added blank_preferred_id to keep terms in the KG that fail to normalize.
-        """
-        blank_preferred_id = {
-            "label": "",
-            "equivalent_identifiers": [],
-            "type": ['named_thing'] # Default NeoTransformer category
-        }
-        """ Normalize the identifier with respect to the BioLink Model. """
+    def make_request(self, value: Identifier, http_session: Session) -> dict:
+        curie = value.id
+        url = f"{self.url}{urllib.parse.quote(curie)}"
+        normalized = http_session.get(url).json()
+        return normalized
 
-        logger.debug(f"Normalizing: {curie}")
-        normalized = http_session.get(url).json ()
-
+    def handle_response(self, identifier: Identifier, normalized: dict) -> Identifier:
         """ Record normalized results. """
+        curie = identifier.id
         normalization = normalized.get(curie, {})
         if normalization is None:
-            variable['identifiers'][curie] = blank_preferred_id
-            logger.error (f"Normalization service did not return normalization for: {curie}")
-            return
+            logger.error(f"Normalization service did not return normalization for: {curie}")
+            return None
 
-        preferred_id = normalization.get ("id", {})
-        equivalent_identifiers = normalization.get ("equivalent_identifiers", [])
-        biolink_type = normalization.get ("type", [])
+        preferred_id = normalization.get("id", {})
+        equivalent_identifiers = normalization.get("equivalent_identifiers", [])
+        biolink_type = normalization.get("type", [])
 
-        """ Build the response. """
-        if 'identifier' in preferred_id:
-            logger.debug(f"Preferred id: {preferred_id}")
-            variable['identifiers'][preferred_id['identifier']] = {
-                "label" : preferred_id.get('label',''),
-                "equivalent_identifiers" : [ v['identifier'] for v in equivalent_identifiers ],
-                "type" : biolink_type
-            }
-        else:
-            variable['identifiers'][curie] = blank_preferred_id
-            logger.debug (f"ERROR: normaliz({curie})=>({preferred_id}). No identifier?")
+        # Return none if there isn't actually a preferred id
+        if 'identifier' not in preferred_id:
+            logger.debug(f"ERROR: normalize({curie})=>({preferred_id}). No identifier?")
+            return None
 
-    def annotate (self, variables : Dict) -> Dict:
-        """
-        This operates on a dbGaP data dictionary which is
-          an XML formatted study with a data_table root element containing a list of variables.
-        - Tag prose variable descriptions with ontology identifiers.
-        - Resolve those identifiers via Translator to preferred identifiers and BioLink Model categories.
-        Specifically, for each variable
-          create an object to represent the variable
-          perform NLP annotation of the variable based on its description
-            use the Monarch NLP annotator with named entity recognition
-            (add additional NLP, eg. Vanderbilt and others here...?)
-          normalize the resulting identifiers using the Translator normalization API
+        logger.debug(f"Preferred id: {preferred_id}")
+        identifier.id = preferred_id.get('identifier', '')
+        identifier.label = preferred_id.get('label', '')
+        identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]
+        identifier.types = biolink_type
 
-          :param variables: A dictionary of variables.
-          :returns: A dictionary of annotated variables.
-        """
+        return identifier
 
-        """
-        Initialize and reuse a cached HTTP session for more efficient connection management.
-        Use the Redis backend for requests-cache to store results accross executions
-        """
-        redis_connection = redis.StrictRedis (host=self.redis_host,
-                                              port=self.redis_port,
-                                              password=self.redis_password)
-        http_session = CachedSession (
-            cache_name='annotator',
-            backend="redis",
-            connection=redis_connection)
 
-        variable_file = open("normalized_inputs.txt", "w")
+class SynonymFinder(ApiClient[str, List[str]]):
 
-        # Initialize return dict
-        concepts = {}
-        norm_fails = open("norm_fails.txt", "w")
+    def __init__(self, url: str):
+        self.url = url
 
-        """ Annotate and normalize each tag. """
-        for variable in variables:
-            logger.debug(variable)
-            try:
-                """
-                If the variable has an Xref identifier, normalize it.
-                This data is only in the CSV formatted harmonized variable data.
-                If that format goes away, delete this.
-                """
-                if 'xref' in variable:
-                    self.normalize (http_session,
-                                    variable['xref'],
-                                    f"{self.normalizer}{variable['xref']}",
-                                    variable)
-
-                """ Annotate ontology terms in the text. """
-                if 'element_desc' not in variable and 'description' not in variable:
-                    logger.warn (f"this variable has no description: {json.dumps(variable, indent=2)}")
-                    continue
-
-                # Use different desc field based on whether we're dealing with a variable tag vs. just a normal variable
-                description_field = "description" if "is_variable_tag" in variable else "element_desc"
-                description = variable[description_field].replace ("_", " ")
-                description = self.debreviator.decode (description)
-
-                # Annotation
-                encoded = urllib.parse.quote (description)
-                url = f"{self.annotator}{encoded}"
-                annotations = http_session.get(url).json ()
-
-                """ Normalize each ontology identifier from the annotation. """
-                for span in annotations.get('spans',[]):
-                    search_text = span.get('text',None) # Always a string
-                    for token in span.get('token',[]):
-                        curie = token.get('id', None)
-                        if not curie:
-                            continue
-                        self.normalize (http_session,
-                                        curie,
-                                        f"{self.normalizer}{curie}",
-                                        variable)
-
-                        # Skip if failing normalization
-                        #TODO Address this failing normalization.
-                        if curie not in variable['identifiers']:
-                            norm_fails.write(f"{curie}\n")
-                            continue
-
-                        # Add concepts
-                        term = token.get('terms', None) # Always a list
-                        if curie not in concepts:
-                            concepts[curie] = {
-                                "id": curie,
-                                "name": term[0],
-                                "description": "",
-                                "type": "",
-                                "search_terms": [search_text] + term,
-                                "identifiers": {
-                                    curie: variable['identifiers'][curie]
-                                }
-                            }
-                        else:
-                            concepts[curie]["search_terms"].extend([search_text] + term)
-
-            except json.decoder.JSONDecodeError as e:
-                traceback.print_exc ()
-            except:
-                traceback.print_exc ()
-                raise
-            variable_file.write(f"{json.dumps(variable, indent=2)}\n")
-
-            # Optionally create a concept when variable is actually a pre-harmonized variable tag (e.g. TOPMed tags)
-            if "is_variable_tag" in variable:
-                concepts[variable['id']] = {
-                    "id": variable['id'],
-                    "name": variable['title'],
-                    "description": f"{description}. {variable['instructions']}",
-                    "type": variable["type"],
-                    "search_terms": [],
-                    "identifiers" : variable['identifiers']
-                }
-
-        return concepts
-
-    def write (self, graph : Dict) -> None:
-        """
-        Given a dictionary that is a graph containing nodes edges,
-        use KGX to load the graph into a Neo4J database.
-
-        :param graph: A KGX formatted graph as dictionary.
-        """
-
-        """ Load the knowledge graph into KGX and emit to Neo4J. """
-        json_transformer = JsonTransformer ()
-        json_transformer.load (graph)
-        db = NeoTransformer (json_transformer.graph,
-                             self.db_url,
-                             self.username,
-                             self.password)
-        db.save()
-        db.neo4j_report()
-
-    def make_edge (self,
-                   subj : str,
-                   pred : str,
-                   obj  : str,
-                   edge_label : str ='association',
-                   category : List[str] = []
-    ):
-        """
-        Create an edge between two nodes.
-
-        :param subj: The identifier of the subject.
-        :param pred: The predicate linking the subject and object.
-        :param obj: The object of the relation.
-        :param edge_label: Label for the edge.
-        :param category: The list of Biolink categories relating to the edge.
-        :returns: Returns and edge.
-        """
-        edge_id = hashlib.md5(f'{subj}{pred}{obj}'.encode('utf-8')).hexdigest()
-        return {
-            "subject"     : subj,
-            "predicate"   : pred,
-            "id": edge_id,
-            "edge_label"  : edge_label if len(edge_label) > 0 else "n/a",
-            "object"      : obj,
-            "provided_by" : "renci.bdc.semanticsearch.annotator",
-            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "OBAN:association",
-            "category" : category
-        }
-
-    def make_tagged_kg (self, variables : Dict, tags : Dict) -> Dict:
-        """ Make a Translator standard knowledge graph representing
-        tagged study variables.
-        :param variables: The variables to model.
-        :param tags: The tags characterizing the variables.
-        :returns: Returns dictionary with nodes and edges modeling a Translator/Biolink KG.
-        """
-        graph = {
-            "nodes" : [],
-            "edges" : []
-        }
-        edges = graph['edges']
-        nodes = graph['nodes']
-        studies = {}
-        tag_ref = {}
-
-        """ Create graph elements to model tags and their
-        links to identifiers gathered by semantic tagging. """
-        tag_map = {}
-        for tag in tags:
-            tag_pk = tag['pk']
-            tag_id  = tag['id']
-            tag_map[tag_pk] = tag
-            nodes.append ({
-                "id" : tag_id,
-                "pk" : tag_pk,
-                "name" : tag['title'],
-                "description" : tag['description'],
-                "instructions" : tag['instructions'],
-                "category" : [ "information_content_entity" ]
-            })
-            """ Link ontology identifiers we've found for this tag via nlp. """
-            for identifier, metadata in tag['identifiers'].items ():
-                nodes.append ({
-                    "id" : identifier,
-                    "name" : metadata['label'],
-                    "category" : metadata['type']
-                })
-                edges.append (self.make_edge (
-                    subj=tag_id,
-                    pred="OBO:RO_0002434",
-                    obj=identifier,
-                    edge_label='association',
-                    category=[ "association" ]))
-                edges.append (self.make_edge (
-                    subj=identifier,
-                    pred="OBO:RO_0002434",
-                    obj=tag_id,
-                    edge_label='association',
-                    category=[ "association" ]))
-
-        """ Create nodes and edges to model variables, studies, and their
-        relationships to tags. """
-        for variable in variables:
-            variable_id = variable['variable_id']
-            variable_tag_pk = variable['tag_pk']
-            study_id = variable['study_id']
-            tag_id = tag_map[int(variable_tag_pk)]['id']
-            if not study_id in studies:
-                nodes.append ({
-                    "id" : study_id,
-                    "name" : variable['study_name'],
-                    "category" : [ "clinical_trial" ]
-                })
-                studies[study_id] = study_id
-
-            nodes.append ({
-                "id" : variable_id,
-                "name" : variable_id,
-                "category" : [ "clinical_modifier" ]
-            })
-            """ Link to its study.  """
-            edges.append (self.make_edge (
-                subj=variable_id,
-                edge_label='part_of',
-                pred="OBO:RO_0002434",
-                obj=study_id,
-                category=['part_of']))
-            edges.append (self.make_edge (
-                subj=study_id,
-                edge_label='has_part',
-                pred="OBO:RO_0002434",
-                obj=variable_id,
-                category=['has_part']))
-
-            """ Link to its tag. """
-            edges.append (self.make_edge (
-                subj=variable_id,
-                edge_label='part_of',
-                pred="OBO:RO_0002434",
-                obj=tag_id,
-                category=['part_of']))
-            edges.append (self.make_edge (
-                subj=tag_id,
-                edge_label='has_part',
-                pred="OBO:RO_0002434",
-                obj=variable_id,
-                category=['has_part']))
-
-        return graph
-
-    def convert_to_kgx_json (self, annotations):
-        """
-        Given an annotated and normalized set of study variables,
-        generate a KGX compliant graph given the normalized annotations.
-        Write that grpah to a graph database.
-        See BioLink Model for category descriptions. https://biolink.github.io/biolink-model/notes.html
-        """
-        graph = {
-            "nodes" : [],
-            "edges" : []
-        }
-        edges = graph['edges']
-        nodes = graph['nodes']
-
-        for index, variable in enumerate(annotations):
-            study_id = variable['study_id']
-            if index == 0:
-                """ assumes one study in this set. """
-                nodes.append ({
-                    "id" : study_id,
-                    "category" : [ "clinical_trial" ]
-                })
-
-            """ connect the study and the variable. """
-            edges.append (self.make_edge (
-                subj=variable['variable_id'],
-                edge_label='part_of',
-                pred="OBO:RO_0002434",
-                obj=study_id,
-                category=['part_of']))
-            edges.append (self.make_edge (
-                subj=study_id,
-                edge_label='has_part',
-                pred="OBO:RO_0002434",
-                obj=variable['variable_id'],
-                category=['has_part']))
-
-            """ a node for the variable. """
-            nodes.append ({
-                "id" : variable['variable_id'],
-                "name" : variable['variable'],
-                "description" : variable['description'],
-                "category" : [ "clinical_modifier" ]
-            })
-            for identifier, metadata in variable['identifiers'].items ():
-                edges.append (self.make_edge (
-                    subj=variable['variable_id'],
-                    pred="OBO:RO_0002434",
-                    obj=identifier,
-                    edge_label='association',
-                    category=[ "case_to_phenotypic_feature_association" ]))
-                edges.append (self.make_edge (
-                    subj=identifier,
-                    pred="OBO:RO_0002434",
-                    obj=variable['variable_id'],
-                    edge_label='association',
-                    category=[ "case_to_phenotypic_feature_association" ]))
-                nodes.append ({
-                    "id" : identifier,
-                    "name" : metadata['label'],
-                    "category" : metadata['type']
-                })
-        return graph
-
-    def get_variables_from_tranql(self):
+    def get_synonyms(self, curie: str, http_session):
         '''
-        This function returns the tagged variables,
-        including identifier information,
-        from TranQL.  It is the starting point for
-        indexing documents into ElasticSearch
+        This function uses the NCATS translator service to return a list of synonyms for
+        curie id
         '''
 
-        # Create a session and connect to TranQL
-        tranql_endpoint = "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false"
-        headers = {
-            "accept" : "application/json",
-            "Content-Type" : "text/plain"
-        }
-        s = requests.Session()
-        s.headers.update(headers)
-        #TODO: Clean up the session object by bringing header, url, and data into attributes of obj
+        return self(curie, http_session)
 
-        # Build TranQL Query
-        source = "/schema"
-        questions = ["information_content_entity",
-                     "clinical_modifier",
-                     "clinical_trial"]
-        query = f'select {"->".join(questions)} from "{source}"'
-        single_query = query + f" where information_content_entity = 'TOPMED.TAG:51'"
+    def make_request(self, curie: str, http_session: Session):
 
-        # Put this in while loop to iterate until we are successful in connecting to TranQL
-        while True:
-            try:
-                response = s.post(url = tranql_endpoint,
-                            data = query)
-                if response.status_code is not 200:
-                    logging.error(f"Encountered error: {response.status_code}:{response.reason}.  Trying again...")
-                    continue
-                break
-            except requests.ConnectionError as e:
-                logger.error (f"Encountered exception: {e}.  Trying again...")
+        # Get response from synonym service
+        url = f"{self.url}{urllib.parse.quote(curie)}"
 
-        # Build List of Dicts
-        response = response.json () # transform to JSON document if successful.
-        nodes = response['knowledge_graph']['nodes']
-        edges = response['knowledge_graph']['edges']
-        tags = list(filter(lambda x: x['id'].startswith("TOPMED.TAG"),nodes))
-        variables = list(filter(lambda x: x['id'].startswith("TOPMED.VAR"),nodes))
-        studies = list(filter(lambda x: x['id'].startswith("TOPMED.STUDY"),nodes))
+        try:
+            response = http_session.get(url).json()
+            return response
+        except json.decoder.JSONDecodeError as e:
+            logger.error(f"No synonyms returned for: {curie}")
+            return []
 
-        # Annotate Tags w/ identifiers
-        identifier_type = "biological_entity"
-        
-        for tag in tags:
-            tag['title'] = tag.pop('name')
-            # TranQL query to identifiers
-            logger.debug(f"Querying Tag: {tag['title']} with query: {query}")
-            query = f'select {identifier_type}->information_content_entity from "{source}" where information_content_entity = "{tag["id"]}"'
-            response = s.post(url = tranql_endpoint,
-                            data = query).json()
-            logger.debug(response)
-            identifiers = [identifier for identifier in response['knowledge_graph']['nodes'] if identifier['id'] != tag['id']]
-            tag['identifiers'] = {}
-            for identifier in identifiers:
-                try:
-                    # change 'name' to 'label' for downstream functionality.
-                    identifier['label'] = identifier.pop('name') 
-                except KeyError as e:
-                    logger.error(f"{e}: Identifier does not have name/label.  Adding blank label")
-                    identifier['label'] = ""
-                tag['identifiers'][identifier['id']] = identifier
-            '''
-            tag_edges = [edge for edge in edges if edge['source_id']==tag['id'] and not edge['target_id'].startswith('TOPMED.VAR')]
-            identifiers = [tag['target_id'] for tag in tag_edges]
-            for identifier in identifiers:
-                # Find identifiers in node
-                value = [node for node in nodes if node['id'] == identifier][0] # finds single dictionary
-                if 'label' not in value:
-                    value['label'] = value.pop('name') # change 'name' to 'label' for downstream processing
-                tag['identifiers'][identifier] = value
-            '''
-
-        # Add studies and tag_pk to variables
-        for variable in variables:
-            # Rename
-            variable['variable_id'] = variable.pop('id')
-
-            # Grab from tags
-            associations = [edge['source_id'] for edge in edges if edge['target_id']==variable['variable_id']]
-            variable['tag_pk'] = next(filter(lambda x: x.startswith('TOPMED.TAG'), associations), "").split(":")[1]
-            variable['study_id'] = next(filter(lambda x: x.startswith('TOPMED.STUDY'), associations), "")
-
-            # Grab from studies - only linked to one study name
-            variable['study_name'] = [study['name'] for study in studies if study['id']==variable['study_id']][0]
-
-        # Return tags and variables
-        return variables, tags
-
-    def add_synonyms_to_identifiers(self, concepts):
-        '''
-        This function does the following:
-        - Initialize http_session for NCATS synonym service
-        - list comprehension of all identifiers attached to tags
-        - Add synonyms to all tags
-        '''
-        # Create an http_session like in annotate()
-        redis_connection = redis.StrictRedis (host=self.redis_host,
-                                              port=self.redis_port,
-                                              password=self.redis_password)
-        http_session = CachedSession (
-            cache_name='annotator',
-            backend="redis",
-            connection=redis_connection)
-
-        # Go through identifiers in tags
-        for concept in concepts:
-            for identifier in list(concepts[concept]['identifiers'].keys()):
-                try:
-                    # Get response from synonym service
-                    encoded = urllib.parse.quote (identifier)
-                    url = f"{self.synonym_service}{encoded}"
-                    raw_synonyms = http_session.get(url).json ()
-
-                    # List comprehension for synonyms
-                    synonyms = [synonym['desc'] for synonym in raw_synonyms]
-                    
-                    # Add to identifier
-                    concepts[concept]['identifiers'][identifier]['synonyms'] = synonyms
-                    
-                    # Add to search terms
-                    concepts[concept]['search_terms'] += synonyms
-                
-                except json.decoder.JSONDecodeError as e:
-                    concepts[concept]['identifiers'][identifier]['synonyms'] = []
-                    logger.error (f"No synonyms returned for: {identifier}")
-        return concepts
-    
-    def clean_concepts(self, concepts):
-        '''
-        This function does the following:
-        - Make search terms within concepts unique
-        - Write concepts to a debug file
-        - Add more identifiers to variables for Proof of Concept
-        - Add name/description to ontology IDs
-        '''
-        # Create an http_session like in annotate()
-        redis_connection = redis.StrictRedis (host=self.redis_host,
-                                              port=self.redis_port,
-                                              password=self.redis_password)
-        http_session = CachedSession (
-            cache_name='annotator',
-            backend="redis",
-            connection=redis_connection)
-        
-        # Clean Concepts
-        for concept in concepts:
-            concepts[concept]['search_terms'] = list(set(list(concepts[concept]['search_terms'])))
-        
-        # Add Name and description
-        for concept in concepts:
-            try:
-                # Get response from synonym service
-                encoded = urllib.parse.quote (concept)
-                url = f"{self.ontology_metadata}{encoded}"
-                response = http_session.get(url).json ()
-
-                # List comprehension for synonyms
-                name = response.get('label','')
-                description = '' if not response.get('description',None) else response.get('description','')
-                ontology_type = '' if not response.get('category', None) else response.get('category','')[0]
-                
-                # Add to concept
-                if len(name):
-                    concepts[concept]['name'] = name
-                if len(description):
-                    concepts[concept]['description'] = description
-                if len(ontology_type):
-                    concepts[concept]['type'] = ontology_type
-            
-            except json.decoder.JSONDecodeError as e:
-                logger.error (f"No labels returned for: {concept}")
-        
-        # Write to file
-        concept_file = open("concept_file.json", "w")
-        concept_file.write(f"{json.dumps(concepts, indent=2)}")
-        
-        return concepts
+    def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
+        # List comprehension unpack all synonyms into a list
+        return [synonym['desc'] for synonym in raw_synonyms]
 
 
-class GraphDB:
-    def __init__(self, conf):
-        self.conf = conf
-        self.gdb = GraphDatabase(url=conf['db_url'],
-                                 username=conf['username'],
-                                 password=conf['password'])
-    def query (self, query):
-        return self.gdb.query(query, data_contents=True)
+class OntologyHelper(ApiClient[str, Tuple[str, str, str]]):
+    def __init__(self, url):
+        self.url = url
+
+    def make_request(self, curie: str, http_session: Session):
+        url = f"{self.url}{urllib.parse.quote(curie)}"
+        try:
+            response = http_session.get(url).json()
+            return response
+        except json.decoder.JSONDecodeError as e:
+            logger.error(f"No labels returned for: {curie}")
+            return {}
+
+    def handle_response(self, curie: str, response: dict) -> Tuple[str,str,str]:
+        # List comprehension for synonyms
+        name = response.get('label', '')
+        description = '' if not response.get('description', None) else response.get('description', '')
+        ontology_type = '' if not response.get('category', None) else response.get('category', '')[0]
+
+        return name, description, ontology_type
+
+    def get_ontology_info(self, curie, http_session):
+        return self(curie, http_session)
+
+
+class BioLinkPURLerizer:
+    # Static class for the sole purpose of doing lookups of different ontology PURLs
+    # Is it pretty? No. But it gets the job done.
+    biolink_lookup = {"APO": "http://purl.obolibrary.org/obo/APO_",
+                      "Aeolus": "http://translator.ncats.nih.gov/Aeolus_",
+                      "BIOGRID": "http://identifiers.org/biogrid/",
+                      "BIOSAMPLE": "http://identifiers.org/biosample/",
+                      "BSPO": "http://purl.obolibrary.org/obo/BSPO_",
+                      "CAID": "http://reg.clinicalgenome.org/redmine/projects/registry/genboree_registry/by_caid?caid=",
+                      "CHEBI": "http://purl.obolibrary.org/obo/CHEBI_",
+                      "CHEMBL.COMPOUND": "http://identifiers.org/chembl.compound/",
+                      "CHEMBL.MECHANISM": "https://www.ebi.ac.uk/chembl/mechanism/inspect/",
+                      "CHEMBL.TARGET": "http://identifiers.org/chembl.target/",
+                      "CID": "http://pubchem.ncbi.nlm.nih.gov/compound/",
+                      "CL": "http://purl.obolibrary.org/obo/CL_",
+                      "CLINVAR": "http://identifiers.org/clinvar/",
+                      "CLO": "http://purl.obolibrary.org/obo/CLO_",
+                      "COAR_RESOURCE": "http://purl.org/coar/resource_type/",
+                      "CPT": "https://www.ama-assn.org/practice-management/cpt/",
+                      "CTD": "http://translator.ncats.nih.gov/CTD_",
+                      "ClinVarVariant": "http://www.ncbi.nlm.nih.gov/clinvar/variation/",
+                      "DBSNP": "http://identifiers.org/dbsnp/",
+                      "DGIdb": "https://www.dgidb.org/interaction_types",
+                      "DOID": "http://purl.obolibrary.org/obo/DOID_",
+                      "DRUGBANK": "http://identifiers.org/drugbank/",
+                      "DrugCentral": "http://translator.ncats.nih.gov/DrugCentral_",
+                      "EC": "http://www.enzyme-database.org/query.php?ec=",
+                      "ECTO": "http://purl.obolibrary.org/obo/ECTO_",
+                      "EDAM-DATA": "http://edamontology.org/data_",
+                      "EDAM-FORMAT": "http://edamontology.org/format_",
+                      "EDAM-OPERATION": "http://edamontology.org/operation_",
+                      "EDAM-TOPIC": "http://edamontology.org/topic_",
+                      "EFO": "http://identifiers.org/efo/",
+                      "ENSEMBL": "http://identifiers.org/ensembl/",
+                      "ExO": "http://purl.obolibrary.org/obo/ExO_",
+                      "FAO": "http://purl.obolibrary.org/obo/FAO_",
+                      "FB": "http://identifiers.org/fb/",
+                      "FBcv": "http://purl.obolibrary.org/obo/FBcv_",
+                      "FlyBase": "http://flybase.org/reports/",
+                      "GAMMA": "http://translator.renci.org/GAMMA_",
+                      "GO": "http://purl.obolibrary.org/obo/GO_",
+                      "GOLD.META": "http://identifiers.org/gold.meta/",
+                      "GOP": "http://purl.obolibrary.org/obo/go#",
+                      "GOREL": "http://purl.obolibrary.org/obo/GOREL_",
+                      "GSID": "https://scholar.google.com/citations?user=",
+                      "GTEx": "https://www.gtexportal.org/home/gene/",
+                      "HANCESTRO": "http://www.ebi.ac.uk/ancestro/ancestro_",
+                      "HCPCS": "http://purl.bioontology.org/ontology/HCPCS/",
+                      "HGNC": "http://identifiers.org/hgnc/",
+                      "HGNC.FAMILY": "http://identifiers.org/hgnc.family/",
+                      "HMDB": "http://identifiers.org/hmdb/",
+                      "HP": "http://purl.obolibrary.org/obo/HP_",
+                      "ICD0": "http://translator.ncats.nih.gov/ICD0_",
+                      "ICD10": "http://translator.ncats.nih.gov/ICD10_",
+                      "ICD9": "http://translator.ncats.nih.gov/ICD9_",
+                      "INCHI": "http://identifiers.org/inchi/",
+                      "INCHIKEY": "http://identifiers.org/inchikey/",
+                      "INTACT": "http://identifiers.org/intact/",
+                      "IUPHAR.FAMILY": "http://identifiers.org/iuphar.family/",
+                      "KEGG": "http://identifiers.org/kegg/",
+                      "LOINC": "http://loinc.org/rdf/",
+                      "MEDDRA": "http://identifiers.org/meddra/",
+                      "MESH": "http://identifiers.org/mesh/",
+                      "MGI": "http://identifiers.org/mgi/",
+                      "MI": "http://purl.obolibrary.org/obo/MI_",
+                      "MIR": "http://identifiers.org/mir/",
+                      "MONDO": "http://purl.obolibrary.org/obo/MONDO_",
+                      "MP": "http://purl.obolibrary.org/obo/MP_",
+                      "MSigDB": "https://www.gsea-msigdb.org/gsea/msigdb/",
+                      "MetaCyc": "http://translator.ncats.nih.gov/MetaCyc_",
+                      "NCBIGENE": "http://identifiers.org/ncbigene/",
+                      "NCBITaxon": "http://purl.obolibrary.org/obo/NCBITaxon_",
+                      "NCIT": "http://purl.obolibrary.org/obo/NCIT_",
+                      "NDDF": "http://purl.bioontology.org/ontology/NDDF/",
+                      "NLMID": "https://www.ncbi.nlm.nih.gov/nlmcatalog/?term=",
+                      "OBAN": "http://purl.org/oban/",
+                      "OBOREL": "http://purl.obolibrary.org/obo/RO_",
+                      "OIO": "http://www.geneontology.org/formats/oboInOwl#",
+                      "OMIM": "http://purl.obolibrary.org/obo/OMIM_",
+                      "ORCID": "https://orcid.org/",
+                      "ORPHA": "http://www.orpha.net/ORDO/Orphanet_",
+                      "ORPHANET": "http://identifiers.org/orphanet/",
+                      "PANTHER.FAMILY": "http://identifiers.org/panther.family/",
+                      "PANTHER.PATHWAY": "http://identifiers.org/panther.pathway/",
+                      "PATO-PROPERTY": "http://purl.obolibrary.org/obo/pato#",
+                      "PDQ": "https://www.cancer.gov/publications/pdq#",
+                      "PHARMGKB.DRUG": "http://identifiers.org/pharmgkb.drug/",
+                      "PHARMGKB.PATHWAYS": "http://identifiers.org/pharmgkb.pathways/",
+                      "PHAROS": "http://pharos.nih.gov",
+                      "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/",
+                      "PO": "http://purl.obolibrary.org/obo/PO_",
+                      "POMBASE": "http://identifiers.org/pombase/",
+                      "PR": "http://purl.obolibrary.org/obo/PR_",
+                      "PUBCHEM.COMPOUND": "http://identifiers.org/pubchem.compound/",
+                      "PUBCHEM.SUBSTANCE": "http://identifiers.org/pubchem.substance/",
+                      "PathWhiz": "http://smpdb.ca/pathways/#",
+                      "REACT": "http://www.reactome.org/PathwayBrowser/#/",
+                      "REPODB": "http://apps.chiragjpgroup.org/repoDB/",
+                      "RGD": "http://identifiers.org/rgd/",
+                      "RHEA": "http://identifiers.org/rhea/",
+                      "RNACENTRAL": "http://identifiers.org/rnacentral/",
+                      "RO": "http://purl.obolibrary.org/obo/RO_",
+                      "RTXKG1": "http://kg1endpoint.rtx.ai/",
+                      "RXNORM": "http://purl.bioontology.org/ontology/RXNORM/",
+                      "ResearchID": "https://publons.com/researcher/",
+                      "SEMMEDDB": "https://skr3.nlm.nih.gov/SemMedDB",
+                      "SGD": "http://identifiers.org/sgd/",
+                      "SIO": "http://semanticscience.org/resource/SIO_",
+                      "SMPDB": "http://identifiers.org/smpdb/",
+                      "SNOMEDCT": "http://identifiers.org/snomedct/",
+                      "SNPEFF": "http://translator.ncats.nih.gov/SNPEFF_",
+                      "ScopusID": "https://www.scopus.com/authid/detail.uri?authorId=",
+                      "TAXRANK": "http://purl.obolibrary.org/obo/TAXRANK_",
+                      "UBERGRAPH": "http://translator.renci.org/ubergraph-axioms.ofn#",
+                      "UBERON": "http://purl.obolibrary.org/obo/UBERON_",
+                      "UBERON_CORE": "http://purl.obolibrary.org/obo/uberon/core#",
+                      "UMLS": "http://identifiers.org/umls/",
+                      "UMLSSC": "https://metamap.nlm.nih.gov/Docs/SemanticTypes_2018AB.txt/code#",
+                      "UMLSSG": "https://metamap.nlm.nih.gov/Docs/SemGroups_2018.txt/group#",
+                      "UMLSST": "https://metamap.nlm.nih.gov/Docs/SemanticTypes_2018AB.txt/type#",
+                      "UNII": "http://identifiers.org/unii/",
+                      "UPHENO": "http://purl.obolibrary.org/obo/UPHENO_",
+                      "UniProtKB": "http://identifiers.org/uniprot/",
+                      "VANDF": "https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/VANDF/",
+                      "VMC": "https://github.com/ga4gh/vr-spec/",
+                      "WB": "http://identifiers.org/wb/",
+                      "WBPhenotype": "http://purl.obolibrary.org/obo/WBPhenotype_",
+                      "WBVocab": "http://bio2rdf.org/wormbase_vocabulary",
+                      "WIKIDATA": "https://www.wikidata.org/wiki/",
+                      "WIKIDATA_PROPERTY": "https://www.wikidata.org/wiki/Property:",
+                      "WIKIPATHWAYS": "http://identifiers.org/wikipathways/",
+                      "WormBase": "https://www.wormbase.org/get?name=",
+                      "ZFIN": "http://identifiers.org/zfin/",
+                      "ZP": "http://purl.obolibrary.org/obo/ZP_",
+                      "alliancegenome": "https://www.alliancegenome.org/",
+                      "biolink": "https://w3id.org/biolink/vocab/",
+                      "biolinkml": "https://w3id.org/biolink/biolinkml/",
+                      "chembio": "http://translator.ncats.nih.gov/chembio_",
+                      "dcterms": "http://purl.org/dc/terms/",
+                      "dictyBase": "http://dictybase.org/gene/",
+                      "doi": "https://doi.org/",
+                      "fabio": "http://purl.org/spar/fabio/",
+                      "foaf": "http://xmlns.com/foaf/0.1/",
+                      "foodb.compound": "http://foodb.ca/compounds/",
+                      "gff3": "https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md#",
+                      "gpi": "https://github.com/geneontology/go-annotation/blob/master/specs/gpad-gpi-2-0.md#",
+                      "gtpo": "https://rdf.guidetopharmacology.org/ns/gtpo#",
+                      "hetio": "http://translator.ncats.nih.gov/hetio_",
+                      "interpro": "https://www.ebi.ac.uk/interpro/entry/",
+                      "isbn": "https://www.isbn-international.org/identifier/",
+                      "isni": "https://isni.org/isni/",
+                      "issn": "https://portal.issn.org/resource/ISSN/",
+                      "medgen": "https://www.ncbi.nlm.nih.gov/medgen/",
+                      "oboformat": "http://www.geneontology.org/formats/oboInOWL#",
+                      "pav": "http://purl.org/pav/",
+                      "prov": "http://www.w3.org/ns/prov#",
+                      "qud": "http://qudt.org/1.1/schema/qudt#",
+                      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+                      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+                      "skos": "https://www.w3.org/TR/skos-reference/#",
+                      "wgs": "http://www.w3.org/2003/01/geo/wgs84_pos",
+                      "xsd": "http://www.w3.org/2001/XMLSchema#",
+                      "@vocab": "https://w3id.org/biolink/vocab/"}
+
+    @staticmethod
+    def get_curie_purl(curie):
+        # Split into prefix and suffix
+        suffix = curie.split(":")[1]
+        prefix = curie.split(":")[0]
+
+        # Check to see if the prefix exists in the hash
+        if prefix not in BioLinkPURLerizer.biolink_lookup:
+            return None
+
+        return f"{BioLinkPURLerizer.biolink_lookup[prefix]}{suffix}"
+
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()

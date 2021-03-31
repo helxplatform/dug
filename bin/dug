@@ -2,27 +2,11 @@
 ##
 ## Dug is semantic search framework for digging in dark data
 ##
-##   Ingest:
-##
-##     link: Annotate a data set with ontology identifiers
-##           based on NLP and named entity recognition.
-##       usage: bin/dug link <metadata>
-##
-##     load: Turn the data into a knowledge graph and
-##           insert it into a database.
-##       usage: bin/dug load <metadata>_tagged.json
-##
 ##   Crawl & Index:
 ##
 ##     crawl: Execute graph queries against an aggregator.
 ##            Record the knowledge graphs in a cache.
 ##       usage: bin/dug crawl
-##
-##     index: Analyze the graph to build a search index.
-##       usage: bin/dug index
-##
-##     query: Query the search engine from the command line
-##       usage: bin/dug query <text>
 ##
 ##   Search API:
 ##
@@ -92,79 +76,11 @@ dev () {
 
 #############################################################
 ##
-## Clean: Delete ES indices
-##
-#############################################################
-clean () {
-    curdir=$PWD
-    cd $DUG_HOME/dug
-    python -m dug.core --clean
-    cd $curdir
-}
-
-### INGEST:
-
-#############################################################
-##
-## Link: Read metadata and annotate to create linked data.
-##
-#############################################################
-link () {
-    if [ $(echo "$*" | grep -c "_variables_") == 1 ]; then
-        ELASTIC_API_HOST=${ELASTIC_API_HOST-"localhost"} python -m dug.ingest --tagged $*
-    else
-        python -m dug.ingest --annotate $*
-    fi
-}
-
-#############################################################
-##
-## Load: Create knowledge graph and store in a database.
-##
-#############################################################
-load () {
-    python -m dug.ingest --load $input $*
-}
-
-### Crawl/Index
-
-#############################################################
-##
-## Index: Create indices and add to search engine.
-##
-#############################################################
-index () {
-    curdir=$PWD
-    cd $DUG_HOME/dug
-    python -m dug.core --index $*
-    cd $curdir
-}
-
-#############################################################
-##
-## Crawl: Gather knowledge graphs from TranQL, create indices, and add to search engine.
+## Crawl: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
 ##
 #############################################################
 crawl () {
-    python -m dug.core --crawl $*
-}
-
-#############################################################
-##
-## Crawl_by_tag: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
-##
-#############################################################
-crawl_by_tag () {
-    python -m dug.core --crawl-by-tag $*
-}
-
-#############################################################
-##
-## Crawl_by_tag: Gather knowledge graphs from TranQL, organize by tag, create indices, and add to search engine.
-##
-#############################################################
-crawl_by_concept () {
-    python -m dug.core --crawl-by-concept $*
+    python -m dug.core $*
 }
 
 
@@ -175,46 +91,27 @@ crawl_by_concept () {
 #############################################################
 crawl_dir () {
     input_dir=$1
+    parser_type=$2
+    element_type=$3
+    
+    # set element_type to parser_type if not set
+    if [ -z "$element_type"]; then
+        element_type=$parser_type
+    fi
+    
     # Report how many files are in dir
     echo "Crawling directory: $1"
     init_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
     echo "Found $init_files files to crawl"
 
     # Loop through all files that match pattern, do crawl by concept, and then delete file if finished successfully
-    find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' -exec python -m dug.core --crawl-by-concept --crawl-file {} \; -exec rm {} \;
+    find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' -exec python -m dug.core --crawl-file {} --parser-type $parser_type --element-type $element_type \; -exec rm {} \;
 
     # Count total number of files left that match pattern
     final_files=$(find $input_dir \( -name '*.xml' -o -name '*.csv' \) -type 'f' | wc -l)
     completed_files=$(( $init_files - $final_files ))
     echo "Successfully completed $completed_files crawls"
     echo "$(( $init_files - $completed_files)) files could not be crawled"
-}
-
-#############################################################
-##
-## Query: Test the created index with a query.
-##
-#############################################################
-query () {
-    python -m dug.core --query $*
-}
-
-#############################################################
-##
-## QueryKG: Test the created knowledge graph index with a query.
-##
-#############################################################
-query_kg () {
-    python -m dug.core --kg-id $1 --query-kg ${@:2}
-}
-
-#############################################################
-##
-## API: Run the OpenAPI search endpoint.
-##
-#############################################################
-api () {
-    python -m dug.api $*
 }
 
 #############################################################
@@ -246,45 +143,6 @@ EOF
     HOSTNAME=$HOSTNAME docker-compose \
 	    --env-file $DUG_HOME/docker/.env \
 	    -f $DUG_HOME/docker/docker-compose.yaml -p dug $*
-}
-
-#############################################################
-##
-## Test: Automated functional test
-##
-#############################################################
-test () {
-
-    set -e
-    # Prerequisites:
-    #   * Stack must be running via "bin/dug stack".
-    #   * If running from a host pointing at docker-compose, must have
-    #     a docker/.env.dev file with all hostnames set to localhost.
-
-    # Delete the test index
-    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test
-    curl -X DELETE http://elastic:$ELASTIC_PASSWORD@$ELASTIC_API_HOST:9200/test_kg
-
-    # Ingest, annotate, load knowledge graph.
-    bin/dug link data/dd.xml
-    bin/dug load data/dd_tagged.json
-
-    # The best format for variables we have is currently
-    # implemented so that, if we pass the additional
-    # --index <arg> flag, it will use the neo4j
-    # database to drive queries, create knoweldge graphs,
-    # create documents, and index those for search.
-    bin/dug link data/topmed_variables_v1.0.csv --index x
-    sleep 4
-
-    bin/dug query coug # direct to search engine
-
-    # Query via API
-    bin/dug query_api coug
-    bin/dug query_api copd
-    bin/dug query_api sleep
-
-    set +e
 }
 
 #############################################################
@@ -340,6 +198,33 @@ query_nboost () {
            http://localhost:5551/search
 }
 
+#############################################################
+##
+## Query_Var_API: Query the element/variable index via the search API.
+##
+#############################################################
+query_var_api () {
+     concept_id=$1
+     size=$2
+     data_type=$3
+     query="`echo '{"index" : "variables_index", "query" : "'${@:4}'", "concept" : "'$concept_id'", "data_type" : "'$data_type'", "size": '$size'}'`"
+     curl --data "$query" \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/search_var
+}
+
+#############################################################
+##
+## Data_Types_API: Return the aggregate data types of all elements.
+##
+#############################################################
+query_datatypes_api () {
+     curl --data '{"index": "variables_index"}' \
+           --header "Content-Type: application/json" \
+           --request POST \
+           http://localhost:5551/agg_data_types
+}
 
 #############################################################
 ##

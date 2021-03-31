@@ -18,5 +18,7 @@ norm_fails.txt
 variable_file.json
 test_dir/
 monarch_results.txt
+anno_fails.txt
 
-
+# PyEnv
+.python-version

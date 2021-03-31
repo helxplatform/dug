@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repo=heliumdatastage
+repo=helxplatform
 
 function get_ver () {
     if [ ! -f "bin/.ver" ]
