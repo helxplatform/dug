@@ -38,7 +38,7 @@ test.unit:
 	${PYTHON} -m pytest tests/unit
 
 #test: Run all tests
-test: test.lint test.doc test.unit
+test: test.doc test.unit
 
 #build: Build wheel and source distribution packages
 build:
