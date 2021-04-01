@@ -9,7 +9,7 @@ DOCKER_NAME  = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 
 .DEFAULT_GOAL = help
 
-.PHONY: help clean install test build image
+.PHONY: help clean install test build image publish
 
 #help: List available tasks on this project
 help:
@@ -63,15 +63,15 @@ image: image.build image.test
 #all: Alias to clean, install, test, build, and image
 all: clean install test build image
 
+#publish: Push the Docker image
 publish.image:
 	docker tag ${DOCKER_NAME} ${DOCKER_REPO}/${DOCKER_NAME}
 	docker push ${DOCKER_REPO}/${DOCKER_NAME}
 
-publish.wheel:
+#publish: Push the build artifacts to PyPI
+publish.python:
 	echo "publishing wheel..."
-
-publish.sdist:
 	echo "publishing source..."
 
-#publish: Push build artifacts to appropriate repositories
+#publish: Push all build artifacts to appropriate repositories
 publish: publish.sdist publish.wheel publish.image
