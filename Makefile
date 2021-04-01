@@ -1,9 +1,13 @@
-PYTHON       := /usr/bin/env python3
-VERSION_FILE := ./src/dug/_version.py
-VERSION      := $(shell cut -d " " -f 3 ${VERSION_FILE})
-DOCKER_TAG   := dug-make-test:${VERSION}
+PYTHON       = /usr/bin/env python3
+VERSION_FILE = ./src/dug/_version.py
+VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
+DOCKER_REPO  = docker.io
+DOCKER_OWNER = helxplatform
+DOCKER_APP	 = dug
+DOCKER_TAG   = ${VERSION}
+DOCKER_NAME  = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL = help
 
 .PHONY: help clean install test build image
 
@@ -46,10 +50,28 @@ build:
 	${PYTHON} -m pip install --upgrade build
 	${PYTHON} -m build --sdist --wheel .
 
+image.build:
+	echo "Building docker image: ${DOCKER_NAME}"
+	docker build -t ${DOCKER_NAME} -f Dockerfile .
+
+image.test:
+	echo "Testing dockerfile"
+
 #image: Build Docker image
-image:
-	echo "Building docker image: $(DOCKER_TAG)"
-	docker build -t ${DOCKER_TAG} -f Dockerfile .
+image: image.build image.test
 
 #all: Alias to clean, install, test, build, and image
 all: clean install test build image
+
+publish.image:
+	docker tag ${DOCKER_NAME} ${DOCKER_REPO}/${DOCKER_NAME}
+	docker push ${DOCKER_REPO}/${DOCKER_NAME}
+
+publish.wheel:
+	echo "publishing wheel..."
+
+publish.sdist:
+	echo "publishing source..."
+
+#publish: Push build artifacts to appropriate repositories
+publish: publish.sdist publish.wheel publish.image
