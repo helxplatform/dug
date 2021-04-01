@@ -569,7 +569,7 @@ class Crawler:
 
                 # Fetch kg and answer
                 kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
-                answers = tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
+                answers = self.tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
 
                 # Add any answer knowledge graphs to
                 for answer in answers:
@@ -588,7 +588,7 @@ def get_parser(parser_type):
         raise ParserNotFoundException(err_msg)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='DUG-Search Crawler')
 
     # Add option for crawl file
@@ -687,3 +687,7 @@ if __name__ == '__main__':
                                        kg_answer=kg_answer,
                                        index=kg_index,
                                        id_suffix=kg_answer_id)
+
+
+if __name__ == '__main__':
+    main()

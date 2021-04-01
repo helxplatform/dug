@@ -15,8 +15,13 @@ services:
   #################################################################################
   api:
     build:
-      dockerfile: docker/dug/Dockerfile
-      context: ../
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - elasticsearch
+      - neo4j
+      - redis
+      - nboost
     restart: always
     networks:
       - dug-network
@@ -30,8 +35,6 @@ services:
                      "--workers=$API_WORKERS", "--name=dug",
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
                      "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "dug.api:app" ]
-    volumes:
-      - $PWD/dug:/home/dug/dug/dug/
     ports:
       - $API_PORT:$API_PORT
 
@@ -49,7 +52,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=true
     volumes:
-      - $ELASTIC_DATA:/bitnami/elasticsearch/data
+      - $DATA_DIR/elastic:/usr/share/elasticsearch/data
     ports:
       - '9200:9200'
       - '9300:9300'
@@ -67,7 +70,7 @@ services:
       - NEO4J_PASSWORD=$NEO4J_PASSWORD
       - NEO4J_HOST=$HOSTNAME
     volumes:
-      - $NEO4J_DATA:/bitnami
+      - $DATA_DIR/neo4j:/bitnami
     ports:
       - '7474:7474'
       - '7473:7473'
@@ -86,7 +89,7 @@ services:
       - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     volumes:
-      - $REDIS_DATA:/bitnami/redis/data
+      - $DATA_DIR/redis:/bitnami/redis/data
     ports:
       - '6379:6379'
 

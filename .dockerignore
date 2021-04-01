@@ -1,0 +1,22 @@
+db
+
+# Python stuff
+**/__pycache__
+**/*.pyc
+tests/.pytest_cache
+
+# Intellij
+.idea
+
+# Git
+.git
+.gitignore
+
+# Python Envs
+.venv
+.python-version
+
+# Build artifacts
+build/
+dist/
+**/*.egg-info
