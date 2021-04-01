@@ -5,7 +5,7 @@ DOCKER_REPO  = docker.io
 DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
 DOCKER_TAG   = ${VERSION}
-DOCKER_NAME  = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
+DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 
 .DEFAULT_GOAL = help
 
@@ -45,33 +45,36 @@ test.unit:
 test: test.doc test.unit
 
 #build: Build wheel and source distribution packages
-build:
+build.python:
 	echo "Building distribution packages for version $(VERSION)"
 	${PYTHON} -m pip install --upgrade build
 	${PYTHON} -m build --sdist --wheel .
+	echo "Successfully built version $(VERSION)"
 
-image.build:
-	echo "Building docker image: ${DOCKER_NAME}"
-	docker build -t ${DOCKER_NAME} -f Dockerfile .
+#build.image: Build the Docker image
+build.image:
+	echo "Building docker image: ${DOCKER_IMAGE}"
+	docker build -t ${DOCKER_IMAGE} -f Dockerfile .
+	echo "Successfully built: ${DOCKER_IMAGE}"
 
-image.test:
+build.image.test:
 	echo "Testing dockerfile"
 
-#image: Build Docker image
-image: image.build image.test
+#build: Build Python artifacts and Docker image
+build: build.python build.image build.image.test
 
 #all: Alias to clean, install, test, build, and image
-all: clean install test build image
+all: clean install test build
 
-#publish: Push the Docker image
+#publish.image: Push the Docker image
 publish.image:
-	docker tag ${DOCKER_NAME} ${DOCKER_REPO}/${DOCKER_NAME}
-	docker push ${DOCKER_REPO}/${DOCKER_NAME}
+	docker tag ${DOCKER_IMAGE} ${DOCKER_REPO}/${DOCKER_IMAGE}
+	docker push ${DOCKER_REPO}/${DOCKER_IMAGE}
 
-#publish: Push the build artifacts to PyPI
+#publish.python: Push the build artifacts to PyPI
 publish.python:
 	echo "publishing wheel..."
 	echo "publishing source..."
 
 #publish: Push all build artifacts to appropriate repositories
-publish: publish.sdist publish.wheel publish.image
+publish: publish.python publish.image
