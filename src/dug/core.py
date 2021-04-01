@@ -12,7 +12,7 @@ import dug.config as cfg
 import dug.parsers as parsers
 import dug.annotate as anno
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 
@@ -589,6 +589,10 @@ def get_parser(parser_type):
 
 
 def main():
+    log_level = os.getenv("DUG_LOG_LEVEL", "INFO")
+
+    logger.setLevel(log_level)
+
     parser = argparse.ArgumentParser(description='DUG-Search Crawler')
 
     # Add option for crawl file

@@ -10,7 +10,7 @@ from requests import Session
 
 import dug.tranql as tql
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -150,7 +150,7 @@ class ConceptExpander:
 
             # Case: Skip if empty KG
             if not len(response['knowledge_graph']['nodes']):
-                logging.debug(f"Did not find a knowledge graph for {query}")
+                logger.debug(f"Did not find a knowledge graph for {query}")
                 return []
 
             # Dump out to file if there's a knowledge graph
