@@ -1,4 +1,3 @@
-import abc
 import csv
 import json
 import logging
@@ -7,8 +6,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Union, Dict, Callable, List
 
+import pluggy
+
 import dug.utils as utils
-from dug import hookimpl
 
 logger = logging.getLogger('dug')
 
@@ -237,6 +237,9 @@ def TOPMedTagParser(input_file: InputFile) -> List[DugThing]:
             logger.debug(elem)
 
     return list(concepts.values()) + elements
+
+
+hookimpl = pluggy.HookimplMarker("dug")
 
 
 @hookimpl
