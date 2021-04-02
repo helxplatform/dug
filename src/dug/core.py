@@ -37,7 +37,7 @@ logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 def get_plugin_manager() -> pluggy.PluginManager:
     pm = pluggy.PluginManager("dug")
     pm.add_hookspecs(hookspecs)
-    pm.load_setuptools_entrypoints("eggsample")
+    pm.load_setuptools_entrypoints("dug")
     pm.register(parsers)
     return pm
 
