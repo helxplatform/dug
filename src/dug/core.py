@@ -1,16 +1,18 @@
 import argparse
-import logging
 import json
-import requests
-import traceback
+import logging
 import os
-from elasticsearch import Elasticsearch
+import sys
+import traceback
+
 import redis
+import requests
+from elasticsearch import Elasticsearch
 from requests_cache import CachedSession
 
+import dug.annotate as anno
 import dug.config as cfg
 import dug.parsers as parsers
-import dug.annotate as anno
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
