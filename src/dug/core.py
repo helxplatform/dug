@@ -13,6 +13,10 @@ import dug.parsers as parsers
 import dug.annotate as anno
 
 logger = logging.getLogger('dug')
+stdout_log_handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+stdout_log_handler.setFormatter(formatter)
+logger.addHandler(stdout_log_handler)
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 
