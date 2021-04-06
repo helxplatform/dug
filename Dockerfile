@@ -7,7 +7,7 @@ FROM python:3.8.5-slim
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y make && \
+    apt-get install -y curl make && \
     rm -rf /var/cache/apk/*
 
 # Create a non-root user.
@@ -21,8 +21,6 @@ USER $USER
 WORKDIR $HOME
 
 ENV PATH=$HOME/.local/bin:$PATH
-ENV ELASTIC_API_HOST=
-ENV ELASTIC_API_PORT=
 
 # Copy over the source code
 RUN mkdir dug

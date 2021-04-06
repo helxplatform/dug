@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import dug.utils as utils
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 
 class DugElement:

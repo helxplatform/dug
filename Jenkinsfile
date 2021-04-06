@@ -15,5 +15,16 @@ pipeline {
                 '''
             }
         }
+        stage('Publish') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                sh '''
+                make build.image
+                make publish.image
+                '''
+            }
+        }
     }
 }
