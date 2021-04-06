@@ -10,7 +10,7 @@ from requests import Session
 
 import dug.tranql as tql
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)

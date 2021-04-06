@@ -1,18 +1,24 @@
 import argparse
-import logging
 import json
-import requests
-import traceback
+import logging
 import os
-from elasticsearch import Elasticsearch
+import sys
+import traceback
+
 import redis
+import requests
+from elasticsearch import Elasticsearch
 from requests_cache import CachedSession
 
+import dug.annotate as anno
 import dug.config as cfg
 import dug.parsers as parsers
-import dug.annotate as anno
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
+stdout_log_handler = logging.StreamHandler(sys.stdout)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+stdout_log_handler.setFormatter(formatter)
+logger.addHandler(stdout_log_handler)
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 
@@ -596,7 +602,11 @@ def get_parser(parser_type):
         raise ParserNotFoundException(err_msg)
 
 
-if __name__ == '__main__':
+def main():
+    log_level = os.getenv("DUG_LOG_LEVEL", "INFO")
+
+    logger.setLevel(log_level)
+
     parser = argparse.ArgumentParser(description='DUG-Search Crawler')
 
     # Add option for crawl file
@@ -695,3 +705,7 @@ if __name__ == '__main__':
                                        kg_answer=kg_answer,
                                        index=kg_index,
                                        id_suffix=kg_answer_id)
+
+
+if __name__ == '__main__':
+    main()

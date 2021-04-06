@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import dug.utils as utils
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 
 class DugElement:
@@ -125,6 +125,7 @@ class DbGaPParser:
 
     @staticmethod
     def parse(input_file):
+        logger.debug(input_file)
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
