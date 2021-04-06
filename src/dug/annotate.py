@@ -150,7 +150,7 @@ class ConceptExpander:
 
             # Case: Skip if empty KG
             if not len(response["message"]['knowledge_graph']['nodes']):
-                logging.debug(f"Did not find a knowledge graph for {query}")
+                logger.debug(f"Did not find a knowledge graph for {query}")
                 return []
 
             # Dump out to file if there's a knowledge graph
