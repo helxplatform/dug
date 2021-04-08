@@ -682,8 +682,13 @@ class Dug:
                                             index=self.kg_index,
                                             id_suffix=kg_answer_id)
 
-    def search(self, index, query):
-        return self._search.search_concepts(index, query)
+    def search(self, index, query, target, concept=None):
+        if target == 'concepts':
+            return self._search.search_concepts(index, query)
+        elif target == 'variables':
+            return self._search.search_variables(index, concept, query)
+        else:
+            raise ValueError("Target must be 'concepts' or 'variables'")
 
     def status(self):
         ...

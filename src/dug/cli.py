@@ -11,13 +11,15 @@ from dug.core import Dug, logger
 
 def get_argparser():
 
-    parser = argparse.ArgumentParser(description='DUG-Search Crawler')
-    parser.set_defaults(func=lambda _args: parser.print_usage())
+    argument_parser = argparse.ArgumentParser(description='Dug: Semantic Search')
+    argument_parser.set_defaults(func=lambda _args: argument_parser.print_usage())
 
-    subparsers = parser.add_subparsers(help="Help for subparser")
+    subparsers = argument_parser.add_subparsers(
+        title="Commands",
+    )
 
     # Crawl subcommand
-    crawl_parser = subparsers.add_parser('crawl', help='crawl help')
+    crawl_parser = subparsers.add_parser('crawl', help='Crawl and index some input')
     crawl_parser.set_defaults(func=crawl)
     crawl_parser.add_argument(
         'target',
@@ -40,12 +42,8 @@ def get_argparser():
         default=None
     )
 
-    # Status subcommand
-    status_parser = subparsers.add_parser('status', help='crawl help')
-    status_parser.set_defaults(func=status)
-
     # Search subcommand
-    search_parser = subparsers.add_parser('search', help='crawl help')
+    search_parser = subparsers.add_parser('search', help='Apply semantic search')
     search_parser.set_defaults(func=search)
 
     search_parser.add_argument(
@@ -55,9 +53,24 @@ def get_argparser():
     )
     search_parser.add_argument(
         '-i', '--index',
-        help = 'Index to search in',
+        help='Index to search in',
     )
-    return parser
+
+    search_parser.add_argument(
+        '-t', '--target',
+        help="Target (one of 'variables' or 'concepts')",
+    )
+
+    search_parser.add_argument(
+        '-c', '--concept',
+        default=None,
+        help="Concept to filter by when searching variables"
+    )
+    # Status subcommand
+    status_parser = subparsers.add_parser('status', help='Check status of dug server')
+    status_parser.set_defaults(func=status)
+
+    return argument_parser
 
 
 def crawl(args):
@@ -69,8 +82,9 @@ def search(args):
     dug = Dug()
     index = args.index
     query = args.query
-    response = dug.search(index, query)
-    # TODO add parsing options
+    target = args.target
+    concept = args.concept
+    response = dug.search(index, query, target, concept=concept)
 
     print(response)
 
