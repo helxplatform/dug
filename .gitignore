@@ -155,3 +155,6 @@ norm_fails.txt
 variable_file.json
 monarch_results.txt
 anno_fails.txt
+data/elastic/
+data/neo4j/
+crawl/
