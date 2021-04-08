@@ -44,9 +44,10 @@ Also, make sure all hostnames are correct for the environment you're running in.
 
 ```shell
 source .env
-NEO4J_HOST=localhost
-ELASTIC_API_HOST=localhost
-REDIS_HOST=localhost
+export $(cut -d= -f1 .env)
+export NEO4J_HOST=localhost
+export ELASTIC_API_HOST=localhost
+export REDIS_HOST=localhost
 ```
 
 (These values are already set up in the running docker container)
