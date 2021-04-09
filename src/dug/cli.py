@@ -13,6 +13,14 @@ def get_argparser():
 
     argument_parser = argparse.ArgumentParser(description='Dug: Semantic Search')
     argument_parser.set_defaults(func=lambda _args: argument_parser.print_usage())
+    argument_parser.add_argument(
+        '-l', '--level',
+        type=str,
+        choices=["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"],
+        dest='log_level',
+        default=os.getenv("DUG_LOG_LEVEL", "INFO"),
+        help="Log level"
+    )
 
     subparsers = argument_parser.add_subparsers(
         title="Commands",
@@ -28,14 +36,14 @@ def get_argparser():
     )
 
     crawl_parser.add_argument(
-        '--parser',
+        '-p', '--parser',
         help='Parser to use for parsing elements from crawl file',
         dest="parser_type",
         required=True
     )
 
     crawl_parser.add_argument(
-        '--element-type',
+        '-e', '--element-type',
         help='[Optional] Coerce all elements to a certain data type (e.g. DbGaP Variable).\n'
              'Determines what tab elements will appear under in Dug front-end',
         dest="element_type",
@@ -48,22 +56,25 @@ def get_argparser():
 
     search_parser.add_argument(
         '-q', '--query',
-        # nargs='+',
+        dest='query',
         help='Query to search for',
     )
     search_parser.add_argument(
         '-i', '--index',
+        dest='index',
         help='Index to search in',
     )
 
     search_parser.add_argument(
         '-t', '--target',
+        dest='target',
         help="Target (one of 'variables' or 'concepts')",
     )
 
     search_parser.add_argument(
         '-c', '--concept',
         default=None,
+        dest='concept',
         help="Concept to filter by when searching variables"
     )
     # Status subcommand
@@ -80,11 +91,7 @@ def crawl(args):
 
 def search(args):
     dug = Dug()
-    index = args.index
-    query = args.query
-    target = args.target
-    concept = args.concept
-    response = dug.search(index, query, target, concept=concept)
+    response = dug.search(args.index, args.query, args.target, concept=args.concept)
 
     print(response)
 
@@ -94,13 +101,16 @@ def status(args):
 
 
 def main():
-    log_level = os.getenv("DUG_LOG_LEVEL", "INFO")
-
-    logger.setLevel(log_level)
 
     arg_parser = get_argparser()
 
     args = arg_parser.parse_args()
+
+    try:
+        logger.setLevel(args.log_level)
+    except ValueError:
+        print(f"Log level must be one of CRITICAL, ERROR, WARNING, INFO, DEBUG. You entered {args.log_level}")
+
     args.func(args)
 
 
