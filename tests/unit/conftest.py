@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from typing import Dict
 
 import pytest
-from requests import Session
 
 
 @dataclass
