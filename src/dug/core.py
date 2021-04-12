@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 import traceback
+from functools import partial
 from pathlib import Path
 
 import redis
@@ -608,7 +609,7 @@ class Dug:
             indices=[self.concepts_index, self.variables_index, self.kg_index]
         )
 
-    def crawl(self, target_name: str, parser_type: str, element_type: str=None):
+    def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
         target = Path(target_name).resolve()
         parser = get_parser(parser_type)
@@ -678,17 +679,27 @@ class Dug:
             # Index knowledge graph answers for each concept
             for kg_answer_id, kg_answer in concept.kg_answers.items():
                 self._search.index_kg_answer(concept_id=concept_id,
-                                            kg_answer=kg_answer,
-                                            index=self.kg_index,
-                                            id_suffix=kg_answer_id)
+                                             kg_answer=kg_answer,
+                                             index=self.kg_index,
+                                             id_suffix=kg_answer_id)
 
-    def search(self, index, query, target, concept=None):
-        if target == 'concepts':
-            return self._search.search_concepts(index, query)
-        elif target == 'variables':
-            return self._search.search_variables(index, concept, query)
-        else:
-            raise ValueError("Target must be 'concepts' or 'variables'")
+    def search(self, target, query, **kwargs):
+        targets = {
+            'concepts': partial(
+                self._search.search_concepts, index=kwargs.get('index', self.concepts_index)),
+            'variables': partial(
+                self._search.search_variables, index=kwargs.get('index', self.variables_index), concept=kwargs.pop('concept', None)),
+            'kg': partial(
+                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None)),
+            'nboost': partial(
+                self._search.search_nboost, index=kwargs.get('index', None)),
+        }
+        kwargs.pop('index', None)
+        func = targets.get(target)
+        if func is None:
+            raise ValueError(f"Target must be one of {', '.join(targets.keys())}")
+
+        return func(query=query, **kwargs)
 
     def status(self):
         ...

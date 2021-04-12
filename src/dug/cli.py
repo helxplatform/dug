@@ -9,8 +9,15 @@ import os
 from dug.core import Dug, logger
 
 
-def get_argparser():
+class KwargParser(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, dict())
+        for value in values:
+            key, value = value.split('=', maxsplit=1)
+            getattr(namespace, self.dest)[key] = value
 
+
+def get_argparser():
     argument_parser = argparse.ArgumentParser(description='Dug: Semantic Search')
     argument_parser.set_defaults(func=lambda _args: argument_parser.print_usage())
     argument_parser.add_argument(
@@ -55,31 +62,30 @@ def get_argparser():
     search_parser.set_defaults(func=search)
 
     search_parser.add_argument(
+        '-t', '--target',
+        dest='target',
+        help="Target",
+    )
+
+    search_parser.add_argument(
         '-q', '--query',
         dest='query',
         help='Query to search for',
     )
-    search_parser.add_argument(
-        '-i', '--index',
-        dest='index',
-        help='Index to search in',
-    )
 
     search_parser.add_argument(
-        '-t', '--target',
-        dest='target',
-        help="Target (one of 'variables' or 'concepts')",
+        '-k',
+        '--kwargs',
+        nargs='*',
+        dest='kwargs',
+        default={},
+        action=KwargParser
     )
 
-    search_parser.add_argument(
-        '-c', '--concept',
-        default=None,
-        dest='concept',
-        help="Concept to filter by when searching variables"
-    )
     # Status subcommand
-    status_parser = subparsers.add_parser('status', help='Check status of dug server')
-    status_parser.set_defaults(func=status)
+    # TODO implement this
+    # status_parser = subparsers.add_parser('status', help='Check status of dug server')
+    # status_parser.set_defaults(func=status)
 
     return argument_parser
 
@@ -91,13 +97,13 @@ def crawl(args):
 
 def search(args):
     dug = Dug()
-    response = dug.search(args.index, args.query, args.target, concept=args.concept)
+    response = dug.search(args.target, args.query, **args.kwargs)
 
     print(response)
 
 
 def status(args):
-    print("Status is ... OK!")
+    print("Status check is not implemented yet!")
 
 
 def main():
