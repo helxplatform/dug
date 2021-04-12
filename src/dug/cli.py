@@ -64,7 +64,7 @@ def get_argparser():
     search_parser.add_argument(
         '-t', '--target',
         dest='target',
-        help="Target",
+        help="Defines which search strategy to use (e.g. variables, concepts, kg, etc.)",
     )
 
     search_parser.add_argument(
@@ -79,7 +79,8 @@ def get_argparser():
         nargs='*',
         dest='kwargs',
         default={},
-        action=KwargParser
+        action=KwargParser,
+        help="Optional keyword arguments that will be passed into the search target",
     )
 
     # Status subcommand
@@ -101,6 +102,10 @@ def search(args):
 
     print(response)
 
+
+def datatypes(args):
+    dug = Dug()
+    response = dug.info(args.target, **args.kwargs)
 
 def status(args):
     print("Status check is not implemented yet!")
