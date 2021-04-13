@@ -163,7 +163,7 @@ class DbGaPParser:
 class TOPMedTagParser:
 
     @staticmethod
-    def parse(input_file):
+    def parse(input_file: str):
         """
         Load tagged variables.
           Presumes a harmonized variable list as a CSV file as input.
@@ -175,6 +175,9 @@ class TOPMedTagParser:
                     tag definitions linked to the variabels.
         """
 
+        logger.debug(input_file)
+        if not input_file.endswith(".csv"):
+            return []
         tags_input_file = input_file.replace(".csv", ".json").replace("_variables_", "_tags_")
         if not os.path.exists(tags_input_file):
             raise ValueError(f"Accompanying tags file: {tags_input_file} must exist.")

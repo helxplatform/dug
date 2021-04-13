@@ -1,9 +1,10 @@
-import argparse
 import json
 import logging
 import os
 import sys
 import traceback
+from functools import partial
+from pathlib import Path
 
 import redis
 import requests
@@ -143,7 +144,8 @@ class Search:
                     "collection_name": {"type": "text"},
                     "collection_desc": {"type": "text"},
                     "collection_action": {"type": "text"},
-                    "data_type": {"type": "text", "fields": {"keyword": {"type": "keyword"}}} # typed as keyword for bucket aggs
+                    "data_type": {"type": "text", "fields": {"keyword": {"type": "keyword"}}}
+                    # typed as keyword for bucket aggs
                 }
             }
         }
@@ -201,7 +203,8 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables(self, index, concept, query, size=None, data_type=None, offset=0, fuzziness=1, prefix_length=3):
+    def search_variables(self, index, concept, query, size=None, data_type=None, offset=0, fuzziness=1,
+                         prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
         The query can match search_terms (hence, "should") for ranking.
@@ -218,10 +221,10 @@ class Search:
         query = {
             'bool': {
                 'must': {
-                        "match": {
-                            "identifiers": concept
-                        }
-                    },
+                    "match": {
+                        "identifiers": concept
+                    }
+                },
                 'should': {
                     'query_string': {
                         "query": query,
@@ -245,7 +248,7 @@ class Search:
         new_results = {}
         for elem in search_results['hits']['hits']:
             elem_s = elem['_source']
-            elem_type =  elem_s['data_type']
+            elem_type = elem_s['data_type']
             if elem_type not in new_results:
                 new_results[elem_type] = {}
 
@@ -257,7 +260,7 @@ class Search:
                 "id": elem_id,
                 "name": elem_s['element_name']
             }
-            
+
             # Case: collection not in dictionary for given data_type
             if coll_id not in new_results[elem_type]:
                 # initialize document
@@ -267,19 +270,19 @@ class Search:
                 doc['c_id'] = coll_id
                 doc['c_link'] = elem_s['collection_action']
                 doc['c_name'] = elem_s['collection_name']
-                doc['elements'] = [elem_info] 
-                
+                doc['elements'] = [elem_info]
+
                 # save document
                 new_results[elem_type][coll_id] = doc
-            
+
             # Case: collection already in dictionary for given element_type; append elem_info.  Assumes no duplicate elements
             else:
                 new_results[elem_type][coll_id]['elements'].append(elem_info)
-        
+
         # Flatten dicts to list
         for i in new_results:
             new_results[i] = list(new_results[i].values())
-        
+
         # Return results
         if bool(data_type):
             if data_type in new_results:
@@ -296,7 +299,7 @@ class Search:
         aggs = {
             "data_type": {
                 "terms": {
-                    "field":"data_type.keyword",
+                    "field": "data_type.keyword",
                     "size": 100
                 }
             }
@@ -378,7 +381,7 @@ class Search:
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
-        if self.es.exists(index,concept.id):
+        if self.es.exists(index, concept.id):
             return
         """ Index the document. """
         self.index_doc(
@@ -589,94 +592,76 @@ def get_parser(parser_type):
     except ValueError:
         # If the parser type doesn't exist throw a more helpful exception than just value error
         err_msg = f"Cannot find parser of type '{parser_type}'\n" \
-            f"Supported parsers: {', '.join(parsers.factory.get_builder_types())}"
+                  f"Supported parsers: {', '.join(parsers.factory.get_builder_types())}"
         logger.error(err_msg)
         raise ParserNotFoundException(err_msg)
 
 
-def main():
-    log_level = os.getenv("DUG_LOG_LEVEL", "INFO")
-
-    logger.setLevel(log_level)
-
-    parser = argparse.ArgumentParser(description='DUG-Search Crawler')
-
-    # Add option for crawl file
-    parser.add_argument('--crawl-file',
-                        help='Input file containing things you want to crawl/index',
-                        dest="crawl_file")
-
-    # Add option for crawl file
-    parser.add_argument('--parser-type',
-                        help='Parser to use for parsing elements from crawl file',
-                        dest="parser_type",
-                        required=True)
-
-    # Add option for crawl file
-    parser.add_argument('--element-type',
-                        help='[Optional] Coerce all elements to a certain data type (e.g. DbGaP Variable).\n'
-                             'Determines what tab elements will appear under in Dug front-end',
-                        dest="element_type",
-                        default=None)
-
-    args = parser.parse_args()
-
-    # Read and validate dug config
-    logging.basicConfig(level=logging.DEBUG)
-
-    # Initialize Search object
+class Dug:
     concepts_index = "concepts_index"
     variables_index = "variables_index"
     kg_index = "kg_index"
 
-    # Build search object
-    search = Search(host=cfg.elasticsearch_host,
-                    port=cfg.elasticsearch_port,
-                    indices=[concepts_index, variables_index, kg_index])
+    def __init__(self):
+        self._search = Search(
+            host=cfg.elasticsearch_host,
+            port=cfg.elasticsearch_port,
+            indices=[self.concepts_index, self.variables_index, self.kg_index]
+        )
 
-    # Configure redis so we can fetch things from cache when needed
-    redis_connection = redis.StrictRedis(host=cfg.redis_host,
-                                         port=cfg.redis_port,
-                                         password=cfg.redis_password)
+    def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
-    http_session = CachedSession(cache_name='annotator',
-                                 backend='redis',
-                                 connection=redis_connection)
+        target = Path(target_name).resolve()
+        parser = get_parser(parser_type)
+        self._crawl(target, parser, element_type)
 
-    if args.crawl_file:
+    def _crawl(self, target: Path, parser, element_type):
+
+        if target.is_file():
+            self._crawl_file(target, parser, element_type)
+        else:
+            for child in target.iterdir():
+                self._crawl(child, parser, element_type)
+
+    def _crawl_file(self, target: Path, parser, element_type):
+
+        # Configure redis so we can fetch things from cache when needed
+        redis_connection = redis.StrictRedis(host=cfg.redis_host,
+                                             port=cfg.redis_port,
+                                             password=cfg.redis_password)
+
+        http_session = CachedSession(cache_name='annotator',
+                                     backend='redis',
+                                     connection=redis_connection)
 
         # Create annotation engine for fetching ontology terms based on element text
-        preprocessor    = anno.Preprocessor(**cfg.preprocessor)
-        annotator       = anno.Annotator(**cfg.annotator)
-        normalizer      = anno.Normalizer(**cfg.normalizer)
-        synonym_finder  = anno.SynonymFinder(**cfg.synonym_service)
+        preprocessor = anno.Preprocessor(**cfg.preprocessor)
+        annotator = anno.Annotator(**cfg.annotator)
+        normalizer = anno.Normalizer(**cfg.normalizer)
+        synonym_finder = anno.SynonymFinder(**cfg.synonym_service)
         ontology_helper = anno.OntologyHelper(**cfg.ontology_helper)
-        tranqlizer      = anno.ConceptExpander(**cfg.concept_expander)
+        tranqlizer = anno.ConceptExpander(**cfg.concept_expander)
 
         # Greenlist of ontology identifiers that can fail normalization and still be valid
-        ontology_greenlist = cfg.ontology_greenlist if hasattr(cfg,"ontology_greenlist") else []
+        ontology_greenlist = cfg.ontology_greenlist if hasattr(cfg, "ontology_greenlist") else []
 
         # DugAnnotator combines all annotation components into single annotator
         dug_annotator = anno.DugAnnotator(preprocessor=preprocessor,
-                                            annotator=annotator,
-                                            normalizer=normalizer,
-                                            synonym_finder=synonym_finder,
-                                            ontology_helper=ontology_helper,
-                                            ontology_greenlist=ontology_greenlist)
-
-        # Get input parser based on input type
-        parser = get_parser(args.parser_type)
-
+                                          annotator=annotator,
+                                          normalizer=normalizer,
+                                          synonym_finder=synonym_finder,
+                                          ontology_helper=ontology_helper,
+                                          ontology_greenlist=ontology_greenlist)
 
         # Initialize crawler
-        crawler = Crawler(crawl_file=args.crawl_file,
+        crawler = Crawler(crawl_file=str(target),
                           parser=parser,
                           annotator=dug_annotator,
                           tranqlizer=tranqlizer,
                           tranql_queries=cfg.tranql_queries,
                           http_session=http_session,
                           exclude_identifiers=cfg.tranql_exclude_identifiers,
-                          element_type=args.element_type)
+                          element_type=element_type)
 
         # Read elements, annotate, and expand using tranql queries
         crawler.crawl()
@@ -685,19 +670,36 @@ def main():
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
             if not isinstance(element, parsers.DugConcept):
-                search.index_element(element, index=variables_index)
+                self._search.index_element(element, index=self.variables_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
         for concept_id, concept in crawler.concepts.items():
-            search.index_concept(concept, index=concepts_index)
+            self._search.index_concept(concept, index=self.concepts_index)
 
             # Index knowledge graph answers for each concept
             for kg_answer_id, kg_answer in concept.kg_answers.items():
-                search.index_kg_answer(concept_id=concept_id,
-                                       kg_answer=kg_answer,
-                                       index=kg_index,
-                                       id_suffix=kg_answer_id)
+                self._search.index_kg_answer(concept_id=concept_id,
+                                             kg_answer=kg_answer,
+                                             index=self.kg_index,
+                                             id_suffix=kg_answer_id)
 
+    def search(self, target, query, **kwargs):
+        targets = {
+            'concepts': partial(
+                self._search.search_concepts, index=kwargs.get('index', self.concepts_index)),
+            'variables': partial(
+                self._search.search_variables, index=kwargs.get('index', self.variables_index), concept=kwargs.pop('concept', None)),
+            'kg': partial(
+                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None)),
+            'nboost': partial(
+                self._search.search_nboost, index=kwargs.get('index', None)),
+        }
+        kwargs.pop('index', None)
+        func = targets.get(target)
+        if func is None:
+            raise ValueError(f"Target must be one of {', '.join(targets.keys())}")
 
-if __name__ == '__main__':
-    main()
+        return func(query=query, **kwargs)
+
+    def status(self):
+        ...
