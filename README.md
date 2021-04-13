@@ -51,10 +51,16 @@ export REDIS_HOST=localhost
 Then you can actually crawl the data:
 
 ```shell
-dug --crawl-file data/test_variables_v1.0.csv --parser-type="TOPMedTag"
+dug crawl data/test_variables_v1.0.csv -p "TOPMedTag"
 ````
 
-After crawling, you can query Dug's REST API:
+After crawling, you can search:
+```shell
+dug search -q "heart attack" -t "concepts"
+dug search -q "heart attack" -t "variables" -k "concept=MONDO:0005068"
+```
+
+You can also query Dug's REST API:
 ```shell
 query="`echo '{"index" : "concepts_index", "query" : "heart attack"}'`"
 
@@ -77,8 +83,6 @@ docker system prune -a  # NOTE: This will remove *all* images, layers, and volum
                         #       Be sure you're okay with this before running.
 docker-compose up
 ```
-
-There is no CLI interface to search currently yet.
 
 ## The Dug Framework
 
