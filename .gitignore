@@ -106,13 +106,13 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+local_storage/
 
 # Spyder project settings
 .spyderproject
@@ -155,3 +155,6 @@ norm_fails.txt
 variable_file.json
 monarch_results.txt
 anno_fails.txt
+data/elastic/
+data/neo4j/
+crawl/

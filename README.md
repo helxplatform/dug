@@ -11,7 +11,7 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 ## Quickstart
 
-To install Dug in your environment , run `make install`. Alternatively, 
+To install Dug in your environment , run `make install`. Alternatively,
 
 ```shell
 pip install -r requirements.txt
@@ -27,26 +27,23 @@ pytest .
 (The makefile currently only executes unit tests,
 whereas running pytest in the root directory will execute unit tests, integration tests, and doctests)
 
-To bring up the backend services, first configure environment variables:
-
-```shell
-DATA_DIR=/path/to/dug-data-storage RANDOM=$RANDOM envsubst < .env.template > .env
-```
-
-Then you can bring up the stack in docker-compose:
+To bring up the backend services, run:
 
 ```shell
 docker-compose up
 ```
 
-If you're running outside the docker container, you have to make sure the env vars are set.
-Also, make sure all hostnames are correct for the environment you're running in. For example:
+If you're running dug-specific commands (i.e. `dug`) outside the docker container,
+you have to make sure the env vars are set. Also, make sure all hostnames are correct
+for the environment you're running in. For example, to be able to connect to dug backend
+services from outside the container (but in a shell env), run:
 
 ```shell
 source .env
-NEO4J_HOST=localhost
-ELASTIC_API_HOST=localhost
-REDIS_HOST=localhost
+export $(cut -d= -f1 .env)
+export NEO4J_HOST=localhost
+export ELASTIC_API_HOST=localhost
+export REDIS_HOST=localhost
 ```
 
 (These values are already set up in the running docker container)
@@ -67,7 +64,21 @@ curl --data "$query" \
      http://localhost:5551/search
 ```
 
-There is no CLI interface to search currently yet. 
+### Additional Notes
+
+If you want to change or re-configure the dug service authentication credentials
+to be different from the defaults, run:
+
+```shell
+mv .env .env.bak
+DATA_DIR=/path/to/dug-data-storage RANDOM=$RANDOM envsubst < .env.template > .env
+docker-compose down
+docker system prune -a  # NOTE: This will remove *all* images, layers, and volumes.
+                        #       Be sure you're okay with this before running.
+docker-compose up
+```
+
+There is no CLI interface to search currently yet.
 
 ## The Dug Framework
 
