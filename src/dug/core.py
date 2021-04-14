@@ -1,13 +1,4 @@
-import argparse
 import json
-import logging
-import os
-import traceback
-
-import pluggy
-import redis
-import requests
-from elasticsearch import Elasticsearch
 import logging
 import os
 import sys
@@ -15,6 +6,7 @@ import traceback
 from functools import partial
 from pathlib import Path
 
+import pluggy
 import redis
 import requests
 from elasticsearch import Elasticsearch
@@ -24,6 +16,7 @@ from dug import annotate as anno
 from dug import config as cfg
 from dug import hookspecs
 from dug import parsers
+from dug.parsers import DugElement, DugConcept
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -482,7 +475,7 @@ class Crawler:
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
-            if isinstance(element, parsers.DugElement) and self.element_type is not None:
+            if isinstance(element, DugElement) and self.element_type is not None:
                 element.type = self.element_type
 
         # Annotate elements
@@ -517,12 +510,12 @@ class Crawler:
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         for element in self.elements:
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
-            if isinstance(element, parsers.DugConcept):
+            if isinstance(element, DugConcept):
                 self.concepts[element.id] = element
 
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
-            if isinstance(element, parsers.DugElement):
+            if isinstance(element, DugElement):
                 variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
@@ -531,7 +524,7 @@ class Crawler:
         # Each element assigned to TOPMedTag1 needs to be associated with those concepts as well
         for element in self.elements:
             # Skip user-defined concepts
-            if isinstance(element, parsers.DugConcept):
+            if isinstance(element, DugConcept):
                 continue
 
             # Associate identifiers from user-defined concepts (see example above)
@@ -557,10 +550,10 @@ class Crawler:
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
-                concept = parsers.DugConcept(concept_id=identifier.id,
-                                             name=identifier.label,
-                                             desc=identifier.description,
-                                             concept_type=identifier.type)
+                concept = DugConcept(concept_id=identifier.id,
+                                                       name=identifier.label,
+                                                       desc=identifier.description,
+                                                       concept_type=identifier.type)
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
@@ -569,12 +562,12 @@ class Crawler:
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, parsers.DugElement):
+            if isinstance(element, DugElement):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept
             # Child elements of these user-defined concepts will inherit all these identifiers as well.
-            elif isinstance(element, parsers.DugConcept):
+            elif isinstance(element, DugConcept):
                 element.add_identifier(identifier)
 
     def expand_concept(self, concept):
@@ -616,18 +609,6 @@ def get_parser(hook, parser_name):
               f"Supported parsers: {', '.join(available_parsers.keys())}"
     logger.error(err_msg)
     raise ParserNotFoundException(err_msg)
-
-
-def get_parser_old(parser_type):
-    # User parser factor to get a specific type of parser
-    try:
-        return parsers.factory.create(parser_type)
-    except ValueError:
-        # If the parser type doesn't exist throw a more helpful exception than just value error
-        err_msg = f"Cannot find parser of type '{parser_type}'\n" \
-                  f"Supported parsers: {', '.join(parsers.factory.get_builder_types())}"
-        logger.error(err_msg)
-        raise ParserNotFoundException(err_msg)
 
 
 class Dug:
@@ -707,7 +688,7 @@ class Dug:
         # Index Annotated Elements
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
-            if not isinstance(element, parsers.DugConcept):
+            if not isinstance(element, DugConcept):
                 self._search.index_element(element, index=self.variables_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
