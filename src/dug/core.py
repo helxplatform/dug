@@ -16,7 +16,7 @@ from dug import annotate as anno
 from dug import config as cfg
 from dug import hookspecs
 from dug import parsers
-from dug.parsers import DugElement, DugConcept
+from dug.parsers import DugElement, DugConcept, Parser
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -441,12 +441,12 @@ class Search:
 
 
 class Crawler:
-    def __init__(self, crawl_file, parser, annotator,
+    def __init__(self, crawl_file: str, parser: Parser, annotator,
                  tranqlizer, tranql_queries,
                  http_session, exclude_identifiers=[], element_type=None):
 
         self.crawl_file = crawl_file
-        self.parser = parser
+        self.parser: Parser = parser
         self.element_type = element_type
         self.annotator = annotator
         self.tranqlizer = tranqlizer

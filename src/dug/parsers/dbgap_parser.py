@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import List
 from xml.etree import ElementTree as ET
 
@@ -11,6 +12,15 @@ logger = logging.getLogger('dug')
 class DbGaPParser(FileParser):
     # Class for parsers DBGaP Data dictionary into a set of Dug Elements
 
+    @staticmethod
+    def parse_study_name_from_filename(filename: str):
+        # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
+        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
+        match = re.match(dbgap_file_pattern, filename)
+        if match is not None:
+            return match.group(1)
+        return None
+
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
         tree = ET.parse(input_file)
@@ -18,8 +28,8 @@ class DbGaPParser(FileParser):
         study_id = root.attrib['study_id']
         participant_set = root.attrib['participant_set']
 
-        # Parse study name from filehandle
-        study_name = utils.parse_study_name_from_filename(input_file)
+        # Parse study name from file handle
+        study_name = self.parse_study_name_from_filename(str(input_file))
 
         if study_name is None:
             err_msg = f"Unable to parse DbGaP study name from data dictionary: {input_file}!"
