@@ -1,6 +1,7 @@
 PYTHON       = /usr/bin/env python3
 VERSION_FILE = ./src/dug/_version.py
 VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
+PYPI_REPO    = testpypi
 DOCKER_REPO  = docker.io
 DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
@@ -57,24 +58,23 @@ build.image:
 	docker build -t ${DOCKER_IMAGE} -f Dockerfile .
 	echo "Successfully built: ${DOCKER_IMAGE}"
 
-build.image.test:
-	echo "Testing dockerfile"
-
 #build: Build Python artifacts and Docker image
-build: build.python build.image build.image.test
+build: build.python build.image
 
 #all: Alias to clean, install, test, build, and image
 all: clean install test build
 
 #publish.image: Push the Docker image
-publish.image:
+publish.image: build.image
 	docker tag ${DOCKER_IMAGE} ${DOCKER_REPO}/${DOCKER_IMAGE}
 	docker push ${DOCKER_REPO}/${DOCKER_IMAGE}
 
 #publish.python: Push the build artifacts to PyPI
-publish.python:
-	echo "publishing wheel..."
-	echo "publishing source..."
+publish.python: build.python
+	echo "Publishing distribution packages $(VERSION) to $(PYPI_REPO)"
+	${PYTHON} -m pip install --upgrade twine
+	${PYTHON} -m twine upload --repository ${PYPI_REPO} dist/*
+	echo "Successfully published version $(VERSION)"
 
 #publish: Push all build artifacts to appropriate repositories
 publish: publish.python publish.image
