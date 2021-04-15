@@ -36,8 +36,10 @@ services:
       - dug-network
     environment:
       ELASTIC_API_HOST: "$ELASTIC_API_HOST"
-      NBOOST_API_HOST: "$NBOOST_API_HOST"
       ELASTIC_PASSWORD: "$ELASTIC_PASSWORD"
+      NBOOST_API_HOST: "$NBOOST_API_HOST"
+      REDIS_HOST: "$REDIS_HOST"
+      REDIS_PASSWORD: "$REDIS_PASSWORD"
       FLASK_ENV: "development"
       PYTHONUNBUFFERED: "TRUE"
     entrypoint: [ "gunicorn",
