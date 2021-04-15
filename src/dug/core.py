@@ -621,7 +621,11 @@ class Dug:
             self._crawl_file(target, parser, element_type)
         else:
             for child in target.iterdir():
-                self._crawl(child, parser, element_type)
+                try:
+                    self._crawl(child, parser, element_type)
+                except Exception as e:
+                    logger.error(f"Unexpected {e.__class__.__name__} crawling {child}:{e}")
+                    continue
 
     def _crawl_file(self, target: Path, parser, element_type):
 
