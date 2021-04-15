@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import dug.utils as utils
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('dug')
 
 
 class DugElement:
@@ -125,6 +125,7 @@ class DbGaPParser:
 
     @staticmethod
     def parse(input_file):
+        logger.debug(input_file)
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
@@ -162,7 +163,7 @@ class DbGaPParser:
 class TOPMedTagParser:
 
     @staticmethod
-    def parse(input_file):
+    def parse(input_file: str):
         """
         Load tagged variables.
           Presumes a harmonized variable list as a CSV file as input.
@@ -174,6 +175,9 @@ class TOPMedTagParser:
                     tag definitions linked to the variabels.
         """
 
+        logger.debug(input_file)
+        if not input_file.endswith(".csv"):
+            return []
         tags_input_file = input_file.replace(".csv", ".json").replace("_variables_", "_tags_")
         if not os.path.exists(tags_input_file):
             raise ValueError(f"Accompanying tags file: {tags_input_file} must exist.")
