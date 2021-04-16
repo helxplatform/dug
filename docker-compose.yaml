@@ -4,6 +4,15 @@ version: '3.0'
 ##
 ## A service stack for the Dug semantic search framework.
 ##
+## NOTE: .env contains *_HOST variables that are set to internal docker service
+##       names. These names resolve to an IP address *within* the docker machine
+##       CIDR block, not your local development machine.
+##
+## NOTE: To connect to a dug service running in docker machine, from your local
+##       development machine, you will need to follow the steps in the Quickstart
+##       section of the README.md and set/export the env vars with special attention
+##       paid to the env vars: NEO4J_HOST, ELASTIC_API_HOST, and REDIS_HOST.
+##
 #################################################################################
 services:
 
@@ -27,8 +36,10 @@ services:
       - dug-network
     environment:
       ELASTIC_API_HOST: "$ELASTIC_API_HOST"
-      NBOOST_API_HOST: "$NBOOST_API_HOST"
       ELASTIC_PASSWORD: "$ELASTIC_PASSWORD"
+      NBOOST_API_HOST: "$NBOOST_API_HOST"
+      REDIS_HOST: "$REDIS_HOST"
+      REDIS_PASSWORD: "$REDIS_PASSWORD"
       FLASK_ENV: "development"
       PYTHONUNBUFFERED: "TRUE"
     entrypoint: [ "gunicorn",
