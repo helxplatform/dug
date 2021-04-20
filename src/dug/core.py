@@ -6,14 +6,17 @@ import traceback
 from functools import partial
 from pathlib import Path
 
+import pluggy
 import redis
 import requests
 from elasticsearch import Elasticsearch
 from requests_cache import CachedSession
 
-import dug.annotate as anno
-import dug.config as cfg
-import dug.parsers as parsers
+from dug import annotate as anno
+from dug import config as cfg
+from dug import hookspecs
+from dug import parsers
+from dug.parsers import DugElement, DugConcept, Parser
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -22,6 +25,14 @@ stdout_log_handler.setFormatter(formatter)
 logger.addHandler(stdout_log_handler)
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
+
+
+def get_plugin_manager() -> pluggy.PluginManager:
+    pm = pluggy.PluginManager("dug")
+    pm.add_hookspecs(hookspecs)
+    pm.load_setuptools_entrypoints("dug")
+    pm.register(parsers)
+    return pm
 
 
 class SearchException(Exception):
@@ -430,12 +441,12 @@ class Search:
 
 
 class Crawler:
-    def __init__(self, crawl_file, parser, annotator,
+    def __init__(self, crawl_file: str, parser: Parser, annotator,
                  tranqlizer, tranql_queries,
                  http_session, exclude_identifiers=[], element_type=None):
 
         self.crawl_file = crawl_file
-        self.parser = parser
+        self.parser: Parser = parser
         self.element_type = element_type
         self.annotator = annotator
         self.tranqlizer = tranqlizer
@@ -460,11 +471,11 @@ class Crawler:
         self.make_crawlspace()
 
         # Read in elements from parser
-        self.elements = self.parser.parse(self.crawl_file)
+        self.elements = self.parser(self.crawl_file)
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
-            if isinstance(element, parsers.DugElement) and self.element_type is not None:
+            if isinstance(element, DugElement) and self.element_type is not None:
                 element.type = self.element_type
 
         # Annotate elements
@@ -499,12 +510,12 @@ class Crawler:
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         for element in self.elements:
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
-            if isinstance(element, parsers.DugConcept):
+            if isinstance(element, DugConcept):
                 self.concepts[element.id] = element
 
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
-            if isinstance(element, parsers.DugElement):
+            if isinstance(element, DugElement):
                 variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
@@ -513,7 +524,7 @@ class Crawler:
         # Each element assigned to TOPMedTag1 needs to be associated with those concepts as well
         for element in self.elements:
             # Skip user-defined concepts
-            if isinstance(element, parsers.DugConcept):
+            if isinstance(element, DugConcept):
                 continue
 
             # Associate identifiers from user-defined concepts (see example above)
@@ -539,10 +550,10 @@ class Crawler:
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
-                concept = parsers.DugConcept(concept_id=identifier.id,
-                                             name=identifier.label,
-                                             desc=identifier.description,
-                                             concept_type=identifier.type)
+                concept = DugConcept(concept_id=identifier.id,
+                                                       name=identifier.label,
+                                                       desc=identifier.description,
+                                                       concept_type=identifier.type)
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
@@ -551,12 +562,12 @@ class Crawler:
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, parsers.DugElement):
+            if isinstance(element, DugElement):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept
             # Child elements of these user-defined concepts will inherit all these identifiers as well.
-            elif isinstance(element, parsers.DugConcept):
+            elif isinstance(element, DugConcept):
                 element.add_identifier(identifier)
 
     def expand_concept(self, concept):
@@ -585,16 +596,19 @@ class Crawler:
                     concept.add_kg_answer(answer, query_name=query_name)
 
 
-def get_parser(parser_type):
-    # User parser factor to get a specific type of parser
-    try:
-        return parsers.factory.create(parser_type)
-    except ValueError:
-        # If the parser type doesn't exist throw a more helpful exception than just value error
-        err_msg = f"Cannot find parser of type '{parser_type}'\n" \
-                  f"Supported parsers: {', '.join(parsers.factory.get_builder_types())}"
-        logger.error(err_msg)
-        raise ParserNotFoundException(err_msg)
+def get_parser(hook, parser_name):
+    """Get the parser from all parsers registered via the define_parsers hook"""
+
+    available_parsers = {}
+    hook.define_parsers(parser_dict=available_parsers)
+    parser = available_parsers.get(parser_name.lower())
+    if parser is not None:
+        return parser
+
+    err_msg = f"Cannot find parser of type '{parser_name}'\n" \
+              f"Supported parsers: {', '.join(available_parsers.keys())}"
+    logger.error(err_msg)
+    raise ParserNotFoundException(err_msg)
 
 
 class Dug:
@@ -612,13 +626,13 @@ class Dug:
     def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
         target = Path(target_name).resolve()
-        parser = get_parser(parser_type)
-        self._crawl(target, parser, element_type)
+        # TODO get_parser here
+        self._crawl(target, parser_type, element_type)
 
-    def _crawl(self, target: Path, parser, element_type):
+    def _crawl(self, target: Path, parser_type: str, element_type):
 
         if target.is_file():
-            self._crawl_file(target, parser, element_type)
+            self._crawl_file(target, parser_type, element_type)
         else:
             for child in target.iterdir():
                 try:
@@ -627,7 +641,7 @@ class Dug:
                     logger.error(f"Unexpected {e.__class__.__name__} crawling {child}:{e}")
                     continue
 
-    def _crawl_file(self, target: Path, parser, element_type):
+    def _crawl_file(self, target: Path, parser_type: str, element_type):
 
         # Configure redis so we can fetch things from cache when needed
         redis_connection = redis.StrictRedis(host=cfg.redis_host,
@@ -657,6 +671,11 @@ class Dug:
                                           ontology_helper=ontology_helper,
                                           ontology_greenlist=ontology_greenlist)
 
+        pm = get_plugin_manager()
+
+        # Get input parser based on input type
+        parser = get_parser(pm.hook, parser_type)
+
         # Initialize crawler
         crawler = Crawler(crawl_file=str(target),
                           parser=parser,
@@ -673,7 +692,7 @@ class Dug:
         # Index Annotated Elements
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
-            if not isinstance(element, parsers.DugConcept):
+            if not isinstance(element, DugConcept):
                 self._search.index_element(element, index=self.variables_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
