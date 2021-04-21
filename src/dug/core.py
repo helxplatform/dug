@@ -5,6 +5,7 @@ import sys
 import traceback
 from functools import partial
 from pathlib import Path
+from typing import Iterable
 
 import pluggy
 import redis
@@ -16,6 +17,8 @@ from dug import annotate as anno
 from dug import config as cfg
 from dug import hookspecs
 from dug import parsers
+from dug.loaders.filesystem_loader import load_from_filesystem
+from dug.loaders.network_loader import load_from_network
 from dug.parsers import DugElement, DugConcept, Parser
 
 logger = logging.getLogger('dug')
@@ -611,6 +614,14 @@ def get_parser(hook, parser_name):
     raise ParserNotFoundException(err_msg)
 
 
+def get_targets(target_name) -> Iterable[Path]:
+    if target_name.startswith("http://") or target_name.startswith("https://"):
+        loader = partial(load_from_network, os.getenv("DUG_DATA_DIR", "data"))
+    else:
+        loader = load_from_filesystem
+    return loader(target_name)
+
+
 class Dug:
     concepts_index = "concepts_index"
     variables_index = "variables_index"
@@ -625,23 +636,14 @@ class Dug:
 
     def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
-        target = Path(target_name).resolve()
-        # TODO get_parser here
-        self._crawl(target, parser_type, element_type)
+        pm = get_plugin_manager()
+        parser = get_parser(pm.hook, parser_type)
+        targets = get_targets(target_name)
 
-    def _crawl(self, target: Path, parser_type: str, element_type):
+        for target in targets:
+            self._crawl(target, parser, element_type)
 
-        if target.is_file():
-            self._crawl_file(target, parser_type, element_type)
-        else:
-            for child in target.iterdir():
-                try:
-                    self._crawl(child, parser, element_type)
-                except Exception as e:
-                    logger.error(f"Unexpected {e.__class__.__name__} crawling {child}:{e}")
-                    continue
-
-    def _crawl_file(self, target: Path, parser_type: str, element_type):
+    def _crawl(self, target: Path, parser: Parser, element_type):
 
         # Configure redis so we can fetch things from cache when needed
         redis_connection = redis.StrictRedis(host=cfg.redis_host,
@@ -670,11 +672,6 @@ class Dug:
                                           synonym_finder=synonym_finder,
                                           ontology_helper=ontology_helper,
                                           ontology_greenlist=ontology_greenlist)
-
-        pm = get_plugin_manager()
-
-        # Get input parser based on input type
-        parser = get_parser(pm.hook, parser_type)
 
         # Initialize crawler
         crawler = Crawler(crawl_file=str(target),

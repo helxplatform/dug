@@ -1,8 +1,8 @@
 import json
-from pathlib import Path
 from typing import Union, Callable, Any, Iterable
 
 from dug import utils as utils
+from dug.loaders import InputFile
 
 
 class DugElement:
@@ -118,6 +118,6 @@ class DugConcept:
 
 Indexable = Union[DugElement, DugConcept]
 Parser = Callable[[Any], Iterable[Indexable]]
-InputFile = Union[str, Path]
+
 
 FileParser = Callable[[InputFile], Iterable[Indexable]]
