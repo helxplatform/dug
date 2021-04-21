@@ -17,12 +17,12 @@ pipeline {
         }
         stage('Publish') {
             when {
-                branch 'develop'
+                tag "release-*"
             }
             steps {
                 sh '''
-                make build.image
-                make publish.image
+                make build
+                make publish
                 '''
             }
         }
