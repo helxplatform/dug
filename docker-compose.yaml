@@ -11,7 +11,7 @@ version: '3.0'
 ## NOTE: To connect to a dug service running in docker machine, from your local
 ##       development machine, you will need to follow the steps in the Quickstart
 ##       section of the README.md and set/export the env vars with special attention
-##       paid to the env vars: NEO4J_HOST, ELASTIC_API_HOST, and REDIS_HOST.
+##       paid to the env vars: ELASTIC_API_HOST, and REDIS_HOST.
 ##
 #################################################################################
 services:
@@ -28,7 +28,6 @@ services:
       context: .
     depends_on:
       - elasticsearch
-      - neo4j
       - redis
       - nboost
     restart: always
@@ -67,25 +66,6 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
-
-  #################################################################################
-  ##
-  ## A graph database provides query over linked data to drive indexing.
-  ##
-  #################################################################################
-  neo4j:
-    image: bitnami/neo4j:3.5.14
-    networks:
-      - dug-network
-    environment:
-      - NEO4J_PASSWORD=$NEO4J_PASSWORD
-      - NEO4J_HOST=$HOSTNAME
-    volumes:
-      - $DATA_DIR/neo4j:/bitnami
-    ports:
-      - '7474:7474'
-      - '7473:7473'
-      - '7687:7687'
 
   #################################################################################
   ##
