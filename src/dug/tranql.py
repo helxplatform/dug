@@ -13,7 +13,7 @@ class QueryKG:
     def __init__(self, kg_json):
         self.kg = kg_json
         self.answers = kg_json.get('knowledge_map', [])
-        self.question = kg_json["question_graph"]
+        self.question = kg_json.get("question_graph", {})
         self.nodes = {node["id"]: node for node in kg_json.get('knowledge_graph', {}).get('nodes', [])}
         self.edges = {edge["id"]: edge for edge in kg_json.get('knowledge_graph', {}).get('edges', [])}
 
