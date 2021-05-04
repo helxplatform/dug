@@ -41,7 +41,6 @@ services from outside the container (but in a shell env), run:
 ```shell
 source .env
 export $(cut -d= -f1 .env)
-export NEO4J_HOST=localhost
 export ELASTIC_API_HOST=localhost
 export REDIS_HOST=localhost
 ```
