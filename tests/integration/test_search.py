@@ -4,6 +4,7 @@ import pytest
 from elasticsearch import Elasticsearch
 
 from dug.core import Search
+from dug.config import Config
 
 
 def is_elastic_up():
@@ -23,7 +24,7 @@ def is_elastic_up():
             http_auth=(username, password)
         )
         return es.ping()
-    except Exception as _e:
+    except Exception:
         return False
 
 
@@ -32,4 +33,4 @@ def test_search_init():
     """
     Tests if we can create a Search instance without it blowing up :D
     """
-    Search(host=os.environ.get('ELASTIC_API_HOST'), port=9200,)
+    Search(cfg=Config.from_env())
