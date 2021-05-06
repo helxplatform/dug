@@ -14,7 +14,7 @@ from elasticsearch import Elasticsearch
 from requests_cache import CachedSession
 
 from dug import annotate as anno
-from dug import config as cfg
+from dug.config import Config
 from dug import hookspecs
 from dug import parsers
 from dug.loaders.filesystem_loader import load_from_filesystem
@@ -28,7 +28,6 @@ stdout_log_handler.setFormatter(formatter)
 logger.addHandler(stdout_log_handler)
 
 logging.getLogger("elasticsearch").setLevel(logging.WARNING)
-
 
 def get_plugin_manager() -> pluggy.PluginManager:
     pm = pluggy.PluginManager("dug")
@@ -45,7 +44,7 @@ class SearchException(Exception):
 
 
 class ParserNotFoundException(Exception):
-    pass
+    ...
 
 
 class Search:
@@ -58,34 +57,28 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
+    def __init__(self, cfg: Config, indices=['concepts_index', 'variables_index', 'kg_index']):
 
-    def __init__(self, host=os.environ.get('ELASTIC_API_HOST'), port=9200,
-                 indices=['concepts_index', 'variables_index', 'kg_index']):
-        logger.debug(f"Connecting to elasticsearch host: {host} at port: {port}")
+        self._cfg = cfg
+        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
+
         self.indices = indices
-        self.host = os.environ.get('ELASTIC_API_HOST', 'localhost')
-        self.username = os.environ.get('ELASTIC_USERNAME', 'elastic')
-        self.password = os.environ.get('ELASTIC_PASSWORD', 'changeme')
-        self.nboost_host = os.environ.get('NBOOST_API_HOST', 'nboost')
-        self.hosts = [
-            {
-                'host': self.host,
-                'port': port
-            }
-        ]
-        logger.debug(f"Authenticating as user {self.username} to host:{self.hosts}")
+        self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port}]
+
+        logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
+
         self.es = Elasticsearch(hosts=self.hosts,
-                                http_auth=(self.username, self.password))
+                                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
 
         if self.es.ping():
             logger.info('connected to elasticsearch')
             self.init_indices()
         else:
-            print(f"Unable to connect to elasticsearch at {host}:{port}")
-            logger.error(f"Unable to connect to elasticsearch at {host}:{port}")
+            print(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
+            logger.error(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
             raise SearchException(
                 message='failed to connect to elasticsearch',
-                details=f"connecting to host {host} and port {port}")
+                details=f"connecting to host {self._cfg.elastic_host} and port {self._cfg.elastic_port}")
 
     def init_indices(self):
         settings = {}
@@ -222,15 +215,13 @@ class Search:
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
         The query can match search_terms (hence, "should") for ranking.
-        
+
         Results Return
         The search result is returned in JSON format {collection_id:[elements]}
 
         Filter
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
-
-        
         """
         query = {
             'bool': {
@@ -373,8 +364,8 @@ class Search:
         """
         nboost_query = {
             'nboost': {
-                'uhost': f"{self.username}:{self.password}@{self.host}",
-                'uport': self.hosts[0]['port'],
+                'uhost': f"{self._cfg.elastic_username}:{self._cfg.elastic_password}@{self._cfg.elastic_host}",
+                'uport': self._cfg.elastic_port,
                 'cvalues_path': '_source.description',
                 'query_path': 'body.query.query_string.query',
                 'size': size,
@@ -391,7 +382,7 @@ class Search:
             }
         }
 
-        return requests.post(url=f"http://{self.nboost_host}:8000/{index}/_search", json=nboost_query).json()
+        return requests.post(url=f"http://{self._cfg.nboost_host}:{self._cfg.nboost_port}/{index}/_search", json=nboost_query).json()
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
@@ -627,12 +618,9 @@ class Dug:
     variables_index = "variables_index"
     kg_index = "kg_index"
 
-    def __init__(self):
-        self._search = Search(
-            host=cfg.elasticsearch_host,
-            port=cfg.elasticsearch_port,
-            indices=[self.concepts_index, self.variables_index, self.kg_index]
-        )
+    def __init__(self, cfg: Config):
+        self._cfg = cfg
+        self._search = Search(cfg=self._cfg, indices=[self.concepts_index, self.variables_index, self.kg_index])
 
     def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
@@ -646,24 +634,24 @@ class Dug:
     def _crawl(self, target: Path, parser: Parser, element_type):
 
         # Configure redis so we can fetch things from cache when needed
-        redis_connection = redis.StrictRedis(host=cfg.redis_host,
-                                             port=cfg.redis_port,
-                                             password=cfg.redis_password)
+        redis_connection = redis.StrictRedis(host=self._cfg.redis_host,
+                                             port=self._cfg.redis_port,
+                                             password=self._cfg.redis_password)
 
         http_session = CachedSession(cache_name='annotator',
                                      backend='redis',
                                      connection=redis_connection)
 
         # Create annotation engine for fetching ontology terms based on element text
-        preprocessor = anno.Preprocessor(**cfg.preprocessor)
-        annotator = anno.Annotator(**cfg.annotator)
-        normalizer = anno.Normalizer(**cfg.normalizer)
-        synonym_finder = anno.SynonymFinder(**cfg.synonym_service)
-        ontology_helper = anno.OntologyHelper(**cfg.ontology_helper)
-        tranqlizer = anno.ConceptExpander(**cfg.concept_expander)
+        preprocessor = anno.Preprocessor(**self._cfg.preprocessor)
+        annotator = anno.Annotator(**self._cfg.annotator)
+        normalizer = anno.Normalizer(**self._cfg.normalizer)
+        synonym_finder = anno.SynonymFinder(**self._cfg.synonym_service)
+        ontology_helper = anno.OntologyHelper(**self._cfg.ontology_helper)
+        tranqlizer = anno.ConceptExpander(**self._cfg.concept_expander)
 
         # Greenlist of ontology identifiers that can fail normalization and still be valid
-        ontology_greenlist = cfg.ontology_greenlist if hasattr(cfg, "ontology_greenlist") else []
+        ontology_greenlist = self._cfg.ontology_greenlist if hasattr(self._cfg, "ontology_greenlist") else []
 
         # DugAnnotator combines all annotation components into single annotator
         dug_annotator = anno.DugAnnotator(preprocessor=preprocessor,
@@ -678,9 +666,9 @@ class Dug:
                           parser=parser,
                           annotator=dug_annotator,
                           tranqlizer=tranqlizer,
-                          tranql_queries=cfg.tranql_queries,
+                          tranql_queries=self._cfg.tranql_queries,
                           http_session=http_session,
-                          exclude_identifiers=cfg.tranql_exclude_identifiers,
+                          exclude_identifiers=self._cfg.tranql_exclude_identifiers,
                           element_type=element_type)
 
         # Read elements, annotate, and expand using tranql queries

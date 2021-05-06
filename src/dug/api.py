@@ -11,6 +11,7 @@ from flask import Flask, g, Response, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
 from dug.core import Search
+from dug.config import Config
 
 """
 Defines the semantic search API
@@ -44,14 +45,14 @@ swagger = Swagger(app, template=template)
 
 def dug ():
     if not hasattr(g, 'dug'):
-        g.search = Search ()
+        g.search = Search(Config.from_env())
     return g.search
-    
+
 class DugResource(Resource):
     """ Base class handler for Dug API requests. """
     def __init__(self):
         self.specs = {}
-        
+
     """ Functionality common to Dug services. """
     def validate (self, request, component):
         return
@@ -62,7 +63,7 @@ class DugResource(Resource):
         to_validate = self.specs["components"]["schemas"][component]
         try:
             app.logger.debug (f"--:Validating obj {json.dumps(request.json, indent=2)}")
-            app.logger.debug (f"  schema: {json.dumps(to_validate, indent=2)}")            
+            app.logger.debug (f"  schema: {json.dumps(to_validate, indent=2)}")
             jsonschema.validate(request.json, to_validate)
         except jsonschema.exceptions.ValidationError as error:
             app.logger.error (f"ERROR: {str(error)}")
