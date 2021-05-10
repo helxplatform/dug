@@ -1,4 +1,4 @@
-from dug.parsers import DbGaPParser, TOPMedTagParser
+from dug.core.parsers import DbGaPParser, TOPMedTagParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 

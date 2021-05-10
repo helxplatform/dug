@@ -1,10 +1,10 @@
 import os
-import dug.tranql as tql
 
 from dataclasses import dataclass, field
 
 
 TRANQL_SOURCE: str = "/graph/gamma/quick"
+
 
 @dataclass
 class Config:
@@ -55,14 +55,14 @@ class Config:
     # Redlist of identifiers not to expand via TranQL
     tranql_exclude_identifiers: list = field(default_factory=lambda: ["CHEBI:17336"])
 
-    # TranQL queries used to expand identifiers
     tranql_queries: dict = field(default_factory=lambda: {
-        "disease": tql.QueryFactory(["disease", "phenotypic_feature"], TRANQL_SOURCE),
-        "pheno": tql.QueryFactory(["phenotypic_feature", "disease"], TRANQL_SOURCE),
-        "anat": tql.QueryFactory(["disease", "anatomical_entity"], TRANQL_SOURCE),
-        "chem_to_disease": tql.QueryFactory(["chemical_substance", "disease"], TRANQL_SOURCE),
-        "phen_to_anat": tql.QueryFactory(["phenotypic_feature", "anatomical_entity"], TRANQL_SOURCE)
+        "disease": ["disease", "phenotypic_feature"],
+        "pheno": ["phenotypic_feature", "disease"],
+        "anat": ["disease", "anatomical_entity"],
+        "chem_to_disease": ["chemical_substance", "disease"],
+        "phen_to_anat": ["phenotypic_feature", "anatomical_entity"],
     })
+
 
     concept_expander: dict = field(default_factory=lambda: {
         "url": "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",

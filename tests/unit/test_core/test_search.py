@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from dug.core import Search, SearchException
+from dug.core.search import Search, SearchException
 from dug.config import Config
 
 default_indices = ['concepts_index', 'variables_index', 'kg_index']
@@ -97,10 +97,11 @@ class MockElastic:
 
 @pytest.fixture
 def elastic():
-    with patch('dug.core.Elasticsearch') as es_class:
+    with patch('dug.core.search.Elasticsearch') as es_class:
         es_instance = MockElastic(indices=MockIndices())
         es_class.return_value = es_instance
         yield es_instance
+
 
 def test_init(elastic):
     cfg = Config(elastic_host='localhost',

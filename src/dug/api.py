@@ -1,17 +1,19 @@
 import argparse
 import json
-import jsonschema
 import logging
 import os
 import sys
 import traceback
+
+import jsonschema
 import yaml
 from flasgger import Swagger
 from flask import Flask, g, Response, request
-from flask_restful import Api, Resource
 from flask_cors import CORS
-from dug.core import Search
+from flask_restful import Api, Resource
+
 from dug.config import Config
+from dug.core.search import Search
 
 """
 Defines the semantic search API

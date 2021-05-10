@@ -1,5 +1,5 @@
-from dug.annotate import Identifier
-from dug.parsers._base import DugElement, DugConcept
+from dug.core.annotate import Identifier
+from dug.core.parsers._base import DugElement, DugConcept
 
 
 def test_dug_concept():
