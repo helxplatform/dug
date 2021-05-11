@@ -1,6 +1,3 @@
-import re
-
-
 class ObjectFactory:
     def __init__(self):
         self._builders = {}

@@ -6,7 +6,8 @@ Represents the entrypoint for command line tools.
 import argparse
 import os
 
-from dug.core import Dug, logger
+from dug.config import Config
+from dug.core import Dug, logger, DugFactory
 
 
 class KwargParser(argparse.Action):
@@ -92,20 +93,29 @@ def get_argparser():
 
 
 def crawl(args):
-    dug = Dug()
+    config = Config.from_env()
+    factory = DugFactory(config)
+    dug = Dug(factory)
     dug.crawl(args.target, args.parser_type, args.element_type)
 
 
 def search(args):
-    dug = Dug()
+    config = Config.from_env()
+    factory = DugFactory(config)
+    dug = Dug(factory)
+    # dug = Dug()
     response = dug.search(args.target, args.query, **args.kwargs)
 
     print(response)
 
 
 def datatypes(args):
-    dug = Dug()
+    config = Config.from_env()
+    factory = DugFactory(config)
+    dug = Dug(factory)
+    # dug = Dug()
     response = dug.info(args.target, **args.kwargs)
+
 
 def status(args):
     print("Status check is not implemented yet!")

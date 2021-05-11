@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from dug.loaders.filesystem_loader import load_from_filesystem
-from dug.loaders.network_loader import load_from_network
+from dug.core.loaders.filesystem_loader import load_from_filesystem
+from dug.core.loaders.network_loader import load_from_network
 from tests.integration.conftest import TEST_DATA_DIR
 
 

@@ -1,8 +1,9 @@
 import json
 from typing import Union, Callable, Any, Iterable
 
+from dug.core.loaders import InputFile
+
 from dug import utils as utils
-from dug.loaders import InputFile
 
 
 class DugElement:

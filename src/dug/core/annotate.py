@@ -1,14 +1,13 @@
 import json
 import logging
-import urllib.parse
 import os
-from copy import copy
-from typing import TypeVar, Generic, Union, List, Optional, Tuple
+import urllib.parse
+from typing import TypeVar, Generic, Union, List, Tuple
 
 import requests
 from requests import Session
 
-import dug.tranql as tql
+import dug.core.tranql as tql
 
 logger = logging.getLogger('dug')
 

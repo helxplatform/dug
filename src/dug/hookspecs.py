@@ -2,7 +2,7 @@ from typing import Dict
 
 import pluggy
 
-from dug.parsers import Parser
+from dug.core.parsers import Parser
 
 hookspec = pluggy.HookspecMarker("dug")
 
@@ -11,3 +11,4 @@ hookspec = pluggy.HookspecMarker("dug")
 def define_parsers(parser_dict: Dict[str, Parser]):
     """Defines what parsers are available to Dug
     """
+    ...
