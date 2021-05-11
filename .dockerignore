@@ -1,4 +1,9 @@
-db
+# Dug stuff
+db/
+crawl/
+local_storage/
+anno_fails.txt
+dug.log
 
 # Python stuff
 **/__pycache__
