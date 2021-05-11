@@ -1,14 +1,13 @@
 import json
 import logging
-import urllib.parse
 import os
-from copy import copy
-from typing import TypeVar, Generic, Union, List, Optional, Tuple
+import urllib.parse
+from typing import TypeVar, Generic, Union, List, Tuple
 
 import requests
 from requests import Session
 
-import dug.tranql as tql
+import dug.core.tranql as tql
 
 logger = logging.getLogger('dug')
 
@@ -142,7 +141,7 @@ class ConceptExpander:
                 response = json.load(stream)
         else:
             query = query_factory.get_query(identifier)
-            logger.info(query)
+            logger.debug(query)
             response = requests.post(
                 url=self.url,
                 headers=self.tranql_headers,

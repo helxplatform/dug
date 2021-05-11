@@ -27,7 +27,7 @@ class QueryKG:
                 # Throw error if node doesn't actually exist in 'nodes' section of knowledge graph
                 if answer_node["id"] not in self.nodes:
                     err_msg = f"Unable to assemble subraph for answer:\n{json.dumps(answer, indent=2)}\n" \
-                        f"Parent graph doesn't contain node info for: {answer_node}"
+                              f"Parent graph doesn't contain node info for: {answer_node}"
                     raise MissingNodeReferenceError(err_msg)
 
                 # Add only node info that you actually want

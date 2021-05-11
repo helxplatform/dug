@@ -1,6 +1,3 @@
-import re
-
-
 class ObjectFactory:
     def __init__(self):
         self._builders = {}
@@ -33,12 +30,3 @@ def get_dbgap_var_link(study_id, variable_id):
 def get_dbgap_study_link(study_id):
     base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi"
     return f'{base_url}?study_id={study_id}'
-
-
-def parse_study_name_from_filename(filename):
-    # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-    dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
-    match = re.match(dbgap_file_pattern, filename)
-    if match is not None:
-        return match.group(1)
-    return None
