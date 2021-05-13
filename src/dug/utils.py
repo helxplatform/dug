@@ -1,18 +1,10 @@
-class ObjectFactory:
-    def __init__(self):
-        self._builders = {}
+from dataclasses import dataclass
+from typing import Dict, Optional
 
-    def register_builder(self, key, builder):
-        self._builders[key] = builder
+import redis
+from elasticsearch import Elasticsearch
 
-    def create(self, key, **kwargs):
-        builder = self._builders.get(key)
-        if not builder:
-            raise ValueError(key)
-        return builder(**kwargs)
-
-    def get_builder_types(self):
-        return list(self._builders.keys())
+from dug.config import Config
 
 
 def complex_handler(obj):
@@ -30,3 +22,46 @@ def get_dbgap_var_link(study_id, variable_id):
 def get_dbgap_study_link(study_id):
     base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi"
     return f'{base_url}?study_id={study_id}'
+
+
+@dataclass
+class HealthStatus:
+    ok: bool
+    services: Optional[Dict[str, "HealthStatus"]] = None
+
+
+@dataclass
+class ServiceFactory:
+    config: Config
+
+    def build_redis(self) -> redis.Redis:
+        return redis.StrictRedis(
+            host=self.config.redis_host,
+            port=self.config.redis_port,
+            password=self.config.redis_password,
+        )
+
+    def build_elasticsearch(self) -> Elasticsearch:
+        hosts = [{'host': self.config.elastic_host, 'port': self.config.elastic_port}]
+
+        return Elasticsearch(
+            hosts=hosts,
+            http_auth=(self.config.elastic_username, self.config.elastic_password)
+        )
+
+
+def health_check(service_factory: ServiceFactory) -> HealthStatus:
+
+    redis_status = service_factory.build_redis().ping()
+
+    elasticsearch_status = service_factory.build_elasticsearch().ping()
+
+    api_status = redis_status and elasticsearch_status
+
+    return HealthStatus(
+        ok=api_status,
+        services={
+            'redis': HealthStatus(redis_status),
+            'elasticsearch': HealthStatus(elasticsearch_status),
+        },
+    )
