@@ -13,11 +13,16 @@ class QueryKG:
     def __init__(self, kg_json):
         self.kg = kg_json
         self.answers = kg_json.get('knowledge_map', [])
-        self.question = kg_json["question_graph"]
+        self.question = kg_json.get("question_graph", {})
         self.nodes = {node["id"]: node for node in kg_json.get('knowledge_graph', {}).get('nodes', [])}
         self.edges = {edge["id"]: edge for edge in kg_json.get('knowledge_graph', {}).get('edges', [])}
 
-    def get_answer_subgraph(self, answer, include_node_keys=[], include_edge_keys=[]):
+    def get_answer_subgraph(self, answer, include_node_keys=None, include_edge_keys=None):
+        if include_node_keys is None:
+            include_node_keys = []
+
+        if include_edge_keys is None:
+            include_edge_keys = []
 
         # Get answer nodes
         answer_nodes = []
@@ -27,7 +32,7 @@ class QueryKG:
                 # Throw error if node doesn't actually exist in 'nodes' section of knowledge graph
                 if answer_node not in self.nodes:
                     err_msg = f"Unable to assemble subraph for answer:\n{json.dumps(answer, indent=2)}\n" \
-                        f"Parent graph doesn't contain node info for: {answer_node}"
+                              f"Parent graph doesn't contain node info for: {answer_node}"
                     raise MissingNodeReferenceError(err_msg)
 
                 # Add only node info that you actually want
@@ -41,7 +46,7 @@ class QueryKG:
                 # Throw error if edge doesn't actually exist in 'edges' section of knowledge graph
                 if answer_edge not in self.edges:
                     err_msg = f"Unable to assemble subraph for answer:\n{json.dumps(answer, indent=2)}\n" \
-                        f"Parent graph doesn't contain edge info for: {answer_edge}"
+                              f"Parent graph doesn't contain edge info for: {answer_edge}"
                     raise MissingEdgeReferenceError(err_msg)
 
                 # Add only information from edge that you actually want
@@ -54,16 +59,21 @@ class QueryKG:
 
         return QueryKG(kg)
 
-    def get_node(self, node_id, include_node_keys=[]):
+    def get_node(self, node_id, include_node_keys=None):
+        if include_node_keys is None:
+            include_node_keys = []
         # Return node with optionally subsetted information
         node = self.nodes[node_id]
 
         # Optionally subset to get only certain information columns
         if include_node_keys:
-            node = {key: node[key] for key in include_node_keys}
+            node = {key: node.get(key, []) for key in include_node_keys}
         return node
 
-    def get_edge(self, edge_id, include_edge_keys=[]):
+    def get_edge(self, edge_id, include_edge_keys=None):
+
+        if include_edge_keys is None:
+            include_edge_keys = []
         # Return edge with optionally subsetted information
         edge = self.edges[edge_id]
 
@@ -102,7 +112,6 @@ class InvalidQueryError(BaseException):
 
 
 class QueryFactory:
-
     # Class member list of valid data types that can be included in query
     data_types = ["phenotypic_feature", "gene", "disease", "chemical_substance",
                   "drug_exposure", "biological_process", "anatomical_entity"]
@@ -139,7 +148,7 @@ class QueryFactory:
     def validate_factory(self):
         # Check to make sure all the question types are valid
         for question in self.question_graph:
-            if not question in QueryFactory.data_types:
+            if question not in QueryFactory.data_types:
                 raise InvalidQueryError(f"Query contains invalid query type: {question}")
 
     def is_valid_curie(self, curie):

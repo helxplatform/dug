@@ -3,8 +3,8 @@ from typing import List
 
 import pytest
 
-from dug import config
-from dug.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
+from dug.config import Config
+from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
 
 
 def test_identifier():
@@ -31,9 +31,10 @@ def test_preprocessor_preprocess(preprocessor, input_text, expected_text):
 
 
 def test_annotator_init():
-    url = config.annotator["url"]
+    cfg = Config.from_env()
+    url = cfg.annotator["url"]
 
-    annotator = Annotator(**config.annotator)
+    annotator = Annotator(**cfg.annotator)
     assert annotator.url == url
 
 
