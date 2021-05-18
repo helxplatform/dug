@@ -13,7 +13,6 @@ before_script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - mkdir local_storage
   - ls -al
-  - chown -R 1000:1000 local_storage
 script:
   - make test
   - docker version

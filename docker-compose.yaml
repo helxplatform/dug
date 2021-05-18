@@ -64,7 +64,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=true
     volumes:
-      - $DATA_DIR/elastic:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     ports:
       - '9200:9200'
       - '9300:9300'
@@ -82,7 +82,7 @@ services:
       - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     volumes:
-      - $DATA_DIR/redis:/bitnami/redis/data
+      - redis:/bitnami/redis/data
     ports:
       - '6379:6379'
 
@@ -102,4 +102,6 @@ services:
 networks:
   dug-network:
     driver: bridge
-
+volumes:
+  esdata:
+  redis:
