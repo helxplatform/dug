@@ -10,22 +10,17 @@ RUN apt-get update && \
     apt-get install -y curl make && \
     rm -rf /var/cache/apk/*
 
-# Create a non-root user.
-ENV USER dug
-ENV HOME /home/$USER
-ENV UID 1000
+RUN adduser --disabled-login --home /home/dug --shell /bin/bash dug
 
-RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER
+USER dug
+WORKDIR /home/dug
 
-USER $USER
-WORKDIR $HOME
-
-ENV PATH=$HOME/.local/bin:$PATH
+ENV PATH=/home/dug/.local/bin:$PATH
 
 # Copy over the source code
 RUN mkdir dug
-COPY --chown=$USER . dug/
-WORKDIR $HOME/dug
+COPY --chown=dug . dug/
+WORKDIR /home/dug/dug
 
 RUN make install
 
