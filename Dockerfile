@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get install -y curl make && \
     rm -rf /var/cache/apk/*
 
-RUN adduser --disabled-login --home /home/dug --shell /bin/bash dug
+RUN adduser --disabled-login --home /home/dug --shell /bin/bash --uid 1000 dug
 
 USER dug
 WORKDIR /home/dug
