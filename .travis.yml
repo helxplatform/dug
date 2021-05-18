@@ -12,6 +12,7 @@ install:
 before_script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - mkdir local_storage
+  - ls -al
 script:
   - make test
   - docker version
