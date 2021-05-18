@@ -41,6 +41,10 @@ test.doc:
 test.unit:
 	${PYTHON} -m pytest tests/unit
 
+#test.integration: Run integration tests (requires backend stack)
+test.integration:
+	${PYTHON} -m pytest tests/integration
+
 #test: Run all tests
 test: test.doc test.unit
 
