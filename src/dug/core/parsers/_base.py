@@ -85,7 +85,7 @@ class DugConcept:
         # Traverse set of identifiers to determine set of search terms
         search_terms = self.search_terms
         for ident_id, ident in self.identifiers.items():
-            search_terms.extend([ident.label, ident.description] + ident.search_text + ident.synonyms)
+            search_terms.extend(ident.search_text + ident.synonyms)
         self.search_terms = list(set(search_terms))
 
     def set_optional_terms(self):
