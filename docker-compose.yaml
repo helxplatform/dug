@@ -104,4 +104,6 @@ networks:
     driver: bridge
 volumes:
   esdata:
+    driver: local
   redis:
+    driver: local
