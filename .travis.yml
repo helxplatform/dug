@@ -14,6 +14,5 @@ before_script:
   - docker-compose up -d
 script:
   - make test
-  - make test.integration
 after_script:
   - docker-compose down
