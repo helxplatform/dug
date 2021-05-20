@@ -55,12 +55,14 @@ class TOPMedTagParser(FileParser):
             reader = csv.DictReader(csvfile, delimiter='\t')
             for row in reader:
                 row = {k.strip(): v for k, v in row.items()}
-                elem = DugElement(elem_id=row['variable_full_accession'],
-                                  name=row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
-                                  desc=row['variable_desc'] if 'variable_desc' in row else row['variable_full_accession'],
-                                  elem_type="DbGaP",
-                                  collection_id=row['study_full_accession'],
-                                  collection_name=row['study_name'])
+                elem = DugElement(
+                    elem_id=row['variable_full_accession'],
+                    name=row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
+                    desc=row['variable_description'] if 'variable_description' in row else row['variable_full_accession'],
+                    elem_type="DbGaP",
+                    collection_id=row['study_full_accession'],
+                    collection_name=row['study_name']
+                )
 
                 # Create DBGaP links as study/variable actions
                 elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
