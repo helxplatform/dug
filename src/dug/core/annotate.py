@@ -353,16 +353,15 @@ class SynonymFinder(ApiClient[str, List[str]]):
 
         try:
             response = http_session.get(url)
-            if response.status_code == 200:
-                return response.json()
             if response.status_code == 400:
                 logger.error(f"No synonyms returned for: `{curie}`. Validation error.")
                 return []
             if response.status_code == 500:
                 logger.error(f"No synonyms returned for: `{curie}`. Internal server error from {self.url}.")
                 return []
+            return response.json()
         except json.decoder.JSONDecodeError as e:
-            logger.error(f"No synonyms returned for: `{curie}`. Json parse error.")
+            logger.error(f"Json parse error for response from `{url}`. Exception: {str(e)}")
             return []
 
     def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
