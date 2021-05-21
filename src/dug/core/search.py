@@ -153,16 +153,99 @@ class Search:
 
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
-        Changed to query_string for and/or and exact matches with quotations.
+        Changed to a long boolean match query to optimize search results
         """
         query = {
-            'query_string': {
-                'query': query,
-                'fuzziness': fuzziness,
-                'fuzzy_prefix_length': prefix_length,
-                'fields': ["name", "description", "search_terms", "optional_terms"],
-                'quote_field_suffix': ".exact"
-            },
+            "bool": {
+                "should": [
+                    {
+                        "match_phrase": {
+                            "name": {
+                                "query": query,
+                                "boost": 10
+                            }
+                        }
+                    },
+                    {
+                        "match_phrase": {
+                            "description": {
+                                "query": query,
+                                "boost": 6
+                            }
+                        }
+                    },
+                    {
+                        "match_phrase": {
+                            "search_terms": {
+                                "query": query,
+                                "boost": 8
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "name": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 4
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "search_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 5
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "description": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 3
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "description": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "boost": 2
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "search_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "boost": 1
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "optional_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length
+                            }
+                        }
+                    }
+                ]
+            }
         }
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body, index=index)

@@ -11,6 +11,9 @@ def test_db_gap_parser():
 
 def test_topmed_tag_parser():
     parser = TOPMedTagParser()
-    parse_file = str(TEST_DATA_DIR / "test_variables_v1.0.csv")
+    parse_file = str(TEST_DATA_DIR / "test_variables_v2.0.csv")
     elements = parser(parse_file)
     assert len(elements) == 62
+    for element in elements:
+        assert element.name != element.id
+        assert element.description != element.id
