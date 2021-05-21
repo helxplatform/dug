@@ -352,10 +352,17 @@ class SynonymFinder(ApiClient[str, List[str]]):
         url = f"{self.url}{urllib.parse.quote(curie)}"
 
         try:
-            response = http_session.get(url).json()
-            return response
+            response = http_session.get(url)
+            if response.status_code == 200:
+                return response.json()
+            if response.status_code == 400:
+                logger.error(f"No synonyms returned for: `{curie}`. Validation error.")
+                return []
+            if response.status_code == 500:
+                logger.error(f"No synonyms returned for: `{curie}`. Internal server error from {self.url}.")
+                return []
         except json.decoder.JSONDecodeError as e:
-            logger.error(f"No synonyms returned for: {curie}")
+            logger.error(f"No synonyms returned for: `{curie}`. Json parse error.")
             return []
 
     def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
