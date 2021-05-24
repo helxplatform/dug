@@ -16,6 +16,4 @@ after_script:
   - docker-compose down
 deploy:
   - provider: script
-    script: make publish.image
-    on:
-      tags: true
+    script: make DOCKER_REPO=harbor.renci.org publish.image
