@@ -2,11 +2,11 @@ from pytest import mark
 
 from unittest.mock import patch
 
-from dug.cli import main, get_argparser
+from helx.search.cli import main, get_argparser
 
 
 @mark.cli
-def test_dug_cli_parser():
+def test_cli_parser():
     parser = get_argparser()
     parsed_log_level = parser.parse_args(["-l", "DEBUG"])
     parsed_crawl = parser.parse_args(["crawl", "somefile.csv", "--parser", "topmedtag"])
@@ -22,14 +22,14 @@ def test_dug_cli_parser():
 
 
 @mark.cli
-@patch('dug.cli.Dug')
-def test_dug_cli_main_crawl(mock_dug):
-    mock_dug.search = "Crawling!"
+@patch('helx.search.cli.HelxSearch')
+def test_cli_main_crawl(mock_search):
+    mock_search.search = "Crawling!"
     main(["crawl", "somefile.csv", "--parser", "topmedtag"])
 
 
 @mark.cli
-@patch('dug.cli.Dug')
-def test_dug_cli_main_search(mock_dug):
-    mock_dug.search.return_value = "Searching!"
+@patch('helx.search.cli.HelxSearch')
+def test_cli_main_search(mock_search):
+    mock_search.search.return_value = "Searching!"
     main(["search", "-q", "heart attack", "-t", "variables", "-k", "namespace=default"])

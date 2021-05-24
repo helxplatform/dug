@@ -7,9 +7,9 @@ from typing import TypeVar, Generic, Union, List, Tuple
 import requests
 from requests import Session
 
-import dug.core.tranql as tql
+import helx.search.core.tranql as tql
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)

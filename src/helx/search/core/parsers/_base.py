@@ -1,12 +1,12 @@
 import json
 from typing import Union, Callable, Any, Iterable
 
-from dug.core.loaders import InputFile
+from helx.search.core.loaders import InputFile
 
-from dug import utils as utils
+from helx.search import utils as utils
 
 
-class DugElement:
+class SearchElement:
     # Basic class for holding information for an object you want to make searchable via Dug
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
@@ -49,7 +49,7 @@ class DugElement:
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
 
 
-class DugConcept:
+class SearchConcept:
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
     def __init__(self, concept_id, name, desc, concept_type):
@@ -117,7 +117,7 @@ class DugConcept:
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
 
 
-Indexable = Union[DugElement, DugConcept]
+Indexable = Union[SearchElement, SearchConcept]
 Parser = Callable[[Any], Iterable[Indexable]]
 
 

@@ -2,7 +2,7 @@ from typing import Dict
 
 import pluggy
 
-from dug.core.parsers import Parser
+from helx.search.core.parsers import Parser
 
 hookspec = pluggy.HookspecMarker("dug")
 

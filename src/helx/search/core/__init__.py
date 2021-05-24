@@ -5,17 +5,16 @@ from functools import partial
 from pathlib import Path
 from typing import Iterable
 
+from helx.search.plugins import hookspecs
+
+from helx.search.core.factory import Factory
+from helx.search.core.loaders.filesystem_loader import load_from_filesystem
+from helx.search.core.loaders.network_loader import load_from_network
+from helx.search.core.parsers import SearchConcept, Parser, get_parser
+
 import pluggy
-from dug.core.loaders.filesystem_loader import load_from_filesystem
-from dug.core.loaders.network_loader import load_from_network
 
-from dug import hookspecs
-from dug.config import Config
-from dug.core import parsers
-from dug.core.factory import DugFactory
-from dug.core.parsers import DugConcept, Parser, get_parser
-
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 stdout_log_handler.setFormatter(formatter)
@@ -25,9 +24,9 @@ logging.getLogger("elasticsearch").setLevel(logging.WARNING)
 
 
 def get_plugin_manager() -> pluggy.PluginManager:
-    pm = pluggy.PluginManager("dug")
+    pm = pluggy.PluginManager("helx")
     pm.add_hookspecs(hookspecs)
-    pm.load_setuptools_entrypoints("dug")
+    pm.load_setuptools_entrypoints("helx")
     pm.register(parsers)
     return pm
 
@@ -40,12 +39,12 @@ def get_targets(target_name) -> Iterable[Path]:
     return loader(target_name)
 
 
-class Dug:
+class HelxSearch:
     concepts_index = "concepts_index"
     variables_index = "variables_index"
     kg_index = "kg_index"
 
-    def __init__(self, factory: DugFactory):
+    def __init__(self, factory: Factory):
         self._factory = factory
         self._search = self._factory.build_search_obj(indices=[
             self.concepts_index, self.variables_index, self.kg_index
@@ -70,7 +69,7 @@ class Dug:
         # Index Annotated Elements
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
-            if not isinstance(element, DugConcept):
+            if not isinstance(element, SearchConcept):
                 self._search.index_element(element, index=self.variables_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs

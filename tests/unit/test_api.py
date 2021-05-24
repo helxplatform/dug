@@ -5,18 +5,18 @@ from unittest.mock import patch, Mock
 import pytest
 from pytest import mark
 
-from dug.api import app, main, DugResource
+from helx.search.api import app, main, BaseResource
 
 
 @pytest.fixture
-def dug_api_test_client():
+def api_test_client():
     with app.test_client() as client:
         yield client
 
 
 @pytest.fixture
 def mock_g_object():
-    with patch('dug.api.dug') as g:
+    with patch('helx.search.api.search') as g:
         yield g
 
 
@@ -61,10 +61,10 @@ def resp_decode(resp):
 
 
 @mark.api
-def test_dug_search_resource(dug_api_test_client, mock_search_concepts):
-    resp = dug_api_test_client.post('/search',
-                                    json={"index": "concepts_index", "query": "heart attack"}
-                                    )
+def test_search_resource(api_test_client, mock_search_concepts):
+    resp = api_test_client.post('/search',
+                                json={"index": "concepts_index", "query": "heart attack"}
+                                )
     resp_json = resp_decode(resp)
 
     assert resp_json['status'] == 'success'
@@ -73,9 +73,9 @@ def test_dug_search_resource(dug_api_test_client, mock_search_concepts):
 
 
 @mark.api
-def test_dug_search_kg_resource(dug_api_test_client, mock_search_kg):
-    resp = dug_api_test_client.post('/search_kg',
-                                    json={"index": "concepts", "unique_id": "id_001", "query": "cough"})
+def test_search_kg_resource(api_test_client, mock_search_kg):
+    resp = api_test_client.post('/search_kg',
+                                json={"index": "concepts", "unique_id": "id_001", "query": "cough"})
     resp_json = resp_decode(resp)
 
     assert resp_json['status'] == 'success'
@@ -84,9 +84,9 @@ def test_dug_search_kg_resource(dug_api_test_client, mock_search_kg):
 
 
 @mark.api
-def test_dug_search_variable_resource(dug_api_test_client, mock_search_variables):
-    resp = dug_api_test_client.post('/search_var',
-                                    json={"index": "concepts", "unique_id": "id_001", "query": "cough"})
+def test_search_variable_resource(api_test_client, mock_search_variables):
+    resp = api_test_client.post('/search_var',
+                                json={"index": "concepts", "unique_id": "id_001", "query": "cough"})
     resp_json = resp_decode(resp)
 
     assert resp_json['status'] == 'success'
@@ -95,9 +95,9 @@ def test_dug_search_variable_resource(dug_api_test_client, mock_search_variables
 
 
 @mark.api
-def test_dug_agg_data_type_resource(dug_api_test_client, mock_agg_data_types):
-    resp = dug_api_test_client.post('/agg_data_types',
-                                    json={"index": "concepts"})
+def test_agg_data_type_resource(api_test_client, mock_agg_data_types):
+    resp = api_test_client.post('/agg_data_types',
+                                json={"index": "concepts"})
     resp_json = resp_decode(resp)
 
     assert resp_json['status'] == 'success'
@@ -109,14 +109,14 @@ def test_dug_agg_data_type_resource(dug_api_test_client, mock_agg_data_types):
 def test_create_response_raises_exception():
     error_exception = Mock()
     error_exception.side_effect = Exception
-    dr = DugResource()
+    dr = BaseResource()
     resp = dr.create_response(exception=error_exception)
 
     assert resp["status"] == 'error'
 
 
 @mark.api
-@patch('dug.api.app.run')
+@patch('helx.search.api.app.run')
 def test_main(api_app_run):
     api_app_run.side_effect = "I am running!"
     main(["-p", "8000", "-d"])

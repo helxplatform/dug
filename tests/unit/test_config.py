@@ -1,7 +1,7 @@
 import os
 from unittest import mock
 
-from dug.config import Config
+from helx.search.config import Config
 
 
 @mock.patch.dict(os.environ, {

@@ -6,8 +6,9 @@ Represents the entrypoint for command line tools.
 import argparse
 import os
 
-from dug.config import Config
-from dug.core import Dug, logger, DugFactory
+from helx.search.config import Config
+from helx.search import HelxSearch
+from helx.search.core import logger, Factory
 
 
 class KwargParser(argparse.Action):
@@ -19,14 +20,14 @@ class KwargParser(argparse.Action):
 
 
 def get_argparser():
-    argument_parser = argparse.ArgumentParser(description='Dug: Semantic Search')
+    argument_parser = argparse.ArgumentParser(description='HeLx: Semantic Search')
     argument_parser.set_defaults(func=lambda _args: argument_parser.print_usage())
     argument_parser.add_argument(
         '-l', '--level',
         type=str,
         choices=["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"],
         dest='log_level',
-        default=os.getenv("DUG_LOG_LEVEL", "INFO"),
+        default=os.getenv("HELX_LOG_LEVEL", "INFO"),
         help="Log level"
     )
 
@@ -53,7 +54,7 @@ def get_argparser():
     crawl_parser.add_argument(
         '-e', '--element-type',
         help='[Optional] Coerce all elements to a certain data type (e.g. DbGaP Variable).\n'
-             'Determines what tab elements will appear under in Dug front-end',
+             'Determines what tab elements will appear under in search front-end',
         dest="element_type",
         default=None
     )
@@ -94,27 +95,27 @@ def get_argparser():
 
 def crawl(args):
     config = Config.from_env()
-    factory = DugFactory(config)
-    dug = Dug(factory)
-    dug.crawl(args.target, args.parser_type, args.element_type)
+    factory = Factory(config)
+    helx_search = HelxSearch(factory)
+    helx_search.crawl(args.target, args.parser_type, args.element_type)
 
 
 def search(args):
     config = Config.from_env()
-    factory = DugFactory(config)
-    dug = Dug(factory)
-    # dug = Dug()
-    response = dug.search(args.target, args.query, **args.kwargs)
+    factory = Factory(config)
+    helx_search = HelxSearch(factory)
+    # helx_search = Dug()
+    response = helx_search.search(args.target, args.query, **args.kwargs)
 
     print(response)
 
 
 def datatypes(args):
     config = Config.from_env()
-    factory = DugFactory(config)
-    dug = Dug(factory)
-    # dug = Dug()
-    response = dug.info(args.target, **args.kwargs)
+    factory = Factory(config)
+    helx_search = HelxSearch(factory)
+    # helx_search = Dug()
+    response = helx_search.info(args.target, **args.kwargs)
 
 
 def status(args):

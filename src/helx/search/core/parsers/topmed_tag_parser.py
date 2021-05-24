@@ -4,10 +4,10 @@ import logging
 import os
 from typing import List
 
-from dug import utils as utils
-from ._base import DugConcept, DugElement, FileParser, Indexable, InputFile
+from helx.search import utils as utils
+from ._base import SearchConcept, SearchElement, FileParser, Indexable, InputFile
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 
 class TOPMedTagParser(FileParser):
@@ -39,10 +39,10 @@ class TOPMedTagParser(FileParser):
         concepts = {}
         for tag in tags:
             concept_id = f"TOPMED.TAG:{tag['pk']}"
-            concept = DugConcept(concept_id,
-                                 name=tag['fields']['title'],
-                                 desc=f'{tag["fields"]["description"]}. {tag["fields"]["instructions"]}',
-                                 concept_type="TOPMed Phenotype Concept")
+            concept = SearchConcept(concept_id,
+                                    name=tag['fields']['title'],
+                                    desc=f'{tag["fields"]["description"]}. {tag["fields"]["instructions"]}',
+                                    concept_type="TOPMed Phenotype Concept")
 
             # Only use the description for annotation
             concept.ml_ready_desc = tag["fields"]["description"]
@@ -55,7 +55,7 @@ class TOPMedTagParser(FileParser):
             reader = csv.DictReader(csvfile, delimiter='\t')
             for row in reader:
                 row = {k.strip(): v for k, v in row.items()}
-                elem = DugElement(
+                elem = SearchElement(
                     elem_id=row['variable_full_accession'],
                     name=row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
                     desc=row['variable_description'] if 'variable_description' in row else row['variable_full_accession'],

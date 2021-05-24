@@ -3,10 +3,10 @@ import re
 from typing import List
 from xml.etree import ElementTree as ET
 
-from dug import utils as utils
-from ._base import DugElement, FileParser, Indexable, InputFile
+from helx.search import utils as utils
+from ._base import SearchElement, FileParser, Indexable, InputFile
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 
 class DbGaPParser(FileParser):
@@ -38,12 +38,12 @@ class DbGaPParser(FileParser):
 
         elements = []
         for variable in root.iter('variable'):
-            elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
-                              name=variable.find('name').text,
-                              desc=variable.find('description').text.lower(),
-                              elem_type="DbGaP",
-                              collection_id=f"{study_id}.p{participant_set}",
-                              collection_name=study_name)
+            elem = SearchElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
+                                 name=variable.find('name').text,
+                                 desc=variable.find('description').text.lower(),
+                                 elem_type="DbGaP",
+                                 collection_id=f"{study_id}.p{participant_set}",
+                                 collection_name=study_name)
 
             # Create DBGaP links as study/variable actions
             elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)

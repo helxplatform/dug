@@ -3,8 +3,8 @@ from typing import List
 
 import pytest
 
-from dug.config import Config
-from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
+from helx.search.config import Config
+from helx.search.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
 
 
 def test_identifier():

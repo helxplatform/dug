@@ -1,4 +1,4 @@
-from dug.core.parsers import DbGaPParser, TOPMedTagParser
+from helx.search.core.parsers import DbGaPParser, TOPMedTagParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 

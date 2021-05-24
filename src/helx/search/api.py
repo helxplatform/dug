@@ -12,8 +12,8 @@ from flask import Flask, g, Response, request
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
-from dug.config import Config
-from dug.core.search import Search
+from helx.search.config import Config
+from helx.search.core.search import Search
 
 """
 Defines the semantic search API
@@ -21,6 +21,7 @@ Defines the semantic search API
 This exists in large part because it's not safe to expose the Elasticsearch interface to the internet.
 So we'll need to add validation to ensure reasonable reasonable, well formed, valid requests inbound.
 """
+
 logger = logging.getLogger (__name__)
 
 app = Flask(__name__)
@@ -38,24 +39,27 @@ with open(schema_file_path, 'r') as file_obj:
 
 """ Describe the API. """
 app.config['SWAGGER'] = {
-    'title': 'Dug Search API',
+    'title': 'HeLx Search API',
     'description': 'An API, compiler, and executor for cloud native distributed systems.',
     'uiversion': 3
 }
 
+
 swagger = Swagger(app, template=template)
 
-def dug ():
-    if not hasattr(g, 'dug'):
+
+def search():
+    if not hasattr(g, 'search'):
         g.search = Search(Config.from_env())
     return g.search
 
-class DugResource(Resource):
-    """ Base class handler for Dug API requests. """
+
+class BaseResource(Resource):
+    """ Base class handler for API requests. """
     def __init__(self):
         self.specs = {}
 
-    """ Functionality common to Dug services. """
+    """ Functionality common to Search services. """
     def validate (self, request, component):
         return
         """ Validate a request against the schema. """
@@ -87,7 +91,8 @@ class DugResource(Resource):
             'message' : message
         }
 
-class DugSearchResource(DugResource):
+
+class SearchResource(BaseResource):
     """ Execute a search """
 
     """ System initiation. """
@@ -131,9 +136,9 @@ class DugSearchResource(DugResource):
 
             api_request = None
             if boosted:
-                api_request = dug().search_nboost(**request.json)
+                api_request = search().search_nboost(**request.json)
             else:
-                api_request = dug().search_concepts(**request.json)
+                api_request = search().search_concepts(**request.json)
 
             response = self.create_response(
                 result=api_request,
@@ -145,7 +150,7 @@ class DugSearchResource(DugResource):
         return response
 
 
-class DugSearchKGResource(DugResource):
+class SearchKGResource(BaseResource):
     """ Execute a search """
 
     """ System initiation. """
@@ -187,7 +192,7 @@ class DugSearchKGResource(DugResource):
             app.logger.info(f"search_kg: {json.dumps(request.json, indent=2)}")
             self.validate(request, component="Search")
             response = self.create_response(
-                result=dug().search_kg(**request.json),
+                result=search().search_kg(**request.json),
                 message=f"Search result")
         except Exception as e:
             response = self.create_response(
@@ -195,7 +200,7 @@ class DugSearchKGResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
-class DugSearchVarResource(DugResource):
+class SearchVarResource(BaseResource):
     """ Execute a search """
 
     """ System initiation. """
@@ -237,7 +242,7 @@ class DugSearchVarResource(DugResource):
             app.logger.info(f"search_var: {json.dumps(request.json, indent=2)}")
             self.validate(request, component="Search")
             response = self.create_response(
-                result=dug().search_variables(**request.json),
+                result=search().search_variables(**request.json),
                 message=f"Search result")
         except Exception as e:
             response = self.create_response(
@@ -246,7 +251,7 @@ class DugSearchVarResource(DugResource):
         return response
 
 
-class DugAggDataType(DugResource):
+class SearchAggDataType(BaseResource):
     """ Execute a search """
 
     """ System initiation. """
@@ -258,7 +263,7 @@ class DugAggDataType(DugResource):
             app.logger.info(f"data_type: {json.dumps(request.json, indent=2)}")
             self.validate(request, component="Search")
             response = self.create_response(
-                result=dug().agg_data_type(**request.json),
+                result=search().agg_data_type(**request.json),
                 message=f"Aggregate result")
         except Exception as e:
             response = self.create_response(
@@ -267,13 +272,13 @@ class DugAggDataType(DugResource):
         return response
 
 """ Register endpoints. """
-api.add_resource(DugSearchResource, '/search')
-api.add_resource(DugSearchKGResource, '/search_kg')
-api.add_resource(DugSearchVarResource, '/search_var')
-api.add_resource(DugAggDataType, '/agg_data_types')
+api.add_resource(SearchResource, '/search')
+api.add_resource(SearchKGResource, '/search_kg')
+api.add_resource(SearchVarResource, '/search_var')
+api.add_resource(SearchAggDataType, '/agg_data_types')
 
 def main(args=None):
-    parser = argparse.ArgumentParser(description='Dug Search API')
+    parser = argparse.ArgumentParser(description='HeLx Search API')
     parser.add_argument('-p', '--port', type=int, help='Port to run service on.', default=5551)
     parser.add_argument('-d', '--debug', help="Debug log level.", default=False, action='store_true')
     args = parser.parse_args(args)
@@ -282,7 +287,7 @@ def main(args=None):
     if args.debug:
         debug = True
         logging.basicConfig(level=logging.DEBUG)
-    logger.info(f"starting dug on port={args.port} with debug={args.debug}")
+    logger.info(f"starting search API on port={args.port} with debug={args.debug}")
     app.run(host='0.0.0.0', port=args.port, debug=args.debug, threaded=True)
 
 if __name__ == "__main__":

@@ -1,1 +1,1 @@
-include src/dug/conf/api-schema.yaml
+include src/helx/search/conf/api-schema.yaml

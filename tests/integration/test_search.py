@@ -3,8 +3,8 @@ import os
 import pytest
 from elasticsearch import Elasticsearch
 
-from dug.core.search import Search
-from dug.config import Config
+from helx.search.core.search import Search
+from helx.search.config import Config
 
 
 def is_elastic_up():

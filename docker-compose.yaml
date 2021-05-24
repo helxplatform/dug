@@ -2,13 +2,13 @@ version: '3.0'
 
 #################################################################################
 ##
-## A service stack for the Dug semantic search framework.
+## A service stack for the HeLx semantic search framework.
 ##
 ## NOTE: .env contains *_HOST variables that are set to internal docker service
 ##       names. These names resolve to an IP address *within* the docker machine
 ##       CIDR block, not your local development machine.
 ##
-## NOTE: To connect to a dug service running in docker machine, from your local
+## NOTE: To connect to a service running in docker machine, from your local
 ##       development machine, you will need to follow the steps in the Quickstart
 ##       section of the README.md and set/export the env vars with special attention
 ##       paid to the env vars: ELASTIC_API_HOST, and REDIS_HOST.
@@ -31,8 +31,6 @@ services:
       - redis
       - nboost
     restart: always
-    networks:
-      - dug-network
     environment:
       ELASTIC_API_HOST: "$ELASTIC_API_HOST"
       ELASTIC_PASSWORD: "$ELASTIC_PASSWORD"
@@ -42,11 +40,11 @@ services:
       FLASK_ENV: "development"
       PYTHONUNBUFFERED: "TRUE"
     entrypoint: [ "gunicorn",
-                     "--workers=$API_WORKERS", "--name=dug",
+                     "--workers=$API_WORKERS", "--name=helx-search",
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
-                     "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "dug.api:app" ]
+                     "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "helx.search.api:app" ]
     volumes:
-      - ./src:/home/dug/dug/
+      - ./src:/home/helx/helx
     ports:
       - $API_PORT:$API_PORT
 
@@ -57,8 +55,6 @@ services:
   #################################################################################
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
-    networks:
-      - dug-network
     environment:
       - ELASTIC_PASSWORD=$ELASTIC_PASSWORD
       - discovery.type=single-node
@@ -76,8 +72,6 @@ services:
   #################################################################################
   redis:
     image: 'bitnami/redis:5.0.8'
-    networks:
-      - dug-network
     environment:
       - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
@@ -94,12 +88,5 @@ services:
   #################################################################################
   nboost:
     image: koursaros/nboost:0.3.9-pt
-    networks:
-      - dug-network
     ports:
       - '8000:8000'
-
-networks:
-  dug-network:
-    driver: bridge
-

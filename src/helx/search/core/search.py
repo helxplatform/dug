@@ -4,9 +4,9 @@ import logging
 import requests
 from elasticsearch import Elasticsearch
 
-from dug.config import Config
+from helx.search.config import Config
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 
 class Search:

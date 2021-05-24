@@ -3,9 +3,9 @@ import logging
 import os
 import traceback
 
-from dug.core.parsers import Parser, DugElement, DugConcept
+from helx.search.core.parsers import Parser, SearchElement, SearchConcept
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 
 class Crawler:
@@ -46,7 +46,7 @@ class Crawler:
 
         # Optionally coerce all elements to be a specific type
         for element in self.elements:
-            if isinstance(element, DugElement) and self.element_type is not None:
+            if isinstance(element, SearchElement) and self.element_type is not None:
                 element.type = self.element_type
 
         # Annotate elements
@@ -81,12 +81,12 @@ class Crawler:
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         for element in self.elements:
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
-            if isinstance(element, DugConcept):
+            if isinstance(element, SearchConcept):
                 self.concepts[element.id] = element
 
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
-            if isinstance(element, DugElement):
+            if isinstance(element, SearchElement):
                 variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
@@ -95,7 +95,7 @@ class Crawler:
         # Each element assigned to TOPMedTag1 needs to be associated with those concepts as well
         for element in self.elements:
             # Skip user-defined concepts
-            if isinstance(element, DugConcept):
+            if isinstance(element, SearchConcept):
                 continue
 
             # Associate identifiers from user-defined concepts (see example above)
@@ -121,10 +121,10 @@ class Crawler:
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
-                concept = DugConcept(concept_id=identifier.id,
-                                                       name=identifier.label,
-                                                       desc=identifier.description,
-                                                       concept_type=identifier.type)
+                concept = SearchConcept(concept_id=identifier.id,
+                                        name=identifier.label,
+                                        desc=identifier.description,
+                                        concept_type=identifier.type)
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
@@ -133,12 +133,12 @@ class Crawler:
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, DugElement):
+            if isinstance(element, SearchElement):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept
             # Child elements of these user-defined concepts will inherit all these identifiers as well.
-            elif isinstance(element, DugConcept):
+            elif isinstance(element, SearchConcept):
                 element.add_identifier(identifier)
 
     def expand_concept(self, concept):

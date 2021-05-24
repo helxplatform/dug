@@ -1,11 +1,11 @@
-PYTHON       = /usr/bin/env python3
-VERSION_FILE = ./src/dug/_version.py
-VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
-DOCKER_REPO  = docker.io
-DOCKER_OWNER = helxplatform
-DOCKER_APP	 = dug
-DOCKER_TAG   = ${VERSION}
-DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
+PYTHON       := /usr/bin/env python3
+VERSION_FILE := ./src/helx/search/__init__.py
+VERSION      := $(shell grep __version__ ${VERSION_FILE} | cut -d " " -f 3 | tr -d '"')
+DOCKER_REPO  := docker.io
+DOCKER_OWNER := helxplatform
+DOCKER_APP	 := search
+DOCKER_TAG   := ${VERSION}
+DOCKER_IMAGE := ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 
 .DEFAULT_GOAL = help
 
@@ -19,8 +19,8 @@ help:
 clean:
 	rm -rf build
 	rm -rf dist
-	rm -rf src/dug.egg-info
-	${PYTHON} -m pip uninstall -y dug
+	rm -rf src/helx/search.egg-info
+	${PYTHON} -m pip uninstall -y helx-search
 	${PYTHON} -m pip uninstall -y -r requirements.txt
 
 #install: Install application along with required development packages
@@ -63,6 +63,7 @@ build.image:
 
 build.image.test:
 	echo "Testing dockerfile"
+	docker run ${DOCKER_IMAGE} make test
 
 #build: Build Python artifacts and Docker image
 build: build.python build.image build.image.test

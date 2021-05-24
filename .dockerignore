@@ -1,9 +1,9 @@
-# Dug stuff
+# Indexing stuff
 db/
 crawl/
 local_storage/
 anno_fails.txt
-dug.log
+*.log
 
 # Python stuff
 **/__pycache__

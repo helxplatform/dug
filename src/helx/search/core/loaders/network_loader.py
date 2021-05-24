@@ -7,7 +7,7 @@ import requests
 
 from ._base import InputFile
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
 
 def load_from_network(data_storage_dir: InputFile, urls: str) -> Iterator[Path]:

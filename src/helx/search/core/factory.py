@@ -3,16 +3,16 @@ from typing import Dict
 import redis
 from requests_cache import CachedSession
 
-import dug.core.tranql as tql
-from dug.core.annotate import DugAnnotator, Annotator, Normalizer, OntologyHelper, Preprocessor, SynonymFinder, \
+import helx.search.core.tranql as tql
+from helx.search.core.annotate import DugAnnotator, Annotator, Normalizer, OntologyHelper, Preprocessor, SynonymFinder, \
     ConceptExpander
-from dug.config import Config as DugConfig, TRANQL_SOURCE
-from dug.core.crawler import Crawler
-from dug.core.parsers import Parser
-from dug.core.search import Search
+from helx.search.config import Config as DugConfig, TRANQL_SOURCE
+from helx.search.core.crawler import Crawler
+from helx.search.core.parsers import Parser
+from helx.search.core.search import Search
 
 
-class DugFactory:
+class Factory:
 
     def __init__(self, config: DugConfig):
         self.config = config

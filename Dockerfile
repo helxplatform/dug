@@ -11,7 +11,7 @@ RUN apt-get update && \
     rm -rf /var/cache/apk/*
 
 # Create a non-root user.
-ENV USER dug
+ENV USER helx
 ENV HOME /home/$USER
 ENV UID 1000
 
@@ -23,11 +23,8 @@ WORKDIR $HOME
 ENV PATH=$HOME/.local/bin:$PATH
 
 # Copy over the source code
-RUN mkdir dug
-COPY --chown=$USER . dug/
-WORKDIR $HOME/dug
+RUN mkdir helx
+COPY --chown=$USER . helx/
+WORKDIR $HOME/helx
 
 RUN make install
-
-# Run it
-ENTRYPOINT dug

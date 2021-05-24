@@ -33,7 +33,7 @@ To bring up the backend services, run:
 docker-compose up
 ```
 
-If you're running dug-specific commands (i.e. `dug`) outside the docker container,
+If you're running search-specific commands (i.e. `helx-search`) outside the docker container,
 you have to make sure the env vars are set. Also, make sure all hostnames are correct
 for the environment you're running in. For example, to be able to connect to dug backend
 services from outside the container (but in a shell env), run:
@@ -50,13 +50,13 @@ export REDIS_HOST=localhost
 Then you can actually crawl the data:
 
 ```shell
-dug crawl data/test_variables_v1.0.csv -p "TOPMedTag"
+helx crawl data/test_variables_v1.0.csv -p "TOPMedTag"
 ````
 
 After crawling, you can search:
 ```shell
-dug search -q "heart attack" -t "concepts"
-dug search -q "heart attack" -t "variables" -k "concept=MONDO:0005068"
+helx search -q "heart attack" -t "concepts"
+helx search -q "heart attack" -t "variables" -k "concept=MONDO:0005068"
 ```
 
 You can also query Dug's REST API:
@@ -71,7 +71,7 @@ curl --data "$query" \
 
 ### Additional Notes
 
-If you want to change or re-configure the dug service authentication credentials
+If you want to change or re-configure the search service authentication credentials
 to be different from the defaults, run:
 
 ```shell

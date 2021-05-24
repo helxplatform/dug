@@ -3,13 +3,13 @@ from typing import Dict
 
 import pluggy
 
-from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
+from ._base import SearchElement, SearchConcept, Indexable, Parser, FileParser
 from .dbgap_parser import DbGaPParser
 from .topmed_tag_parser import TOPMedTagParser
 
-logger = logging.getLogger('dug')
+logger = logging.getLogger('helx')
 
-hookimpl = pluggy.HookimplMarker("dug")
+hookimpl = pluggy.HookimplMarker("helx")
 
 
 @hookimpl

@@ -2,7 +2,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-from dug.core.crawler import Crawler
+from helx.search.core.crawler import Crawler
 from tests.integration.conftest import TEST_DATA_DIR
 
 
