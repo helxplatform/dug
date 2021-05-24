@@ -29,24 +29,10 @@ install:
 	${PYTHON} -m pip install -r requirements.txt
 	${PYTHON} -m pip install .
 
-#test.lint: Run flake8 on the source code
-test.lint:
-	${PYTHON} -m flake8 src
-
-#test.doc: Run doctests in the source code
-test.doc:
-	${PYTHON} -m pytest --doctest-modules src
-
-#test.unit: Run unit tests
-test.unit:
-	${PYTHON} -m pytest tests/unit
-
-#test.integration: Run integration tests (requires backend stack)
-test.integration:
-	${PYTHON} -m pytest tests/integration
-
 #test: Run all tests
 test: test.doc test.unit test.integration
+	${PYTHON} -m pytest --doctest-modules src
+	${PYTHON} -m pytest tests
 
 #build: Build wheel and source distribution packages
 build.python:
@@ -60,18 +46,17 @@ build.image:
 	echo "Building docker image: ${DOCKER_IMAGE}"
 	docker build -t ${DOCKER_IMAGE} -f Dockerfile .
 	echo "Successfully built: ${DOCKER_IMAGE}"
-
-build.image.test:
-	echo "Testing dockerfile"
+	echo "Testing ${DOCKER_IMAGE}"
+	docker run ${DOCKER_IMAGE} make test
 
 #build: Build Python artifacts and Docker image
-build: build.python build.image build.image.test
+build: build.python build.image
 
 #all: Alias to clean, install, test, build, and image
 all: clean install test build
 
 #publish.image: Push the Docker image
-publish.image:
+publish.image: build.image
 	docker tag ${DOCKER_IMAGE} ${DOCKER_REPO}/${DOCKER_IMAGE}
 	docker push ${DOCKER_REPO}/${DOCKER_IMAGE}
 

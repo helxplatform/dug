@@ -23,6 +23,3 @@ COPY --chown=dug . dug/
 WORKDIR /home/dug/dug
 
 RUN make install
-
-# Run it
-ENTRYPOINT dug
