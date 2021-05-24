@@ -3,10 +3,8 @@ services:
   - docker
 python:
   - "3.7"
-addons:
-  apt:
-    packages:
-      - docker-ce
+  - "3.8"
+  - "3.9"
 install:
   - make install
 before_script:
