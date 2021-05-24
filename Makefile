@@ -41,8 +41,12 @@ test.doc:
 test.unit:
 	${PYTHON} -m pytest tests/unit
 
+#test.integration: Run integration tests
+test.integration:
+	${PYTHON} -m pytest tests/integration
+
 #test: Run all tests
-test: test.doc test.unit
+test: test.doc test.unit test.integration
 
 #build: Build wheel and source distribution packages
 build.python:
