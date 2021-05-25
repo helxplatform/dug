@@ -22,9 +22,9 @@ pipeline {
             }
         }
         stage('Publish') {
-            when {
-                tag "release-*"
-            }
+//             when {
+//                 tag "release-*"
+//             }
             steps {
                 sh '''
                 make build
