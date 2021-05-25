@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            cloud 'kubernetes'
+            label 'agent-docker'
+            defaultContainer 'agent-docker'
+        }
+    }
     stages {
         stage('Install') {
             steps {
