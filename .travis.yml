@@ -8,7 +8,7 @@ python:
 install:
   - make install
 before_script:
-  - echo "$DOCKER_PASSWORD" | docker login harbor.renci.org -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose up -d
 script:
   - make test
@@ -16,4 +16,6 @@ after_script:
   - docker-compose down
 deploy:
   - provider: script
-    script: make DOCKER_REPO=harbor.renci.org publish.image
+    script: make publish.image
+    on:
+      tags: true
