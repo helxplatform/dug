@@ -87,6 +87,7 @@ class Crawler:
             # Annotate element with normalized ontology identifiers
             self.annotate_element(element)
             if isinstance(element, DugElement):
+                element.set_search_terms()
                 variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
