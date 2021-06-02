@@ -51,7 +51,7 @@ class DugElement:
         search_terms = []
         for concept_id, concept in self.concepts.items():
             concept.set_search_terms()
-            search_terms.append(concept.search_terms)
+            search_terms.extend(concept.search_terms)
             search_terms.append(concept.name)
         search_terms = list(set(search_terms))
         self.search_terms = search_terms
