@@ -211,6 +211,18 @@ def test_synonym_finder(synonym_api):
         synonym_api,
     )
     assert result == ["adult heart"]
+    curie = "MONDO"
+    result = finder.get_synonyms(
+        curie,
+        synonym_api,
+    )
+    assert result == []
+    curie = "UNSUPPORTED_PREFIX:XXX"
+    result = finder.get_synonyms(
+        curie,
+        synonym_api,
+    )
+    assert result == []
 
 
 def test_ontology_helper(ontology_api):

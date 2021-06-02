@@ -9,14 +9,14 @@ import pytest
 @dataclass
 class MockResponse:
     text: str
-    code: int = 200
+    status_code: int = 200
 
     def json(self):
         return json.loads(self.text)
 
 
 class MockApiService:
-    def __init__(self, urls: Dict[str, str]):
+    def __init__(self, urls: Dict[str, list]):
         self.urls = urls
 
     def get(self, url, params: dict = None):
@@ -24,11 +24,11 @@ class MockApiService:
             qstr = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
             url = f"{url}?{qstr}"
 
-        text = self.urls.get(url)
+        text, status_code = self.urls.get(url)
 
         if text is None:
-            return MockResponse(text="{}", code=404)
-        return MockResponse(text)
+            return MockResponse(text="{}", status_code=404)
+        return MockResponse(text, status_code=status_code)
 
 
 @pytest.fixture
@@ -41,7 +41,7 @@ def annotator_api():
         )
 
     urls = {
-        _("heart attack"): json.dumps({
+        _("heart attack"): [json.dumps({
             "content": "heart attack",
             "spans": [
                 {
@@ -158,7 +158,7 @@ def annotator_api():
                     ]
                 }
             ]
-        }),
+        }), 200],
     }
 
     return MockApiService(
@@ -176,7 +176,7 @@ def normalizer_api():
         )
 
     urls = {
-        _("UBERON:0007100"): json.dumps(
+        _("UBERON:0007100"): [json.dumps(
             {
                 "UBERON:0007100": {
                     "id": {
@@ -198,7 +198,7 @@ def normalizer_api():
                     ]
                 }
             },
-        ),
+        ), 200],
 
     }
 
@@ -216,14 +216,21 @@ def synonym_api():
             curie=urllib.parse.quote(curie),
         )
     return MockApiService(urls={
-        _("UBERON:0007100"): json.dumps([
+        _("UBERON:0007100"): [json.dumps([
             {
                 "desc": "adult heart",
                 "scope": "RELATED",
                 "syn_type": None,
                 "xref": ""
             }
-        ])
+        ]), 200],
+        _("MONDO"): [json.dumps({
+            "validation error": "format should be <PREFIX>:<XXX>"
+        }), 400],
+        _("UNSUPPORTED_PREFIX:XXX"): [json.dumps({
+            "validation error": "UNSUPPORTED_PREFIX is not supported"
+        }), 400],
+
     })
 
 
@@ -237,7 +244,7 @@ def ontology_api():
         )
 
     return MockApiService(urls={
-        _("UBERON:0007100"): json.dumps(
+        _("UBERON:0007100"): [json.dumps(
             {
                 "taxon": {
                     "id": None,
@@ -278,6 +285,6 @@ def ontology_api():
                     "anatomical entity"
                 ]
             }
-        )
+        ), 200]
     })
 

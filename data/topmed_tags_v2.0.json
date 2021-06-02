@@ -1,0 +1,847 @@
+[
+{
+    "model": "tags.tag",
+    "pk": 1,
+    "fields": {
+        "created": "2017-12-19T01:11:01Z",
+        "modified": "2018-08-02T19:31:20Z",
+        "title": "LDL in blood",
+        "lower_title": "ldl in blood",
+        "description": "Quantitative measure of low-density lipoprotein (LDL) cholesterol concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of LDL-cholesterol in the blood. Include variables from all time points and all repeated measures at each time point, e.g. LDL-cholesterol measured at multiple exams, and LDL-cholesterol measured multiple times at the same exam. Include all instances of duplicated variables, e.g. LDL-cholesterol variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. LDL-cholesterol in mg/dL and LDL-cholesterol in mmol/L. Include variables that are measured directly (e.g. by NMR) and those estimated via the Friedewald (or other) equation. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables for which LDL-cholesterol measurement was made in whole blood, serum, or plasma.  Include variables that represent both fasting and non-fasting measurement of LDL-cholesterol. Do not include variables representing VLDL or LDL-P measurements. Do not include variables representing heavy LDL, light LDL, or other subfractions of total LDL-cholesterol.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 2,
+    "fields": {
+        "created": "2017-12-19T01:11:20Z",
+        "modified": "2018-06-01T18:00:25Z",
+        "title": "HDL in blood",
+        "lower_title": "hdl in blood",
+        "description": "Quantitative measure of high-density lipoprotein (HDL) cholesterol concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of HDL-cholesterol in the blood. Include variables from all time points and all repeated measures at each time point, e.g. HDL-cholesterol measured at multiple exams, and HDL-cholesterol measured multiple times at the same exam. Include all instances of duplicated variables, e.g. HDL-cholesterol variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. HDL-cholesterol in mg/dL and HDL-cholesterol in mmol/L. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables for which HDL-cholesterol measurement was made in whole blood, serum, or plasma.  Include variables that represent both fasting and non-fasting measurement of HDL-cholesterol. Do not include variables representing HDL2, HDL3, or other subfractions of total HDL-cholesterol.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 3,
+    "fields": {
+        "created": "2017-12-19T01:11:36Z",
+        "modified": "2018-04-17T22:54:21Z",
+        "title": "Triglycerides in blood",
+        "lower_title": "triglycerides in blood",
+        "description": "Quantitative measure of triglyceride concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of triglycerides in the blood. Include variables from all time points and all repeated measures at each time point, e.g. triglycerides measured at multiple exams, and triglycerides measured multiple times at the same exam. Include all instances of duplicated variables, e.g. triglycerides variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. triglycerides in mg/dL and triglycerides in mmol/L. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables for which triglycerides measurement was made in whole blood, serum, or plasma.  Include variables that represent both fasting and non-fasting measurement of triglycerides.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 4,
+    "fields": {
+        "created": "2017-12-19T01:11:51Z",
+        "modified": "2018-04-17T22:54:29Z",
+        "title": "Total cholesterol in blood",
+        "lower_title": "total cholesterol in blood",
+        "description": "Quantitative measure of total cholesterol concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of total cholesterol in the blood. Include variables from all time points and all repeated measures at each time point, e.g. total cholesterol measured at multiple exams, and total cholesterol measured multiple times at the same exam. Include all instances of duplicated variables, e.g. total cholesterol variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. total cholesterol in mg/dL and total cholesterol in mmol/L. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables for which total cholesterol measurement was made in whole blood, serum, or plasma.  Include variables that represent both fasting and non-fasting measurement of total cholesterol.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 7,
+    "fields": {
+        "created": "2017-12-26T20:22:15Z",
+        "modified": "2018-05-10T21:18:15Z",
+        "title": "Resting arm systolic BP",
+        "lower_title": "resting arm systolic bp",
+        "description": "Quantitative measure of resting systolic blood pressure in the arm",
+        "instructions": "Include variables that represent a resting arm systolic BP measurement, measured in the upper arm while sitting or lying down. Include variables measured by any device, including mercury or other manometer, aneroid gauge, oscillometric device, or Doppler/ultrasound. Include variables from all time points and all repeated measures at each time point, e.g. resting arm systolic BP measured at multiple exams, and resting arm systolic BP measured multiple times at the same exam. Include all instances of duplicated variables, e.g. resting arm systolic BP variables included in multiple datasets. Include both individual measures of resting arm systolic BP and averages thereof. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables containing zero-reading data needed to calibrate resting arm systolic BP measures e.g. from a random-zero sphygmomanometer. Do not include ambulatory BP variables from a portable BP monitor, but do include any resting arm systolic BP measurements from a manometer or oscillometric device used to calibrate the ambulatory BP apparatus. Do not include ankle systolic BP measurements for calculating ankle-brachial index (ABI), but do include resting arm systolic BP components used to calculate ABI. Do not include variables for which resting arm systolic BP is a component, e.g. ABI. Do not include variables indicating hypertension status or hypertension medication use.",
+        "creator": 17
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 8,
+    "fields": {
+        "created": "2017-12-26T20:23:09Z",
+        "modified": "2018-05-10T21:16:28Z",
+        "title": "Resting arm diastolic BP",
+        "lower_title": "resting arm diastolic bp",
+        "description": "Quantitative measure of resting diastolic blood pressure in the arm",
+        "instructions": "Include variables that represent a resting arm diastolic BP measurement, measured in the upper arm while sitting or lying down. Include variables measured by any device, including mercury or other manometer, aneroid gauge, oscillometric device, or Doppler/ultrasound. Include variables from all time points and all repeated measures at each time point, e.g. resting arm diastolic BP measured at multiple exams, and resting arm diastolic BP measured multiple times at the same exam. Include all instances of duplicated variables, e.g. resting arm diastolic BP variables included in multiple datasets. Include both individual measures of resting arm diastolic BP and averages thereof. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables containing zero-reading data needed to calibrate resting arm diastolic BP measures e.g. from a random-zero sphygmomanometer. Do not include ambulatory BP variables from a portable BP monitor, but do include any resting arm diastolic BP measurements from a manometer or oscillometric device used to calibrate the ambulatory BP apparatus.  Do not include variables indicating hypertension status or hypertension medication use.",
+        "creator": 17
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 12,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-08-02T19:37:15Z",
+        "title": "Height",
+        "lower_title": "height",
+        "description": "Standing body height measurement",
+        "instructions": "Include variables that represent a study subject's body height measurement, as measured when standing. Include variables from all time points and all repeated measures within each time point, e.g. height measured at multiple exams. Include all instances of duplicated variables, e.g. height variables included in multiple datasets. Include variables in all measurement units available, e.g. height in inches and height in centimeters. Do not include variables for which height is a component, e.g. BMI. Do not include sitting height variables. Do not include self-reported height variables.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 13,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-08-02T19:36:57Z",
+        "title": "Weight",
+        "lower_title": "weight",
+        "description": "Body weight measurement",
+        "instructions": "Include variables that represent a study subject's body weight measurement. Include variables from all time points and all repeated measures within each time point, e.g. weight measured at multiple exams. Include all instances of duplicated variables, e.g. weight variables included in multiple datasets. Include variables in all measurement units available, e.g. weight in kilograms and weight in pounds. Do not include variables for which weight is a component, e.g. BMI. Do not include self-reported weight variables.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 14,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-04-17T22:55:03Z",
+        "title": "BMI",
+        "lower_title": "bmi",
+        "description": "Body mass index (weight divided by the square of height)",
+        "instructions": "Include variables that represent calculated BMI. The units of BMI are usually kilograms per meter squared, but variables with other units should be included. Include variables from all time points and all repeated measures within each time point, e.g. BMI measured at multiple exams. Include all instances of duplicated variables, e.g. BMI variables included in multiple datasets. Do not include variables that represent the height and weight components used to derive BMI.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 15,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-04-17T22:55:11Z",
+        "title": "Waist circumference",
+        "lower_title": "waist circumference",
+        "description": "Waist circumference measurement",
+        "instructions": "Include variables that represent a waist circumference measurement. Include variables from all time points and all repeated measures within each time point, e.g. waist circumference measured at multiple exams. Include all instances of duplicated variables, e.g. waist circumference variables included in multiple datasets. Include variables in all measurement units available, e.g. waist circumference in inches and waist circumference in centimeters. Do not include variables of which waist circumference is a component, e.g. waist-hip ratio.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 16,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-04-17T22:55:18Z",
+        "title": "Hip circumference",
+        "lower_title": "hip circumference",
+        "description": "Hip circumference measurement",
+        "instructions": "Include variables that represent a hip circumference measurement. Include variables from all time points and all repeated measures within each time point, e.g. hip circumference measured at multiple exams. Include all instances of duplicated variables, e.g. hip circumference variables included in multiple datasets. Include variables in all measurement units available, e.g. hip circumference in inches and hip circumference in centimeters. Do not include variables of which hip circumference is a component, e.g. waist-hip ratio.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 17,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-04-17T22:55:26Z",
+        "title": "Waist-hip ratio",
+        "lower_title": "waist-hip ratio",
+        "description": "Ratio of waist to hip circumference",
+        "instructions": "Include variables that represent a calculated waist circumference to hip circumference ratio. Include variables from all time points and all repeated measures within each time point, e.g. waist-hip ratio at multiple exams. Include all instances of duplicated variables, e.g. waist-hip ratio variables included in multiple datasets. Do not include variables that represent the separate waist circumference and  hip circumference components used to derive the waist-hip ratio.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 18,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-10-04T19:11:38Z",
+        "title": "Ischemic stroke",
+        "lower_title": "ischemic stroke",
+        "description": "Qualitative indicator of ischemic stroke status",
+        "instructions": "Include variables that represent whether or when a subject has experienced ischemic stroke. Include variables that represent prevalent and/or incident ischemic stroke status. Include variables that represent ischemic stroke event data, including event status and time-to-event variables. Include variables that indicate age at ischemic stroke events, e.g. self-reported age at an ischemic stroke event or followup time to an ischemic stroke event. Include variables indicating ischemic stroke status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. ischemic stroke variables included in multiple datasets. Include variables that indicate the subtype of ischemic stroke, e.g. thrombotic or embolic. Include variables that indicate cerebral embolism status. Do not include related stroke symptom variables such as aphasia, hemiparesis, hyperflexia, or other factors used to calculate/infer stroke status. Do not include variables that indicate transient ischemic attack (TIA) status. Do not include variables that indicate medication use related to ischemic stroke, e.g. aspirin use. For variables that identify multiple stroke types (e.g. value = ischemic, hemorrhagic, other, none), tag with all three stroke tags.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 19,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-05-15T17:46:18Z",
+        "title": "Hemorrhagic stroke",
+        "lower_title": "hemorrhagic stroke",
+        "description": "Qualitative indicator of hemorrhagic stroke status",
+        "instructions": "Include variables that represent whether or when a subject has experienced hemorrhagic stroke. Include variables that represent prevalent and/or incident hemorrhagic stroke status. Include variables that represent hemorrhagic stroke event data, including event status and time-to-event variables. Include variables that indicate age at hemorrhagic stroke events, e.g. self-reported age at a hemorrhagic stroke event or followup time to a hemorrhagic stroke event. Include variables indicating hemorrhagic stroke status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. hemorrhagic stroke variables included in multiple datasets. Include variables that indicate the subtype of hemorrhagic stroke, e.g. intracerebral or subarachnoid. Do not include related stroke symptom variables such as aphasia, hemiparesis, hyperflexia, or other factors used to calculate/infer stroke status. Do not include variables that indicate transient ischemic attack (TIA) status. Do not include variables that indicate medication use related to hemorrhagic stroke, e.g. aspirin use. For variables that identify multiple stroke types (e.g. value = ischemic, hemorrhagic, other, none), tag with all three stroke tags.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 20,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-05-15T17:47:18Z",
+        "title": "Other stroke",
+        "lower_title": "other stroke",
+        "description": "Qualitative indicator of other/unspecified stroke status",
+        "instructions": "Include variables that represent whether or when a subject has experienced a stroke of unknown/unspecified type (\"other stroke\"). Include variables that represent prevalent and/or incident other stroke status. Include variables that represent other stroke event data, including event status and time-to-event variables. Include variables that indicate age at other stroke events, e.g. self-reported age at an other stroke event or followup time to an other stroke event. Include variables indicating other stroke status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. other stroke variables included in multiple datasets. Do not include related stroke symptom variables such as aphasia, hemiparesis, hyperflexia, or other factors used to calculate/infer stroke status. Do not include variables that indicate transient ischemic attack (TIA) status, unless they also include stroke of unknown/unspecified type. Do not include variables that indicate medication use related to other stroke, e.g. aspirin use. For variables that identify multiple stroke types (e.g. value = ischemic, hemorrhagic, other, none), tag with all three stroke tags.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 21,
+    "fields": {
+        "created": "2018-02-13T05:58:02Z",
+        "modified": "2018-03-13T18:39:53Z",
+        "title": "Age at enrollment/collection",
+        "lower_title": "age at enrollment/collection",
+        "description": "Participant age at enrollment or age at which data or biosamples were collected",
+        "instructions": "Include variables that represent age directly and all variables used to calculate age (e.g. days since exam/visit). Include variables representing age at enrollment/recruitment; age at blood draw; age at other biosample collection; age at imaging exam; days since baseline visit; days since enrollment/recruitment; etc. Include all instances of duplicated variables, e.g. age at exam 1 found in two different datasets. Include variables in all measurement units available, e.g. age at enrollment in whole years and age at enrollment in days. These types of variables usually provide age for multiple different phenotypes. For example, age at blood draw corresponds to age at measurement of all blood chemistry analytes assayed from that blood draw; age at clinic visit for imaging provides age for all traits derived from the images, etc. Do not include variables that represent the timing of a specific event, diagnosis, or behavior, e.g. age at asthma diagnosis, age at smoking initiation, and time of a time-to-event variable such as MI events. ",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 22,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-08-02T19:36:38Z",
+        "title": "Gender",
+        "lower_title": "gender",
+        "description": "Self-reported sex or gender identity",
+        "instructions": "Include variables that represent a study subject's self-reported sex or self-reported gender identity. Include only self-reported information. Multiple categories of gender may be included among the values of such variables, such as male, female, transgender, and others.  Include variables from all time points and all repeated self-reported variables within each time point. Include all instances of duplicated variables, e.g. gender variables from two different datasets. Do not include variables representing genetic or other categorizations of sex assigned by clinicians or research investigators. Do not include variables that represent gender or self-reported sex of anyone other than the study subject, e.g. gender or self-reported sex of a family member.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 23,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-08-02T19:36:18Z",
+        "title": "Race/ancestry/ethnicity",
+        "lower_title": "race/ancestry/ethnicity",
+        "description": "Self-reported race, ancestry or ethnicity",
+        "instructions": "Include variables that represent a study subject's race, ancestral geographic origins, ethnicity,  or a combination of both.  Include only self-reported responses. Include variables with self-reported values such as \"white\", \"black\", \"European\", \"Asian\", \"Native American\", \"African\", \"Spanish\", \"Samoan\", \"Puerto Rican\", \"Amish\", \"Hispanic\", etc.  Include indicator variables for Hispanic/Latino ethnicity. Include all instances of duplicated variables, e.g. variables from multiple exams or different datasets. Do not include genetically-determined ancestry variables (e.g. principal components of genotypes) or categories (e.g. mtDNA haplogroups). Do not include variables indicating a subject's country of origin or birthplace, or the country of origin or birthplace of the subject's parent(s) or grandparent(s). Do not include variables indicating self-reported race, ancestry or ethnicity of the subject's parent(s) or grandparent(s).",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 24,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:55:50Z",
+        "title": "CAC",
+        "lower_title": "cac",
+        "description": "Quantitative measure of coronary artery calcification (CAC) by computed tomography (CT) scan",
+        "instructions": "Include variables that represent a CAC measurement from a CT scan. Include both individual and composite measures of coronary artery calcification (CAC), such as Agatston score, density or mass, and volume. Examples of individual measures are CAC score for left main artery or right coronary artery. An example of a composite measure is total CAC score across four arterial regions. Include both corrected/adjusted and uncorrected/unadjusted measures of CAC. Include variables from all time points and all repeated measures within each time point, e.g. CAC measured at multiple exams.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 25,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-07-13T20:12:51Z",
+        "title": "Carotid IMT",
+        "lower_title": "carotid imt",
+        "description": "Quantitative measure of carotid intima media thickness (IMT) by ultrasound",
+        "instructions": "Include variables that represent a carotid IMT measurement from an ultrasound. Include variables from all time points and all repeated measures within each time point, e.g. carotid IMT measured at multiple exams. Include both individual and composite measures of carotid IMT. An example of an individual measure of carotid IMT is maximum right common carotid far wall thickness. An example of a composite carotid IMT measure is mean maximum common carotid far wall thickness. Include measures by ultrasound only. Include both corrected/adjusted and uncorrected/unadjusted measures. Include all instances of duplicated variables, e.g. carotid IMT variables included in multiple datasets. Do not include qualitative assessment of plaque and stenosis. Do not include measurements by methods other than ultrasound.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 26,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:54:30Z",
+        "title": "Myocardial infarction",
+        "lower_title": "myocardial infarction",
+        "description": "Qualitative indicator of myocardial infarction (MI) status",
+        "instructions": "Include variables that represent whether or when a subject has experienced MI. Include variables that represent prevalent and/or incident MI status. Include variables that represent MI event data, including event status and time-to-event variables. Include variables that indicate age at MI events, e.g. self-reported age at an MI event or followup time to an MI event. Include variables indicating MI status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include variables indicating 'silent MI' status (MI status determined by EKG only). Include all instances of duplicated variables, e.g. MI events variables included in multiple datasets. Do not include variables that indicate possible MI treatments, e.g. coronary artery bypass surgery (CABG) or angioplasty. Do not include variables that indicate medication use related to MI, e.g. beta blocker, statin, or aspirin use.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 27,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:48:04Z",
+        "title": "Coronary angioplasty",
+        "lower_title": "coronary angioplasty",
+        "description": "Qualitative indicator of coronary angioplasty status",
+        "instructions": "Include variables that represent whether or when a subject has experienced a coronary angioplasty. Include variables that represent prevalent and/or incident coronary angioplasty status. Include variables that represent coronary angioplasty event data, including event status and time-to-event variables. Include variables that indicate age at coronary angioplasty events, e.g. self-reported age at a coronary angioplasty event or followup time to a coronary angioplasty event. Include variables indicating coronary angioplasty status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits (e.g. evidence of coronary stent in CT scan). Include all instances of duplicated variables, e.g. coronary angioplasty events variables included in multiple datasets.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 28,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:48:27Z",
+        "title": "Coronary artery bypass graft",
+        "lower_title": "coronary artery bypass graft",
+        "description": "Qualitative indicator of coronary artery bypass graft (CABG) status",
+        "instructions": "Include variables that represent whether or when a subject has experienced a CABG. Include variables that represent prevalent and/or incident CABG status. Include variables that represent CABG event data, including event status and time-to-event variables. Include variables that indicate age at CABG events, e.g. self-reported age at a CABG event or followup time to a CABG event. Include variables indicating CABG status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. CABG events variables included in multiple datasets.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 29,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:48:57Z",
+        "title": "Heart failure",
+        "lower_title": "heart failure",
+        "description": "Qualitative indicator of heart failure status",
+        "instructions": "Include variables that represent whether or when a subject has experienced heart failure. Include variables that represent prevalent and/or incident heart failure status. Include variables that represent heart failure event data, including event status and time-to-event variables. Include variables that indicate age at heart failure events, e.g. self-reported age at a heart failure event or followup time to a heart failure event. Include variables indicating heart failure status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. heart failure events variables included in multiple datasets. Do not include variables that indicate medication use related to heart failure, e.g. diuretic use.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 30,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:49:33Z",
+        "title": "Hypertension",
+        "lower_title": "hypertension",
+        "description": "Qualitative indicator of hypertension status",
+        "instructions": "Include variables that represent whether or when a subject has had hypertension. Include variables that represent prevalent and/or incident hypertension status. Include variables that represent hypertension event data, including event status and time-to-event variables. Include variables that indicate age at hypertension events, e.g. self-reported age at hypertension diagnosis or followup time to hypertension diagnosis. Include variables indicating hypertension status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. hypertension status variables included in multiple datasets. Do not include variables that indicate medication use related to hypertension treatment, e.g. beta blocker, ACE inhibitor, or calcium channel blocker use. Do not include systolic or diastolic blood pressure measurements or hypertension medication status that could be used to derive hypertension status.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 31,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:56:35Z",
+        "title": "Blood glucose",
+        "lower_title": "blood glucose",
+        "description": "Quantitative measure of the concentration of glucose in blood.",
+        "instructions": "Include variables that represent a measurement of the concentration of glucose in the blood. Include variables from all time points and all repeated measures within each time point, e.g. blood glucose measured at multiple exams. Include all instances of duplicated variables, e.g. blood glucose variables included in multiple datasets. Include variables in all measurement units available, e.g. blood glucose in mg/dL and blood glucose in mmol/L. Include single-time-point blood glucose measurements, as well as time-series blood glucose measurements, e.g. blood glucose measurements from the Oral Glucose Tolerance Test (OGTT) and Frequently Sampled Intravenous Glucose Tolerance test (FSIGT). For OGTT and FSIGT blood glucose measures, also include variables representing measurement time points. Include both random and fasting blood glucose measurements. Include both corrected/adjusted and uncorrected/unadjusted blood glucose measures. Do not include variables for which blood glucose is a component, e.g. diabetes status indicators.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 32,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:56:43Z",
+        "title": "Insulin in blood",
+        "lower_title": "insulin in blood",
+        "description": "Quantitative measure of the concentration of insulin in blood.",
+        "instructions": "Include variables that represent a measurement of the concentration of insulin in the blood. Include variables from all time points and all repeated measures within each time point, e.g. insulin measured at multiple exams. Include all instances of duplicated variables, e.g. insulin variables included in multiple datasets. Include variables in all measurement units available, e.g. insulin in mg/dL and insulin in mmol/L. Include single-time-point insulin measurements, as well as time-series insulin measurements, e.g. insulin measurements from the Oral Glucose Tolerance Test (OGTT) and Frequently Sampled Intravenous Glucose Tolerance test (FSIGT), when available. For OGTT and FSIGT insulin measures, also include variables representing measurement time points. Include both random and fasting insulin measurements. Include both corrected/adjusted and uncorrected/unadjusted insulin measures. Do not include variables for which insulin is a component, e.g. diabetes status indicators.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 33,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-08-24T22:20:27Z",
+        "title": "HbA1c",
+        "lower_title": "hba1c",
+        "description": "Quantitative measure of glycated hemoglobin (hemoglobin A1c, or HbA1c) in blood",
+        "instructions": "Include variables that represent a measurement of HbA1c in the blood. Include variables from all time points and all repeated measures at each time point, e.g. HbA1c measured at multiple exams, and HbA1c measured multiple times at the same exam. Include all instances of duplicated variables, e.g. HbA1c variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. HbA1c in mg/dL and HbA1c in mmol/L and HbA1c as the percentage of total hemoglobin that is glycated.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 34,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-26T00:09:32Z",
+        "title": "Diabetes",
+        "lower_title": "diabetes",
+        "description": "Qualitative indicator of diabetes mellitus status",
+        "instructions": "Include variables that represent whether or when a subject has experienced diabetes. Include variables that represent prevalent and/or incident diabetes status. Include variables that represent diabetes onset event data, including event status and time-to-event variables. Include variables that indicate age at diabetes onset, e.g. self-reported age at diabetes diagnosis or followup time to diabetes diagnosis. Include variables indicating diabetes status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. diabetes onset variables included in multiple datasets. Include categorical variables indicating diabetes categories, e.g. non-diabetic, pre-diabetic, and diabetic, or other subcategories of diabetes. Do not include variables that indicate possible diabetes treatments, e.g. glucose meter use. Do not include variables that indicate medication use related to diabetes, e.g. insulin injection or metformin use. Do not include quantitative measures of insulin, glucose, diabetes medication status, or other factors used to calculate/infer diabetes status. Do not include variables that indicate conditions related to diabetes, e.g. diabetic retinopathy.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 35,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:50:15Z",
+        "title": "Atrial fibrillation/flutter",
+        "lower_title": "atrial fibrillation/flutter",
+        "description": "Qualitative indicator of atrial fibrillation or atrial flutter status",
+        "instructions": "Include variables that represent whether or when a subject has experienced atrial fibrillation or flutter. Include variables that represent prevalent and/or incident atrial fibrillation status. Include variables that represent atrial fibrillation event data, including event status and time-to-event variables. Include variables that indicate age at atrial fibrillation events, e.g. self-reported age at an atrial fibrillation event or followup time to an atrial fibrillation event. Include variables indicating atrial fibrillation status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. atrial fibrillation events variables included in multiple datasets. Do not include variables that indicate possible atrial fibrillation treatments, e.g. cardioversion or surgical interventions. Do not include variables that indicate medication use related to atrial fibrillation treatment, e.g. anticoagulant use.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 36,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-10-19T17:55:25Z",
+        "title": "QRS duration from EKG",
+        "lower_title": "qrs duration from ekg",
+        "description": "Quantitative measure of QRS duration from electrocardiogram (EKG) data",
+        "instructions": "Include variables that represent a QRS duration measurement from an EKG. Include variables from all time points and all repeated measures within each time point, e.g. QRS duration measured at multiple exams. Include all instances of duplicated variables, e.g. QRS duration variables included in multiple datasets. Include variables in all measurement units available, e.g. QRS duration in milliseconds and QRS duration in seconds. Include variables from individual leads, as well as the composite variable. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 37,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-10-19T17:55:17Z",
+        "title": "QT interval from EKG",
+        "lower_title": "qt interval from ekg",
+        "description": "Quantitative measure of QT interval from electrocardiogram (EKG) data",
+        "instructions": "Include variables that represent a QT interval measurement from an EKG. Include variables from all time points and all repeated measures within each time point, e.g. QT interval measured at multiple exams. Include all instances of duplicated variables, e.g. QT interval variables included in multiple datasets. Include variables in all measurement units available, e.g. QT interval in milliseconds and QT interval in seconds. Include variables from individual leads, as well as the composite variable. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 38,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-10-19T17:55:10Z",
+        "title": "PR interval from EKG",
+        "lower_title": "pr interval from ekg",
+        "description": "Quantitative measure of PR interval from electrocardiogram (EKG) data",
+        "instructions": "Include variables that represent a PR interval measurement from an EKG. Include variables from all time points and all repeated measures within each time point, e.g. PR interval measured at multiple exams. Include all instances of duplicated variables, e.g. PR interval variables included in multiple datasets. Include variables in all measurement units available, e.g. PR interval in milliseconds and PR interval in seconds. Include variables from individual leads, as well as the composite variable. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 39,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:53:41Z",
+        "title": "Resting heart rate from EKG",
+        "lower_title": "resting heart rate from ekg",
+        "description": "Quantitative measure of resting heart rate (HR) from electrocardiogram (EKG) data",
+        "instructions": "Include variables that represent a resting heart rate measurement from an EKG, or an RR interval variable that could be used to calculate resting heart rate. Include variables from all time points and all repeated measures within each time point, e.g. resting heart rate measured at multiple exams. Include all instances of duplicated variables, e.g. resting heart rate variables included in multiple datasets. Include variables in all measurement units available, e.g. resting heart rate in beats per minute. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include resting heart rate measured by means other than EKG, e.g. pulse or heart rate monitor. Do not include heart rate measured during exercise or other non-resting heart rate variables.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 40,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-12T21:52:11Z",
+        "title": "LVH from EKG",
+        "lower_title": "lvh from ekg",
+        "description": "Index of left ventricular hypertrophy (LVH) determined from electrocardiogram (EKG) data",
+        "instructions": "Include variables that represent indices of LVH, determined from EKG data. Include LVH index variables determined by Cornell, Sokolow-Lyon, Romhilt-Estes, or other criteria. Include variables containing a quantitative score (e.g. Romhilt-Estes point score) or a binary indicator of LVH status (e.g. LVH status from Cornell voltage criteria). Include variables from all time points and all repeated measures within each time point, e.g. LVH index determined at multiple exams. Include all instances of duplicated variables, e.g. LVH index variables repeated in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include measures of LVH determined by other means, e.g. LVH from echocardiography, or LVH from cardiac MRI. Do not include variables that represent the components used to derive LVH index, such as individual voltages or ST segment abnormalities.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 41,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:50:35Z",
+        "title": "Pacemaker",
+        "lower_title": "pacemaker",
+        "description": "Qualitative indicator of pacemaker implant status",
+        "instructions": "Include variables that represent whether or when a subject has had a pacemaker implant. Include variables that represent prevalent and/or incident pacemaker implant status. Include variables that represent pacemaker implant event data, including implantation event status and time-to-event variables. Include variables that indicate age at pacemaker implant events, e.g. self-reported age at pacemaker implantation or followup time to pacemaker implantation. Include variables indicating pacemaker implant status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. pacemaker implant variables included in multiple datasets.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 42,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:57:45Z",
+        "title": "Hematocrit",
+        "lower_title": "hematocrit",
+        "description": "Quantitative measure of the fraction of blood volume that is composed of red blood cells",
+        "instructions": "Include variables that represent a hematocrit measurement, usually from a Complete Blood Count (CBC), but also from any other hematocrit measurement from blood. Include variables from all time points and all repeated measures within each time point, e.g. hematocrit measured at multiple exams. Include all instances of duplicated variables, e.g. hematocrit variables included in multiple datasets. Include variables in all measurement units available, e.g. hematocrit as a proportion and hematocrit as a percentage. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 43,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-01T18:09:37Z",
+        "title": "Hemoglobin",
+        "lower_title": "hemoglobin",
+        "description": "Quantitative measure of total hemoglobin concentration in blood",
+        "instructions": "Include variables that represent a total hemoglobin concentration measurement. Variables to include will usually be from a Complete Blood Count (CBC), but hemoglobin concentration measurements from other blood panels or individual blood tests should also be included. Include variables from all time points and all repeated measures within each time point, e.g. hemoglobin concentration measured at multiple exams. Include all instances of duplicated variables, e.g. hemoglobin concentration variables included in multiple datasets. Include variables in all measurement units available, e.g. hemoglobin concentration in grams/dL and hemoglobin concentration in grams/L. Do not include mean corpuscular hemoglobin or mean corpuscular hemoglobin concentration variables, which measure hemoglobin per red blood cell.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 44,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-01T18:10:43Z",
+        "title": "Platelet count",
+        "lower_title": "platelet count",
+        "description": "Quantitative measure of platelet cell number per volume of blood",
+        "instructions": "Include variables that represent a platelet count measurement, usually from a Complete Blood Count (CBC), but also from any other platelet count measurement from blood. Include variables from all time points and all repeated measures within each time point, e.g. platelet count measured at multiple exams. Include all instances of duplicated variables, e.g. platelet count variables included in multiple datasets. Include variables in all measurement units available, e.g. platelets count as cells/L and platelets count as billion cells/L. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include mean platelet volume variables.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 45,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-01T18:10:19Z",
+        "title": "Red blood cell count",
+        "lower_title": "red blood cell count",
+        "description": "Quantitative measure of red blood cell number per volume of blood",
+        "instructions": "Include variables that represent a red blood cell count measurement, usually from a Complete Blood Count (CBC), but also from any other red blood cell count measurement from blood. Include variables from all time points and all repeated measures within each time point, e.g. red blood cell count measured at multiple exams. Include all instances of duplicated variables, e.g. red blood cell count variables included in multiple datasets. Include variables in all measurement units available, e.g. red blood cell count in cells/L and red blood cell count in cells/mcL. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include mean corpuscular volume variables.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 46,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-06-05T22:20:41Z",
+        "title": "White blood cell count",
+        "lower_title": "white blood cell count",
+        "description": "Quantitative measure of white blood cell number per volume of  blood",
+        "instructions": "Include variables that represent a white blood cell count measurement, usually from a Complete Blood Count (CBC), but also from any other white blood cell count measurement from blood. Include variables from all time points and all repeated measures within each time point, e.g. white blood cell count measured at multiple exams. Include all instances of duplicated variables, e.g. white blood cell count variables included in multiple datasets. Include variables in all measurement units available, e.g. white blood cell count in cells/L and white blood cell count in cells/mcL. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include variables counting neutrophils, basophils, monocytes, lymphocytes, or other white blood cell subtypes.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 47,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:58:54Z",
+        "title": "Fibrinogen in blood",
+        "lower_title": "fibrinogen in blood",
+        "description": "Quantitative measure of fibrinogen concentration in blood",
+        "instructions": "Include variables that represent a fibrinogen concentration measurement. Include variables from all time points and all repeated measures within each time point, e.g. fibrinogen measured at multiple exams. Include all instances of duplicated variables, e.g. fibrinogen variables included in multiple datasets. Include variables in all measurement units available, e.g. fibrinogen in mg/dL and fibrinogen in g/L. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 48,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:00Z",
+        "title": "Factor VII",
+        "lower_title": "factor vii",
+        "description": "Quantitative measure of factor VII activity or concentration in blood",
+        "instructions": "Include variables that represent measurement of factor VII activity or concentration in blood. Include variables from all time points and all repeated measures within each time point, e.g. factor VII measured at multiple exams. Include all instances of duplicated variables, e.g. factor VII variables included in multiple datasets. Include variables in all measurement units available, e.g. factor VII activity in percentage and factor VII concentration in IU/L. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 49,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:07Z",
+        "title": "Factor VIII",
+        "lower_title": "factor viii",
+        "description": "Quantitative measure of factor VIII activity or concentration in blood",
+        "instructions": "Include variables that represent measurement of factor VIII activity or concentration in blood. Include variables from all time points and all repeated measures within each time point, e.g. factor VIII measured at multiple exams. Include all instances of duplicated variables, e.g. factor VIII variables included in multiple datasets. Include variables in all measurement units available, e.g. factor VIII activity in percentage and factor VIII concentration in IU/L. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 50,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T23:01:58Z",
+        "title": "von Willebrand factor",
+        "lower_title": "von willebrand factor",
+        "description": "Quantitative measure of von Willebrand factor (vWf) activity or concentration in blood",
+        "instructions": "Include variables that represent measurement of vWF activity or concentration in blood. Include variables from all time points and all repeated measures within each time point, e.g. vWf measured at multiple exams. Include all instances of duplicated variables, e.g. vWf variables included in multiple datasets. Include variables in all measurement units available, e.g. vWf activity in percentage and vWF concentration in IU/L. Include both corrected/adjusted and uncorrected/unadjusted measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 51,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-05-15T17:50:57Z",
+        "title": "VTE",
+        "lower_title": "vte",
+        "description": "Qualitative indicator of venous thromboembolism (VTE) status",
+        "instructions": "Include variables that represent whether or when a subject has experienced VTE. VTE includes both deep venous thrombosis and pulmonary embolism. VTE does not include arterial thrombosis or arterial embolism. Include variables that represent prevalent and/or incident VTE status. Include variables that represent VTE event data, including event status and time-to-event variables. Include variables that indicate age at VTE events, e.g. self-reported age at a VTE event or followup time to a VTE event. Include variables indicating VTE status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. VTE variables included in multiple datasets. Include variables indicating deep vein thrombosis (DVT) status, pulmonary embolism status, and VTE status of unknown type. Include variables that specify VTE type. Do not include variables that indicate possible VTE treatments, e.g. surgical procedures. Do not include variables that indicate medication use related to VTE, e.g. anticoagulant or thrombolytic use.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 52,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:12Z",
+        "title": "CRP in blood",
+        "lower_title": "crp in blood",
+        "description": "Quantitative measure of C-reactive protein (CRP) concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of CRP in the blood. Include variables from all time points and all repeated measures at each time point, e.g. CRP measured at multiple exams, and CRP measured multiple times at the same exam. Include all instances of duplicated variables, e.g. CRP variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. CRP in mg/dL and CRP in mmol/L.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 53,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:18Z",
+        "title": "Interleukin 6 in blood",
+        "lower_title": "interleukin 6 in blood",
+        "description": "Quantitative measure of Interleukin 6 (IL-6) concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of IL-6 in the blood. Include variables from all time points and all repeated measures at each time point, e.g. IL-6 measured at multiple exams, and IL-6 measured multiple times at the same exam. Include all instances of duplicated variables, e.g. IL-6 variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. IL-6 in mg/dL and IL-6 in mmol/L.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 54,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:26Z",
+        "title": "Creatinine in blood",
+        "lower_title": "creatinine in blood",
+        "description": "Quantitative measure of creatinine concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of creatinine in the blood. Include variables from all time points and all repeated measures at each time point, e.g. creatinine measured at multiple exams, and creatinine measured multiple times at the same exam. Include all instances of duplicated variables, e.g. creatinine variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. creatinine in mg/dL and creatinine in mmol/L.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 55,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:32Z",
+        "title": "Cystatin C in blood",
+        "lower_title": "cystatin c in blood",
+        "description": "Quantitative measure of cystatin C concentration in blood",
+        "instructions": "Include variables that represent a measurement of the concentration of cystatin C in the blood. Include variables from all time points and all repeated measures at each time point, e.g. cystatin C measured at multiple exams, and cystatin C measured multiple times at the same exam. Include all instances of duplicated variables, e.g. cystatin C variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. cystatin C in mg/dL and cystatin C in mmol/L.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 56,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-07-13T20:13:30Z",
+        "title": "Albumin-creatinine ratio in urine",
+        "lower_title": "albumin-creatinine ratio in urine",
+        "description": "Quantitative measure of the ratio of albumin concentration to creatinine concentration in urine",
+        "instructions": "Include quantitative variables that represent the calculated urine albumin-creatinine ratio. Include variables from all time points and all repeated measures within each time point, e.g. albumin-creatinine ratio variables included in multiple datasets. Include all instances of duplicated variables, e.g. albumin-creatinine ratio measured for different datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Do not include variables that represent the albumin and creatinine components used to derive albumin-creatinine ratio.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 57,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:59:47Z",
+        "title": "GFR",
+        "lower_title": "gfr",
+        "description": "Quantitative measure of glomerular filtration rate (GFR)",
+        "instructions": "Include variables that represent calculated glomerular filtration rate (GFR). Include all GFR variables, regardless of how they were calculated, e.g. eGFR from creatinine-based approximations (by any available formula) or direct measurements based on inulin clearance. Include variables from all time points and all repeated measures at each time point, e.g. GFR measured at multiple exams, and GFR measured multiple times at the same exam. Include all instances of duplicated variables, e.g. GFR variables included in multiple datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables in all measurement units available, e.g. GFR in mL/min and GFR in L/min. Do not include variables that represent the creatinine or other component variables used to derive the calculated GFR.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 62,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-07-13T20:23:05Z",
+        "title": "FVC",
+        "lower_title": "fvc",
+        "description": "Quantitative measure of forced vital capacity (FVC) measured using spirometry",
+        "instructions": "Include variables that represent an FVC measurement. Include variables from all time points and all repeated measures at each time point, e.g. FVC measured at multiple exams, and FVC measured multiple times at the same exam. Include all instances of duplicated variables, e.g. FVC variables included in multiple datasets. Include variables in all measurement units available, e.g. FVC in liters and FVC in milliliters. Include both individual measures of FVC and averages or maximum values thereof. Include both corrected/adjusted and uncorrected/unadjusted measures, including percent predicted FVC. Include measures both pre- and post-bronchodilator administration.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 63,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-07-13T20:23:22Z",
+        "title": "FEV1",
+        "lower_title": "fev1",
+        "description": "Forced expiratory volume in 1 second (FEV1) measured using spirometry",
+        "instructions": "Include variables that represent an FEV1 measurement. Include variables from all time points and all repeated measures at each time point, e.g. FEV1 measured at multiple exams, and FEV1 measured multiple times at the same exam. Include all instances of duplicated variables, e.g. FEV1 variables included in multiple datasets. Include variables in all measurement units available, e.g. FEV1 in liters and FEV1 in milliliters. Include both individual measures of FEV1 and averages or maximum values thereof. Include both corrected/adjusted and uncorrected/unadjusted measures including percent predicted FEV1. Include measures both pre- and post-bronchodilator administration.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 64,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-11-15T19:32:21Z",
+        "title": "Asthma",
+        "lower_title": "asthma",
+        "description": "Qualitative indicator of asthma status",
+        "instructions": "Include variables that represent whether or when a subject has experienced asthma. Include variables that represent prevalent and/or incident asthma status. Include variables that represent asthma onset event data, including event status and time-to-event variables. Include variables that indicate age at asthma onset, e.g. self-reported age at asthma diagnosis or followup time to asthma diagnosis. Include variables indicating asthma status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. asthma onset variables included in multiple datasets. Do not include variables that indicate possible asthma treatments, e.g. bronchial thermoplasty or immunotherapy. Do not include variables that indicate medication use related to asthma, e.g. albuterol inhaler, beta agonist, or corticosteroid use. Do not include quantitative measures of lung function, spirometry, response to bronchodilator, or other factors used to calculate/infer asthma status. This tag should only be used for qualitative indicators of asthma status and its timing; variables that describe asthma symptoms or severity should be tagged as \u201casthma severity\u201d instead.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 65,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-11-15T19:34:14Z",
+        "title": "Asthma severity",
+        "lower_title": "asthma severity",
+        "description": "Qualitative and quantitative measures of asthma severity",
+        "instructions": "Include variables that represent measures or qualitative descriptors of asthma severity. Include variables determined by a clinician or examiner and self-reported variables. Examples include questionnaire responses regarding asthma severity (e.g. seasonality), description of asthma symptoms, asthma exacerbations (e.g. respiratory infections), asthma attack frequency, or medical care or hospitalization for asthma. Include variables from all time points and all repeated measures at each time point, e.g. asthma severity at multiple exams, or asthma severity assessed multiple times at the same exam. Include all instances of duplicated variables, e.g. asthma severity variables included in multiple datasets. Include variables in all available units, e.g. asthma symptom frequency per week and asthma symptom frequency per year. Do not include variables indicating asthma status or spirometry measures. Do not include variables that are already tagged as \"asthma\".",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 66,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-09-04T17:30:49Z",
+        "title": "COPD",
+        "lower_title": "copd",
+        "description": "Qualitative indicator of Chronic Obstructive Pulmonary Disease (COPD) status",
+        "instructions": "Include variables that represent whether or when a subject has experienced COPD. COPD includes emphysema and chronic bronchitis. Include variables that represent prevalent and/or incident COPD status. Include variables that represent COPD event data, including event status and time-to-event variables. Include variables that indicate age at COPD events, e.g. self-reported age at COPD onset or followup time to COPD diagnosis. Include variables indicating COPD status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. COPD variables included in multiple datasets. Do not include variables that indicate possible COPD treatments, e.g. supplemental oxygen administration or lung transplant. Do not include variables that indicate medication use related to COPD, e.g. corticosteroid or bronchodilator use. Do not include variables that are quantitative measures of lung function that can be used to calculate COPD status, such as FVC, FEV1, or other spirometry measures.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 67,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-12-15T00:46:31Z",
+        "title": "Sleep apnea",
+        "lower_title": "sleep apnea",
+        "description": "Qualitative indicator of sleep apnea status",
+        "instructions": "Include variables that represent whether or when a subject has experienced sleep apnea. Include variables indicating sleep apnea of any type (obstructive, central, or complex). Include variables indicating the type of sleep apnea, e.g. a categorical variable with values 'obstructive', 'central', and 'complex'. Include variables that represent prevalent and/or incident sleep apnea status. Include variables that represent sleep apnea event data, including event status and time-to-event variables. Include variables that indicate age at sleep apnea events, e.g. self-reported age at sleep apnea onset or followup time to sleep apnea diagnosis. Include variables indicating sleep apnea status based on any method of determination, including self report, adjudication, clinical verification, medical records, ICD codes, or calculation/inference from related traits. Include all instances of duplicated variables, e.g. sleep apnea variables included in multiple datasets. Do not include variables that indicate possible sleep apnea treatments, e.g. CPAP or supplemental oxygen use. Do not include quantitative measures that can be used to calculate sleep apnea status, such as AHI. Do not include categorical variables derived from AHI, e.g. AHI > 50.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 68,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-12-15T00:44:32Z",
+        "title": "AHI",
+        "lower_title": "ahi",
+        "description": "Quantitative measure of Apnea-Hypopnea Index (AHI), a measure of sleep apnea severity",
+        "instructions": "Include variables that represent an AHI measurement. Include variables from all time points and all repeated measures within each time point, e.g. AHI measured at multiple exams. Include all instances of duplicated variables, e.g. AHI variables included in multiple datasets. Include variables in all measurement units available, e.g. AHI in events per hour or in events per day. Include both corrected/adjusted and uncorrected/unadjusted measures. Include variables that represent subtypes of AHI, e.g. obstructive apnea hypopnea index (OAHI), obstructive apnea index (OAI), central apnea index (CAI), etc. Do not include component variables, e.g. variables representing the total number of hypopneas or apneas during sleep. If the respiratory disturbance index (RDI) was defined in the same way as AHI, then you may include RDI variables. Do not include RDI variables if they include respiratory effort related arousals (RERAs).",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 69,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-03-13T18:39:53Z",
+        "title": "Cigarette smoking",
+        "lower_title": "cigarette smoking",
+        "description": "Qualitative and quantitative measures of cigarette smoking history and cigarette smoking  status",
+        "instructions": "Include variables that represent qualitative or quantitative descriptors of a subject's cigarette smoking behavior. Include smoking initiation age or date, smoking cessation date or age, duration of smoking, estimates of smoking heaviness (e.g. cigarettes per day or per week), number or timing of smoking cessation attempts, smoking cessation strategies attempted, current and former smoking behavior status (e.g. ever-smoker or never-smoker or former-smoker status), etc. Include estimates of lifetime cigarette smoking exposure, e.g. cigarette pack years. Do not include variables describing use of other substances, e.g. cigars, chewing tobacco, marijuana or other drugs, e-cigarettes (vaping), etc. Do not include variables related to smoking-related health conditions e.g. lung cancer, COPD, emphysema, etc. Do not include variables related to second-hand smoke exposure.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 70,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-03-13T18:39:53Z",
+        "title": "Subcohort",
+        "lower_title": "subcohort",
+        "description": "Categorical indicator of membership in different study subcohorts (i.e. participant subsets within a study who were recruited at different times and/or enrolled in different sub-studies)",
+        "instructions": "Include all variables that represent a subject's membership in a \"subcohort\" - a subset within a study determined by enrollment time, sub-study, or other distinguishing group factor. Examples include original or offspring (etc.) cohort in Framingham Heart Study and the observational study and clinical trial subsets of the Women's Health Initiative. Include all variables representing subcohort membership, e.g. a master variable in the study's subject file. Include variables duplicated in multiple datasets, e.g. a variable indicating subject membership in several or every dataset file in the study. If your study does not contain variables indicating subcohort membership, then you may not need to use this tag in your study, e.g. if the data from each subcohort is contained in different datasets.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 71,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-03-13T18:39:53Z",
+        "title": "Clinic visit",
+        "lower_title": "clinic visit",
+        "description": "Categorical indicator of the clinical visit (exam, year, etc.) during which observations, measurements and/or other data/biosample collections were made",
+        "instructions": "Include all variables that represent the clinical visit/exam/year at which a measurement/observation was made. Examples include visit names like 'baseline', 'exam 1', 'visit 1', 'ancillary study A', or categorical codes representing such values. Include all variables representing clinic visit, e.g. a variable representing clinic visit coded as '1', '2', '3', etc.; a variable representing visit year as '1995', '1998', '2002', etc. If your study does not contain variables indicating clinic visit, then you may not need to use this tag in your study, e.g. if the data from each clinic visit is separated into different datasets.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 72,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-04-17T22:41:52Z",
+        "title": "Fasting",
+        "lower_title": "fasting",
+        "description": "Qualitative or quantitative indicator describing or quantifying fasting status prior to blood draw for any blood sample-derived measurement",
+        "instructions": "Include variables indicating fasting status or fasting time related to other blood sample-derived variables. Include both qualitative indicators of fasting status and quantitative measures such as hours of fasting. Include fasting variables from all time points and all repeated measures within each time point, e.g. fasting status variables at multiple exams. Include all instances of duplicated variables, e.g. fasting status for two different blood draws in different datasets. Include both corrected/adjusted and uncorrected/unadjusted measures. ",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 73,
+    "fields": {
+        "created": "2018-03-13T18:39:53Z",
+        "modified": "2018-03-13T18:39:53Z",
+        "title": "Geographic site",
+        "lower_title": "geographic site",
+        "description": "Categorical indicator of the clinic, recruitment site, and/or field center at which participants were recruited, and/or where data or biosamples were collected.",
+        "instructions": "Include variables indicating the clinic site, recruitment site, and/or field center at which participants were recruited and/or where data or biosamples were collected. Include variables for which specific clinic/field center names or geographic locations are provided (e.g. a categorical variable with values 'Cleveland Clinic', and 'New York') and those for which this information is encoded (e.g. a categorical variable with values 'A', 'B', and 'C'). Include all instances of duplicated variables, e.g. redundant clinic site variables in multiple datasets. If your study does not contain variables indicating geographic site, and/or does not contain data from multiple geographic sites, then you may not need to use this tag in your study.",
+        "creator": 7
+    }
+},
+{
+    "model": "tags.tag",
+    "pk": 74,
+    "fields": {
+        "created": "2018-05-22T17:22:03Z",
+        "modified": "2018-10-09T17:09:49Z",
+        "title": "Medication/supplement use",
+        "lower_title": "medication/supplement use",
+        "description": "Qualitative or quantitative indicator of use of any kind of medication, vitamin, mineral, or dietary supplement",
+        "instructions": "Include variables indicating, describing or quantifying use-characteristics for any type of medication, vitamin, mineral, or dietary supplement. Include variables describing which medications, vitamin, minerals, or dietary supplements have been or are being used, how frequently, and in what dosage. Include medications, vitamin, minerals, or dietary supplements taken orally, by inhalation (e.g. albuterol), or by injection (e.g. insulin). Include variables in medication inventories; variables indicating use of specific drugs (e.g. statin use); variables indicating use of an entire drug class (e.g. lipid-lowering medication use, beta-blocker use, or anticoagulant use); dosage variables; and variables obtained from questionnaires (e.g. \"Do you use an inhaler for asthma treatment?\" or \"Have you ever taken blood-thinning medication?\"). Include medication treatment indicator variables in clinical trial data. Include variables relating to medication use even if they are found in a dataset that is not specifically related to medication use (e.g. a variable indicating inhaler use in a spirometry dataset or a variable indicating antihypertensive medication use in a questionnaire dataset). Include variables indicating treatment of a specific condition, when that treatment usually refers to a medication (e.g. \"Are you being treated for hypertension?\" or \"Are you being treated for diabetes?\").",
+        "creator": 7
+    }
+}
+]
