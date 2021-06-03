@@ -70,6 +70,11 @@ class Crawler:
             # Write concept out to a file
             concept_file.write(f"{json.dumps(concept.get_searchable_dict(), indent=2)}")
 
+        # Set element optional terms now that concepts have been expanded
+        for element in self.elements:
+            if isinstance(element, DugElement):
+                element.set_optional_terms()
+
         # Close concept file
         concept_file.close()
 
@@ -88,7 +93,6 @@ class Crawler:
             self.annotate_element(element)
             if isinstance(element, DugElement):
                 element.set_search_terms()
-                element.set_optional_terms()
                 variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
