@@ -38,6 +38,7 @@ class DugElement:
             'element_name': self.name,
             'element_desc': self.description,
             'search_terms': self.search_terms,
+            'optional_terms': self.optional_terms,
             'collection_id': self.collection_id,
             'collection_name': self.collection_name,
             'collection_desc': self.collection_desc,
