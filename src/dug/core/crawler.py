@@ -71,17 +71,18 @@ class Crawler:
             concept_file.write(f"{json.dumps(concept.get_searchable_dict(), indent=2)}")
 
         # Set element optional terms now that concepts have been expanded
+        # Open variable file for writing
+        variable_file = open(f"{self.crawlspace}/element_file.json", "w")
         for element in self.elements:
             if isinstance(element, DugElement):
                 element.set_optional_terms()
+                variable_file.write(f"{element}\n")
 
-        # Close concept file
+        # Close concept, element files
         concept_file.close()
+        variable_file.close()
 
     def annotate_elements(self):
-
-        # Open variable file for writing
-        variable_file = open(f"{self.crawlspace}/element_file.json", "w")
 
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         for element in self.elements:
@@ -93,7 +94,6 @@ class Crawler:
             self.annotate_element(element)
             if isinstance(element, DugElement):
                 element.set_search_terms()
-                variable_file.write(f"{element}\n")
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
@@ -114,9 +114,6 @@ class Crawler:
 
             for concept_to_add in concepts_to_add:
                 element.add_concept(concept_to_add)
-
-        # Write elements out to file
-        variable_file.close()
 
     def annotate_element(self, element):
         # Annotate with a set of normalized ontology identifiers
