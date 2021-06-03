@@ -105,6 +105,7 @@ class Search:
                     "element_desc": {"type": "text"},
                     "element_action": {"type": "text"},
                     "search_terms": {"type": "text"},
+                    "optional_terms": {"type": "text"},
                     "identifiers": {"type": "keyword"},
                     "collection_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
                     "collection_name": {"type": "text"},
