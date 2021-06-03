@@ -23,7 +23,7 @@ class DugElement:
         self.concepts = {}
         self.ml_ready_desc = desc
         self.search_terms = []
-        self.optional_search_terms = []
+        self.optional_terms = []
 
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
@@ -57,13 +57,13 @@ class DugElement:
         search_terms = list(set(search_terms))
         self.search_terms = search_terms
 
-    def set_optional_search_terms(self):
-        optional_search_terms = []
+    def set_optional_terms(self):
+        optional_terms = []
         for concept_id, concept in self.concepts.items():
-            concept.set_optional_search_terms()
-            optional_search_terms.extend(concept.optional_seach_terms)
-        optional_search_terms = list(set(optional_search_terms))
-        self.optional_search_terms = optional_search_terms
+            concept.set_optional_terms()
+            optional_terms.extend(concept.optional_terms)
+        optional_terms = list(set(optional_terms))
+        self.optional_terms = optional_terms
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
