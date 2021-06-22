@@ -272,15 +272,18 @@ api.add_resource(DugSearchKGResource, '/search_kg')
 api.add_resource(DugSearchVarResource, '/search_var')
 api.add_resource(DugAggDataType, '/agg_data_types')
 
-if __name__ == "__main__":
-   parser = argparse.ArgumentParser(description='Dug Search API')
-   parser.add_argument('-p', '--port',  type=int, help='Port to run service on.', default=5551)
-   parser.add_argument('-d', '--debug', help="Debug log level.", default=False, action='store_true')
-   args = parser.parse_args ()
+def main(args=None):
+    parser = argparse.ArgumentParser(description='Dug Search API')
+    parser.add_argument('-p', '--port', type=int, help='Port to run service on.', default=5551)
+    parser.add_argument('-d', '--debug', help="Debug log level.", default=False, action='store_true')
+    args = parser.parse_args(args)
 
-   """ Configure """
-   if args.debug:
-       debug = True
-       logging.basicConfig(level=logging.DEBUG)
-   logger.info (f"starting dug on port={args.port} with debug={args.debug}")
-   app.run(host='0.0.0.0', port=args.port, debug=args.debug, threaded=True)
+    """ Configure """
+    if args.debug:
+        debug = True
+        logging.basicConfig(level=logging.DEBUG)
+    logger.info(f"starting dug on port={args.port} with debug={args.debug}")
+    app.run(host='0.0.0.0', port=args.port, debug=args.debug, threaded=True)
+
+if __name__ == "__main__":
+   main()

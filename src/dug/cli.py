@@ -121,11 +121,11 @@ def status(args):
     print("Status check is not implemented yet!")
 
 
-def main():
+def main(args=None):
 
     arg_parser = get_argparser()
 
-    args = arg_parser.parse_args()
+    args = arg_parser.parse_args(args)
 
     try:
         logger.setLevel(args.log_level)
