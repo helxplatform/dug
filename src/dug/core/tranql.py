@@ -1,4 +1,4 @@
-import json
+import json, re
 
 
 class MissingNodeReferenceError(BaseException):
@@ -139,8 +139,8 @@ class QueryKG:
         for q_id in query_graph["nodes"]:
             node_details = query_graph["nodes"][q_id]
             node_curie = node_details.get("id", "")
-            node_type = node_details.get("category", [])
-            old_node = {"id": q_id, "type": node_type }
+            node_type = [self._snake_case(x.replace('biolink:', '')) for x in node_details.get("category", [])]
+            old_node = {"id": q_id, "type": node_type}
             if node_curie:
                 old_node.update({"curie": node_curie})
             old_kg_model["question_graph"]["nodes"].append(old_node)
@@ -172,6 +172,27 @@ class QueryKG:
             # adds predicate as type for edges
             edge["type"] = edge["predicate"]
         return old_kg_model
+
+    def _snake_case(self, arg: str):
+        """Convert string to snake_case.
+        Non-alphanumeric characters are replaced with _.
+        CamelCase is replaced with snake_case.
+        """
+        # replace non-alphanumeric characters with _
+        tmp = re.sub(r'\W', '_', arg)
+        # replace X with _x
+        tmp = re.sub(
+            r'(?<=[a-z])[A-Z](?=[a-z])',
+            lambda c: '_' + c.group(0).lower(),
+            tmp
+        )
+        # lower-case first character
+        tmp = re.sub(
+            r'^[A-Z](?=[a-z])',
+            lambda c: c.group(0).lower(),
+            tmp
+        )
+        return tmp
 
 
 class InvalidQueryError(BaseException):
