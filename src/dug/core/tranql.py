@@ -88,6 +88,8 @@ class QueryKG:
 
         edge["id"] = edge_id
         edge["publications"] = edge.get("publications", [])
+        if isinstance(edge["publications"], str):
+            edge["publications"] = [edge["publications"]]
         # Optionally subset to include only certain info
         if include_edge_keys:
             edge = {key: edge.get(key) for key in include_edge_keys}
