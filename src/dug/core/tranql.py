@@ -171,6 +171,9 @@ class QueryKG:
         for edge in old_kg_model["knowledge_graph"]["edges"]:
             # adds predicate as type for edges
             edge["type"] = edge["predicate"]
+            # source_id and target_id should always be str
+            edge["source_id"] = edge["subject"]
+            edge["target_id"] = edge["object"]
         return old_kg_model
 
     def _snake_case(self, arg: str):
