@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            cloud 'kubernetes'
+            label 'agent-docker'
+            defaultContainer 'agent-docker'
+        }
+    }
     stages {
         stage('Install') {
             steps {
@@ -17,11 +23,14 @@ pipeline {
         }
         stage('Publish') {
             when {
-                tag "release-*"
+                buildingTag()
+            }
+            environment {
+                DOCKERHUB_CREDS = credentials('rencibuild_dockerhub_machine_user')
             }
             steps {
                 sh '''
-                make build
+                echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
                 make publish
                 '''
             }
