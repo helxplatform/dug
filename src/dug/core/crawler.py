@@ -76,7 +76,7 @@ class Crawler:
         for element in self.elements:
             if isinstance(element, DugElement):
                 element.set_optional_terms()
-                variable_file.write(f"{element}\n")
+                variable_file.write(f"{element.get_searchable_dict()}\n")
 
         # Close concept, element files
         concept_file.close()
