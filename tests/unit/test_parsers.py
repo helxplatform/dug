@@ -81,5 +81,7 @@ def test_dug_element_searchable_dict():
         'collection_action': "",
         'data_type': elem_type,
         'identifiers': [],
+        'search_terms': [],
+        'optional_terms': []
     }
 
