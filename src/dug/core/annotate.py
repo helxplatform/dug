@@ -148,10 +148,13 @@ class ConceptExpander:
                 data=query).json()
 
             # Case: Skip if empty KG
-            if not len(response.get("message", {}).get("knowledge_graph", {}).get("nodes", [])):
-                logger.debug(f"Did not find a knowledge graph for {query}")
-                logger.debug(f"{self.url} returned response: {response}")
-                return []
+            try:
+                if not len(response["message"]["knowledge_graph"]["nodes"]):
+                    logger.debug(f"Did not find a knowledge graph for {query}")
+                    logger.debug(f"{self.url} returned response: {response}")
+                    return []
+            except KeyError as e:
+                logger.error(f"Could not find key: {e} in response: {response}")
 
             # Dump out to file if there's a knowledge graph
             with open(kg_filename, 'w') as stream:
