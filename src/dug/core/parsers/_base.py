@@ -22,6 +22,8 @@ class DugElement:
         self.collection_action = ""
         self.concepts = {}
         self.ml_ready_desc = desc
+        self.search_terms = []
+        self.optional_terms = []
 
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
@@ -35,6 +37,8 @@ class DugElement:
             'element_id': self.id,
             'element_name': self.name,
             'element_desc': self.description,
+            'search_terms': self.search_terms,
+            'optional_terms': self.optional_terms,
             'collection_id': self.collection_id,
             'collection_name': self.collection_name,
             'collection_desc': self.collection_desc,
@@ -44,6 +48,23 @@ class DugElement:
             'identifiers': list(self.concepts.keys())
         }
         return es_elem
+
+    def set_search_terms(self):
+        search_terms = []
+        for concept_id, concept in self.concepts.items():
+            concept.set_search_terms()
+            search_terms.extend(concept.search_terms)
+            search_terms.append(concept.name)
+        search_terms = list(set(search_terms))
+        self.search_terms = search_terms
+
+    def set_optional_terms(self):
+        optional_terms = []
+        for concept_id, concept in self.concepts.items():
+            concept.set_optional_terms()
+            optional_terms.extend(concept.optional_terms)
+        optional_terms = list(set(optional_terms))
+        self.optional_terms = optional_terms
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
