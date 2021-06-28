@@ -67,6 +67,7 @@ class DugFactory:
         return ConceptExpander(**self.config.concept_expander)
 
     def build_tranql_queries(self, source=None) -> Dict[str, tql.QueryFactory]:
+
         if source is None:
             source = TRANQL_SOURCE
         return {
