@@ -7,7 +7,7 @@ FROM python:3.8.5-slim
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y curl make && \
+    apt-get install -y curl make vim && \
     rm -rf /var/cache/apk/*
 
 # Create a non-root user.
