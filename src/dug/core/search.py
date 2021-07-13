@@ -300,6 +300,10 @@ class Search:
 
         # Reformat Results
         new_results = {}
+        if not search_results:
+           # we don't want to error on a search not found
+           return new_results
+
         for elem in search_results['hits']['hits']:
             elem_s = elem['_source']
             elem_type = elem_s['data_type']

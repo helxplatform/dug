@@ -106,7 +106,10 @@ def search(args):
     # dug = Dug()
     response = dug.search(args.target, args.query, **args.kwargs)
 
-    print(response)
+    if not response:
+       print ("No search results found")
+    else:   
+       print(response)
 
 
 def datatypes(args):

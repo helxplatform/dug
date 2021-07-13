@@ -312,7 +312,7 @@ class Normalizer(ApiClient[Identifier, Identifier]):
         curie = identifier.id
         normalization = normalized.get(curie, {})
         if normalization is None:
-            logger.error(f"Normalization service did not return normalization for: {curie}")
+            logger.info(f"Normalization service did not return normalization for: {curie}")
             return None
 
         preferred_id = normalization.get("id", {})
