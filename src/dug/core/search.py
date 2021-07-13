@@ -105,6 +105,7 @@ class Search:
                     "element_desc": {"type": "text"},
                     "element_action": {"type": "text"},
                     "search_terms": {"type": "text"},
+                    "optional_terms": {"type": "text"},
                     "identifiers": {"type": "keyword"},
                     "collection_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
                     "collection_name": {"type": "text"},
@@ -259,7 +260,7 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def search_variables(self, index, concept, query, size=None, data_type=None, offset=0, fuzziness=1,
+    def search_variables(self, index, concept="", query="", size=None, data_type=None, offset=0, fuzziness=1,
                          prefix_length=3):
         """
         In variable seach, the concept MUST match one of the indentifiers in the list
@@ -274,21 +275,119 @@ class Search:
         """
         query = {
             'bool': {
-                'must': {
+                'should': {
                     "match": {
                         "identifiers": concept
                     }
                 },
-                'should': {
-                    'query_string': {
-                        "query": query,
-                        "fuzziness": fuzziness,
-                        "fuzzy_prefix_length": prefix_length,
-                        "default_field": "search_terms"
+                'should': [
+                    {
+                        "match_phrase": {
+                            "element_name": {
+                                "query": query,
+                                "boost": 10
+                            }
+                        }
+                    },
+                    {
+                        "match_phrase": {
+                            "element_desc": {
+                                "query": query,
+                                "boost": 6
+                            }
+                        }
+                    },
+                    {
+                        "match_phrase": {
+                            "search_terms": {
+                                "query": query,
+                                "boost": 8
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "element_name": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 4
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "search_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 5
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "element_desc": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "operator": "and",
+                                "boost": 3
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "element_desc": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "boost": 2
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "element_name": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "boost": 2
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "search_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length,
+                                "boost": 1
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "optional_terms": {
+                                "query": query,
+                                "fuzziness": fuzziness,
+                                "prefix_length": prefix_length
+                            }
+                        }
                     }
-                }
+                ]
             }
         }
+
+        if concept:
+            query['bool']['must'] = {
+                "match": {
+                        "identifiers": concept
+                }
+            }
+        
         body = json.dumps({'query': query})
         search_results = self.es.search(
             index=index,
