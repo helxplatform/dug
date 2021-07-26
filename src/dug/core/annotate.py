@@ -161,9 +161,12 @@ class ConceptExpander:
                 json.dump(response, stream, indent=2)
 
         # Get nodes in knowledge graph hashed by ids for easy lookup
-        d = response.get("message",{})
-        if len(d) == 0:
-            logger.info(f"response {response}")
+        noMessage = (len(response.get("message",{})) == 0)
+        statusError = (response.get("status","") == 'Error')
+        if noMessage or statusError:
+            # Skip on error
+            logger.info(f"Error with identifier: {identifier}, response: {response}, kg_filename: '{kg_filename}'")
+            return []
         kg = tql.QueryKG(response)
 
         for answer in kg.answers:
