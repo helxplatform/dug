@@ -1,6 +1,6 @@
-from pytest import mark
-
 from unittest.mock import patch
+
+from pytest import mark
 
 from dug.cli import main, get_argparser
 
@@ -22,14 +22,15 @@ def test_dug_cli_parser():
 
 
 @mark.cli
-@patch('dug.cli.Dug')
-def test_dug_cli_main_crawl(mock_dug):
-    mock_dug.search = "Crawling!"
+@patch('dug.cli.crawl')
+def test_dug_cli_main_crawl(mock_crawl):
     main(["crawl", "somefile.csv", "--parser", "topmedtag"])
+    assert mock_crawl.called_once()
 
 
 @mark.cli
-@patch('dug.cli.Dug')
-def test_dug_cli_main_search(mock_dug):
-    mock_dug.search.return_value = "Searching!"
+@patch('dug.cli.search')
+def test_dug_cli_main_search(mock_search):
+    # mock_search.search.return_value = "Searching!"
     main(["search", "-q", "heart attack", "-t", "variables", "-k", "namespace=default"])
+    assert mock_search.called_once()
