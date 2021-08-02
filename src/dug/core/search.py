@@ -413,6 +413,7 @@ class Search:
             }
         
         body = json.dumps({'query': query})
+        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,
@@ -425,6 +426,7 @@ class Search:
         new_results = {}
         if not search_results:
            # we don't want to error on a search not found
+           new_results.update({'total_items': total_items['count']})
            return new_results
 
         for elem in search_results['hits']['hits']:
