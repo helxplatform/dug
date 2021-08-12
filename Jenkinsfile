@@ -2,8 +2,8 @@ pipeline {
     agent {
         kubernetes {
             cloud 'kubernetes'
-            label 'agent-docker'
-            defaultContainer 'agent-docker'
+            label 'agent-docker-3-9'
+            defaultContainer 'agent-docker-3-9'
         }
     }
     stages {
