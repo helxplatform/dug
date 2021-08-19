@@ -161,6 +161,12 @@ class ConceptExpander:
                 json.dump(response, stream, indent=2)
 
         # Get nodes in knowledge graph hashed by ids for easy lookup
+        noMessage = (len(response.get("message",{})) == 0)
+        statusError = (response.get("status","") == 'Error')
+        if noMessage or statusError:
+            # Skip on error
+            logger.info(f"Error with identifier: {identifier}, response: {response}, kg_filename: '{kg_filename}'")
+            return []
         kg = tql.QueryKG(response)
 
         for answer in kg.answers:
@@ -312,7 +318,7 @@ class Normalizer(ApiClient[Identifier, Identifier]):
         curie = identifier.id
         normalization = normalized.get(curie, {})
         if normalization is None:
-            logger.error(f"Normalization service did not return normalization for: {curie}")
+            logger.info(f"Normalization service did not return normalization for: {curie}")
             return None
 
         preferred_id = normalization.get("id", {})

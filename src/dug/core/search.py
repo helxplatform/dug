@@ -47,6 +47,14 @@ class Search:
                 details=f"connecting to host {self._cfg.elastic_host} and port {self._cfg.elastic_port}")
 
     def init_indices(self):
+        # The concepts and variable indices include an analyzer that utilizes the english
+        # stopword facility from elastic search.  We also instruct each of the text mappings
+        # to use this analyzer. Note that we have not upgraded the kg index, because the fields
+        # in that index are primarily dynamic. We could eventually either add mappings so that
+        # the fields are no longer dynamic or we could use the dynamic template capabilities 
+        # described in 
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/dynamic-templates.html
+
         kg_index = {
             "settings": {
                 "number_of_shards": 1,
@@ -67,27 +75,35 @@ class Search:
             "settings": {
                 "index.mapping.coerce": "false",
                 "number_of_shards": 1,
-                "number_of_replicas": 0
+                "number_of_replicas": 0,
+                "analysis": {
+                   "analyzer": {
+                     "std_with_stopwords": { 
+                       "type":      "standard",
+                       "stopwords": "_english_"
+                     }
+                  }
+               }
             },
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "name": {"type": "text"},
-                    "description": {"type": "text"},
+                    "id": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
                     "type": {"type": "keyword"},
-                    "search_terms": {"type": "text"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {
                         "properties": {
-                            "id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                            "label": {"type": "text"},
+                            "id": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}},
+                            "label": {"type": "text", "analyzer": "std_with_stopwords"},
                             "equivalent_identifiers": {"type": "keyword"},
                             "type": {"type": "keyword"},
-                            "synonyms": {"type": "text"}
+                            "synonyms": {"type": "text", "analyzer": "std_with_stopwords"}
                         }
                     },
-                    "optional_terms": {"type": "text"},
-                    "concept_action": {"type": "text"}
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "concept_action": {"type": "text", "analyzer": "std_with_stopwords"}
                 }
             }
         }
@@ -95,23 +111,31 @@ class Search:
             "settings": {
                 "index.mapping.coerce": "false",
                 "number_of_shards": 1,
-                "number_of_replicas": 0
+                "number_of_replicas": 0,
+                "analysis": {
+                   "analyzer": {
+                     "std_with_stopwords": { 
+                       "type":      "standard",
+                       "stopwords": "_english_"
+                     }
+                  }
+               }
             },
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "element_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "element_name": {"type": "text"},
-                    "element_desc": {"type": "text"},
-                    "element_action": {"type": "text"},
-                    "search_terms": {"type": "text"},
-                    "optional_terms": {"type": "text"},
+                    "element_id": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}},
+                    "element_name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {"type": "keyword"},
-                    "collection_id": {"type": "text", "fields": {"keyword": {"type": "keyword"}}},
-                    "collection_name": {"type": "text"},
-                    "collection_desc": {"type": "text"},
-                    "collection_action": {"type": "text"},
-                    "data_type": {"type": "text", "fields": {"keyword": {"type": "keyword"}}}
+                    "collection_id": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}},
+                    "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "data_type": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}}
                     # typed as keyword for bucket aggs
                 }
             }
@@ -389,6 +413,7 @@ class Search:
             }
         
         body = json.dumps({'query': query})
+        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,
@@ -399,6 +424,11 @@ class Search:
 
         # Reformat Results
         new_results = {}
+        if not search_results:
+           # we don't want to error on a search not found
+           new_results.update({'total_items': total_items['count']})
+           return new_results
+
         for elem in search_results['hits']['hits']:
             elem_s = elem['_source']
             elem_type = elem_s['data_type']

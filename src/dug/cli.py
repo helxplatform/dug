@@ -5,6 +5,7 @@ Represents the entrypoint for command line tools.
 
 import argparse
 import os
+import json
 
 from dug.config import Config
 from dug.core import Dug, logger, DugFactory
@@ -105,9 +106,8 @@ def search(args):
     dug = Dug(factory)
     # dug = Dug()
     response = dug.search(args.target, args.query, **args.kwargs)
-
-    print(response)
-
+    jsonResponse = json.dumps(response, indent = 2)
+    print(jsonResponse)
 
 def datatypes(args):
     config = Config.from_env()
