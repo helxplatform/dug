@@ -208,13 +208,17 @@ class QueryFactory:
 
     # Class member list of valid data types that can be included in query
     data_types = ["phenotypic_feature", "gene", "disease", "chemical_substance",
-                  "drug_exposure", "biological_process", "anatomical_entity"]
+                  "drug_exposure", "biological_process", "anatomical_entity", "small_molecule",
+                  "chemical_mixture", "chemical_entity"]
 
     # List of curie prefixes that are valid for certain curie types
     curie_map = {"disease": ["MONDO", "ORPHANET", "DOID"],
                  "phenotypic_feature": ["HP", "HPO", "EFO"],
                  "gene": ["HGNC", "NCBIGene"],
-                 "chemical_substance": ["CHEBI", "PUBCHEM"],
+                 "chemical_substance": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "chemical_mixture": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "chemical_entity": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "small_molecule": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
                  "anatomical_entity": ["UBERON"]}
 
     def __init__(self, question_graph, source, curie_index=0):
