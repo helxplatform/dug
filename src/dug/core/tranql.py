@@ -216,6 +216,9 @@ class QueryFactory:
                  "phenotypic_feature": ["HP", "HPO", "EFO"],
                  "gene": ["HGNC", "NCBIGene"],
                  "chemical_substance": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "chemical_mixture": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "chemical_entity": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
+                 "small_molecule": ["CHEBI", "PUBCHEM.COMPOUND", "CHEMBL.COMPOUND"],
                  "anatomical_entity": ["UBERON"]}
 
     def __init__(self, question_graph, source, curie_index=0):
