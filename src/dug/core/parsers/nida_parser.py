@@ -1,5 +1,5 @@
 import logging
-import re
+import os
 from typing import List
 from xml.etree import ElementTree as ET
 
@@ -9,16 +9,18 @@ from ._base import DugElement, FileParser, Indexable, InputFile
 logger = logging.getLogger('dug')
 
 
-class DbGaPParser(FileParser):
-    # Class for parsers DBGaP Data dictionary into a set of Dug Elements
+class NIDAParser(FileParser):
+    # Class for parsers NIDA Data dictionary into a set of Dug Elements
 
     @staticmethod
     def parse_study_name_from_filename(filename: str):
         # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
-        match = re.match(dbgap_file_pattern, filename)
-        if match is not None:
-            return match.group(1)
+        stemname = os.path.splitext( os.path.basename(filename) )[0]
+        if stemname.startswith("NIDA-"):
+            sn = stemname
+            for s in ["-Dictionary", "_DD"]:
+                sn = sn.removesuffix(s) if sn.endswith(s) else sn
+            return sn
         return None
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
@@ -32,7 +34,7 @@ class DbGaPParser(FileParser):
         study_name = self.parse_study_name_from_filename(str(input_file))
 
         if study_name is None:
-            err_msg = f"Unable to parse DbGaP study name from data dictionary: {input_file}!"
+            err_msg = f"Unable to parse NIDA study name from data dictionary: {input_file}!"
             logger.error(err_msg)
             raise IOError(err_msg)
 
@@ -45,10 +47,8 @@ class DbGaPParser(FileParser):
                               collection_id=f"{study_id}.p{participant_set}",
                               collection_name=study_name)
 
-            # Create DBGaP links as study/variable actions
-            elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
-            elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
-                                                   variable_id=elem.id.split(".")[0].split("phv")[1])
+            # Create NIDA links as study/variable actions
+            elem.collection_action = utils.get_nida_study_link(study_id=study_id)
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)

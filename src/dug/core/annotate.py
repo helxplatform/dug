@@ -276,8 +276,10 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)
         url = f'{self.url}{value}'
-
-        return http_session.get(url).json()
+        response = http_session.get(url)
+        if response is None:
+            raise RuntimeError(f"no response from {url}")
+        return response.json()
 
     def handle_response(self, value, response: dict) -> List[Identifier]:
         identifiers = []
