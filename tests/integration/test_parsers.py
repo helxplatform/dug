@@ -1,4 +1,4 @@
-from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser
+from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 def test_dbgap_parse_study_name_from_filename():
@@ -19,6 +19,12 @@ def test_nida_parse_study_name_from_filename():
 def test_dbgap_parser():
     parser = DbGaPParser()
     parse_file = str(TEST_DATA_DIR / "phs000166.v2.pht000700.v1.CAMP_CData.data_dict_2009_09_03.xml")
+    elements = parser(parse_file)
+    assert len(elements) > 0
+
+def test_db_gap_scicrunch_parser():
+    parser = SciCrunchParser()
+    parse_file = str(TEST_DATA_DIR / "DOI:10.26275-0ce8-cuwi.xml")
     elements = parser(parse_file)
     assert len(elements) > 0
 
