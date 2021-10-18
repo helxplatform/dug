@@ -39,7 +39,7 @@ class Config:
 
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(default_factory=lambda: {
-        "url": "https://nodenormalization-sri.renci.org/1.1/get_normalized_nodes?curie="
+        "url": "https://nodenormalization-sri.renci.org/get_normalized_nodes?conflate=false&curie="
     })
 
     # Synonym service config that will be passed to annotate.SynonymHelper constructor
