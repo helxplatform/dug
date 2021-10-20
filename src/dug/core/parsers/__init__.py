@@ -21,6 +21,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["nida"] = NIDAParser()
     parser_dict["topmedtag"] = TOPMedTagParser()
     parser_dict["topmedcsv"] = TOPMedCSVParser()
+    parser_dict["scicrunch"] = SciCrunchParser()
 
 
 class ParserNotFoundException(Exception):
