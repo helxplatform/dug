@@ -43,7 +43,7 @@ class SciCrunchParser(FileParser):
             URL = "https://" + stemname
 
             # perform the rest of the subs
-            sn = URL.replace("DOI:", "DOI.org/").replace("-", "/").replace(".xml", "")
+            sn = URL.replace("DOI:", "DOI.org/").replace("-", "/", 1).replace(".xml", "")
             return sn
         return None
 

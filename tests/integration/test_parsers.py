@@ -26,7 +26,9 @@ def test_db_gap_scicrunch_parser():
     parser = SciCrunchParser()
     parse_file = str(TEST_DATA_DIR / "DOI:10.26275-0ce8-cuwi.xml")
     elements = parser(parse_file)
-    assert len(elements) > 0
+    assert len(elements) == 6
+    for element in elements:
+        assert element.collection_action == "https://DOI.org/10.26275/0ce8-cuwi"
 
 def test_nida_parser():
     parser = NIDAParser()
