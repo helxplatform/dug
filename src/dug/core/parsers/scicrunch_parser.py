@@ -13,8 +13,9 @@ class SciCrunchParser(FileParser):
     # Class for parsing SciCrunch Data into a set of Dug Elements
 
     @staticmethod
-    def parse_study_name_from_filename(filename: str):
-        # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
+    def get_study_name(filename: str):
+        
+        study_name = root.attrib['study_name']
         stemname = os.path.splitext( os.path.basename(filename) )[0]
         if stemname.startswith("DOI"):
             # we want to convert file names that look like 
@@ -54,13 +55,11 @@ class SciCrunchParser(FileParser):
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
+        study_name = root.attrib['study_name']
         participant_set = root.get('participant_set','0')
 
-        # Parse study name from file handle
-        study_name = self.parse_study_name_from_filename(str(input_file))
-
         if study_name is None:
-            err_msg = f"Unable to parse SciCrunch study name from {input_file}!"
+            err_msg = f"Unable to retrieve SciCrunch study name from {input_file}!"
             logger.error(err_msg)
             raise IOError(err_msg)
 
