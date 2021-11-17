@@ -312,7 +312,19 @@ class Normalizer(ApiClient[Identifier, Identifier]):
     def make_request(self, value: Identifier, http_session: Session) -> dict:
         curie = value.id
         url = f"{self.url}{urllib.parse.quote(curie)}"
-        normalized = http_session.get(url).json()
+        try:
+            response = http_session.get(url)
+        except Exception as get_exc:
+            logger.info(f"Error normalizing {value} at {url}")
+            logger.error(f"Error {get_exc.__class__.__name__}: {get_exc}")
+            return {}
+        try:
+            normalized = response.json()
+        except Exception as json_exc:
+            logger.info(f"Error processing response {response}")
+            logger.error(f"Error {json_exc.__class__.__name__}: {json_exc}")
+            return {}
+
         return normalized
 
     def handle_response(self, identifier: Identifier, normalized: dict) -> Identifier:
