@@ -58,9 +58,6 @@ class SciCrunchParser(FileParser):
         study_name = root.attrib['study_name']
         participant_set = root.get('participant_set','0')
 
-        # Parse study name from file handle
-        # study_name = self.parse_study_name_from_filename(str(input_file))
-
         if study_name is None:
             err_msg = f"Unable to retrieve SciCrunch study name from {input_file}!"
             logger.error(err_msg)

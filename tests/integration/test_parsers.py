@@ -38,6 +38,14 @@ def test_db_gap_scicrunch_parser():
         assert element.collection_action == "https://DOI.org/10.26275/zupz-yhtf"
         assert element.collection_name == "Lower urinary tract nerve responses to high-density epidural sacral spinal cord stimulation"
 
+    # the source SciCrunch file has some unicode characters. This test makes sure they have been succesfully
+    # converted to utf8
+    parse_file3 = str(TEST_DATA_DIR / "DOI:10.26275-c4xq-9kl0.xml")
+    elements3 = parser(parse_file3)
+    assert len(elements3) == 5
+    for element in elements3:
+        assert element.collection_action == "https://DOI.org/10.26275/c4xq-9kl0"
+        assert element.collection_name == "Effect of Intermittent Hypoxia Preconditioning in Rats with Chronic Cervical Spinal Cord Injury – An electrophysiological Study"
 
 def test_nida_parser():
     parser = NIDAParser()
