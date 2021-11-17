@@ -321,7 +321,7 @@ class Normalizer(ApiClient[Identifier, Identifier]):
         try:
             normalized = response.json()
         except Exception as json_exc:
-            logger.info(f"Error processing response {response}")
+            logger.info(f"Error processing response: {response.text} (HTTP {response.status_code})")
             logger.error(f"Error {json_exc.__class__.__name__}: {json_exc}")
             return {}
 
