@@ -29,6 +29,15 @@ def test_db_gap_scicrunch_parser():
     assert len(elements) == 6
     for element in elements:
         assert element.collection_action == "https://DOI.org/10.26275/0ce8-cuwi"
+        assert element.collection_name == "Identification of peripheral neural circuits that regulate heart rate using optogenetic and viral vector strategies"
+
+    parse_file2 = str(TEST_DATA_DIR / "DOI:10.26275-zupz-yhtf.xml")
+    elements2 = parser(parse_file2)
+    assert len(elements2) == 1
+    for element in elements2:
+        assert element.collection_action == "https://DOI.org/10.26275/zupz-yhtf"
+        assert element.collection_name == "Lower urinary tract nerve responses to high-density epidural sacral spinal cord stimulation"
+
 
 def test_nida_parser():
     parser = NIDAParser()
