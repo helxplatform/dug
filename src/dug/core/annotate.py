@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import urllib.parse
-from typing import TypeVar, Generic, Union, List, Tuple
+from typing import TypeVar, Generic, Union, List, Tuple, Optional
 
 import requests
 from requests import Session
@@ -327,7 +327,7 @@ class Normalizer(ApiClient[Identifier, Identifier]):
 
         return normalized
 
-    def handle_response(self, identifier: Identifier, normalized: dict) -> Identifier:
+    def handle_response(self, identifier: Identifier, normalized: dict) -> Optional[Identifier]:
         """ Record normalized results. """
         curie = identifier.id
         normalization = normalized.get(curie, {})
