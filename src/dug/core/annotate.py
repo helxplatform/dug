@@ -2,7 +2,7 @@ import json
 import logging
 import os
 import urllib.parse
-from typing import TypeVar, Generic, Union, List, Tuple
+from typing import TypeVar, Generic, Union, List, Tuple, Optional
 
 import requests
 from requests import Session
@@ -312,10 +312,22 @@ class Normalizer(ApiClient[Identifier, Identifier]):
     def make_request(self, value: Identifier, http_session: Session) -> dict:
         curie = value.id
         url = f"{self.url}{urllib.parse.quote(curie)}"
-        normalized = http_session.get(url).json()
+        try:
+            response = http_session.get(url)
+        except Exception as get_exc:
+            logger.info(f"Error normalizing {value} at {url}")
+            logger.error(f"Error {get_exc.__class__.__name__}: {get_exc}")
+            return {}
+        try:
+            normalized = response.json()
+        except Exception as json_exc:
+            logger.info(f"Error processing response: {response.text} (HTTP {response.status_code})")
+            logger.error(f"Error {json_exc.__class__.__name__}: {json_exc}")
+            return {}
+
         return normalized
 
-    def handle_response(self, identifier: Identifier, normalized: dict) -> Identifier:
+    def handle_response(self, identifier: Identifier, normalized: dict) -> Optional[Identifier]:
         """ Record normalized results. """
         curie = identifier.id
         normalization = normalized.get(curie, {})

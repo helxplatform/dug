@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data_table id="DOI:10.26275/c4xq-9kl0" study_id="DOI:10.26275/c4xq-9kl0" study_name="Effect of Intermittent Hypoxia Preconditioning in Rats with Chronic Cervical Spinal Cord Injury – An electrophysiological Study">
+  <variable id="DOI:10.26275/c4xq-9kl0.v1">
+    <name>phrenic nerve</name>
+    <description>phrenic nerve</description>
+  </variable>
+  <variable id="DOI:10.26275/c4xq-9kl0.v2">
+    <name>long term facilitation</name>
+    <description>long term facilitation</description>
+  </variable>
+  <variable id="DOI:10.26275/c4xq-9kl0.v3">
+    <name>intermittent hypoxia</name>
+    <description>intermittent hypoxia</description>
+  </variable>
+  <variable id="DOI:10.26275/c4xq-9kl0.v4">
+    <name>UBERON:0000948</name>
+    <description>UBERON:0000948</description>
+  </variable>
+  <variable id="DOI:10.26275/c4xq-9kl0.v5">
+    <name>NCBITaxon:10116</name>
+    <description>NCBITaxon:10116</description>
+  </variable>
+</data_table>

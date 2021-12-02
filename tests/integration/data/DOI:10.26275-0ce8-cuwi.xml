@@ -1,0 +1,26 @@
+<data_table id="DOI:10.26275/0ce8-cuwi" study_id="DOI:10.26275/0ce8-cuwi" study_name="Identification of peripheral neural circuits that regulate heart rate using optogenetic and viral vector strategies">
+  <variable id="DOI:10.26275/0ce8-cuwi.v1">
+    <name>noradrenergic</name>
+    <description>noradrenergic</description>
+  </variable>
+  <variable id="DOI:10.26275/0ce8-cuwi.v2">
+    <name>cardiac autonomic nervous system</name>
+    <description>cardiac autonomic nervous system</description>
+  </variable>
+  <variable id="DOI:10.26275/0ce8-cuwi.v3">
+    <name>peripheral nervous system</name>
+    <description>peripheral nervous system</description>
+  </variable>
+  <variable id="DOI:10.26275/0ce8-cuwi.v4">
+    <name>cholinergic</name>
+    <description>cholinergic</description>
+  </variable>
+  <variable id="DOI:10.26275/0ce8-cuwi.v5">
+    <name>UBERON:0000948</name>
+    <description>UBERON:0000948</description>
+  </variable>
+  <variable id="DOI:10.26275/0ce8-cuwi.v6">
+    <name>NCBITaxon:10090</name>
+    <description>NCBITaxon:10090</description>
+  </variable>
+</data_table>

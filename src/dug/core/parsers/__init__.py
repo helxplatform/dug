@@ -6,6 +6,7 @@ import pluggy
 from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
 from .dbgap_parser import DbGaPParser
 from .nida_parser import NIDAParser
+from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
 from .topmed_csv_parser import TOPMedCSVParser
 
@@ -20,6 +21,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["nida"] = NIDAParser()
     parser_dict["topmedtag"] = TOPMedTagParser()
     parser_dict["topmedcsv"] = TOPMedCSVParser()
+    parser_dict["scicrunch"] = SciCrunchParser()
 
 
 class ParserNotFoundException(Exception):
