@@ -411,13 +411,13 @@ class Search:
                         "identifiers": concept
                 }
             }
-        
+
         body = json.dumps({'query': query})
         total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
             body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'hits.hits._score'],
             from_=offset,
             size=size
         )
@@ -441,7 +441,8 @@ class Search:
                 "description": elem_s['element_desc'],
                 "e_link": elem_s['element_action'],
                 "id": elem_id,
-                "name": elem_s['element_name']
+                "name": elem_s['element_name'],
+                "score": round(elem['_score'], 2)
             }
 
             # Case: collection not in dictionary for given data_type
