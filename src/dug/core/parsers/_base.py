@@ -4,6 +4,7 @@ from typing import Union, Callable, Any, Iterable
 from dug.core.loaders import InputFile
 
 from dug import utils as utils
+from biobert_embedding.embedding import BiobertEmbedding
 
 
 class DugElement:
@@ -33,6 +34,11 @@ class DugElement:
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
+
+        # Get the biobert sentence embedding corresponding to the element descriptio
+        biobert = BiobertEmbedding()
+        element_desc_tensor = biobert.sentence_vector(self.description)
+        element_desc_array = element_desc_tensor.numpy()
         es_elem = {
             'element_id': self.id,
             'element_name': self.name,
@@ -45,6 +51,7 @@ class DugElement:
             'element_action': self.action,
             'collection_action': self.collection_action,
             'data_type': self.type,
+            'element_desc_vector': element_desc_array,
             'identifiers': list(self.concepts.keys())
         }
         return es_elem

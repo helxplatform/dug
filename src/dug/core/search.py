@@ -135,7 +135,8 @@ class Search:
                     "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
                     "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
                     "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "data_type": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}}
+                    "data_type": {"type": "text", "analyzer": "std_with_stopwords", "fields": {"keyword": {"type": "keyword"}}},
+                    "element_desc_vector": {"type": "dense_vector", "dims": 768}
                     # typed as keyword for bucket aggs
                 }
             }
@@ -147,7 +148,7 @@ class Search:
             'variables_index': variables_index,
         }
 
-        logger.info(f"creating indices")
+        logger.info(f"creating indices with element_desc_vector")
         logger.debug(self.indices)
         for index in self.indices:
             try:
