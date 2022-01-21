@@ -1,4 +1,5 @@
-import json, re
+import json
+from dug.utils import biolink_snake_case
 
 
 class MissingNodeReferenceError(BaseException):
@@ -179,25 +180,7 @@ class QueryKG:
         return old_kg_model
 
     def _snake_case(self, arg: str):
-        """Convert string to snake_case.
-        Non-alphanumeric characters are replaced with _.
-        CamelCase is replaced with snake_case.
-        """
-        # replace non-alphanumeric characters with _
-        tmp = re.sub(r'\W', '_', arg)
-        # replace X with _x
-        tmp = re.sub(
-            r'(?<=[a-z])[A-Z](?=[a-z])',
-            lambda c: '_' + c.group(0).lower(),
-            tmp
-        )
-        # lower-case first character
-        tmp = re.sub(
-            r'^[A-Z](?=[a-z])',
-            lambda c: c.group(0).lower(),
-            tmp
-        )
-        return tmp
+        return biolink_snake_case(arg)
 
 
 class InvalidQueryError(BaseException):
@@ -207,7 +190,7 @@ class InvalidQueryError(BaseException):
 class QueryFactory:
 
     # Class member list of valid data types that can be included in query
-    data_types = ["phenotypic_feature", "gene", "disease", "chemical_substance",
+    data_types = ["publication", "phenotypic_feature", "gene", "disease", "chemical_substance",
                   "drug_exposure", "biological_process", "anatomical_entity", "small_molecule",
                   "chemical_mixture", "chemical_entity"]
 

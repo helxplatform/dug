@@ -4,6 +4,8 @@ import os
 import traceback
 
 from dug.core.parsers import Parser, DugElement, DugConcept
+import dug.core.tranql as tql
+from dug.utils import biolink_snake_case
 
 logger = logging.getLogger('dug')
 
@@ -172,3 +174,54 @@ class Crawler:
                 # Add any answer knowledge graphs to
                 for answer in answers:
                     concept.add_kg_answer(answer, query_name=query_name)
+
+    def expand_to_dug_element(self, concept, target_node_type="biolink:Publication", dug_element_type="cde"):
+        """
+        Given a concept look up the knowledge graph to construct dug elements out of kg results
+        """
+        elements = []
+        for ident_id, identifier in concept.identifiers.items():
+
+            # Check to see if the concept identifier has types defined, this is used to create
+            # tranql queries below.
+            if not identifier.types:
+                continue
+
+            # convert the first type to snake case to be used in tranql query.
+            # first type is the leaf type, this is coming from Node normalization.
+            node_type = biolink_snake_case(identifier.types[0].replace("biolink:", ""))
+            try:
+                # Tranql query factory currently supports select node types as valid query
+                # Types missing from QueryFactory.data_types will be skipped with this try catch
+                query = tql.QueryFactory([node_type, "publication"], "redis:test")
+            except tql.InvalidQueryError:
+                continue
+
+            # check if tranql query object can use the curie.
+            if query.is_valid_curie(ident_id):
+                logger.info(f"Expanding {ident_id} to other dug elements")
+                # Fetch kg and answer
+                # Fetch kg and answer
+                # replace ":" with "~" to avoid windows os errors
+                kg_outfile = f"{self.crawlspace}/" + f"{ident_id}_{target_node_type}.json".replace(":", "~")
+
+                # query tranql, answers will include all node and edge attributes
+                answers = self.tranqlizer.expand_identifier(ident_id, query,
+                                                            kg_filename=kg_outfile,
+                                                            include_all_attributes=True)
+
+                # for each answer construct a dug element
+                for answer in answers:
+                    # here we will inspect the answers create new dug elements based on target node type
+                    # and return the variables.
+                    for node_id, node in answer.nodes.items():
+                        if target_node_type in node["category"]:
+                            element = DugElement(
+                                elem_id=node_id,
+                                name=node['name'],
+                                desc=node['summary'],
+                                elem_type=dug_element_type
+                            )
+                            element.add_concept(concept)
+                            elements.append(element)
+        return elements
