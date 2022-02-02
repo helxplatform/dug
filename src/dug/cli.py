@@ -59,6 +59,14 @@ def get_argparser():
         default=None
     )
 
+    crawl_parser.add_argument(
+        "-x", "--extract-from-graph",
+        help="[Optional] Extract dug elements for tranql using concepts from annotation",
+        dest="extract_dug_elements",
+        default=False,
+        action="store_true"
+    )
+
     # Search subcommand
     search_parser = subparsers.add_parser('search', help='Apply semantic search')
     search_parser.set_defaults(func=search)
@@ -95,6 +103,9 @@ def get_argparser():
 
 def crawl(args):
     config = Config.from_env()
+    if not args.extract_dug_elements:
+        # disable extraction
+        config.node_to_element_queries = {}
     factory = DugFactory(config)
     dug = Dug(factory)
     dug.crawl(args.target, args.parser_type, args.element_type)
