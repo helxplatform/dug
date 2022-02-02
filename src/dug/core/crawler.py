@@ -13,7 +13,8 @@ logger = logging.getLogger('dug')
 class Crawler:
     def __init__(self, crawl_file: str, parser: Parser, annotator,
                  tranqlizer, tranql_queries,
-                 http_session, exclude_identifiers=None, element_type=None):
+                 http_session, exclude_identifiers=None, element_type=None,
+                 element_extraction=None):
 
         if exclude_identifiers is None:
             exclude_identifiers = []
@@ -26,6 +27,7 @@ class Crawler:
         self.tranql_queries = tranql_queries
         self.http_session = http_session
         self.exclude_identifiers = exclude_identifiers
+        self.element_extraction = element_extraction
         self.elements = []
         self.concepts = {}
         self.crawlspace = "crawl"
@@ -54,7 +56,10 @@ class Crawler:
         # Annotate elements
         self.annotate_elements()
 
-        # Expand concepts
+        # if elements are extracted from the graph this array will contain the new dug elements
+        dug_elements_from_graph = []
+
+        # Expand concepts to other concepts
         concept_file = open(f"{self.crawlspace}/concept_file.json", "w")
         for concept_id, concept in self.concepts.items():
             # Use TranQL queries to fetch knowledge graphs containing related but not synonymous biological terms
@@ -71,6 +76,21 @@ class Crawler:
 
             # Write concept out to a file
             concept_file.write(f"{json.dumps(concept.get_searchable_dict(), indent=2)}")
+
+            if self.element_extraction:
+                for element_extraction_config in self.element_extraction:
+                    casting_config = element_extraction_config['casting_config']
+                    tranql_source = element_extraction_config['tranql_source']
+                    dug_element_type = element_extraction_config['output_dug_type']
+                    dug_elements_from_graph += self.expand_to_dug_element(
+                        concept=concept,
+                        casting_config=casting_config,
+                        dug_element_type=dug_element_type,
+                        tranql_source=tranql_source
+                    )
+
+        # add new elements to parsed elements
+        self.elements += dug_elements_from_graph
 
         # Set element optional terms now that concepts have been expanded
         # Open variable file for writing
@@ -118,7 +138,6 @@ class Crawler:
 
             for concept_to_add in concepts_to_add:
                 element.add_concept(concept_to_add)
-
 
     def annotate_element(self, element):
 
@@ -175,11 +194,19 @@ class Crawler:
                 for answer in answers:
                     concept.add_kg_answer(answer, query_name=query_name)
 
-    def expand_to_dug_element(self, concept, target_node_type="biolink:Publication", dug_element_type="cde"):
+    def expand_to_dug_element(self,
+                              concept,
+                              casting_config,
+                              dug_element_type,
+                              tranql_source):
         """
         Given a concept look up the knowledge graph to construct dug elements out of kg results
+        does concept -> target_node_type crawls and converts target_node_type to dug element of type `dug_element_type`
         """
         elements = []
+        # using node_type as the primary criteria for matching nodes to element type.
+        target_node_type = casting_config["node_type"]
+        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
             # Check to see if the concept identifier has types defined, this is used to create
@@ -193,8 +220,9 @@ class Crawler:
             try:
                 # Tranql query factory currently supports select node types as valid query
                 # Types missing from QueryFactory.data_types will be skipped with this try catch
-                query = tql.QueryFactory([node_type, "publication"], "redis:test")
-            except tql.InvalidQueryError:
+                query = tql.QueryFactory([node_type, target_node_type_snake_case], tranql_source)
+            except tql.InvalidQueryError as exception:
+                logger.debug(f"Skipping  {ident_id}, {exception}")
                 continue
 
             # check if tranql query object can use the curie.
@@ -216,10 +244,12 @@ class Crawler:
                     # and return the variables.
                     for node_id, node in answer.nodes.items():
                         if target_node_type in node["category"]:
+                            # @TODO make element creation more generic
+                            # @TODO need to encode more data into the graph nodes, to parse them properly
                             element = DugElement(
                                 elem_id=node_id,
-                                name=node['name'],
-                                desc=node['summary'],
+                                name=node.get('name', ""),
+                                desc=node.get('summary', ""),
                                 elem_type=dug_element_type
                             )
                             element.add_concept(concept)
