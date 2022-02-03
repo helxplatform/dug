@@ -1,0 +1,158 @@
+{
+  "message": {
+    "query_graph": {
+      "edges": {
+        "e1_publication_disease": {
+          "subject": "publication",
+          "object": "disease"
+        }
+      },
+      "nodes": {
+        "disease": {
+          "category": "biolink:Disease",
+          "id": [
+            "MONDO:0008187"
+          ]
+        },
+        "publication": {
+          "category": "biolink:Publication"
+        }
+      }
+    },
+    "knowledge_graph": {
+      "nodes": {
+        "MONDO:0008187": {
+          "name": "panic disorder 1",
+          "category": [
+            "biolink:Disease",
+            "biolink:Entity",
+            "biolink:ThingWithTaxon",
+            "biolink:BiologicalEntity",
+            "biolink:NamedThing",
+            "biolink:DiseaseOrPhenotypicFeature"
+          ],
+          "attributes": [
+            {
+              "type": "NA",
+              "value": [
+                "MONDO:0008187",
+                "OMIM:167870",
+                "UMLS:C1868649",
+                "UMLS:C1868650",
+                "UMLS:C1868651",
+                "MESH:C566834",
+                "MESH:C566835"
+              ],
+              "name": "equivalent_identifiers"
+            },
+            {
+              "type": "NA",
+              "value": [
+                "Monarch NER service + Translator normalization API"
+              ],
+              "name": "provided_by"
+            },
+            {
+              "name": "reasoner",
+              "value": [
+                "redis:"
+              ],
+              "type": "EDAM:data_0006"
+            }
+          ]
+        },
+        "HEALCDE:Photosensitivity_PAQ_CDE_v1.0.json": {
+          "name": "Filename: Photosensitivity_PAQ_CDE_v1.0.json",
+          "category": [
+            "biolink:Publication"
+          ],
+          "attributes": [
+            {
+              "type": "NA",
+              "value": "Filename: Photosensitivity_PAQ_CDE_v1.0.json; File path: Supplemental Questionnaires/Sensory/Photosensitivity Assessment Questionnaire (PAQ); Photosensitivity Assessment Questionnaire",
+              "name": "summary"
+            },
+            {
+              "type": "NA",
+              "value": [
+                "Graph"
+              ],
+              "name": "provided_by"
+            },
+            {
+              "name": "reasoner",
+              "value": [
+                "redis:"
+              ],
+              "type": "EDAM:data_0006"
+            }
+          ]
+        }
+      },
+      "edges": {
+        "b93815fc2af8": {
+          "attributes": [
+            {
+              "type": "NA",
+              "name": "category",
+              "value": [
+                "biolink:InformationContentEntityToNamedThingAssociation"
+              ]
+            },
+            {
+              "type": "NA",
+              "name": "name",
+              "value": "panic disorder."
+            },
+            {
+              "type": "NA",
+              "name": "knowledge_source",
+              "value": [
+                "Monarch NER service + Translator normalization API"
+              ]
+            },
+            {
+              "type": "NA",
+              "name": "predicate_label",
+              "value": "mentions"
+            },
+            {
+              "name": "reasoner",
+              "value": [
+                "redis:"
+              ],
+              "type": "EDAM:data_0006"
+            }
+          ],
+          "predicate": "biolink:mentions",
+          "subject": "HEALCDE:Photosensitivity_PAQ_CDE_v1.0.json",
+          "object": "MONDO:0008187"
+        }
+      }
+    },
+    "results": [
+      {
+        "node_bindings": {
+          "publication": [
+            {
+              "id": "HEALCDE:Photosensitivity_PAQ_CDE_v1.0.json"
+            }
+          ],
+          "disease": [
+            {
+              "id": "MONDO:0008187"
+            }
+          ]
+        },
+        "edge_bindings": {
+          "e1_publication_disease": [
+            {
+              "id": "b93815fc2af8"
+            }
+          ]
+        },
+        "score": 0
+      }
+    ]
+  }
+}

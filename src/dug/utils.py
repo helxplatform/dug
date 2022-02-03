@@ -1,3 +1,5 @@
+import re
+
 class ObjectFactory:
     def __init__(self):
         self._builders = {}
@@ -34,3 +36,25 @@ def get_dbgap_study_link(study_id):
 def get_nida_study_link(study_id):
     base_url = "https://datashare.nida.nih.gov/study"
     return f'{base_url}/{study_id}'
+
+
+def biolink_snake_case(arg):
+    """Convert such SnakeCase to snake_case.
+       Non-alphanumeric characters are replaced with _.
+       CamelCase is replaced with snake_case.
+    """
+    # replace non-alphanumeric characters with _
+    tmp = re.sub(r'\W', '_', arg)
+    # replace X with _x
+    tmp = re.sub(
+        r'(?<=[a-z])[A-Z](?=[a-z])',
+        lambda c: '_' + c.group(0).lower(),
+        tmp
+    )
+    # lower-case first character
+    tmp = re.sub(
+        r'^[A-Z](?=[a-z])',
+        lambda c: c.group(0).lower(),
+        tmp
+    )
+    return tmp
