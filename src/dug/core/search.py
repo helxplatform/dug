@@ -442,7 +442,7 @@ class Search:
                 "e_link": elem_s['element_action'],
                 "id": elem_id,
                 "name": elem_s['element_name'],
-                "score": round(elem['_score'], 2)
+                "score": round(elem['_score'], 6)
             }
 
             # Case: collection not in dictionary for given data_type
