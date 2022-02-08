@@ -130,7 +130,7 @@ class ConceptExpander:
     def is_acceptable_answer(self, answer):
         return True
 
-    def expand_identifier(self, identifier, query_factory, kg_filename):
+    def expand_identifier(self, identifier, query_factory, kg_filename, include_all_attributes=False):
 
         answer_kgs = []
 
@@ -182,9 +182,11 @@ class ConceptExpander:
                 # Temporarily surround in try/except because sometimes the answer graphs
                 # contain invalid references to edges/nodes
                 # This will be fixed in Robokop but for now just silently warn if answer is invalid
+                node_attributes_filter = None if include_all_attributes else self.include_node_keys
+                edge_attributes_filter = None if include_all_attributes else self.include_edge_keys
                 answer_kg = kg.get_answer_subgraph(answer,
-                                                   include_node_keys=self.include_node_keys,
-                                                   include_edge_keys=self.include_edge_keys)
+                                                   include_node_keys=node_attributes_filter,
+                                                   include_edge_keys=edge_attributes_filter)
 
                 # Add subgraph to list of acceptable answers to query
                 answer_kgs.append(answer_kg)

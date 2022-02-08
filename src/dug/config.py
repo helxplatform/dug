@@ -63,6 +63,14 @@ class Config:
         "phen_to_anat": ["phenotypic_feature", "anatomical_entity"],
     })
 
+    node_to_element_queries: dict = field(default_factory=lambda: {
+        # Dug element type to cast the query kg nodes to
+        "cde": {
+            # Parse nodes matching criteria in kg
+            "node_type": "biolink:Publication"
+        }
+    })
+
     concept_expander: dict = field(default_factory=lambda: {
         "url": "https://tranql-dev.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
         "min_tranql_score": 0.0

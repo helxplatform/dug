@@ -40,7 +40,8 @@ class DugFactory:
             tranql_queries=self.build_tranql_queries(tranql_source),
             http_session=self.build_http_session(),
             exclude_identifiers=self.config.tranql_exclude_identifiers,
-            element_type=element_type
+            element_type=element_type,
+            element_extraction=self.build_element_extraction_parameters(),
         )
 
         return crawler
@@ -78,3 +79,28 @@ class DugFactory:
 
     def build_search_obj(self, indices) -> Search:
         return Search(self.config, indices=indices)
+
+    def build_element_extraction_parameters(self, source=None):
+        # Method reformats the node_to_element_queries object 
+        # Uses tranql source use for concept crawling
+        if source is None:
+            source = TRANQL_SOURCE
+        queries = self.config.node_to_element_queries
+        # reformat config as array , in the crawler this is looped over 
+        # to make calls to the expansion logic.
+        # casting config will be a set of conditions to perform casting on. 
+        # Currently we are casting based on node type returned from the tranql query
+        # we might want to filter those based on curie type or other conditions , if 
+        # node type is too broad.
+        return [
+            {
+                "output_dug_type": dug_type,
+                "casting_config": {
+                    "node_type": queries[dug_type]['node_type']
+                    # CDE's are only ones
+                    # but if we had two biolink:Publication nodes we want to conditionally
+                    # cast to other output_dug_type, we could extend this config
+                },
+                "tranql_source": source
+             } for dug_type in queries
+        ]
