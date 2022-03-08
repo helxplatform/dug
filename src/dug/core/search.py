@@ -1,12 +1,13 @@
 import json
 import logging
-
+from biobert_embedding.embedding import BiobertEmbedding
 import requests
 from elasticsearch import Elasticsearch
 
 from dug.config import Config
 
 logger = logging.getLogger('dug')
+biobert = BiobertEmbedding()
 
 
 class Search:
@@ -298,13 +299,17 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        query = {
-            'bool': {
-                'should': {
-                    "match": {
-                        "identifiers": concept
-                    }
-                },
+
+        # set up the embedded query for the dense vector search
+        queryTensor = biobert.sentence_vector(query)
+        queryVec = queryTensor.numpy()
+        queryList = queryVec.tolist()
+
+        localQuery = {
+          "dis_max": {
+            "queries": [
+             {
+               'bool': {
                 'should': [
                     {
                         "match_phrase": {
@@ -401,19 +406,35 @@ class Search:
                                 "prefix_length": prefix_length
                             }
                         }
+                    },
+                 ]
+              }
+              },  
+              {
+                   "script_score": {
+                     "query": {
+                        "match_all": {}
+                      },
+                   "script": {
+                      "source": "cosineSimilarity(params.queryList, 'element_desc_vector') + 1.0",
+                      "params": {"queryList": queryList}
+                         }
+                      }
                     }
-                ]
+                ],
             }
         }
 
         if concept:
-            query['bool']['must'] = {
+            localQuery['bool']['must'] = {
                 "match": {
                         "identifiers": concept
                 }
             }
         
-        body = json.dumps({'query': query})
+      # print (f"localQuery is {localQuery}")
+        body = json.dumps({'query': localQuery})
+        #print (f"body is {body}")
         total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
