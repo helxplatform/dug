@@ -84,15 +84,17 @@ def test_expand_to_dug_element(crawler):
     concept.add_identifier(identifier)
     new_elements = crawler.expand_to_dug_element(
         concept=concept,
-        casting_config={"node_type": "biolink:Publication"},
+        casting_config={
+            "node_type": "biolink:Publication",
+            "curie_prefix": "HEALCDE",
+            "attribute_mapping": {
+                "name": "name",
+                "desc": "summary",
+                "collection_name": "cde_category",
+                "collection_id":  "cde_category"
+            }
+        },
         dug_element_type="test-element",
-        tranql_source="test:graph",
-        curie_filter="HEALCDE:",
-        attribute_mapping={
-            "name": "name",
-            "desc": "summary",
-            "collection_name": "cde_category",
-            "collection_id":  "cde_category"
-        }
+        tranql_source="test:graph"
     )
     assert len(new_elements) == len(TRANQL_ANSWERS)

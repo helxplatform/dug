@@ -82,15 +82,11 @@ class Crawler:
                     casting_config = element_extraction_config['casting_config']
                     tranql_source = element_extraction_config['tranql_source']
                     dug_element_type = element_extraction_config['output_dug_type']
-                    curie_filter = element_extraction_config['curie_prefix']
-                    attribute_mapping = element_extraction_config['attribute_mapping']
                     dug_elements_from_graph += self.expand_to_dug_element(
                         concept=concept,
                         casting_config=casting_config,
                         dug_element_type=dug_element_type,
-                        tranql_source=tranql_source,
-                        curie_filter=curie_filter,
-                        attribute_mapping=attribute_mapping
+                        tranql_source=tranql_source
                     )
 
         # add new elements to parsed elements
@@ -202,9 +198,7 @@ class Crawler:
                               concept,
                               casting_config,
                               dug_element_type,
-                              tranql_source,
-                              curie_filter,
-                              attribute_mapping):
+                              tranql_source):
         """
         Given a concept look up the knowledge graph to construct dug elements out of kg results
         does concept -> target_node_type crawls and converts target_node_type to dug element of type `dug_element_type`
@@ -212,6 +206,8 @@ class Crawler:
         elements = []
         # using node_type as the primary criteria for matching nodes to element type.
         target_node_type = casting_config["node_type"]
+        curie_filter = casting_config["curie_prefix"]
+        attribute_mapping = casting_config["attribute_mapping"]
         target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
