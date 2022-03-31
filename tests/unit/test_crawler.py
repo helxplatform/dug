@@ -86,6 +86,13 @@ def test_expand_to_dug_element(crawler):
         concept=concept,
         casting_config={"node_type": "biolink:Publication"},
         dug_element_type="test-element",
-        tranql_source="test:graph"
+        tranql_source="test:graph",
+        curie_filter="HEALCDE:",
+        attribute_mapping={
+            "name": "name",
+            "desc": "summary",
+            "collection_name": "cde_category",
+            "collection_id":  "cde_category"
+        }
     )
     assert len(new_elements) == len(TRANQL_ANSWERS)

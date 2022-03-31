@@ -82,11 +82,15 @@ class Crawler:
                     casting_config = element_extraction_config['casting_config']
                     tranql_source = element_extraction_config['tranql_source']
                     dug_element_type = element_extraction_config['output_dug_type']
+                    curie_filter = element_extraction_config['curie_prefix']
+                    attribute_mapping = element_extraction_config['attribute_mapping']
                     dug_elements_from_graph += self.expand_to_dug_element(
                         concept=concept,
                         casting_config=casting_config,
                         dug_element_type=dug_element_type,
-                        tranql_source=tranql_source
+                        tranql_source=tranql_source,
+                        curie_filter=curie_filter,
+                        attribute_mapping=attribute_mapping
                     )
 
         # add new elements to parsed elements
@@ -198,7 +202,9 @@ class Crawler:
                               concept,
                               casting_config,
                               dug_element_type,
-                              tranql_source):
+                              tranql_source,
+                              curie_filter,
+                              attribute_mapping):
         """
         Given a concept look up the knowledge graph to construct dug elements out of kg results
         does concept -> target_node_type crawls and converts target_node_type to dug element of type `dug_element_type`
@@ -244,14 +250,14 @@ class Crawler:
                     # and return the variables.
                     for node_id, node in answer.nodes.items():
                         if target_node_type in node["category"]:
-                            # @TODO make element creation more generic
-                            # @TODO need to encode more data into the graph nodes, to parse them properly
-                            element = DugElement(
-                                elem_id=node_id,
-                                name=node.get('name', ""),
-                                desc=node.get('summary', ""),
-                                elem_type=dug_element_type
-                            )
-                            element.add_concept(concept)
-                            elements.append(element)
+                            if node['id'].startswith(curie_filter):
+                                element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
+                                element_attribute_args.update({key: node.get(attribute_mapping[key], "")
+                                                               for key in attribute_mapping
+                                                               })
+                                element = DugElement(
+                                    **element_attribute_args
+                                )
+                                element.add_concept(concept)
+                                elements.append(element)
         return elements
