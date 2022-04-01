@@ -206,6 +206,8 @@ class Crawler:
         elements = []
         # using node_type as the primary criteria for matching nodes to element type.
         target_node_type = casting_config["node_type"]
+        curie_filter = casting_config["curie_prefix"]
+        attribute_mapping = casting_config["attribute_mapping"]
         target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
@@ -244,14 +246,14 @@ class Crawler:
                     # and return the variables.
                     for node_id, node in answer.nodes.items():
                         if target_node_type in node["category"]:
-                            # @TODO make element creation more generic
-                            # @TODO need to encode more data into the graph nodes, to parse them properly
-                            element = DugElement(
-                                elem_id=node_id,
-                                name=node.get('name', ""),
-                                desc=node.get('summary', ""),
-                                elem_type=dug_element_type
-                            )
-                            element.add_concept(concept)
-                            elements.append(element)
+                            if node['id'].startswith(curie_filter):
+                                element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
+                                element_attribute_args.update({key: node.get(attribute_mapping[key], "")
+                                                               for key in attribute_mapping
+                                                               })
+                                element = DugElement(
+                                    **element_attribute_args
+                                )
+                                element.add_concept(concept)
+                                elements.append(element)
         return elements
