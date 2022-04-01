@@ -8,14 +8,14 @@
         }
       },
       "nodes": {
+        "publication": {
+          "category": "biolink:Publication"
+        },
         "disease": {
           "category": "biolink:Disease",
           "id": [
             "MONDO:0008187"
           ]
-        },
-        "publication": {
-          "category": "biolink:Publication"
         }
       }
     },
@@ -25,11 +25,11 @@
           "name": "panic disorder 1",
           "category": [
             "biolink:Disease",
-            "biolink:Entity",
+            "biolink:DiseaseOrPhenotypicFeature",
             "biolink:ThingWithTaxon",
             "biolink:BiologicalEntity",
-            "biolink:NamedThing",
-            "biolink:DiseaseOrPhenotypicFeature"
+            "biolink:Entity",
+            "biolink:NamedThing"
           ],
           "attributes": [
             {
@@ -71,6 +71,30 @@
               "type": "NA",
               "value": "Filename: Photosensitivity_PAQ_CDE_v1.0.json; File path: Supplemental Questionnaires/Sensory/Photosensitivity Assessment Questionnaire (PAQ); Photosensitivity Assessment Questionnaire",
               "name": "summary"
+            },
+            {
+              "type": "NA",
+              "value": [
+                "Supplemental Questionnaires",
+                "Sensory",
+                "Photosensitivity Assessment Questionnaire (PAQ)"
+              ],
+              "name": "cde_categories"
+            },
+            {
+              "type": "NA",
+              "value": [
+                "Supplemental Questionnaires",
+                "Adult/Pediatric",
+                "Acute/Chronic Pain",
+                "Photosensitivity Assessment Questionnaire (PAQ)"
+              ],
+              "name": "cde_category_extended"
+            },
+            {
+              "type": "NA",
+              "value": "Supplemental Questionnaires",
+              "name": "cde_category"
             },
             {
               "type": "NA",
