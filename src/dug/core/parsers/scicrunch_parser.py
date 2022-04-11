@@ -68,7 +68,7 @@ class SciCrunchParser(FileParser):
             elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
                               name=variable.find('name').text,
                               desc=variable.find('description').text.lower(),
-                              elem_type="DbGaP",
+                              elem_type="SPARC",
                               collection_id=f"{study_id}.p{participant_set}",
                               collection_name=study_name)
 
