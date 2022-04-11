@@ -67,7 +67,15 @@ class Config:
         # Dug element type to cast the query kg nodes to
         "cde": {
             # Parse nodes matching criteria in kg
-            "node_type": "biolink:Publication"
+            "node_type": "biolink:Publication",
+            "curie_prefix": "HEALCDE",
+            "attribute_mapping": {
+                # "DugElement Attribute" : "KG Node attribute"
+                "name": "name",
+                "desc": "summary",
+                "collection_name": "cde_category",
+                "collection_id":  "cde_category"
+            }
         }
     })
 

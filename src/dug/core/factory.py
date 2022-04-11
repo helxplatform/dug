@@ -81,7 +81,7 @@ class DugFactory:
         return Search(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):
-        # Method reformats the node_to_element_queries object 
+        # Method reformats the node_to_element_queries object
         # Uses tranql source use for concept crawling
         if source is None:
             source = TRANQL_SOURCE
@@ -96,7 +96,9 @@ class DugFactory:
             {
                 "output_dug_type": dug_type,
                 "casting_config": {
-                    "node_type": queries[dug_type]['node_type']
+                    "node_type": queries[dug_type]["node_type"],
+                    "curie_prefix": queries[dug_type]["curie_prefix"],
+                    "attribute_mapping": queries[dug_type]["attribute_mapping"]
                     # CDE's are only ones
                     # but if we had two biolink:Publication nodes we want to conditionally
                     # cast to other output_dug_type, we could extend this config
