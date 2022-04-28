@@ -21,6 +21,9 @@ class DbGaPParser(FileParser):
             return match.group(1)
         return None
 
+    def _get_element_type(self):
+        return "DbGap"
+
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
         tree = ET.parse(input_file)
@@ -41,7 +44,7 @@ class DbGaPParser(FileParser):
             elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
                               name=variable.find('name').text,
                               desc=variable.find('description').text.lower(),
-                              elem_type="DbGaP",
+                              elem_type=self._get_element_type(),
                               collection_id=f"{study_id}.p{participant_set}",
                               collection_name=study_name)
 
