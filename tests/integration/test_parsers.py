@@ -69,4 +69,4 @@ def test_anvil_parser():
     elements = parser(parse_file)
     assert len(elements) == 3
     for element in elements:
-        assert element.type == "Anvil"
+        assert element.type == "AnVIL"
