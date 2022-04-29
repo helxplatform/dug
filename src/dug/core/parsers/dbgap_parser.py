@@ -22,7 +22,7 @@ class DbGaPParser(FileParser):
         return None
 
     def _get_element_type(self):
-        return "DbGap"
+        return "DbGaP"
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
