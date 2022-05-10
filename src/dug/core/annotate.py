@@ -286,7 +286,7 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def handle_response(self, value, response: dict) -> List[Identifier]:
         identifiers = []
         """ Parse each identifier and initialize identifier object """
-        for span in response.get('spans', []):
+        for span in response:
             search_text = span.get('text', None)
             for token in span.get('token', []):
                 curie = token.get('id', None)
