@@ -4,7 +4,7 @@ from typing import List
 import pytest
 
 from dug.config import Config
-from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
+from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper, ScigraphAnnotator
 
 
 def test_identifier():
@@ -175,6 +175,18 @@ def test_annotator_call(annotator_api):
     identifiers: List[Identifier] = annotator.annotate(text, annotator_api)
 
     assert len(identifiers) == 7
+    assert isinstance(identifiers[0], Identifier)
+
+
+def test_scigraph_annotator_call(scigraph_annotator_api):
+    url = "http://annotator.api/?content="
+
+    annotator = ScigraphAnnotator(url)
+
+    text = "heart attack"
+    identifiers: List[Identifier] = annotator.annotate(text, scigraph_annotator_api)
+
+    assert len(identifiers) == 10
     assert isinstance(identifiers[0], Identifier)
 
 

@@ -165,6 +165,155 @@ def annotator_api():
         urls=urls,
     )
 
+@pytest.fixture
+def scigraph_annotator_api():
+    base_url = "http://annotator.api/?content={query}"
+
+    def _(keyword):
+        return base_url.format(
+            query=urllib.parse.quote(keyword)
+        )
+
+    urls = {
+        _("heart attack"): [json.dumps([
+               {
+                  "token":{
+                     "id":"XAO:0000336",
+                     "categories":[
+
+                     ],
+                     "terms":[
+                        "heart primordium"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"UBERON:0015230",
+                     "categories":[
+                        "anatomical entity"
+                     ],
+                     "terms":[
+                        "dorsal vessel heart"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"UBERON:0007100",
+                     "categories":[
+                        "anatomical entity"
+                     ],
+                     "terms":[
+                        "primary circulatory organ"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"ZFA:0000114",
+                     "categories":[
+
+                     ],
+                     "terms":[
+                        "heart"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"UBERON:0015228",
+                     "categories":[
+                        "anatomical entity"
+                     ],
+                     "terms":[
+                        "circulatory organ"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"XAO:0000064",
+                     "categories":[
+
+                     ],
+                     "terms":[
+                        "heart"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"XAO:0000235",
+                     "categories":[
+
+                     ],
+                     "terms":[
+                        "cardiac mesoderm"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"UBERON:0000948",
+                     "categories":[
+                        "anatomical entity"
+                     ],
+                     "terms":[
+                        "heart"
+                     ]
+                  },
+                  "start":0,
+                  "end":5
+               },
+               {
+                  "token":{
+                     "id":"MONDO:0005068",
+                     "categories":[
+                        "disease"
+                     ],
+                     "terms":[
+                        "myocardial infarction"
+                     ]
+                  },
+                  "start":0,
+                  "end":12
+               },
+               {
+                  "token":{
+                     "id":"HP:0001658",
+                     "categories":[
+                        "phenotype",
+                        "quality"
+                     ],
+                     "terms":[
+                        "Myocardial infarction"
+                     ]
+                  },
+                  "start":0,
+                  "end":12
+               }
+            ]), 200],
+    }
+
+    return MockApiService(
+        urls=urls,
+    )
+
 
 @pytest.fixture
 def normalizer_api():
