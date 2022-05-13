@@ -11,14 +11,14 @@ class Config:
     """
         TODO: Populate description
     """
-    elastic_password: str = "12345"
-    redis_password: str = "12345"
+    elastic_password: str = "changeme"
+    redis_password: str = "changeme"
 
-    elastic_host: str = "localhost"
+    elastic_host: str = "elasticsearch"
     elastic_port: int = 9200
     elastic_username: str = "elastic"
 
-    redis_host: str = "localhost"
+    redis_host: str = "redis"
     redis_port: int = 6379
 
     nboost_host: str = "nboost"
@@ -34,7 +34,7 @@ class Config:
 
     # Annotator config that will be passed to annotate.Annotator constructor
     annotator: dict = field(default_factory=lambda: {
-        "url": "https://scigraph.apps.renci.org/scigraph/annotations/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
+        "url": "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
     })
 
     # Normalizer config that will be passed to annotate.Normalizer constructor

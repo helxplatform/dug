@@ -4,7 +4,10 @@ from typing import List
 import pytest
 
 from dug.config import Config
-from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper, ScigraphAnnotator
+from dug.core.annotate import Identifier, Preprocessor, Normalizer, SynonymFinder, OntologyHelper
+from dug.core.annotators.ScigraphAnnotator import ScigraphAnnotator
+from dug.core.annotators.MonarchAnnotator import MonarchNLPAnnotator
+from dug.core.annotators.AnnotatorBase import Annotator
 
 
 def test_identifier():
@@ -38,8 +41,8 @@ def test_annotator_init():
     assert annotator.url == url
 
 
-def test_annotator_handle_response():
-    annotator = Annotator('foo')
+def test_monarch_annotator_handle_response():
+    annotator = MonarchNLPAnnotator('foo')
 
     response = {
             "content": "heart attack",
@@ -166,10 +169,10 @@ def test_annotator_handle_response():
     assert isinstance(identifiers[0], Identifier)
 
 
-def test_annotator_call(annotator_api):
+def test_monarch_annotator_call(annotator_api):
     url = "http://annotator.api/?content="
 
-    annotator = Annotator(url)
+    annotator = MonarchNLPAnnotator(url)
 
     text = "heart attack"
     identifiers: List[Identifier] = annotator.annotate(text, annotator_api)
