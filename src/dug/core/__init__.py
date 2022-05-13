@@ -12,8 +12,10 @@ from dug.core.loaders.network_loader import load_from_network
 from dug import hookspecs
 from dug.config import Config
 from dug.core import parsers
+from dug.core import annotators
 from dug.core.factory import DugFactory
 from dug.core.parsers import DugConcept, Parser, get_parser
+from dug.core.annotators import get_annotator_class
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -29,6 +31,7 @@ def get_plugin_manager() -> pluggy.PluginManager:
     pm.add_hookspecs(hookspecs)
     pm.load_setuptools_entrypoints("dug")
     pm.register(parsers)
+    pm.register(annotators)
     return pm
 
 
@@ -51,19 +54,26 @@ class Dug:
             self.concepts_index, self.variables_index, self.kg_index
         ])
 
-    def crawl(self, target_name: str, parser_type: str, element_type: str = None):
+    def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
 
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
         targets = get_targets(target_name)
+        annotator_class = get_annotator_class(pm.hook, annotator_type)
 
         for target in targets:
-            self._crawl(target, parser, element_type)
+            logger.info(
+                f"Crawling {target} as {element_type} using {annotator_type} annotator and {parser_type} parser"
+            )
+            self._crawl(target=target, parser=parser, annotator_class=annotator_class, element_type=element_type)
 
-    def _crawl(self, target: Path, parser: Parser, element_type):
+    def _crawl(self, target: Path, parser: Parser, element_type, annotator_class):
 
         # Initialize crawler
-        crawler = self._factory.build_crawler(target, parser, element_type)
+        crawler = self._factory.build_crawler(target=target,
+                                              parser=parser,
+                                              annotator=annotator_class,
+                                              element_type=element_type)
         # Read elements, annotate, and expand using tranql queries
         crawler.crawl()
 

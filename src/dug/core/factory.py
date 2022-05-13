@@ -4,9 +4,10 @@ import redis
 from requests_cache import CachedSession
 
 import dug.core.tranql as tql
-from dug.core.annotate import DugAnnotator, Annotator, Normalizer, OntologyHelper, Preprocessor, SynonymFinder, \
+from dug.core.annotate import DugAnnotator, Normalizer, OntologyHelper, Preprocessor, SynonymFinder, \
     ConceptExpander
 from dug.config import Config as DugConfig, TRANQL_SOURCE
+from dug.core.annotators import AnnotatorBase
 from dug.core.crawler import Crawler
 from dug.core.parsers import Parser
 from dug.core.search import Search
@@ -31,11 +32,12 @@ class DugFactory:
             connection=redis.StrictRedis(**redis_config)
         )
 
-    def build_crawler(self, target, parser: Parser, element_type: str, tranql_source=None) -> Crawler:
+    def build_crawler(self, target, parser: Parser, element_type: str, annotator: AnnotatorBase.Annotator,
+                      tranql_source=None) -> Crawler:
         crawler = Crawler(
             crawl_file=str(target),
             parser=parser,
-            annotator=self.build_annotator(),
+            annotator=self.build_annotator(annotator=annotator),
             tranqlizer=self.build_tranqlizer(),
             tranql_queries=self.build_tranql_queries(tranql_source),
             http_session=self.build_http_session(),
@@ -46,10 +48,10 @@ class DugFactory:
 
         return crawler
 
-    def build_annotator(self) -> DugAnnotator:
+    def build_annotator(self, annotator: AnnotatorBase) -> DugAnnotator:
 
         preprocessor = Preprocessor(**self.config.preprocessor)
-        annotator = Annotator(**self.config.annotator)
+        annotator = annotator(**self.config.annotator)
         normalizer = Normalizer(**self.config.normalizer)
         synonym_finder = SynonymFinder(**self.config.synonym_service)
         ontology_helper = OntologyHelper(**self.config.ontology_helper)
