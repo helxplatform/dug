@@ -45,12 +45,12 @@ spec:
     stages {
         stage('Build') {
             environment {
-                PATH = "/busybox:/kaniko:$PATH"
-                DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
-                DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-                DOCKER_REPO = "docker.io"
-                DOCKER_OWNER = "helxplatform"
-                DOCKER_APP = "dug"
+                PATH="/busybox:/kaniko:$PATH"
+                DOCKERHUB_CREDS=credentials("${env.REGISTRY_CREDS_ID_STR}")
+                DOCKER_REGISTRY="${env.DOCKER_REGISTRY}"
+                DOCKER_REPO="docker.io"
+                DOCKER_OWNER="helxplatform"
+                DOCKER_APP="dug"
 
             }
             steps {
@@ -58,11 +58,13 @@ spec:
                     sh '''#!/busybox/sh
                         VERSION_FILE="./src/dug/_version.py"
                         VERSION=$(cut -d " " -f 3 $VERSION_FILE)
-                        DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"${env.VERSION}"
+			echo "version=$VERSION"
+                        DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"${VERSION}"
+			echo "image=$DOCKER_IMAGE"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
-                                         --destination "${env.DOCKER_IMAGE}"
+                                         --destination "${DOCKER_IMAGE}"
                         '''
                 }
             }
