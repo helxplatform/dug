@@ -48,9 +48,9 @@ spec:
                 PATH = "/busybox:/kaniko:$PATH"
                 DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
                 DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-                DOCKER_REPO = docker.io
-                DOCKER_OWNER = helxplatform
-                DOCKER_APP = dug
+                DOCKER_REPO = "docker.io"
+                DOCKER_OWNER = "helxplatform"
+                DOCKER_APP = "dug"
 
             }
             steps {
