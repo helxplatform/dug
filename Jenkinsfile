@@ -59,7 +59,7 @@ spec:
                         VERSION_FILE="./src/dug/_version.py"
                         VERSION=$(cut -d " " -f 3 $VERSION_FILE)
                         DOCKER_TAG="${env.VERSION}"
-                        DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"$DOCKER_TAG"
+                        DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"${DOCKER_TAG}"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
