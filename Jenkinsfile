@@ -60,7 +60,7 @@ spec:
                         VERSION=$(cut -d " " -f 3 $VERSION_FILE)
 			echo "version=$VERSION"
                         DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"${VERSION}"
-			echo "image=$DOCKER_IMAGE"
+			echo "image=${DOCKER_IMAGE}"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
