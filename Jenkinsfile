@@ -51,12 +51,12 @@ spec:
                 DOCKER_REPO = docker.io
                 DOCKER_OWNER = helxplatform
                 DOCKER_APP = dug
-                VERSION_FILE = ./src/dug/_version.py
 
             }
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
+                        VERSION_FILE = ./src/dug/_version.py
                         VERSION = $(cut -d " " -f 3 ${VERSION_FILE})
                         DOCKER_TAG = "${env.VERSION}"
                         DOCKER_IMAGE = "${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"${env.DOCKER_TAG}"
