@@ -64,7 +64,7 @@ spec:
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
-                                         --destination "${DOCKER_IMAGE}"
+                                         --destination "$DOCKER_IMAGE"
                         '''
                 }
             }
