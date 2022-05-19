@@ -56,15 +56,15 @@ spec:
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        #VERSION_FILE="./src/dug/_version.py"
-                        #VERSION=$(cut -d " " -f 3 "${VERSION_FILE}")
-			#echo "version=$VERSION"
-                        #DOCKER_IMAGE="${env.DOCKER_OWNER}"/"${env.DOCKER_APP}":"$VERSION"
-			#echo "$DOCKER_IMAGE"
+                        VERSION_FILE="./src/dug/_version.py"
+                        VERSION=$(cut -d " " -f 3 "${VERSION_FILE}")
+			echo "version=$VERSION"
+                        DOCKER_IMAGE="${env.DOCKER_OWNER}/${env.DOCKER_APP}:$VERSION"
+			echo "$DOCKER_IMAGE"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
-                                         --destination helxplatform/dug:2.9.1dev
+                                         --destination $DOCKER_IMAGE
                         '''
                 }
             }
