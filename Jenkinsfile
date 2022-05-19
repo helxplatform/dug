@@ -57,7 +57,7 @@ spec:
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
                         VERSION_FILE="./src/dug/_version.py"
-                        VERSION=$(cut -d " " -f 3 "${VERSION_FILE}")
+                        VERSION=$(cut -d " " -f 3 "${VERSION_FILE}" | tr -d '"')
 			echo "version=$VERSION"
                         DOCKER_IMAGE1="${DOCKER_OWNER}"
 			DOCKER_IMAGE2="${DOCKER_APP}"
