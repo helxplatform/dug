@@ -59,12 +59,15 @@ spec:
                         VERSION_FILE="./src/dug/_version.py"
                         VERSION=$(cut -d " " -f 3 "${VERSION_FILE}")
 			echo "version=$VERSION"
-                        DOCKER_IMAGE="${env.DOCKER_OWNER}/${env.DOCKER_APP}:$VERSION"
-			echo "$DOCKER_IMAGE"
+                        DOCKER_IMAGE1="${DOCKER_OWNER}"
+			DOCKER_IMAGE2="${DOCKER_APP}"
+			DOCKER_IMAGE3="${VERSION}"
+			IMAGE_NAME=$DOCKER_IMAGE1/$DOCKER_IMAGE2:$DOCKER_IMAGE3
+			echo "$IMAGE_NAME"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
-                                         --destination $DOCKER_IMAGE
+                                         --destination $IMAGE_NAME
                         '''
                 }
             }
