@@ -266,11 +266,53 @@ class DugAggDataType(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
+class DugSummaryResource(DugResource):
+    """ Summarize Dug """
+
+    """ System initiation. """
+
+    def post(self):
+        logger.debug(f"summary:{json.dumps(request.json)}")
+        response = {}
+        try:
+            app.logger.info(f"summary: {json.dumps(request.json, indent=2)}")
+            self.validate(request, component="Search")
+            response = self.create_response(
+                result=dug().summary(**request.json),
+                message=f"Summary result")
+        except Exception as e:
+            response = self.create_response(
+                exception=e,
+                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+        return response
+
+class DugSummaryVerboseResource(DugResource):
+    """ Summarize Dug """
+
+    """ System initiation. """
+
+    def post(self):
+        logger.debug(f"verbose summary:{json.dumps(request.json)}")
+        response = {}
+        try:
+            app.logger.info(f"verbose summary: {json.dumps(request.json, indent=2)}")
+            self.validate(request, component="Search")
+            response = self.create_response(
+                result=dug().summary_verbose(**request.json),
+                message=f"Verbose summary result")
+        except Exception as e:
+            response = self.create_response(
+                exception=e,
+                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+        return response
+
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
 api.add_resource(DugSearchKGResource, '/search_kg')
 api.add_resource(DugSearchVarResource, '/search_var')
 api.add_resource(DugAggDataType, '/agg_data_types')
+api.add_resource(DugSummaryResource, '/summary')
+api.add_resource(DugSummaryVerboseResource, '/summary_verbose')
 
 def main(args=None):
     parser = argparse.ArgumentParser(description='Dug Search API')

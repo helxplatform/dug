@@ -498,6 +498,55 @@ class Search:
         data_type_list = [data_type['key'] for data_type in search_results['aggregations']['data_type']['buckets']]
         search_results.update({'data type list': data_type_list})
         return data_type_list
+    
+    def summary(self):
+        """
+        Return a summary of Dug datasets available.
+        """
+        indices = ['concepts_index', 'variables_index', 'kg_index']
+        summary_results = {}
+        
+        body = json.dumps({})
+        
+        for i in indices:
+            summary_count = self.es.count(
+                body=body,
+                index=i
+            )
+            summary_results[i] = summary_count['count']
+        return summary_results
+
+    def summary_verbose(self):
+        """
+        Return a verbose summary returning a list of concept_ids, variables_ids, and study_ids.
+        """
+        indices = ['concepts_index', 'variables_index', 'kg_index']
+        summary_results = {}
+        
+        query = {
+            "query": {
+                "match_all" : {}
+            }
+        }
+        body = json.dumps(query)
+
+        for i in indices:
+            search_values = self.es.search(
+                index=i,
+                body=body,
+                filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+                size=None
+            )
+            id_list = [data_type['_id'] for data_type in search_values['hits']['hits']]
+            summary_count = self.es.count(
+                body=json.dumps({}),
+                index=i
+            )
+            summary_results[i] = {
+                'ids': id_list,
+                'count': summary_count['count']
+            }
+        return summary_results
 
     def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
