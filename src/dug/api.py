@@ -144,6 +144,58 @@ class DugSearchResource(DugResource):
                 message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
         return response
 
+class DugDumpConcept(DugResource):
+    """ Execute a search """
+
+    """ System initiation. """
+    def post(self):
+        """
+        Execute the search of all concepts.
+
+        ---
+        tag: dump concepts
+        description: Get all concepts
+        requestBody:
+            description: Search request
+            required: false
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Search'
+        responses:
+            '200':
+                description: Success
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+                            example: "Nominal search"
+            '400':
+                description: Malformed message
+                content:
+                    text/plain:
+                        schema:
+                            type: string
+
+        """
+        logger.debug(f"search:{json.dumps(request.json)}")
+        response = {}
+        try:
+            app.logger.info (f"search: {json.dumps(request.json, indent=2)}")
+            self.validate(request, component="Search")
+            # boosted = request.json.pop('boosted', False)
+
+            api_request = dug().dump_concepts(**request.json)
+
+            response = self.create_response(
+                result=api_request,
+                message=f"Search result")
+        except Exception as e:
+            response = self.create_response(
+                exception=e,
+                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+        return response
+
 
 class DugSearchKGResource(DugResource):
     """ Execute a search """
@@ -268,6 +320,7 @@ class DugAggDataType(DugResource):
 
 """ Register endpoints. """
 api.add_resource(DugSearchResource, '/search')
+api.add_resource(DugDumpConcept, '/dump_concepts')
 api.add_resource(DugSearchKGResource, '/search_kg')
 api.add_resource(DugSearchVarResource, '/search_var')
 api.add_resource(DugAggDataType, '/agg_data_types')
