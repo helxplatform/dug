@@ -65,7 +65,6 @@ def main():
     # Parse input table and download all valid dbgap datasets to output
     missing_data_dict_studies = {}
     studies = {}
-    platforms = []
 
     with open(input_file) as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter="\t")
