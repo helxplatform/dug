@@ -3,7 +3,7 @@
 # This script is used to generate the input to index Anvil Datasets on Dug
 # Parse, Download dbgap datasets currently hosted on Anvil Platform (tsv downloaded from https://anvilproject.org/data)
 # Output all datasets to an output tarball into the data directory to be indexed
-# NOTE: The anvil-dataset-catalog-results.tsv should be updated manually to ensure you sync all current Anvil datasets
+# NOTE: The ncpi-dataset-catalog-results.tsv should be updated manually to ensure you sync all current Anvil datasets
 
 #######
 
@@ -14,7 +14,7 @@ import csv
 
 # Hard-coded relative paths for the anvil catalog input file and output bolus
 # This obviously isn't very elegant but it'll do for now
-input_file = "../data/anvil-dataset-catalog-results.tsv"
+input_file = "../data/ncpi-dataset-catalog-results.tsv"
 output_dir = "../data/anvil_dbgap_data_dicts/"
 
 
