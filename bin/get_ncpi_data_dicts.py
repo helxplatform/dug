@@ -15,7 +15,7 @@ import csv
 # Hard-coded relative paths for the anvil catalog input file and output bolus
 # This obviously isn't very elegant but it'll do for now
 input_file = "../data/ncpi-dataset-catalog-results.tsv"
-output_dir = "../data/anvil_dbgap_data_dicts/"
+output_dir = "../data/ncpi_dbgap_data_dicts/"
 
 
 # Helper function
@@ -65,6 +65,7 @@ def main():
     # Parse input table and download all valid dbgap datasets to output
     missing_data_dict_studies = {}
     studies = {}
+    platforms = []
 
     with open(input_file) as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter="\t")
@@ -78,20 +79,24 @@ def main():
                 header = True
                 continue
 
+            # Get platform and make subdir if necessary
+            platform = row["Platform"].split(";")
+            platform = platform[0] if "BDC" not in platform else "BDC"
+
             # Add any phs dbgap studies to queue of files to get
             study_id = row["Study Accession"]
             if study_id.startswith("phs") and study_id not in studies:
                 studies[study_id] = True
                 try:
                     # Try to download to output folder if the study hasn't already been downloaded
-                    if not os.path.exists(f"{output_dir}/{study_id}"):
+                    if not os.path.exists(f"{output_dir}/{platform}/{study_id}"):
                         print(f"Downloading: {study_id}")
-                        if not download_dbgap_study(study_id, output_dir):
+                        if not download_dbgap_study(study_id, f"{output_dir}/{platform}"):
                             missing_data_dict_studies[study_id] = True
 
                 except Exception as e:
                     # If anything happens, delete the folder so we don't mistake it for success
-                    shutil.rmtree(f"{output_dir}/{study_id}")
+                    shutil.rmtree(f"{output_dir}/{platform}/{study_id}")
 
     # Count the number subdir currently in output_dir as the number of downloaded
     num_downloaded  = len([path for path in os.walk(output_dir) if path[0] != output_dir])
@@ -104,14 +109,14 @@ def main():
 
     # Write out list of datasets with no data dicts
     with open(f"{output_dir}/download_summary.txt", "w") as sum_file:
-        sum_file.write(f"Unique dbgap datasets in anvil table: {num_possible}\n")
+        sum_file.write(f"Unique dbgap datasets in ncpi table: {num_possible}\n")
         sum_file.write(f"Successfully Downloaded: {num_downloaded}\n")
         sum_file.write(f"Total dbgap datasests missing data dicts: {num_missing_data_dicts}\n")
         sum_file.write(f"Dbgap datasests missing data dicts:\n")
         for item in missing_data_dict_studies:
             sum_file.write(f"{item}\n")
 
-    print(f"Unique dbgap datasets in anvil table: {num_possible}\n")
+    print(f"Unique dbgap datasets in ncpi table: {num_possible}\n")
     print(f"Successfully Downloaded: {num_downloaded}\n")
     print(f"Total dbgap datasests missing data dicts: {num_missing_data_dicts}\n")
 
