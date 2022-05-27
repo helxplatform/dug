@@ -537,7 +537,19 @@ class Search:
                 filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
                 size=None
             )
-            id_list = [data_type['_id'] for data_type in search_values['hits']['hits']]
+            if i == 'variables_index':
+                var_collection = {}
+                for data in search_values['hits']['hits']:
+                    source_coll_id = data['_source']['collection_id']
+                    if source_coll_id not in var_collection:
+                        var_collection[source_coll_id] = [data['_id']]
+                    else:
+                        var_collection[source_coll_id].append(data['_id'])
+                id_list = var_collection
+            else:
+                id_list = [data_type['_id'] for data_type in search_values['hits']['hits']]
+
+            print(id_list)
             summary_count = self.es.count(
                 body=json.dumps({}),
                 index=i
