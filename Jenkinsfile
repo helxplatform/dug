@@ -29,7 +29,13 @@ spec:
     volumeMounts:
     - name: jenkins-docker-cfg
       mountPath: /kaniko/.docker
-
+  - name: crane
+    workingDir: /tmp/jenkins
+    image: gcr.io/go-containerregistry/crane:debug
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
   volumes:
   - name: jenkins-docker-cfg
     projected:
@@ -42,59 +48,65 @@ spec:
 """
         }
     }
+    environment {
+        PATH = "/busybox:/kaniko:/ko-app/:$PATH"
+        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
+        REGISTRY = "${env.DOCKER_REGISTRY}"
+        REG_OWNER="helxplatform"
+        REG_APP="dug"
+        COMMIT_HASH="${sh(script:"git rev-parse --short HEAD", returnStdout: true).trim()}"
+        VERSION="${awk '{ print $3 }' src/dug/_version.py | xargs, returnStdout: true).trim()}"
+        IMAGE_NAME="${REG_OWNER}/${REG_APP}"
+        TAG1="$BRANCH_NAME"
+        TAG2="$COMMIT_HASH"
+        TAG3="$VERSION"
+    }
     stages {
         stage('Build') {
-            environment {
-                PATH="/busybox:/kaniko:$PATH"
-                DOCKERHUB_CREDS=credentials("${env.REGISTRY_CREDS_ID_STR}")
-                DOCKER_REGISTRY="${env.DOCKER_REGISTRY}"
-                DOCKER_REPO="docker.io"
-                DOCKER_OWNER="helxplatform"
-                DOCKER_APP="dug"
-
-            }
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        VERSION_FILE="./src/dug/_version.py"
-                        VERSION=$(cut -d " " -f 3 "${VERSION_FILE}" | tr -d '"')
-			echo "version=$VERSION"
-                        DOCKER_IMAGE1="${DOCKER_OWNER}"
-			DOCKER_IMAGE2="${DOCKER_APP}"
-			DOCKER_IMAGE3="${VERSION}"
-			IMAGE_NAME=$DOCKER_IMAGE1/$DOCKER_IMAGE2:$DOCKER_IMAGE3
-			echo "$IMAGE_NAME"
+                        #VERSION_FILE="./src/dug/_version.py"
+                        #VERSION=$(cut -d " " -f 3 "${VERSION_FILE}" | tr -d '"')
+                        echo "$IMAGE_NAME:$TAG1"
+                        echo "$IMAGE_NAME:$TAG2"
+                        echo "$IMAGE_NAME:$TAG3"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
-                                         --destination $IMAGE_NAME
+                                         --no-push \
+                                         --destination $IMAGE_NAME:$TAG1 \
+                                         --destination $IMAGE_NAME:$TAG2 \
+                                         --destination $IMAGE_NAME:$TAG3 \
+                                         --tarPath image.tar
                         '''
                 }
             }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'image.tar', onlyIfSuccessful: true
+                }
+            }
         }
-        //stage('Test') {
-        //    steps {
-        //        container('agent-docker') {
-        //            sh '''
-        //            echo test
-        //            '''
-        //        }
-        //    }
-        //}
-        //stage('Publish') {
-        //    environment {
-        //        DOCKERHUB_CREDS = credentials("${env.REGISTRY_CREDS_ID_STR}")
-        //        DOCKER_REGISTRY = "${env.DOCKER_REGISTRY}"
-        //    }
-        //    steps {
-        //        container('agent-docker') {
-        //            sh '''
-        //            echo publish
-        //            echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin $DOCKER_REGISTRY
-        //            docker push helxplatform/nginx:$BRANCH_NAME
-        //            '''
-        //        }
-        //    }
-        //}
+        stage('Test') {
+            steps {
+                sh '''
+                echo test
+                '''
+            }
+        }
+        stage('Publish') {
+            steps {
+                container(name: 'crane', shell: '/busybox/sh') {
+                    sh '''
+                    echo "Publish stage"
+                    echo "$DOCKERHUB_CREDS_PSW" | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $REGISTRY
+                    crane push image.tar $IMAGE_NAME:$TAG1
+                    crane push image.tar $IMAGE_NAME:$TAG2
+                    crane push image.tar $IMAGE_NAME:$TAG3
+                    '''
+                }
+            }
+        }
     }
 }
