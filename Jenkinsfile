@@ -55,7 +55,8 @@ spec:
         REG_OWNER="helxplatform"
         REG_APP="dug"
         COMMIT_HASH="${sh(script:"git rev-parse --short HEAD", returnStdout: true).trim()}"
-        VERSION="${awk '{ print $3 }' src/dug/_version.py | xargs, returnStdout: true).trim()}"
+        VERSION_FILE="src/dug/_version.py"
+        VERSION="${sh(script:'awk \'{ print $3 }\' src/dug/_version.py | xargs', returnStdout: true).trim()}"
         IMAGE_NAME="${REG_OWNER}/${REG_APP}"
         TAG1="$BRANCH_NAME"
         TAG2="$COMMIT_HASH"
@@ -66,18 +67,12 @@ spec:
             steps {
                 container(name: 'kaniko', shell: '/busybox/sh') {
                     sh '''#!/busybox/sh
-                        #VERSION_FILE="./src/dug/_version.py"
-                        #VERSION=$(cut -d " " -f 3 "${VERSION_FILE}" | tr -d '"')
-                        echo "$IMAGE_NAME:$TAG1"
-                        echo "$IMAGE_NAME:$TAG2"
-                        echo "$IMAGE_NAME:$TAG3"
                         /kaniko/executor --dockerfile ./Dockerfile \
                                          --context . \
                                          --verbosity debug \
                                          --no-push \
                                          --destination $IMAGE_NAME:$TAG1 \
                                          --destination $IMAGE_NAME:$TAG2 \
-                                         --destination $IMAGE_NAME:$TAG3 \
                                          --tarPath image.tar
                         '''
                 }
@@ -103,7 +98,6 @@ spec:
                     echo "$DOCKERHUB_CREDS_PSW" | crane auth login -u $DOCKERHUB_CREDS_USR --password-stdin $REGISTRY
                     crane push image.tar $IMAGE_NAME:$TAG1
                     crane push image.tar $IMAGE_NAME:$TAG2
-                    crane push image.tar $IMAGE_NAME:$TAG3
                     '''
                 }
             }
