@@ -14,6 +14,34 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 ## High level installation
 
+```
+
+# Requires Python 3.10 or later
+
+make install
+
+source .env
+export $(cut -d= -f1 .env)
+export ELASTIC_API_HOST=localhost
+export REDIS_HOST=localhost
+
+# make sure there are no port conflicts 
+# with redis or other containers 
+#  ... I had other containers running
+
+# chmod or chown dug/data dirs as needed
+
+dug crawl data/topmed_variables_v2.0.csv -p "TOPMedTag"
+# the above command may take up to 2 hours 
+# even with fast hardware.
+
+# test it out:
+
+dug search -q "heart attack" -t "concepts"
+dug search -q "heart attack" -t "variables"
+
+```
+
 ## How to run a crawl
 
 ## Run a search on your local machine
