@@ -11,3 +11,17 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 
 ## Kelsey Outline
+
+## High level installation
+
+## How to run a crawl
+
+## Run a search on your local machine
+
+## How to deploy a UI on local machine
+
+## How to wrtie a parser to different input sources
+
+## Config options (extensions available)
+
+## Link to bioinformatics paper for more in-depth information
