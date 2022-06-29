@@ -15,7 +15,7 @@ import csv
 # Hard-coded relative paths for the anvil catalog input file and output bolus
 # This obviously isn't very elegant but it'll do for now
 input_file = "../data/ncpi-dataset-catalog-results.tsv"
-output_dir = "../data/ncpi_dbgap_data_dicts/"
+output_dir = "../data/"
 
 
 # Helper function
