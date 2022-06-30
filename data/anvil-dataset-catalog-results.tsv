@@ -1,0 +1,486 @@
+Consortium	Study	dbGap Id	Study Accession	Consent Code	Terra Workspace Name	Disease	Access	Study Design	Data Type	Samples	Participants	Size (TB)
+1000 Genomes	--	None	--	NRES	1000G-high-coverage-2019	None	No Restrictions	Parent-Offspring Trios	Whole Genome	3202	3202	72.98
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_ac-boston_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	757	757	1.27
+CCDG	CCDG-Neuropsychiatric: Autism- Autism Genetic Resource Exchange (AGRE)	phs001766	phs001766.v1.p1	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_AGRE_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	844	844	1.54
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_AGRE-FEMF_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	405	405	0.00
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_barbosa_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	213	213	0.35
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_brusco_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	2231	2231	2.87
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	AnVIL_ccdg_asc_ndd_daly_talkowski_CDCSEED_asd_exome	autism spectrum disorder	Controlled Access	TBD	Exome	2909	2909	2.67
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	anvil_ccdg_asc_ndd_daly_talkowski_cdcseed_asd_gsa-md	autism spectrum disorder	Controlled Access	Case-Control	Genotyping Array	2882	2882	0.49
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_chung_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	523	523	0.83
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_control_NIMH_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	370	370	0.96
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_domenici_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	713	713	1.20
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_goethe_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	2111	2111	2.55
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	anvil_ccdg_asc_ndd_daly_talkowski_gurrieri_asd_exome	autism spectrum disorder	Controlled Access	Case-Control	Exome	55	55	0.04
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_herman_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	49	49	0.08
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_hertz-picciotto_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	1537	1537	2.56
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_hertz-picciotto_asd_wgs	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	65	65	1.05
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	AnVIL_ccdg_asc_ndd_daly_talkowski_IBIS_asd_exome	autism spectrum disorder	Controlled Access	TBD	Exome	237	237	0.22
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_kolevzon_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	1160	1160	1.54
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_kolevzon_asd_wgs	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	27	27	0.47
+CCDG	--	Registration Pending	--	GRU	AnVIL_ccdg_asc_ndd_daly_talkowski_lattig_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	487	487	0.44
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	AnVIL_ccdg_asc_ndd_daly_talkowski_mayo_asd_exome	autism spectrum disorder	Controlled Access	TBD	Exome	145	117	0.12
+CCDG	--	Registration Pending	--	DS-ND	AnVIL_ccdg_asc_ndd_daly_talkowski_mcpartland_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	518	518	0.51
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_menashe_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	701	701	0.74
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_minshew_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	239	239	0.38
+CCDG	--	Available through EGA	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_palotie_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	153	153	0.21
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_parellada_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	2824	2824	4.29
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_passos-bueno_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	941	941	1.31
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	AnVIL_ccdg_asc_ndd_daly_talkowski_pericak-vance_asd_exome_	autism spectrum disorder	Controlled Access	TBD	Exome	108	108	0.17
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	HMB	AnVIL_ccdg_asc_ndd_daly_talkowski_pericak-vance_asd_wgs	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	295	295	5.22
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	GRU-NPU	AnVIL_ccdg_asc_ndd_daly_talkowski_persico_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	471	471	0.78
+CCDG	--	Available through EGA	--	Consortia Access Only	AnVIL_ccdg_asc_ndd_daly_talkowski_puura_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	209	209	0.33
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-MH	AnVIL_ccdg_asc_ndd_daly_talkowski_renieri_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	765	765	0.94
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	AnVIL_ccdg_asc_ndd_daly_talkowski_schloesser_asd_exome	autism spectrum disorder	Controlled Access	TBD	Exome	152	152	0.14
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	TBD	anvil_ccdg_asc_ndd_daly_talkowski_schloesser_asd_gsa-md	autism spectrum disorder	Controlled Access	Case-Control	Genotyping Array	152	152	0.03
+CCDG	--	Registration Pending	--	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_TASC_asd_exome	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Exome	3173	3173	5.29
+CCDG	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	DS-ASD	AnVIL_ccdg_asc_ndd_daly_talkowski_weiss_asd_exome	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Exome	41	41	0.04
+CCDG	NHLBI TOPMed - NHGRI CCDG: Vanderbilt University BioVU Atrial Fibrillation Genetics Study	phs001624	phs001624.v1.p1	Consortia Access Only	AnVIL_CCDG_Baylor_CVD_AFib_BioVU_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	1122	1122	26.79
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Baylor_CVD_AFib_Groningen_WGS	atrial fibrillation	Consortium Access	TBD	Whole Genome	639	639	13.92
+CCDG	--	Registration Pending	--	HMB-IRB	AnVIL_CCDG_Baylor_CVD_AFib_VAFAR_HMB-IRB_WGS	atrial fibrillation	Consortium Access	TBD	Whole Genome	253	253	5.30
+CCDG	NHLBI TOPMed - NHGRI CCDG: Atherosclerosis Risk in Communities (ARIC)	phs001211	phs001211.v3.p2	HMB-IRB	AnVIL_CCDG_Baylor_CVD_ARIC	cardiovascular system disease	Controlled Access	TBD	Whole Genome	8975	8975	246.44
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Baylor_CVD_EOCAD_BioMe_WGS	cardiovascular system disease	Consortium Access	TBD	Whole Genome	1201	1201	26.23
+CCDG	NHLBI TOPMed - NHGRI CCDG: Hispanic Community Health Study/Study of Latinos (HCHS/SOL)	phs001395	phs001395.v1.p1	HMB-NPU	AnVIL_CCDG_Baylor_CVD_EOCAD_SoL_WGS	cardiovascular system disease	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	9083	9083	200.02
+CCDG	--	Registration Pending	--	HMB	AnVIL_CCDG_Baylor_CVD_HemStroke_BNI_HMB_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	160	160	2.61
+CCDG	--	Registration Pending	--	DS	AnVIL_CCDG_Baylor_CVD_HemStroke_Duke_DS_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	60	60	0.87
+CCDG	--	Registration Pending	--	HMB-IRB	AnVIL_CCDG_Baylor_CVD_HemStroke_ERICH_WGS	hemorrhagic stroke	Consortium Access	Clinical trial	Whole Genome	2558	2558	50.23
+CCDG	--	Registration Pending	--	HMB	AnVIL_CCDG_Baylor_CVD_HemStroke_GERFHS_HMB_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	412	412	7.34
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Baylor_CVD_HemStroke_GOCHA_DS_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	1093	1093	18.97
+CCDG	--	Registration Pending	--	DS	AnVIL_CCDG_Baylor_CVD_HemStroke_Regards_DS_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	121	121	2.17
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Baylor_CVD_HemStroke_WashU_DS_WGS	hemorrhagic stroke	Consortium Access	TBD	TBD	92	92	1.54
+CCDG	--	Registration Pending	--	HMB	AnVIL_CCDG_Baylor_CVD_HemStroke_Yale_HMB_WGS	hemorrhagic stroke	Consortium Access	TBD	Whole Genome	185	185	3.15
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Baylor_CVD_HHRC_Brownsville_GRU_WGS	cardiovascular system disease	Consortium Access	TBD	Whole Genome	276	276	5.02
+CCDG	--	Registration Pending	--	GRU-IRB	AnVIL_CCDG_Baylor_CVD_Oregon_SUDS_GRU_WGS	cardiovascular system disease	Consortium Access	TBD	Whole Genome	2216	2216	38.47
+CCDG	--	Registration Pending	--	DS	AnVIL_CCDG_Baylor_CVD_TexGen_DS_WGS	cardiovascular system disease	Consortium Access	TBD	Whole Genome	6461	6461	112.44
+CCDG	--	Registration Pending	--	DS	AnVIL_CCDG_Baylor_CVD_Ventura_Presto_GRU-IRB_WGS	cardiovascular system disease	Consortium Access	TBD	Whole Genome	584	584	9.91
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	GRU	anvil_ccdg_broad_ai_ibd_alm_gmc_wes	inflammatory bowel disease	Controlled Access	Case-Control	Exome	915	915	0.99
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	HMB	AnVIL_CCDG_Broad_AI_IBD_Brant_DS-IBD_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	199	199	2.61
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	HMB	AnVIL_CCDG_Broad_AI_IBD_Brant_HMB_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	904	904	12.44
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	DS-IBD	AnVIL_CCDG_Broad_AI_IBD_Cho_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	344	345	5.34
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_alm_gmc_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	942	925	0.16
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_bernstein_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	537	536	0.09
+CCDG	--	Registration Pending	--	Consortia Access Only	anvil_ccdg_broad_ai_ibd_daly_bernstein_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	536	536	0.47
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_brant_niddk_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	1077	1071	0.17
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_burnstein_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	68	68	0.01
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_burnstein_utsw_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	65	65	0.06
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_chen_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	15	15	0.00
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_chen_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	21	21	0.02
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_cho_niddk_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	1786	1786	0.31
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_chung_gider_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	628	628	0.11
+CCDG	--	Registration Pending	--	DS-GI,18+	anvil_ccdg_broad_ai_ibd_daly_chung_gider_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	627	627	0.54
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_duerr_niddk_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	1948	1839	0.33
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_faubion_share_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	906	905	0.16
+CCDG	--	Registration Pending	--	DS-IBD	anvil_ccdg_broad_ai_ibd_daly_faubion_share_wes	inflammatory bowel disease	Consortium Access	Case Set	Exome	890	890	0.79
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_franchimont_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	2826	2824	0.48
+CCDG	--	Registration Pending	--	DS-GI	anvil_ccdg_broad_ai_ibd_daly_franchimont_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2848	2848	4.05
+CCDG	--	Registration Pending	--	GRU	anvil_ccdg_broad_ai_ibd_daly_hyams_protect_wes	inflammatory bowel disease	Consortium Access	Case Set	Exome	418	418	0.36
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_kastner_fmf_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	27	27	0.01
+CCDG	--	Registration Pending	--	HMP-NPU-MDS	anvil_ccdg_broad_ai_ibd_daly_kupcinskas_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2285	2285	3.73
+CCDG	--	Registration Pending	--	GRU	anvil_ccdg_broad_ai_ibd_daly_lewis_ccfa_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2860	2860	2.65
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_lewis_sparc_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	2863	2863	0.49
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_lira_share_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	55	55	0.09
+CCDG	--	Registration Pending	--	GRU	anvil_ccdg_broad_ai_ibd_daly_louis_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2120	2120	2.84
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_mccauley_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	1642	1642	0.28
+CCDG	--	Registration Pending	--	HMB	anvil_ccdg_broad_ai_ibd_daly_mccauley_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1749	1749	1.55
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_mcgovern_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	6088	6088	1.04
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_mcgovern_niddk_wes	inflammatory bowel disease	Controlled Access	Case-Control	Exome	8518	8518	10.03
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_mcgovern_share_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	484	484	0.66
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_moayyedi_imagine_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	1303	1303	0.22
+CCDG	--	Registration Pending	--	Consortia Access Only	anvil_ccdg_broad_ai_ibd_daly_moayyedi_imagine_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1301	1301	1.08
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_newberry_share_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	869	869	0.15
+CCDG	--	Registration Pending	--	DS-IBD	anvil_ccdg_broad_ai_ibd_daly_newberry_share_wes	inflammatory bowel disease	Consortium Access	Case Set	Exome	925	925	0.88
+CCDG	--	Registration Pending	--	HMB-MDS	anvil_ccdg_broad_ai_ibd_daly_niddk_cho_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1966	1966	2.87
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_pekow_share_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	706	706	0.12
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_pekow_share_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	586	586	0.54
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_rioux_igenomed_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	186	186	0.03
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_rioux_igenomed_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	182	182	0.17
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_rioux_niddk_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	919	915	0.16
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_rioux_niddk_wes	inflammatory bowel disease	Controlled Access	Case-Control	Exome	1707	1705	2.59
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_sands_msccr_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	1464	1464	0.25
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_sands_msccr_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	1435	1435	1.22
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_sartor_share_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	51	51	0.09
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_silverberg_niddk_gsa	inflammatory bowel disease	Controlled Access	Case-Control	Genotyping Array	2440	2417	0.42
+CCDG	--	Registration Pending	--	HMB-MDS	anvil_ccdg_broad_ai_ibd_daly_stampfer_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1489	1489	1.41
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_vermeire_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	4851	4850	0.83
+CCDG	--	Registration Pending	--	DS-GI	anvil_ccdg_broad_ai_ibd_daly_vermeire_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	4719	4719	4.64
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_xavier_kastner_fmf_wes	inflammatory bowel disease	Controlled Access	TBD	Exome	27	27	0.02
+CCDG	--	Registration Pending	--	DS-GI	anvil_ccdg_broad_ai_ibd_daly_xavier_prism_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2831	2831	5.12
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	TBD	anvil_ccdg_broad_ai_ibd_daly_xavier_share_gsa	inflammatory bowel disease	Controlled Access	TBD	Genotyping Array	709	706	0.12
+CCDG	--	Registration Pending	--	DS-IBD-MDS	anvil_ccdg_broad_ai_ibd_daly_xavier_share_wes	inflammatory bowel disease	Consortium Access	Case Set	Exome	733	733	0.67
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	GRU	AnVIL_CCDG_Broad_AI_IBD_Kugathasan_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	1351	1351	17.29
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	HMB	AnVIL_CCDG_Broad_AI_IBD_McCauley_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	913	913	11.53
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	GRU	AnVIL_CCDG_Broad_AI_IBD_McGovern_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	1633	1633	23.39
+CCDG	Center for Common Disease Genomics [CCDG] - Autoimmune: Inflammatory Bowel Disease (IBD) Exomes and Genomes	phs001642	phs001642.v1.p1	DS-GID	AnVIL_CCDG_Broad_AI_IBD_Newberry_WGS	inflammatory bowel disease	Controlled Access	Case-Control	Whole Genome	31	31	0.39
+CCDG	--	Registration Pending	--	DS-GI	anvil_ccdg_broad_ai_ibd_niddk_daly_brant_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1081	1078	1.20
+CCDG	--	Registration Pending	--	HMB-MDS	anvil_ccdg_broad_ai_ibd_niddk_daly_duerr_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	1872	1866	2.43
+CCDG	--	Registration Pending	--	DS-IBD	anvil_ccdg_broad_ai_ibd_niddk_daly_silverberg_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	2462	2444	3.34
+CCDG	NHLBI TOPMed - NHGRI CCDG: Vanderbilt University BioVU Atrial Fibrillation Genetics Study	phs001624	phs001624.v1.p1	HMB-GSO	AnVIL_CCDG_Broad_CVD_AF_BioVU_HMB_GSO_Arrays	inflammatory bowel disease	Controlled Access	TBD	TBD	0	0	0.00
+CCDG	NHLBI TOPMed - NHGRI CCDG: Vanderbilt University BioVU Atrial Fibrillation Genetics Study	phs001624	phs001624.v1.p1	HMB-GSO	AnVIL_CCDG_Broad_CVD_AF_BioVU_HMB_GSO_WES	atrial fibrillation	Controlled Access	Case Set	Exome	5031	5031	4.65
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Darbar_UIC_Cases_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	304	304	0.05
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Darbar_UIC_Cases_WES	atrial fibrillation	Consortium Access	TBD	Exome	304	304	0.27
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Darbar_UIC_Controls_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	306	306	0.05
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Darbar_UIC_Controls_WES	atrial fibrillation	Consortium Access	TBD	Exome	305	305	0.27
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_EAST_WES	atrial fibrillation	Consortium Access	TBD	Exome	1565	1565	1.35
+CCDG	NHLBI TOPMed - NHGRI CCDG: MGH Atrial Fibrillation Study	phs001062	phs001062.v4.p2	TBD	AnVIL_CCDG_Broad_CVD_AF_Ellinor_MGH_Arrays	atrial fibrillation	Controlled Access	Case-Control	Genotyping Array	381	381	0.07
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Ellinor_MGH_WES	atrial fibrillation	Consortium Access	TBD	Exome	489	489	0.47
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: ENGAGE Atrial Fibrillation-TIMI 48	phs002774	phs002774.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_ENGAGE_DS_WES	atrial fibrillation	Controlled Access	TBD	Exome	13621	13621	11.58
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: Cardiology Biobanking for Biomarker Discovery	phs002726	phs002726.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Figtree_BioHeart_WES	atrial fibrillation	Controlled Access	TBD	Exome	938	938	0.83
+CCDG	--	phs002236	--	TBD	AnVIL_CCDG_Broad_CVD_AF_GAPP_DS-MDS_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	2081	2081	0.36
+CCDG	--	phs002236	--	TBD	AnVIL_CCDG_Broad_CVD_AF_GAPP_DS-MDS_WES	atrial fibrillation	Consortium Access	TBD	Exome	2150	2150	1.90
+CCDG	NHLBI TOPMed - NHGRI CCDG: UCSF Atrial Fibrillation Study	phs001933	phs001933.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Marcus_UCSF_Arrays	atrial fibrillation	Controlled Access	Case-Control	Genotyping Array	156	156	0.03
+CCDG	NHLBI TOPMed - NHGRI CCDG: UCSF Atrial Fibrillation Study	phs001933	phs001933.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Marcus_UCSF_WES	atrial fibrillation	Controlled Access	TBD	Exome	599	599	0.53
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Natale_TCAI_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	1164	1164	0.20
+CCDG	NHLBI TOPMed: Texas Cardiac Arrhythmia Institute - DECAF Study	phs001546	phs001546.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Natale_TCAI_WES	atrial fibrillation	Controlled Access	TBD	Exome	1214	1214	1.04
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Olesen_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	22	22	0.00
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Olesen_WES	atrial fibrillation	Consortium Access	TBD	Exome	55	55	0.05
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular:  PEGASUS-TIMI 54	phs002243	phs002243.v1.p1	HMB	AnVIL_CCDG_Broad_CVD_AF_PEGASUS_HMB	atrial fibrillation	Controlled Access	Clinical trial	Exome	7483	7483	6.37
+CCDG	NHLBI TOPMed CCDG: Groningen Atrial Fibrillation (GGAF) Study	phs001725	phs001725.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Rienstra_WES	atrial fibrillation	Controlled Access	TBD	Exome	2094	2093	1.87
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_Roberts_UWO_WES	atrial fibrillation	Consortium Access	TBD	Exome	581	581	0.51
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: SWISS-AF/SWISS-AF-PVI/BEAT-AF	phs002242	phs002242.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Swiss_Cases_DS-MDS_Arrays	atrial fibrillation	Controlled Access	Case-Control	Genotyping Array	4461	4461	0.76
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: SWISS-AF/SWISS-AF-PVI/BEAT-AF	phs002242	phs002242.v1.p1	TBD	AnVIL_CCDG_Broad_CVD_AF_Swiss_Cases_DS-MDS_WES	atrial fibrillation	Controlled Access	TBD	Exome	4546	4546	4.26
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_TMDU_Cases_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	1960	1960	0.31
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_TMDU_Cases_WES	atrial fibrillation	Consortium Access	TBD	Exome	1957	1957	1.53
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_TMDU_Controls_Arrays	atrial fibrillation	Consortium Access	Case-Control	Genotyping Array	1379	1379	0.22
+CCDG	--	Registration Pending	--	TBD	AnVIL_CCDG_Broad_CVD_AF_TMDU_Controls_WES	atrial fibrillation	Consortium Access	TBD	Exome	1380	1380	1.30
+CCDG	NHLBI TOPMed - NHGRI CCDG: The Vanderbilt AF Ablation Registry	phs000997	phs000997.v5.p2	TBD	AnVIL_CCDG_Broad_CVD_AF_VAFAR_Arrays	atrial fibrillation	Controlled Access	Case-Control	Genotyping Array	1384	1384	0.24
+CCDG	NHLBI TOPMed - NHGRI CCDG: The Vanderbilt AF Ablation Registry	phs000997	phs000997.v5.p2	TBD	AnVIL_CCDG_Broad_CVD_AF_VAFAR_WES	atrial fibrillation	Controlled Access	TBD	Exome	1548	1548	1.37
+CCDG	NHLBI TOPMed - NHGRI CCDG: AFLMU	phs001543	phs001543.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_AFLMU_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	248	248	5.37
+CCDG	NHLBI TOPMed - NHGRI CCDG: CATHeterization GENetics (CATHGEN) Cohort	phs001600	phs001600.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_Duke_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	123	123	2.56
+CCDG	NHLBI TOPMed - NHGRI CCDG: The GENetics in Atrial Fibrillation (GENAF) Study	phs001547	phs001547.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_GENAF_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	90	90	1.87
+CCDG	NHLBI TOPMed - NHGRI CCDG: Intermountain INSPIRE Registry	phs001545	phs001545.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_Intermountain_WGS	atrial fibrillation	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	464	464	9.07
+CCDG	NHLBI TOPMed - NHGRI CCDG: JHU AFGen Study	phs001598	phs001598.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_JHU_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	290	290	5.45
+CCDG	NHLBI TOPMed - NHGRI CCDG: MGH Atrial Fibrillation Study	phs001062	phs001062.v4.p2	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_MGH_WGS	cardiovascular system disease	Controlled Access	Case Set	Whole Genome	105	105	2.32
+CCDG	NHLBI TOPMed - NHGRI CCDG: Malmo Preventive Project (MPP)	phs001544	phs001544.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_MPP_WGS	atrial fibrillation	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	118	118	2.55
+CCDG	CCDG-Cardiovascular: University of Pennsylvania Cohort	phs001502	phs001502.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_Penn_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	418	418	8.56
+CCDG	NHLBI TOPMed - NHGRI CCDG: UCSF Atrial Fibrillation Study	phs001933	phs001933.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_UCSF_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	112	112	2.41
+CCDG	NHLBI TOPMed - NHGRI CCDG: The Vanderbilt AF Ablation Registry	phs000997	phs000997.v5.p2	Consortia Access Only	AnVIL_CCDG_Broad_CVD_AFib_Vanderbilt-Ablation_WGS	atrial fibrillation	Controlled Access	Case Set	Whole Genome	2	2	0.04
+CCDG	Center Common Disease Genomics [CCDG] - Cardiovascular: Partners Biobank	phs002018	phs002018.v1.p1	Consortia Access Only	AnVIL_CCDG_Broad_CVD_EOCAD_PartnersBiobank_HMB_Arrays	--	Controlled Access	Control Set	TBD	13152	13152	3.46
+CCDG	Center Common Disease Genomics [CCDG] - Cardiovascular: Partners Biobank	phs002018	phs002018.v1.p1	HMB	AnVIL_CCDG_Broad_CVD_EOCAD_PartnersBiobank_HMB_WES	myocardial infarction	Controlled Access	Control Set	Exome	13332	13332	12.92
+CCDG	--	phs001569	--	GRU	ANVIL_CCDG_Broad_CVD_EOCAD_PROMIS_ARRAY	myocardial infarction	Consortium Access	Case-Control	Genotyping Array	0	0	0.00
+CCDG	--	phs001569	--	GRU	AnVIL_CCDG_Broad_CVD_EOCAD_PROMIS_WGS	myocardial infarction	Consortium Access	Case-Control	Whole Genome	1136	1136	15.58
+CCDG	Center Common Disease Genomics [CCDG] - CVD - TAICHI	phs001487	phs001487.v1.p1	DS-CVD-IRB-COL-MDS	AnVIL_CCDG_Broad_CVD_EOCAD_TaiChi_WGS	cardiovascular system disease	Controlled Access	Case Set	Whole Genome	773	773	15.14
+CCDG	CCDG CVD: VIRGO - Variation in Recover-Role of Gender on Outcomes of Young Acute Myocardial Infarction (AMI) Patients	phs001259	phs001259.v1.p1	DS-CARD-MDS-GSO	AnVIL_CCDG_Broad_CVD_EOCAD_VIRGO_WGS	cardiovascular system disease	Controlled Access	TBD	Whole Genome	2159	2158	37.77
+CCDG	--	phs001569	--	GRU	AnVIL_CCDG_Broad_CVD_PROMIS_GRU_WES	myocardial infarction	Consortium Access	Case-Control	Exome	16808	16808	30.55
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: The Bangladesh Risk of Acute Vascular Events (BRAVE) Study	phs001398	phs001398.v1.p1	GRU	AnVIL_CCDG_Broad_CVD_Stroke_BRAVE_WGS	myocardial infarction	Controlled Access	Case-Control	Whole Genome	496	496	6.34
+CCDG	--	Registration Pending	--	TBD	anvil_ccdg_broad_daly_igsr_1kg_twist_gsa	--	Consortium Access	TBD	Genotyping Array	671	671	0.12
+CCDG	--	Registration Pending	--	GRU	anvil_ccdg_broad_daly_igsr_1kg_twist_wes	inflammatory bowel disease	Consortium Access	Control Set	Exome	669	669	0.57
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular ATVB: Atherosclerosis Thrombosis and Vascular Biology	phs001592	phs001592.v1.p1	DS-CVD	AnVIL_CCDG_Broad_MI_ATVB_DS_CVD_WES	myocardial infarction	Controlled Access	Case-Control	Exome	58	58	0.11
+CCDG	Center for Common Disease Genomics [CCDG] - Cardiovascular: The Bangladesh Risk of Acute Vascular Events (BRAVE) Study	phs001398	phs001398.v1.p1	GRU	AnVIL_CCDG_Broad_MI_BRAVE_GRU_WES	myocardial infarction	Controlled Access	TBD	Exome	1496	1496	2.47
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_MI_InStem_WES	cardiovascular system disease	Consortium Access	Case-Control	Exome	1452	1452	2.29
+CCDG	--	Registration Pending	--	DS-CVD	AnVIL_CCDG_Broad_MI_UnivUtah_DS_CVD_WES	myocardial infarction	Consortium Access	TBD	Exome	1471	1471	2.51
+CCDG	--	Registration Pending	--	Consortia Access Only	AnVIL_CCDG_Broad_NP_Autism_State-Sanders_WGS	autism spectrum disorder	Consortium Access	TBD	Whole Genome	534	534	8.64
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSALF_HMB_IRB_GSRS_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	16	16	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSALF_HMB_IRB_GSRS_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EP_BA_CN_ID_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	1520	1520	0.26
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	EPIL_BRAINAB_CONVUL_INTELCT_DIS_MDS	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EP_BA_CN_ID_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	1597	1597	2.60
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EPI_BA_ID_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	25	25	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	EPIL_BRAIN_AB_INTEL_DIS_MDS	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EPI_BA_ID_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	24	24	0.04
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EPIL_BA_MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	12	12	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	EPIL_BRAIN_AB_MDS	AnVIL_CCDG_Broad_NP_Epilepsy_AUSAUS_EPIL_BA_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	12	12	0.02
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSRMB_DS-EAED-MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	388	388	0.07
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSRMB_DS-EAED-MDS-NPU-IRB_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	211	211	0.04
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUSRMB_DS-EAED-MDS-NPU-IRB_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EAED-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_AUSRMB_DS-EAED-MDS_WES	epilepsy	Controlled Access	Case Set	Exome	383	383	0.58
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUTMUV_DS_NS_MDS_NPU_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	101	101	0.02
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUTMUV_DS_NS_MDS_NPU_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUTMUV_DS_NS_NPU_ADLT_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	11	11	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_AUTMUV_DS_NS_NPU_ADLT_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_BELATW_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	231	231	0.04
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_BELATW_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	107	107	0.19
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_BELULB_DS-EP-NPU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	422	422	0.07
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EP-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_BELULB_DS-EP-NPU_WES	epilepsy	Controlled Access	Case Set	Exome	415	415	0.66
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_BRAUSP_DS_MDS_NPU_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	4	4	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_BRAUSP_DS_MDS_NPU_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CANCAL_GRU_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CANCAL_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	267	267	0.05
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CANUTN_DS-EP_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	145	145	0.03
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EP	AnVIL_CCDG_Broad_NP_Epilepsy_CANUTN_DS-EP_WES	epilepsy	Controlled Access	Case Set	Exome	143	143	0.23
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CHEUBB_HMB-IRB-MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	48	48	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-IRB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_CHEUBB_HMB_IRB_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	47	47	0.04
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CYPCYP_HMB-NPU-MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	182	182	0.03
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_CYPCYP_HMB_NPU_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	179	179	0.29
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_CZEMTH_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	16	16	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_CZEMTH_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	16	16	0.03
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUPUM_HMB-MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	332	332	0.06
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_DEUPUM_HMB_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	325	325	0.44
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUGS_DS_EP_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	390	390	0.07
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUKB_HMB-NPU-MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	2594	2594	0.44
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUKB_HMB_NPU_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	2498	2498	3.78
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUKL_HMB_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	213	213	0.04
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUKL_HMB_WES	epilepsy	Controlled Access	Case Set	Exome	209	209	0.37
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUULG_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	105	105	0.02
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_DEUULG_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	90	90	0.15
+CCDG	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUPM_HMB_MDS_WES	epilepsy	Controlled Access	TBD	Exome	112	112	0.00
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUTB_HMB-NPU_MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	1694	1694	0.29
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_DEUUTB_HMB-NPU-MDS_WES	epilepsy	Controlled Access	Case Set	Exome	1654	1654	2.31
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	EPIL_CO_MORBIDI_MDS	AnVIL_CCDG_Broad_NP_Epilepsy_FINKPH_EPIL_CO_MORBIDI_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	904	904	1.37
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_FINKPH_EPIL_MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	934	934	0.16
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_FINUVH_HMB-NPU-MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	105	105	0.02
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_FINUVH_HMB_NPU_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	100	100	0.17
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_FRALYU_HMB_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	806	806	0.14
+CCDG	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_FRALYU_HMB_WES	epilepsy	Controlled Access	TBD	Exome	1030	1030	1.13
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_GBRSWU_CARDI_NEURO_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	307	307	0.06
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-CARDI_NEURO	AnVIL_CCDG_Broad_NP_Epilepsy_GBRSWU_CARDI_NEURO_WES	epilepsy	Controlled Access	Case Set	Exome	305	305	0.38
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUCL_DS_EARET_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	721	721	0.12
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EARET-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUCL_DS_EARET_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	684	684	1.25
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUNL_EP_ETIOLOGY_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	479	479	0.08
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EP-ETIOLOGY-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUNL_EP_ETIOLOGY_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	458	458	0.92
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUNL_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	58	58	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_GBRUNL_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	55	55	0.12
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_GHAKNT_GRU_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	641	641	0.11
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_GHAKNT_GRU_WES	epilepsy	Consortium Access	Case-Control	Exome	642	642	0.56
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_HKGHKK_HMB_MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	674	674	0.12
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_HKGHKK_HMB_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	665	665	0.64
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_HKOSB_GRU_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	115	115	0.02
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_HKOSB_GRU_WES	epilepsy	Consortium Access	Case Set	Exome	114	114	0.10
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_HRVUZG_HMB-MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	36	36	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_HRVUZG_HMB_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	36	36	0.06
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_IRLRCI_GRU-IRB_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	971	971	0.17
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU-IRB	AnVIL_CCDG_Broad_NP_Epilepsy_IRLRCI_GRU_IRB_WES	epilepsy	Controlled Access	Case Set	Exome	933	933	1.53
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ITAICB_HMB-NPU-MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	447	447	0.08
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_ITAICB_HMB_NPU_MDS_WES	epilepsy	Controlled Access	TBD	Exome	424	424	0.56
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ITAIGI_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	1211	1211	0.21
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_ITAIGI_GRU_WES	epilepsy	Controlled Access	TBD	Exome	1149	1149	1.70
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUBG_DS-EPI-NPU-MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	617	617	0.11
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EPI-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUBG_DS_EPI_NPU_MDS_WES	epilepsy	Controlled Access	TBD	Exome	605	605	0.85
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUMC_DS_NEURO_MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	497	497	0.09
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-NEURO-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUMC_DS_NEURO_MDS_WES	epilepsy	Controlled Access	TBD	Exome	412	412	0.64
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUMR_GRU-NPU_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	1144	1144	0.20
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_ITAUMR_GRU_NPU_WES	epilepsy	Controlled Access	TBD	Exome	1086	1086	1.86
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_JPNFKA_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	368	368	0.06
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_JPNFKA_GRU_WES	epilepsy	Consortium Access	Case Set	Exome	368	368	0.60
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_JPNRKI_DS_NPD_IRB_NPU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	99	99	0.02
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-NPD-IRB-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_JPNRKI_DS_NPD_IRB_NPU_WES	epilepsy	Controlled Access	Case Set	Exome	94	94	0.19
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_KENKIL_GRU_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	449	449	0.08
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_KENKIL_GRU_WES	epilepsy	Consortium Access	Case-Control	Exome	448	448	0.39
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_LEBABM_DS_Epilepsy_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	140	140	0.03
+CCDG	--	Registration Pending	--	DS-EP	AnVIL_CCDG_Broad_NP_Epilepsy_LEBABM_DS_Epilepsy_WES	epilepsy	Consortium Access	Case-Control	Exome	392	392	0.46
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_LEBABM_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	846	846	0.15
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_LEBABM_GRU_WES	epilepsy	Consortium Access	Case-Control	Exome	844	844	0.99
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_LTUUHK_HMB_NPU_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	297	297	0.05
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_LTUUHK_HMB_NPU_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	296	296	0.48
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_NZLUTO_EPIL_BC_ID_MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	274	273	0.05
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EPIL-BC-ID-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_NZLUTO_EPIL_BC_ID_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	263	263	0.39
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_TURBZU_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	208	208	0.04
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_TURBZU_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	208	208	0.34
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_TURIBU_DS_NEURO_AD_NPU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	183	183	0.03
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-NEURO-AD-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_TURIBU_DS_NEURO_AD_NPU_WES	epilepsy	Controlled Access	Case-Control	Exome	163	163	0.29
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_TWNCGM_HMB-NPU-ADULTS_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	1036	1036	0.18
+CCDG	--	Registration Pending	--	HMB-NPU-ADULTS	AnVIL_CCDG_Broad_NP_Epilepsy_TWNCGM_HMB-NPU-ADULTS_WES	epilepsy	Consortium Access	Case-Control	Exome	1017	1017	1.22
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USABCH_EPI_MUL_CON_MDS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	320	320	0.06
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EPI-MUL-CON-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USABCH_EPI_MUL_CON_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	318	318	0.42
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USABLC_GRU-NPU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	223	223	0.04
+CCDG	--	Registration Pending	--	GRU-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_USABLC_GRU-NPU_WES	epilepsy	Consortium Access	Case Set	Exome	223	223	0.40
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACCF_HMB-MDS_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	378	378	0.07
+CCDG	--	Registration Pending	--	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USACCF_HMB-MDS_WES	epilepsy	Consortium Access	Case Set	Exome	380	380	0.43
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACCH_DS_NEURO_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	356	356	0.06
+CCDG	--	Registration Pending	--	DS-NEURO-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USACCH_DS_NEURO_MDS_WES	epilepsy	Consortium Access	Case Set	Exome	358	358	0.63
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACHP_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	3397	3397	0.58
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USACHP_GRU_WES	epilepsy	Controlled Access	Case-Control	Exome	3333	3333	4.41
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_DS_EP_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	411	411	0.07
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EP-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_DS_EP_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	326	326	0.61
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_DS_SEIZD_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	187	187	0.03
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-SEIZD	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_DS_SEIZD_WES	epilepsy	Controlled Access	Case Set	Exome	152	152	0.31
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_EPI_ASZ_MED_MDS_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	40	40	0.01
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-EPI-ASZ-MED-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USACRW_EPI_ASZ_MED_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	37	37	0.06
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAEGP_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	129	129	0.02
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAEGP_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	127	127	0.21
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAFEB_GRU_GSA-MD	epilepsy	Consortium Access	TBD	Genotyping Array	31	31	0.01
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAFEB_GRU_WES	epilepsy	Consortium Access	Case Set	Exome	31	31	0.06
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAHEP_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	338	338	0.06
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAHEP_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	322	322	0.45
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USALCH_HMB_MDS_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	7	7	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USALCH_HMB_MDS_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMGH_HMB_MDS_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	21	21	0.00
+CCDG	--	Registration Pending	--	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USAMGH_HMB_MDS_WES	epilepsy	Consortium Access	Case Set	Exome	20	20	0.02
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMGH_MGBB_HMB_MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	40	40	0.01
+CCDG	--	Registration Pending	--	HMB-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USAMGH_MGBB_HMB_MDS_WES	epilepsy	Consortium Access	Case Set	Exome	44	44	0.04
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	238	238	0.04
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_GSRS_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	46	46	0.01
+CCDG	--	Registration Pending	--	GRU-GSRS	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_GSRS_WES	epilepsy	Consortium Access	Case Set	Exome	47	47	0.04
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_NPU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	4	4	0.00
+CCDG	--	Registration Pending	--	GRU-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_NPU_WES	epilepsy	Consortium Access	Case Set	Exome	4	4	0.00
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_GRU_WES	epilepsy	Consortium Access	Case Set	Exome	239	239	0.29
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_HMB_NPU_MDS_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	4	4	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMON_HMB_NPU_MDS_WES	epilepsy	Controlled Access	TBD	Exome	0	0	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAMSS_DS_EP_NEURO_MDS_GSA-MD	epilepsy	Controlled Access	Case-Control	Genotyping Array	145	145	0.03
+CCDG	--	Registration Pending	--	DS-EP-NEURO-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USAMSS_DS_EP_NEURO_MDS_WES	epilepsy	Consortium Access	Case Set	Exome	148	148	0.14
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USANCH_DS_NEURO_MDS_GSA-MD	epilepsy	Consortium Access	Case set	Genotyping Array	317	317	0.06
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	DS-NEURO-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_USANCH_DS_NEURO_MDS_WES	epilepsy	Controlled Access	Case Set	Exome	313	313	0.53
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_CHOP_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	388	344	0.07
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_CHOP_GRU_NPU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	47	41	0.01
+CCDG	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_GRU_NPU_WES	epilepsy	Controlled Access	TBD	Exome	6	6	0.00
+CCDG	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_GRU_WES	epilepsy	Controlled Access	TBD	Exome	357	357	0.00
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU-NPU	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_Marsh_GRU_NPU_WES	epilepsy	Controlled Access	Case Set	Exome	41	41	0.04
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_Marsh_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	341	341	0.39
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_Penn_GRU_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	822	822	0.14
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	GRU	AnVIL_CCDG_Broad_NP_Epilepsy_USAUPN_Rader_GRU_WES	epilepsy	Controlled Access	Case Set	Exome	822	822	0.95
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAVAN_HMB-GSO_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	482	482	0.08
+CCDG	--	Registration Pending	--	HMB-GSO	AnVIL_CCDG_Broad_NP_Epilepsy_USAVAN_HMB-GSO_WES	epilepsy	Consortium Access	Case-Control	Exome	483	483	0.41
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAVANControls_HMB-GSO_GSA-MD	epilepsy	Consortium Access	Case-Control	Genotyping Array	1958	1958	0.33
+CCDG	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_USAVANcontrols_HMB-GSO_WES	epilepsy	Controlled Access	TBD	Exome	1971	1971	1.72
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	TBD	AnVIL_CCDG_Broad_NP_Epilepsy_ZAFAGN_DS-EPI-COMO-MDS_GSA-MD	epilepsy	Controlled Access	TBD	Genotyping Array	504	504	0.09
+CCDG	--	Registration Pending	--	DS-EPI-COMO-MDS	AnVIL_CCDG_Broad_NP_Epilepsy_ZAFAGN_DS-EPI-COMO-MDS_WES	epilepsy	Consortium Access	Case-Control	Exome	503	503	0.45
+CCDG	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	HMB-NPU	AnVIL_CCDG_Broad_Spalletta_HMB_NPU_MDS_WES	control	Controlled Access	Control Set	Exome	102	102	0.16
+CCDG	NHLBI TOPMed - NHGRI CCDG: Genes-Environments and Admixture in Latino Asthmatics (GALA II)	phs000920	phs000920.v4.p2	DS-LD-RD	AnVIL_CCDG_NYGC_AI_Asthma_Gala2_WGS	asthma	Controlled Access	TBD	Whole Genome	1171	1171	28.69
+CCDG	Columbia University Study of Caribbean Hispanics and Late Onset Alzheimer's disease	phs000496	phs000496.v1.p1	Consortia Access Only	AnVIL_CCDG_NYGC_NP_Alz_EFIGA_WGS	Alzheimer's disease	Controlled Access	Case-Control	Whole Genome	1875	1875	42.33
+CCDG	Genetics Consortium for Late Onset of Alzheimer's Disease (LOAD CIDR Project)	phs000160	phs000160.v1.p1	Consortia Access Only	AnVIL_CCDG_NYGC_NP_Alz_LOAD_WGS	Alzheimer's disease	Controlled Access	TBD	Whole Genome	1049	1049	24.49
+CCDG	Columbia University Study of Caribbean Hispanics and Late Onset Alzheimer's disease	phs000496	phs000496.v1.p1	Consortia Access Only	AnVIL_CCDG_NYGC_NP_Alz_WHICAP_WGS	Alzheimer's disease	Controlled Access	Case-Control	Whole Genome	148	148	3.65
+CCDG	CCDG Neuropsychiatric: Autism Center of Excellence (ACE II)	phs002042	phs002042.v1.p1	DS-ASD-MDS-PUB	AnVIL_CCDG_NYGC_NP_Autism_ACE2_DS-MDS_WGS	autism spectrum disorder	Controlled Access	Parent-Offspring	Whole Genome	146	146	3.19
+CCDG	CCDG Neuropsychiatric: Autism Center of Excellence (ACE II)	phs002042	phs002042.v1.p1	GRU-MDS-PUB	AnVIL_CCDG_NYGC_NP_Autism_ACE2_GRU-MDS_WGS	autism spectrum disorder	Controlled Access	TBD	Whole Genome	839	839	17.39
+CCDG	--	Registration Pending	--	DS-ASD-IRB-PUB-COL-NPO-GSO	AnVIL_CCDG_NYGC_NP_Autism_AFS_DS_WGS	autism spectrum disorder	Consortium Access	TBD	Whole Genome	729	729	11.68
+CCDG	CCDG-Neuropsychiatric: Autism- Autism Genetic Resource Exchange (AGRE)	phs001766	phs001766.v1.p1	DS-ASD-IRB	AnVIL_CCDG_NYGC_NP_Autism_AGRE_WGS	autism spectrum disorder	Controlled Access	Family; Parent-Offspring	Whole Genome	4601	4601	106.08
+CCDG	CCDG-Neuropsychiatric: A Study of the Genetic Causes of Complex Pediatric Disorders	phs002004	phs002004.v1.p1	DS-ASD	AnVIL_CCDG_NYGC_NP_Autism_CAG_DS_WGS	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	734	734	13.39
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_NYGC_NP_Autism_GASD_GRU_WGS	autism spectrum disorder	Consortium Access	TBD	Whole Genome	392	392	6.32
+CCDG	CCDG-Neuropsychiatric: Victorian Collaborative AuTism Study (CATS)	phs002044	phs002044.v1.p1	DS-ASD-IRB	AnVIL_CCDG_NYGC_NP_Autism_HFA_DS_WGS	autism spectrum disorder	Controlled Access	Family; Parent-Offspring	Whole Genome	509	509	10.17
+CCDG	CCDG-Neuropsychiatric: Autism- Genetics of Human Developmental Brain Disorders	phs001894	phs001894.v1.p1	DS-EAC-PUB-GSO	AnVIL_CCDG_NYGC_NP_Autism_HMCA_WGS	autism spectrum disorder	Controlled Access	Family; Parent-Offspring	Whole Genome	724	724	17.22
+CCDG	CCDG Neuropsychiatric: Multimodal Developmental Neurogenetics of Females	phs002043	phs002043.v1.p1	DS-ASD	AnVIL_CCDG_NYGC_NP_Autism_PELPHREY_ACE_DS_WGS	autism spectrum disorder	Controlled Access	Parent-Offspring Trios; Parent-Offspring Quads	Whole Genome	47	47	0.74
+CCDG	CCDG Neuropsychiatric: Multimodal Developmental Neurogenetics of Females	phs002043	phs002043.v1.p1	GRU	AnVIL_CCDG_NYGC_NP_Autism_PELPHREY_ACE_GRU_WGS	autism spectrum disorder	Controlled Access	Parent-Offspring Trios; Parent-Offspring Quads	Whole Genome	197	197	3.09
+CCDG	CCDG- Neuropsychiatric: Autism- Study of Autism Genetics Exploration (SAGE)	phs001740	phs001740.v1.p1	DS-ASD-IRB	AnVIL_CCDG_NYGC_NP_Autism_SAGE_WGS	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	1501	1501	31.59
+CCDG	--	Registration Pending	--	DS-ASD-IRB	AnVIL_CCDG_NYGC_NP_Autism_SEARCHLIGHT_DS_WGS	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Whole Genome	389	389	6.50
+CCDG	--	Registration Pending	--	GRU-IRB-PUB	AnVIL_CCDG_NYGC_NP_Autism_SPARK_GRU_WGS	autism spectrum disorder	Consortium Access	Family/Twins/Trios	Whole Genome	12622	12622	259.52
+CCDG	CCDG- Neuropsychiatric: Autism - Simons Simplex Collection (SSC)	phs001676	phs001676.v1.p1	DS-AONDD-IRB	AnVIL_CCDG_NYGC_NP_Autism_SSC_WGS	autism spectrum disorder	Controlled Access	Family/Twins/Trios	Whole Genome	9201	9201	226.64
+CCDG	CCDG- Neuropsychiatric: Autism- The Autism Simplex Collection (TASC)	phs001741	phs001741.v1.p1	DS-ASD-IRB	AnVIL_CCDG_NYGC_NP_Autism_TASC_WGS	autism spectrum disorder	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	905	905	22.82
+CCDG	--	phs001569	--	Consortia Access Only	AnVIL_CCDG_TOPMED_Broad_CVD_EOCAD_PROMIS_WGS	myocardial infarction	Consortium Access	TBD	Whole Genome	3849	3849	73.13
+CCDG	NHLBI TOPMed - NHGRI CCDG: The BioMe Biobank at Mount Sinai	phs001644	phs001644.v1.p1	TBD	AnVIL_CCDG_TOPMed_WashU_CVD_Afib_BioMe_WGS	atrial fibrillation	Controlled Access	TBD	TBD	429	429	8.47
+CCDG	NHLBI TOPMed - NHGRI CCDG: Vanderbilt University BioVU Atrial Fibrillation Genetics Study	phs001624	phs001624.v1.p1	TBD	AnVIL_CCDG_TOPMed_WashU_CVD_Afib_BioVu_WGS	atrial fibrillation	Controlled Access	TBD	TBD	988	988	19.15
+CCDG	NHLBI TOPMed - NHGRI CCDG: CATHeterization GENetics (CATHGEN) Cohort	phs001600	phs001600.v1.p1	TBD	AnVIL_CCDG_TOPMed_WashU_CVD_Afib_Duke_WGS	atrial fibrillation	Controlled Access	TBD	TBD	245	245	4.78
+CCDG	CCDG-Cardiovascular: University of Pennsylvania Cohort	phs001502	phs001502.v1.p1	TBD	AnVIL_CCDG_TOPMed_WashU_CVD_Afib_Penn_WGS	atrial fibrillation	Controlled Access	TBD	TBD	482	482	9.36
+CCDG	CCDG - Whole Genome Sequencing in Type 1 Diabetes (T1DGC)	phs001222	phs001222.v1.p1	DS-DRC-IRB-NPU	AnVIL_CCDG_WashU_AI_T1D_T1DGC_WGS	type 1 diabetes mellitus	Controlled Access	TBD	Whole Genome	3397	3397	57.26
+CCDG	--	Registration Pending	--	DS-IRB-MDS	AnVIL_CCDG_WashU_CVD_Brazil-CVD_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	3608	3608	37.96
+CCDG	--	Registration Pending	--	DS-CAD-PUB-MDS	AnVIL_CCDG_WashU_CVD_Corogene_WGS	coronary artery disease	Consortium Access	Case Set	Whole Genome	547	547	8.97
+CCDG	Center for Common Disease Genomics (CCDG) - Cardiovascular: BioImage Cohort	phs002325	phs002325.v1.p1	DS-CVD	AnVIL_CCDG_WashU_CVD_EOCAD_BioImage_WGS	heart and blood vessel disease	Controlled Access	Case-Control	Whole Genome	922	922	17.56
+CCDG	--	phs001155	--	GRU	AnVIL_CCDG_WashU_CVD_EOCAD_BioMe_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	648	648	9.87
+CCDG	--	phs001873	--	HMB-GSO	AnVIL_CCDG_WashU_CVD_EOCAD_BioVu_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	624	624	11.95
+CCDG	Center for Common Disease Genomics (CCDG)-Cardiovascular:Cleveland Clinic	phs001871	phs001871.v1.p1	DS-CAD-IRB-COL-NPU	AnVIL_CCDG_WashU_CVD_EOCAD_Cleveland_WGS	coronary artery disease	Controlled Access	Case-Control	Whole Genome	348	348	6.89
+CCDG	--	phs001506	--	DS-CVD-IRB	AnVIL_CCDG_WashU_CVD_EOCAD_Duke_WGS	heart and blood vessel disease	Consortium Access	Case-Control	Whole Genome	1051	1051	21.83
+CCDG	CCDG - Cardiovascular: eMERGE - Northwestern Cohort	phs001913	phs001913.v1.p1	GRU-IRB	AnVIL_CCDG_WashU_CVD_EOCAD_Emerge_WGS	coronary artery disease	Controlled Access	Case-Control	Whole Genome	277	277	5.52
+CCDG	Center for Common Disease Genomics (CCDG) - Cardiovascular: Emory Cohort	phs001880	phs001880.v1.p1	GRU-NPU	AnVIL_CCDG_WashU_CVD_EOCAD_Emory_WGS	coronary artery disease	Controlled Access	Case-Control	Whole Genome	430	430	8.79
+CCDG	--	Registration Pending	--	GRU-IRB-NPU	AnVIL_CCDG_WashU_CVD_EOCAD_Finland-CHD_WGS	coronary artery disease	Consortium Access	Case Set	Whole Genome	155	155	3.09
+CCDG	Center for Common Disease Genomics (CCDG) - Cardiovascular: Harvard Gene-Diet Interaction in a Costa Rican Cohort	phs002282	phs002282.v1.p1	DS-CVDRF	AnVIL_CCDG_WashU_CVD_EOCAD_Harvard-Costa-Rica_WGS	cardiovascular disease and risk factors	Controlled Access	Case-Control	Whole Genome	3088	3088	44.13
+CCDG	--	phs001579	--	GRU-IRB-NPU	AnVIL_CCDG_WashU_CVD_EOCAD_METSIM_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	9477	9477	134.17
+CCDG	CCDG-Cardiovascular: University of Pennsylvania Cohort	phs001502	phs001502.v1.p1	HMB-IRB-PUB	AnVIL_CCDG_WashU_CVD_EOCAD_Penn_WGS	coronary artery disease	Controlled Access	Case-Control	Whole Genome	1356	1356	27.01
+CCDG	Washington University Coronary Artery Disease Study	phs001227	phs001227.v1.p1	DS-ATHSCL-IRB-MDS	AnVIL_CCDG_WashU_CVD_EOCAD_WashU-CAD_DS_WGS	atherosclerosis	Controlled Access	Case-Control	Whole Genome	80	80	3.43
+CCDG	Washington University Coronary Artery Disease Study	phs001227	phs001227.v1.p1	GRU-IRB	AnVIL_CCDG_WashU_CVD_EOCAD_WashU-CAD_GRU-IRB_WGS	atherosclerosis	Controlled Access	Case-Control	Whole Genome	265	265	4.75
+CCDG	--	Registration Pending	--	DS-LMC-IRB	AnVIL_CCDG_WashU_CVD_Eufam_WGS	coronary artery disease	Consortium Access	Case Set	Whole Genome	87	87	1.33
+CCDG	--	Registration Pending	--	GRU	AnVIL_CCDG_WashU_CVD_Indiana_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	1175	1175	12.00
+CCDG	--	Registration Pending	--	HMB-NPU	AnVIL_CCDG_WashU_CVD_Kanazawa_WGS	cardiovascular disease	Consortium Access	Case-Control	Whole Genome	273	273	3.05
+CCDG	--	Registration Pending	--	HMB-PUB	AnVIL_CCDG_WashU_CVD_MultiEthnic_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	7319	7319	119.44
+CCDG	--	phs002163	--	GRU	AnVIL_CCDG_WashU_CVD-NP-AI_Controls_VCControls_WGS	--	Consortium Access	Control Set	Whole Genome	112	112	2.65
+CCDG	Population Architecture using Genomics and Epidemiology (PAGE)	phs000356	phs000356.v2.p1	HMB-NPU	AnVIL_CCDG_WashU_CVD_PAGE_HMB-NPU_WGS	Unspecified	Controlled Access	TBD	Whole Genome	38	38	0.92
+CCDG	--	Registration Pending	--	HMB-IRB-PUB-COL	AnVIL_CCDG_WashU_CVD_SCCS_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	4326	4326	57.56
+CCDG	--	Registration Pending	--	HMB-IRB	AnVIL_CCDG_WashU_CVD_WHI_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	886	886	9.77
+CCDG	--	Registration Pending	--	GRU-IRB-COL	AnVIL_CCDG_WashU_CVD_Wisconsin_WGS	coronary artery disease	Consortium Access	Case-Control	Whole Genome	84	84	1.28
+CCDG	--	TBD	--	TBD	AnVIL_CCDG_WASHU_PAGE	Unspecified	Consortium Access	TBD	TBD	0	0	16.98
+CCDG	--	Registration Pending	--	GRU	anvil_nhgri_broad_ibd_daly_kugathasan_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	546	546	0.81
+CCDG	--	Registration Pending	--	GRU	anvil_nhgri_broad_ibd_daly_turner_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	155	155	0.32
+CCDG	--	Registration Pending	--	DS-IBD	anvil_nhgri_broad_ibd_daly_winter_wes	inflammatory bowel disease	Consortium Access	Case-Control	Exome	412	412	0.77
+CMG	Baylor Hopkins Center for Mendelian Genomics (BH CMG)	phs000711	phs000711.v7.p2	HMB-IRB-NPU	AnVIL_CMG_BaylorHopkins_HMB-IRB-NPU_WES	Mendelian disorders	Controlled Access	TBD	Exome	807	438	4.87
+CMG	Baylor Hopkins Center for Mendelian Genomics (BH CMG)	phs000711	phs000711.v7.p2	HMB-NPU	AnVIL_CMG_BaylorHopkins_HMB-NPU_WES	Mendelian disorders	Controlled Access	TBD	Exome	2054	438	31.24
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Blood_Fleming_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-BFD-MDS	AnVIL_CMG_Broad_Blood_Gazda_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	51	51	0.08
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-BFD-MDS	AnVIL_CMG_Broad_Blood_Gazda_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-BFD-MDS	AnVIL_CMG_Broad_Blood_Sankaran_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	310	277	0.56
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-BFD-MDS	AnVIL_CMG_Broad_Blood_Sankaran_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	96	96	1.61
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	ANVIL_CMG_BROAD_BRAIN_ENGLE_WES	Mendelian disorders	Controlled Access	TBD	Exome	473	473	0.40
+CMG	--	Registration Pending	--	TBD	AnVIL_CMG_Broad_Brain_Engle_WGS	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Whole Genome	95	95	1.79
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	HMB-MDS	AnVIL_CMG_Broad_Brain_Gleeson_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	1181	1181	3.06
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	HMB-MDS	AnVIL_CMG_Broad_Brain_Gleeson_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Brain_Muntoni_WES	Mendelian disorders	Controlled Access	TBD	Exome	39	39	0.07
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Brain_NeuroDev_WES	Mendelian disorders	Controlled Access	TBD	Exome	292	292	0.26
+CMG	--	Registration Pending	--	Consortia Access Only	AnVIL_CMG_Broad_Brain_Sherr_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	ANVIL_CMG_BROAD_BRAIN_SHERR_WGS	Mendelian disorders	Controlled Access	TBD	Whole Genome	3	3	0.04
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Brain_Thaker_WES	Mendelian disorders	Controlled Access	TBD	Exome	46	46	0.05
+CMG	--	TBD	--	TBD	AnVIL_CMG_Broad_Brain_Walsh_WES	Mendelian disorders	Consortium Access	TBD	Exome	773	767	1.69
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	ANVIL_CMG_BROAD_BRAIN_WALSH_WGS	Mendelian disorders	Controlled Access	TBD	TBD	0	0	0.00
+CMG	--	Registration Pending	--	GRU	AnVIL_CMG_Broad_Eye_Pierce_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	602	602	1.50
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Eye_Pierce_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	35	35	0.64
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Heart_PCGC-Tristani_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	79	79	1.26
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-CSD-MDS	AnVIL_CMG_Broad_Heart_Seidman_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	129	129	0.22
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-CSD-MDS	AnVIL_CMG_Broad_Heart_Seidman_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	0	0	0.00
+CMG	--	Registration Pending	--	DS-CVD-MDS	AnVIL_CMG_Broad_Heart_Ware_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	10	10	0.02
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Kidney_Hildebrandt_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	1222	1222	2.41
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Kidney_Hildebrandt_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	27	27	0.52
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Kidney_Pollak_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	147	147	0.25
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	DS-NEURO-GSO-MDS	AnVIL_CMG_Broad_Muscle_Beggs_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	439	109	0.40
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Muscle_Beggs_WGS	Mendelian disorders	Controlled Access	TBD	Whole Genome	0	0	0.83
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Muscle_Bonnemann_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	253	253	0.08
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Muscle_Bonnemann_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	94	94	1.65
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Muscle_INMR-Cooper_WES	Mendelian disorders	Controlled Access	TBD	TBD	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Muscle_Kang_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	49	49	0.10
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Muscle_Kang_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	2	2	0.04
+CMG	--	Registration Pending	--	DS-NIC-EMP-LENF	AnVIL_CMG_Broad_Muscle_KNC_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	64	44	0.14
+CMG	--	Registration Pending	--	DS-NIC-EMP-LENF	AnVIL_CMG_Broad_Muscle_KNC_WGS	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Whole Genome	14	14	0.25
+CMG	--	Registration Pending	--	HMB-MDS	ANVIL_CMG_Broad_Muscle_Laing_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Whole Genome	31	31	0.08
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	HMB-MDS	AnVIL_CMG_Broad_Muscle_Myoseq_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	1280	1280	2.30
+CMG	--	Registration Pending	--	HMB-MDS	AnVIL_CMG_Broad_Muscle_Myoseq_WGS	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Whole Genome	10	10	0.19
+CMG	--	Registration Pending	--	GRU	AnVIL_CMG_Broad_Muscle_OGrady_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	97	73	0.13
+CMG	--	Registration Pending	--	HMB-MDS	AnVIL_CMG_Broad_Muscle_Ravenscroft_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	35	35	0.05
+CMG	--	Registration Pending	--	HMB-MDS	AnVIL_CMG_Broad_Muscle_Topf_WES	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Exome	723	722	1.20
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Orphan_Chung_WES	Mendelian disorders	Controlled Access	TBD	Exome	71	71	0.06
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Orphan_Estonia-Ounap_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	31	31	0.08
+CMG	--	Registration Pending	--	GRU	AnVIL_CMG_Broad_Orphan_Estonia-Ounap_WGS	Mendelian disorders	Consortium Access	Parent-Offspring Trios	Whole Genome	115	115	2.03
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	ANVIL_CMG_Broad_Orphan_Jueppner_WES	Mendelian disorders	Controlled Access	TBD	Exome	10	10	0.01
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Orphan_Jueppner_WGS	Mendelian disorders	Controlled Access	TBD	TBD	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Orphan_Lerner-Ellis_WES	Mendelian disorders	Controlled Access	TBD	Exome	10	10	0.01
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Orphan_Lerner-Ellis_WGS	Mendelian disorders	Controlled Access	TBD	TBD	0	0	0.00
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Orphan_Manton_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	452	452	1.08
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	GRU	AnVIL_CMG_Broad_Orphan_Manton_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	43	43	0.76
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Consortia Access Only	AnVIL_CMG_Broad_Orphan_Scott_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	237	236	0.31
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	ANVIL_CMG_BROAD_ORPHAN_SCOTT_WGS	Mendelian disorders	Controlled Access	TBD	Whole Genome	15	15	0.25
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Orphan_Sweetser_WES	Mendelian disorders	Controlled Access	TBD	Exome	3	3	0.01
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	HMB-MDS	AnVIL_CMG_Broad_Orphan_VCGS-White_WES	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Exome	677	447	1.06
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	HMB-MDS	AnVIL_CMG_Broad_Orphan_VCGS-White_WGS	Mendelian disorders	Controlled Access	Parent-Offspring Trios	Whole Genome	66	66	1.10
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Rare_RGP_WES	Mendelian disorders	Controlled Access	TBD	Exome	6	6	0.01
+CMG	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	TBD	AnVIL_CMG_Broad_Stillbirth_Wilkins-Haug_WES	Mendelian disorders	Controlled Access	TBD	Exome	60	60	0.08
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	DS-BAV-IRB-PUB-PD	ANVIL_CMG_UWASH_DS-BAV-IRB-PUB-RD	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	177	177	0.60
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	DS-BDIS	ANVIL_CMG_UWASH_DS-BDIS	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	10	10	0.05
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	DS-EP	AnVIL_CMG_UWash_DS-EP	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	49	49	1.43
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	DS-HFA	ANVIL_CMG_UWASH_DS-HFA	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	83	83	0.84
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	DS-NBIA	ANVIL_CMG_UWASH_DS-NBIA	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	107	107	0.86
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	GRU	AnVIL_CMG_UWash_GRU	Mendelian disorders	Controlled Access	TBD	Exome	2113	2109	28.91
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	GRU-IRB	AnVIL_CMG_UWash_GRU-IRB	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	195	174	9.69
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	HMB	AnVIL_CMG_UWASH_HMB	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	419	406	7.39
+CMG	University of Washington Center for Mendelian Genomics (UW-CMG)	phs000693	phs000693.v6.p2	HMB-IRB	ANVIL_CMG_UWASH_HMB-IRB	Mendelian disorders	Controlled Access	Family/Twins/Trios	Exome	41	41	7.15
+CMG	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	DS-MC	ANVIL_CMG_YALE_DS-MC	Mendelian disorders	Controlled Access	Mendelian	TBD	747	741	0.54
+CMG	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	DS-RARED	ANVIL_CMG_YALE_DS-RARED	Mendelian disorders	Controlled Access	Mendelian	TBD	171	171	0.14
+CMG	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	GRU	ANVIL_CMG_Yale_GRU	Mendelian disorders	Controlled Access	Mendelian	TBD	1731	1716	1.54
+CMG	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	HMB	AnVIL_CMG_Yale_HMB	Mendelian disorders	Controlled Access	TBD	Exome	124	124	0.09
+CMG	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	HMB-GSO	AnVIL_CMG_Yale_HMB-GSO	Mendelian disorders	Controlled Access	TBD	Exome	4263	4227	3.62
+CMH	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	DS-PEDD-IRB	AnVIL_CMH_GAFK_GS-linked-read	pediatric disease	Controlled Access	TBD	TBD	588	587	0.00
+CMH	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	DS-PEDD-IRB	AnVIL_CMH_GAFK_GS-long-read	pediatric disease	Controlled Access	TBD	TBD	242	242	13.47
+CMH	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	DS-PEDD-IRB	AnVIL_CMH_GAFK_SCATAC	pediatric disease	Controlled Access	TBD	TBD	322	320	0.65
+CMH	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	DS-PEDD-IRB	AnVIL_CMH_GAFK_scRNA	pediatric disease	Controlled Access	TBD	TBD	198	198	0.44
+CMH	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	DS-PEDD-IRB	AnVIL_CMH_GAFK_WGBS	pediatric disease	Controlled Access	TBD	TBD	427	420	25.26
+Convergent Neuroscience	Genetic Neuroscience: How Human Genes and Alleles Shape Neuronal Phenotypes	phs002032	phs002032.v1.p1	GRU	AnVIL_NIMH_Broad_ConvergentNeuro_McCarroll_Eggan_CIRM_GRU_VillageData	Unspecified	Controlled Access	TBD	TBD	0	0	0.00
+Convergent Neuroscience	Genetic Neuroscience: How Human Genes and Alleles Shape Neuronal Phenotypes	phs002032	phs002032.v1.p1	GRU	AnVIL_NIMH_Broad_ConvergentNeuro_McCarroll_Eggan_CIRM_GRU_WGS	--	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	0	299	5.30
+Convergent Neuroscience	Genetic Neuroscience: How Human Genes and Alleles Shape Neuronal Phenotypes	phs002032	phs002032.v1.p1	DS-SMA-MDS	AnVIL_NIMH_Broad_ConvergentNeuro_McCarroll_Eggan_Finkel_SMA_DS_WGS	spinal muscular atrophy	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	0	1	0.02
+Convergent Neuroscience	Genetic Neuroscience: How Human Genes and Alleles Shape Neuronal Phenotypes	phs002032	phs002032.v1.p1	GRU	AnVIL_NIMH_CIRM_FCDI_ConvergentNeuro_McCarroll_Eggan_GRU_Arrays	CIRM iPSC Repository	Controlled Access	Case-Control	Single Cell RNAseq; Pooled Genomic Seq	0	0	0.01
+CSER	--	TBD	--	GRU	AnVIL_CSER_CHARM_GRU	Unspecified	Consortium Access	TBD	TBD	827	0	4.35
+CSER	--	TBD	--	GRU	AnVIL_CSER_ClinSeq_GRU	Unspecified	Consortium Access	TBD	TBD	0	0	0.00
+CSER	--	TBD	--	GRU	AnVIL_CSER_KidsCanSeq_GRU	Unspecified	Consortium Access	TBD	TBD	0	0	8.80
+CSER	--	TBD	--	GRU	AnVIL_CSER_NCGENES2_GRU	Unspecified	Consortium Access	TBD	TBD	0	0	0.38
+CSER	--	TBD	--	HMB	AnVIL_CSER_NYCKIDSSEQ_HMB	Unspecified	Consortium Access	TBD	TBD	0	0	0.00
+CSER	--	TBD	--	GRU	AnVIL_CSER_SouthSeq_GRU	Unspecified	Consortium Access	TBD	TBD	551	0	100.29
+CSER	--	TBD	--	TBD	AnVIL_CSER_UW_DCC	Unspecified	Consortium Access	TBD	TBD	0	0	0.00
+eMERGE	eMERGE Network Phase III: HRC Imputed Array Data	phs001584	phs001584.v2.p2	TBD	AnVIL_eMERGE_GWAS	Unspecified	Controlled Access	TBD	TBD	105108	105108	73.43
+eMERGE	eMERGE Network Phase III Clinical Sequencing: eMERGEseq Panel	phs001616	phs001616.v2.p2	TBD	AnVIL_eMERGE_PGRNseq	Unspecified	Controlled Access	TBD	TBD	9010	9010	0.00
+eMERGE	--	Registration Pending	--	TBD	AnVIL_eMERGE_PRS_Arrays	Unspecified	Consortium Access	TBD	TBD	0	0	0.00
+GTEx (v8)	--	TBD	--	GRU	AnVIL_GTEx_BCM_GRU_CoRSIVs	epigenetic variation	Consortium Access	Control Set	Methylation Array	1616	188	3.08
+GTEx (v8)	--	None	--	NRES	AnVIL_GTEx_public_data	Unspecified	No Restrictions	TBD	TBD	0	0	0.07
+GTEx (v8)	--	TBD	--	GRU	AnVIL_GTEx_Somatic_WGS	Mendelian disorders	Consortium Access	Cross-Sectional	Whole Genome	148	32	6.53
+GTEx (v8)	Genotype-Tissue Expression (GTEx)	phs000424	phs000424.v8.p2	GRU	AnVIL_GTEx_V7_hg19	Unspecified	Controlled Access	TBD	TBD	11688	729	48.23
+GTEx (v8)	Genotype-Tissue Expression (GTEx)	phs000424	phs000424.v8.p2	GRU	AnVIL_GTEx_V8_hg38	None	Controlled Access	Family/Twins/Trios	Whole Genome; Exome; RNAseq	17382	979	182.14
+GTEx (v8)	Genotype-Tissue Expression (GTEx)	phs000424	phs000424.v8.p2	GRU	AnVIL_GTEx_V9_hg38	Unspecified	Controlled Access	TBD	TBD	0	0	64.24
+HPRC	--	None	--	NRES	AnVIL_HPRC	None	No Restrictions	TBD	Whole Genome	57	47	250.40
+PAGE	PAGE: IPM BioMe Biobank	phs000925	phs000925.v1.p1	GRU	AnVIL_PAGE_BioMe_GRU_WGS	population	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	307	307	7.99
+PAGE	PAGE: Multiethnic Cohort (MEC)	phs000220	phs000220.v2.p2	GRU	AnVIL_PAGE_MEC_GRU_WGS	population	Controlled Access	Case-Control	Whole Genome	70	70	1.71
+PAGE	--	TBD	--	HMB	AnVIL_PAGE_SoL_HMB_WGS	Unspecified	Consortium Access	TBD	Whole Genome	213	213	5.01
+PAGE	PAGE: Global Reference Panel	phs001033	phs001033.v1.p1	GRU	AnVIL_PAGE_Stanford_Global_Reference_Panel_GRU_WGS	population	Controlled Access	Control Set	Whole Genome	78	78	1.87
+PAGE	PAGE: Women's Health Initiative (WHI)	phs000227	phs000227.v5.p3	HMB-IRB	AnVIL_PAGE_WHI_HMB-IRB_WGS	population	Controlled Access	Prospective Longitudinal Cohort	Whole Genome	235	235	5.43
+T2T	--	None	--	NRES	AnVIL_T2T	None	No Restrictions	Parent-Offspring Trios	Whole Genome	0	3202	572.13
+WGSPD1	WGSPD Project 1: Whole Genome Sequencing for Schizophrenia and Bipolar Disorder	phs002041	phs002041.v1.p1	DS-SZRD-MDS	AnVIL_NIMH_Broad_WGSPD1_McCarroll_Braff_DS_10XLRGenomes	Schizophrenia cases and controls	Controlled Access	Case-control	Whole Genome	187	187	11.59
+WGSPD1	WGSPD Project 1: Whole Genome Sequencing for Schizophrenia and Bipolar Disorder	phs002041	phs002041.v1.p1	DS-SZRD-MDS	AnVIL_NIMH_Broad_WGSPD1_McCarroll_Braff_DS_WGS	Schizophrenia cases and controls	Controlled Access	Case-control	Whole Genome	864	864	20.12
+WGSPD1	WGSPD Project 1: Whole Genome Sequencing for Schizophrenia and Bipolar Disorder	phs002041	phs002041.v1.p1	DS-MLHLTH-MDS	AnVIL_NIMH_Broad_WGSPD1_McCarroll_Escamilla_DS_WGS	Schizophrenia cases and controls	Controlled Access	Case-control	Whole Genome	85	85	3.45
+WGSPD1	WGSPD Project 1: Whole Genome Sequencing for Schizophrenia and Bipolar Disorder	phs002041	phs002041.v1.p1	GRU	AnVIL_NIMH_Broad_WGSPD1_McCarroll_Pato_GRU_10XLRGenomes	Schizophrenia and Bipolar Disorder cases and controls	Controlled Access	Case-control	Whole Genome	368	355	21.73
+WGSPD1	WGSPD Project 1: Whole Genome Sequencing for Schizophrenia and Bipolar Disorder	phs002041	phs002041.v1.p1	GRU	AnVIL_NIMH_Broad_WGSPD1_McCarroll_Pato_GRU_WGS	Schizophrenia and Bipolar Disorder cases and controls	Controlled Access	Case-control	Whole Genome	8084	8084	120.47
