@@ -1,0 +1,190 @@
+Platform	Study	dbGap Id	Study Accession	Focus / Disease	Data Type	Study Design	Consent Code	Participants
+AnVIL	A Genomic Atlas of Systemic Interindividual Epigenetic Variation in Humans (GTEx)	phs001746	phs001746.v2.p1	Reference Values	Bisulfite-Seq	Control Set	GRU	194
+AnVIL	Autism Sequencing Consortium (ASC)	phs000298	phs000298.v4.p3	--	SNP/CNV Genotypes (NGS); WXS	Case-Control	DS-ASD; GRU; DS-AOND-MDS; HMB-MDS	12772
+AnVIL	Baylor Hopkins Center for Mendelian Genomics (BH CMG)	phs000711	phs000711.v7.p2	Mendelian Conditions	SNP Genotypes (NGS); SNP/CNV Genotypes (NGS); WXS	Mendelian	NRUP; HMB-NPU; HMB-IRB-NPU	2445
+AnVIL	Broad Institute Center for Mendelian Genomics	phs001272	phs001272.v1.p1	Genetic Diseases, Inborn	RNA-Seq; SNP/CNV Genotypes (NGS); WGS; WXS	Family/Twin/Trios	GRU; DS-KRD-RD; HMB-MDS; DS-NIC-EMP-LENF	1031
+AnVIL	CCDG - Cardiovascular: eMERGE - Northwestern Cohort	phs001913	phs001913.v1.p1	Cardiovascular Diseases	--	Case-Control	GRU-IRB	277
+AnVIL	CCDG-Cardiovascular: University of Pennsylvania Cohort	phs001502	phs001502.v1.p1	Cardiovascular Diseases	Legacy Genotypes; SNP Genotypes (NGS)	Case-Control	HMB-IRB-PUB	1373
+AnVIL	CCDG CVD: VIRGO - Variation in Recover-Role of Gender on Outcomes of Young Acute Myocardial Infarction (AMI) Patients	phs001259	phs001259.v1.p1	Myocardial Infarction	SNP Genotypes (NGS)	Prospective Longitudinal Cohort	DS-CARD-MDS-GSO	2149
+AnVIL	CCDG-Neuropsychiatric: Autism- Genetics of Human Developmental Brain Disorders	phs001894	phs001894.v1.p1	Child Development Disorders, Pervasive	--	Family/Twin/Trios	DS-EAC-PUB-GSO	724
+AnVIL	CCDG- Neuropsychiatric: Autism - Simons Simplex Collection (SSC)	phs001676	phs001676.v1.p1	Child Development Disorders, Pervasive	--	Prospective Longitudinal Cohort	DS-AONDD-IRB	9201
+AnVIL	CCDG- Neuropsychiatric: Autism- Study of Autism Genetics Exploration (SAGE)	phs001740	phs001740.v1.p1	Child Development Disorders, Pervasive	SNP/CNV Genotypes (NGS)	Prospective Longitudinal Cohort	DS-ASD-RD-IRB	580
+AnVIL	CCDG- Neuropsychiatric: Autism- The Autism Simplex Collection (TASC)	phs001741	phs001741.v1.p1	Child Development Disorders, Pervasive	SNP/CNV Genotypes (NGS)	Prospective Longitudinal Cohort	DS-ASD-IRB	905
+AnVIL	CCDG NP Epilepsy: Epi25 Consortium	phs001489	phs001489.v2.p2	Epilepsy	SNP/CNV Genotypes (NGS); WXS	Case-Control	DS-EPSBAID-MDS-RD; DS-EPSBA-MDS-RD; DS-EPSBACID-MDS-RD; DS-EPCOM-MDS-RD; DS-EPSBACID-NPU-MDS-RD; DS-EPI-MULTI-MDS; DS-EPASM-MDS; HMB-NPU-MDS; DS-EPASM-MDS-RD; DS-EP; HMB-MDS; GRU-IRB; GRU; DS-CARNEU-MDS; DS-SEIZD; DS-EP-MDS; DS-EP-NPU; HMB; DS-EPI-ADULT-NPU-MDS; GRU-NPU; DS-EAED-MDS; DS-NEUROLOGY-MDS; DS-EARET-MDS; DS-NPD-IRB-NPU; DS-NEUROLOGY-ADULTS-NPU; HMB-IRB-MDS	12890
+AnVIL	CCDG - Whole Genome Sequencing in Type 1 Diabetes (T1DGC)	phs001222	phs001222.v1.p1	Diabetes Mellitus, Type 1	CNV (NGS); SNP Genotypes (NGS)	Case-Control	DS-DRC-IRB-NPU	1414
+AnVIL	Center Common Disease Genomics [CCDG] - CVD - TAICHI	phs001487	phs001487.v1.p1	--	SNP Genotypes (NGS)	Prospective Longitudinal Cohort	DS-MULTIPLE_DISEASES-IRB-COL-NPU-RD	770
+AnVIL	Center for Common Disease Genomics [CCDG] - Cardiovascular ATVB: Atherosclerosis Thrombosis and Vascular Biology	phs001592	phs001592.v1.p1	Atherosclerosis	SNP/CNV Genotypes (NGS); WXS	Case-Control	DS-CVD	58
+AnVIL	Center for Common Disease Genomics (CCDG)-Cardiovascular:Cleveland Clinic	phs001871	phs001871.v1.p1	Cardiovascular Diseases	--	Case-Control	DS-CAD-IRB	348
+AnVIL	Center for Common Disease Genomics (CCDG) - Cardiovascular: Emory Cohort	phs001880	phs001880.v1.p1	Cardiovascular Diseases	--	Case-Control	GRU-NPU	429
+AnVIL	Center for Common Disease Genomics [CCDG] - Cardiovascular: Genetics of Coronary Heart Disease - Characterizaton of Coronary Prone Pedigrees	phs001901	phs001901.v1.p1	Myocardial Infarction	--	Case-Control	DS-CVD-MDS	1475
+AnVIL	Center for Common Disease Genomics [CCDG] - Cardiovascular: The Bangladesh Risk of Acute Vascular Events (BRAVE) Study	phs001398	phs001398.v1.p1	--	SNP/CNV Genotypes (NGS)	Prospective Longitudinal Cohort	GRU	1991
+AnVIL	Columbia University Study of Caribbean Hispanics and Late Onset Alzheimer's disease	phs000496	phs000496.v1.p1	Alzheimer Disease	SNP Genotypes (Array); SNP Genotypes (imputed)	Case-Control	NRUP; GRU-IRB	3139
+AnVIL	eMERGE Network Phase III Clinical Sequencing: eMERGEseq Panel	phs001616	phs001616.v2.p2	Precision Medicine	SNP/CNV Genotypes (NGS); Targeted-Capture	Prospective Longitudinal Cohort	NRUP; GRU; GRU-IRB; GRU-IRB-NPU; GRU-IRB-PUB-NPU; HMB; HMB-GSO; HMB-NPU; GRU-NPU; HMB-IRB-PUB	24944
+AnVIL	eMERGE Network Phase III: HRC Imputed Array Data	phs001584	phs001584.v2.p2	NA	SNP Genotypes (imputed)	Case-Control	NRUP; GRU; GRU-IRB-PUB-GSO; GRU-IRB-NPU; HMB; HMB-MDS; DS-CHILDD; DS-DEM; HMB-PUB-GSO; GRU-IRB-PUB; HMB-GSO	104874
+AnVIL	Genetics Consortium for Late Onset of Alzheimer's Disease (LOAD CIDR Project)	phs000160	phs000160.v1.p1	Alzheimer Disease	SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRU; GRU; NPU; ALZ; ALZ_NPU	2398
+AnVIL	Genomic Answers for Kids (GA4K)	phs002206	phs002206.v2.p1	Genetic Diseases, Inborn	--	Prospective Longitudinal Cohort	NRUP; DS-PEDD-IRB	2385
+AnVIL	Genotype-Tissue Expression (GTEx)	phs000424	phs000424.v8.p2	Reference Values	Allele-Specific Expression; CNV Genotypes; MAF (NGS); RNA Seq expression levels; SNP Genotypes (Array); SNP Genotypes (imputed); SNP/CNV Genotypes (NGS); mRNA Expression (Array)	Cross-Sectional	NRUP; GRU	980
+AnVIL	INSIGHT Microbiome Study	phs001498	phs001498.v1.p1	Pediatric Obesity	--	Prospective Longitudinal Cohort	NRUP; GRU-IRB-GSO	452
+AnVIL	NHLBI TOPMed - NHGRI CCDG: UCSF Atrial Fibrillation Study	phs001933	phs001933.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	HMB-MDS	113
+AnVIL	PAGE: Global Reference Panel	phs001033	phs001033.v1.p1	Population	SNP Genotypes (Array); WGS	Control Set	NRUP; GRU	1517
+AnVIL	PAGE: IPM BioMe Biobank	phs000925	phs000925.v1.p1	Cardiovascular Diseases	SNP Genotypes (Array); WGS	Prospective Longitudinal Cohort	NRUP; GRU	13067
+AnVIL	PAGE: Multiethnic Cohort (MEC)	phs000220	phs000220.v2.p2	Neoplasms	SNP Genotypes (Array); WGS	Case-Control	NRUP; DS-CRM-PUB-MDS; GRU	27995
+AnVIL	PAGE: Women's Health Initiative (WHI)	phs000227	phs000227.v5.p3	Women's Health	SNP Genotypes (Array); SNP Genotypes (PCR); WGS	Prospective Longitudinal Cohort	NRUP; HMB-IRB; HMB-IRB-NPU	45707
+AnVIL	Washington University Coronary Artery Disease Study	phs001227	phs001227.v1.p1	Coronary Artery Disease	--	Case-Control	DS-ATHSCL-IRB-MDS; GRU-IRB	165
+AnVIL	Yale Center for Mendelian Genomics (Y CMG)	phs000744	phs000744.v4.p2	Idiopathic Pulmonary Fibrosis	SNP Genotypes (Array); SNP Genotypes (NGS); WXS	Mendelian	NRUP; GRU	1896
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: AFLMU	phs001543	phs001543.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-IRB-PUB-COL-NPU-MDS	350
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Atherosclerosis Risk in Communities (ARIC)	phs001211	phs001211.v3.p2	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Case-Control	HMB-IRB; DS-CVD-IRB	13546
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: CATHeterization GENetics (CATHGEN) Cohort	phs001600	phs001600.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	DS-CVD-IRB	1279
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Genes-Environments and Admixture in Latino Asthmatics (GALA II)	phs000920	phs000920.v4.p2	Lung Diseases	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-LD-IRB-COL	4941
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Hispanic Community Health Study/Study of Latinos (HCHS/SOL)	phs001395	phs001395.v1.p1	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-NPU; HMB	8093
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Intermountain INSPIRE Registry	phs001545	phs001545.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-MULTIPLE_DISEASES-MDS	476
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: JHU AFGen Study	phs001598	phs001598.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-NPU-MDS	290
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Malmo Preventive Project (MPP)	phs001544	phs001544.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-NPU-MDS	121
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: MGH Atrial Fibrillation Study	phs001062	phs001062.v4.p2	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-IRB; DS-AF-IRB-RD	1163
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: The GENetics in Atrial Fibrillation (GENAF) Study	phs001547	phs001547.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	HMB-NPU	90
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: The Vanderbilt AF Ablation Registry	phs000997	phs000997.v5.p2	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-IRB	173
+AnVIL; BDC	NHLBI TOPMed - NHGRI CCDG: Vanderbilt University BioVU Atrial Fibrillation Genetics Study	phs001624	phs001624.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-GSO	1753
+BDC	Atherosclerosis Risk in Communities (ARIC) Cohort	phs000280	phs000280.v7.p1	Cardiovascular Diseases	Legacy Genotypes; SNP Genotypes (Array); SNP Genotypes (NGS); SNP Genotypes (imputed); SNP/CNV Genotypes (NGS); WGS; WXS	Prospective Longitudinal Cohort	NRUP; HMB-IRB; DS-CVD-IRB	15678
+BDC	CARDIA Cohort	phs000285	phs000285.v3.p2	Cardiovascular Diseases	SNP Genotypes (Array); SNP Genotypes (NGS); SNP Genotypes (PCR); SNP Genotypes (imputed); SNP/CNV Genotypes (NGS); WXS	Prospective Longitudinal Cohort	NRUP; HMB-IRB; HMB-IRB-NPU	3622
+BDC	Cardiovascular Health Study (CHS) Cohort: an NHLBI-funded observational study of risk factors for cardiovascular disease in adults 65 years or older	phs000287	phs000287.v7.p1	Cardiovascular Diseases	SNP Genotypes (Array); SNP Genotypes (NGS); SNP Genotypes (PCR); WGS; WXS	Prospective Longitudinal Cohort	NRUP; HMB-MDS; HMB-NPU-MDS; DS-CVD-MDS; DS-CVD-NPU-MDS	5609
+BDC	CATHeterization GENetics (CATHGEN)	phs000703	phs000703.v1.p1	Coronary Disease	SNP Genotypes (Array); mRNA Expression (Array)	Cross-Sectional	DS-CVD-IRB	3304
+BDC	CCF AFIB GWAS study	phs000820	phs000820.v1.p1	Atrial Fibrillation	SNP Genotypes (Array)	Case Set	GRU	543
+BDC	Clinical Trial of COVID-19 Convalescent Plasma in Outpatients (C3PO)	phs002752	phs002752.v1.p1	COVID-19	--	Clinical Trial	GRU	511
+BDC	Cooperative Study of Sickle Cell Disease (CSSCD)	phs002362	phs002362.v1.p1	Anemia, Sickle Cell	--	Clinical Trial	GRU	4085
+BDC	COVID-19 ACTIV-4 ACUTE: A Multicenter, Adaptive, Randomized Controlled Platform Trial of the Safety and Efficacy of Antithrombotic Strategies in Hospitalized Adults with COVID-19 (ACTIV4A)	phs002694	phs002694.v1.p1	COVID-19	--	Interventional	GRU	1083
+BDC	COVID-19 Outpatient Thrombosis Prevention Trial (ACTIV-4B)	phs002710	phs002710.v1.p1	COVID-19	--	Interventional	GRU	657
+BDC	Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)	phs001252	phs001252.v1.p1	Pulmonary Disease, Chronic Obstructive	SNP Genotypes (Array)	Case-Control	DS-COPD-RD	2746
+BDC	Framingham Cohort	phs000007	phs000007.v32.p13	Cardiovascular Diseases	Legacy Genotypes; Methylation (CpG); SNP Genotypes (Array); SNP Genotypes (NGS); SNP Genotypes (PCR); SNP Genotypes (imputed); SNP/CNV Genotypes (NGS); WGS; WXS; mRNA Expression (Array); miRNA Expression (Array)	Prospective Longitudinal Cohort	NRUP; HMB-IRB-MDS; HMB-IRB-NPU-MDS	15144
+BDC	Genes-Environments and Admixture in Latino Asthmatics (GALA II) Study	phs001180	phs001180.v2.p1	Lung Diseases	SNP Genotypes (Array)	Case-Control	NRUP; DS-LD-IRB-COL	4458
+BDC	GeneSTAR NextGen Functional Genomics of Platelet Aggregation	phs001074	phs001074.v1.p1	Platelet Aggregation	SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRUP; DS-CVD-IRB-NPU-RD	250
+BDC	Genetic Epidemiology Network of Arteriopathy (GENOA)	phs001238	phs001238.v2.p1	Hypertension	SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRUP; DS-ASC-RF-NPU	3462
+BDC	Genetic Epidemiology Network of Salt Sensitivity (GenSalt)	phs000784	phs000784.v3.p1	Arterial Pressure	SNP Genotypes (Array)	Interventional	NRUP; DS-HCR-IRB	1675
+BDC	Genetic Epidemiology of COPD (COPDGene)	phs000179	phs000179.v6.p2	Pulmonary Disease, Chronic Obstructive	RNA-Seq; SNP Genotypes (Array); SNP Genotypes (NGS); WXS	Case-Control	NRUP; HMB; DS-CS	10371
+BDC	Genetics of Lipid Lowering Drugs and Diet Network (GOLDN) Lipidomics Study	phs000741	phs000741.v2.p1	Metabolomics	Methylation (CpG); SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRUP; DS-CVD-IRB	968
+BDC	Genome-Wide Association Study of Adiposity in Samoans	phs000914	phs000914.v1.p1	Obesity	SNP Genotypes (Array)	Cross-Sectional	NRUP; GRU-IRB-PUB-COL-NPU-GSO	3501
+BDC	Heart and Vascular Health Study (HVH)	phs001013	phs001013.v3.p2	Cardiovascular Diseases	SNP Genotypes (Array)	Case-Control	HMB-IRB-MDS; DS-CVD-IRB-MDS	1204
+BDC	Hematopoietic Cell Transplant for Sickle Cell Disease (HCT for SCD)	phs002385	phs002385.v1.p1	Anemia, Sickle Cell	--	Prospective Longitudinal Cohort	GRU	1518
+BDC	Hispanic Community Health Study /Study of Latinos (HCHS/SOL)	phs000810	phs000810.v1.p1	Cardiovascular Diseases	SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRUP; HMB-NPU; HMB	12895
+BDC	Hydroxyurea to Prevent Organ Damage in Children with Sickle Cell Anemia (BABY HUG) Phase III Clinical Trial and Follow-Up Observational Studies I and II	phs002415	phs002415.v1.p1	Anemia, Sickle Cell	--	Clinical Trial	DS-SCD-IRB-RD	219
+BDC	MGH Atrial Fibrillation Study	phs001001	phs001001.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); Targeted-Capture; WXS	Case Set	HMB-IRB; DS-AF-IRB-RD	1025
+BDC	Multi-Ethnic Study of Atherosclerosis (MESA) Cohort	phs000209	phs000209.v13.p3	Cardiovascular Diseases	CNV Genotypes; SNP Genotypes (Array); SNP Genotypes (NGS); WXS	Prospective Longitudinal Cohort	NRUP; HMB; HMB-NPU	8296
+BDC	Multicenter Study of Hydroxyurea (MSH)	phs002348	phs002348.v1.p1	Anemia, Sickle Cell	--	Clinical Trial	GRU	299
+BDC	NHBLI TOPMed: Pharmacogenomics of Hydroxyurea in Sickle Cell Disease (PharmHU)	phs001466	phs001466.v1.p1	Anemia, Sickle Cell	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB; DS-SCD-RD; DS-SCD	900
+BDC	NHGRI Genome-Wide Association Study of Venous Thromboembolism (GWAS of VTE)	phs000289	phs000289.v2.p1	Venous Thrombosis	SNP Genotypes (Array); SNP Genotypes (imputed)	Case-Control	NRUP; GRU	2597
+BDC	NHLBI Cleveland Family Study (CFS) Candidate Gene Association Resource (CARe)	phs000284	phs000284.v2.p1	Sleep Apnea Syndromes	SNP Genotypes (Array)	Prospective Longitudinal Cohort	NRUP; DS-HLBS-IRB-NPU	1473
+BDC	NHLBI GO-ESP: Lung Cohorts Exome Sequencing Project (Asthma)	phs000422	phs000422.v1.p1	Asthma	SNP Genotypes (NGS); SNP/CNV Genotypes (NGS); WXS	Case Set	GRU	191
+BDC	NHLBI TOPMed: African American Sarcoidosis Genetics Resource	phs001207	phs001207.v2.p1	Sarcoidosis	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; DS-SAR-IRB	937
+BDC	NHLBI TOPMed: Australian Familial Atrial Fibrillation Study	phs001435	phs001435.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	HMB-NPU-MDS	120
+BDC	NHLBI TOPMed: Best ADd-on Therapy Giving Effective Response (BADGER)	phs001728	phs001728.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	50
+BDC	NHLBI TOPMed: Boston Early-Onset COPD Study	phs000946	phs000946.v4.p1	Pulmonary Disease, Chronic Obstructive	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	DS-CS-RD	80
+BDC	NHLBI TOPMed: Cardiovascular Health Study	phs001368	phs001368.v2.p2	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-MDS; HMB-NPU-MDS; DS-CVD-MDS; DS-CVD-NPU-MDS	3562
+BDC	NHLBI TOPMed CCDG: Groningen Atrial Fibrillation (GGAF) Study	phs001725	phs001725.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	GRU	640
+BDC	NHLBI TOPMed: Characterizing the Response to a Leukotriene Receptor Antagonist and an Inhaled Corticosteroid (CLIC)	phs001729	phs001729.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	19
+BDC	NHLBI TOPMed: Chicago Initiative to Raise Asthma Health Equity (CHIRAH)	phs001605	phs001605.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-ASTHMA-IRB-COL	292
+BDC	NHLBI TOPMed: Childhood Asthma Management Program (CAMP)	phs001726	phs001726.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	DS-AST-COPD	2290
+BDC	NHLBI TOPMed: CHS (Effects of Air Pollution on the Development of Obesity in Children)	phs001604	phs001604.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case-Control	GRU	56
+BDC	NHLBI TOPMed: CHS Gene-Air Pollution Interactions in Asthma (GAP)	phs001602	phs001602.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case-Control	GRU	7
+BDC	NHLBI TOPMed: CHS Integrative Genomics and Environmental Research of Asthma (IGERA)	phs001603	phs001603.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case-Control	GRU	160
+BDC	NHLBI TOPMed: Cleveland Clinic Atrial Fibrillation (CCAF) Study	phs001189	phs001189.v3.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	NRUP; GRU-IRB	363
+BDC	NHLBI TOPMed: Coronary Artery Risk Development in Young Adults (CARDIA)	phs001612	phs001612.v1.p1	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-IRB; HMB-IRB-NPU	3425
+BDC	NHLBI TOPMed: Diabetes Heart Study (DHS) African American Coronary Artery Calcification (AA CAC)	phs001412	phs001412.v2.p1	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Cross-Sectional	NRUP; HMB-IRB-COL-NPU; DS-DHD-IRB-COL-NPU	405
+BDC	NHLBI TOPMed: Early-onset Atrial Fibrillation in the Estonian Biobank	phs001606	phs001606.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	GRU	324
+BDC	NHLBI TOPMed: Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)	phs001472	phs001472.v1.p1	Pulmonary Disease, Chronic Obstructive	SNP/CNV Genotypes (NGS); WGS	Case-Control	DS-COPD-MDS-RD	2465
+BDC	NHLBI TOPMed: Genetic Causes of Complex Pediatric Disorders - Asthma (GCPD-A)	phs001661	phs001661.v2.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case-Control	DS-ASTHMA-GSO	5464
+BDC	NHLBI TOPMed: Genetic Epidemiology Network of Arteriopathy (GENOA)	phs001345	phs001345.v2.p1	Hypertension	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	DS-ASC-RF-NPU	1854
+BDC	NHLBI TOPMed: Genetic Epidemiology Network of Salt Sensitivity (GenSalt)	phs001217	phs001217.v2.p1	Arterial Pressure	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; DS-HCR-IRB	3142
+BDC	NHLBI TOPMed: Genetic Epidemiology of COPD (COPDGene)	phs000951	phs000951.v4.p4	Pulmonary Disease, Chronic Obstructive	SNP/CNV Genotypes (NGS); WGS	Case-Control	HMB; DS-CS-RD	10623
+BDC	NHLBI TOPMed: Genetic Study of Atherosclerosis Risk (GeneSTAR)	phs001218	phs001218.v2.p1	Platelet Aggregation	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	NRUP; DS-CVD-IRB-NPU-MDS	1787
+BDC	NHLBI TOPMed: Genetics of Asthma in Latino Americans (GALA)	phs001542	phs001542.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-LD-IRB-COL	1024
+BDC	NHLBI TOPMed: Genetics of Cardiometabolic Health in the Amish	phs000956	phs000956.v5.p1	Cardiovascular Diseases	De-novo Mutations (NGS); SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; HMB-IRB-MDS	1123
+BDC	NHLBI TOPMed: Genetics of Lipid Lowering Drugs and Diet Network (GOLDN)	phs001359	phs001359.v2.p1	Lipids	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-CVD-IRB	1069
+BDC	NHLBI TOPMed: Genome-Wide Association Study of Adiposity in Samoans	phs000972	phs000972.v4.p1	Obesity	SNP/CNV Genotypes (NGS); WGS	Cross-Sectional	GRU-IRB-PUB-COL-NPU-GSO	1332
+BDC	NHLBI TOPMed: Heart and Vascular Health Study (HVH)	phs000993	phs000993.v4.p2	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-IRB-MDS; DS-CVD-IRB-MDS	709
+BDC	NHLBI TOPMed: HyperGEN - Genetics of Left Ventricular (LV) Hypertrophy	phs001293	phs001293.v2.p1	Hypertrophy, Left Ventricular	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; GRU-IRB; DS-CVD-IRB-RD	2104
+BDC	NHLBI TOPMed: Lung Tissue Research Consortium (LTRC)	phs001662	phs001662.v1.p1	Pulmonary Disease, Chronic Obstructive	SNP/CNV Genotypes (NGS); WGS	Case-Control	HMB-MDS	1602
+BDC	NHLBI TOPMed: MESA and MESA Family AA-CAC	phs001416	phs001416.v2.p1	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB; HMB-NPU	5383
+BDC	NHLBI TOPMed: MyLifeOurFuture (MLOF) Hemophilia Study	phs001515	phs001515.v1.p1	Hemophilia A	SNP/CNV Genotypes (NGS); WGS	Cross-Sectional	HMB-PUB	5137
+BDC	NHLBI TOPMed - NHGRI CCDG: Penn Medicine BioBank Early Onset Atrial Fibrillation Study	phs001601	phs001601.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB-IRB-PUB	2288
+BDC	NHLBI TOPMed - NHGRI CCDG: The BioMe Biobank at Mount Sinai	phs001644	phs001644.v1.p1	Coronary Artery Disease	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-NPU	16004
+BDC	NHLBI TOPMed: Novel Risk Factors for the Development of Atrial Fibrillation in Women	phs001040	phs001040.v4.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB	118
+BDC	NHLBI TOPMed: Outcome Modifying Genes in Sickle Cell Disease (OMG)	phs001608	phs001608.v1.p1	Anemia, Sickle Cell	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-SCD-IRB-PUB-COL-MDS-RD	642
+BDC	NHLBI TOPMed: Partners HealthCare Biobank	phs001024	phs001024.v5.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	HMB	128
+BDC	NHLBI TOPMed: Pathways to Immunologically Mediated Asthma (PIMA)	phs001727	phs001727.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	73
+BDC	NHLBI TOPMed: PCGC's Congenital Heart Disease Biobank	phs001735	phs001735.v1.p1	Heart Defects, Congenital	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB; DS-CHD	3230
+BDC	NHLBI TOPMed: Pediatric Asthma Controller Trial (PACT)	phs001730	phs001730.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	41
+BDC	NHLBI TOPMed: Pulmonary Fibrosis Whole Genome Sequencing	phs001607	phs001607.v2.p2	Idiopathic Pulmonary Fibrosis	SNP/CNV Genotypes (NGS); WGS	Case Set	DS-ILD-IRB-NPU; DS-LD-IRB-NPU; DS-PFIB-IRB-NPU; DS-PUL-ILD-IRB-NPU; HMB-IRB-NPU	1477
+BDC	NHLBI TOPMed: Pulmonary Hypertension and the Hypoxic Response in SCD (PUSH)	phs001682	phs001682.v1.p1	Anemia, Sickle Cell	SNP/CNV Genotypes (NGS); WGS	Case-Control	DS-SCD-IRB-PUB-COL	432
+BDC	NHLBI TOPMed: Rare Variants for Hypertension in Taiwan Chinese (THRV)	phs001387	phs001387.v2.p1	Blood Pressure	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	NRUP; DS-CVD-IRB-COL-NPU-RD	2353
+BDC	NHLBI TOPMed: REDS-III Brazil Sickle Cell Disease Cohort (REDS-BSCDC)	phs001468	phs001468.v2.p1	Anemia, Sickle Cell	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	GRU-IRB-PUB-COL-NPU	2795
+BDC	NHLBI TOPMed: San Antonio Family Heart Study (SAFHS)	phs001215	phs001215.v3.p2	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; DS-DHD-IRB-PUB-MDS-RD	2594
+BDC	NHLBI TOPMed: Severe Asthma Research Program (SARP)	phs001446	phs001446.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Case Set	GRU	1882
+BDC	NHLBI TOPMed: Study of African Americans, Asthma, Genes and Environment (SAGE)	phs000921	phs000921.v4.p1	Lung Diseases	SNP/CNV Genotypes (NGS); WGS	Case-Control	DS-LD-IRB-COL	2106
+BDC	NHLBI TOPMed: Study of Asthma Phenotypes and Pharmacogenomic Interactions by Race-Ethnicity (SAPPHIRE)	phs001467	phs001467.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	4861
+BDC	NHLBI TOPMed: Texas Cardiac Arrhythmia Institute - DECAF Study	phs001546	phs001546.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Prospective Longitudinal Cohort	GRU	6
+BDC	NHLBI TOPMed: The Cleveland Family Study (CFS)	phs000954	phs000954.v4.p2	Sleep Apnea Syndromes	De-novo Mutations (NGS); SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-HLBS-IRB-NPU	1293
+BDC	NHLBI TOPMed: The Genetic Epidemiology of Asthma in Costa Rica	phs000988	phs000988.v4.p1	Asthma	De-novo Mutations (NGS); SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; DS-ASTHMA-IRB-MDS-RD	4128
+BDC	NHLBI TOPMed: The Genetics and Epidemiology of Asthma in Barbados	phs001143	phs001143.v3.p1	Asthma	De-novo Mutations (NGS); SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	NRUP; GRU-IRB	1527
+BDC	NHLBI TOPMed: The Jackson Heart Study (JHS)	phs000964	phs000964.v5.p1	Cardiovascular Diseases	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	NRUP; HMB-IRB-NPU; DS-FDO-IRB-NPU; HMB-IRB; DS-FDO-IRB	3596
+BDC	NHLBI TOPMed: The Vanderbilt Atrial Fibrillation Registry (VU_AF)	phs001032	phs001032.v5.p2	Atrial Fibrillation	SNP/CNV Genotypes (NGS); WGS	Case Set	GRU-IRB	1134
+BDC	NHLBI TOPMed: TReating Children to Prevent EXacerbations of Asthma (TREXA)	phs001732	phs001732.v1.p1	Asthma	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	DS-ASTHMA-IRB-COL	89
+BDC	NHLBI TOPMed: University of Massachusetts Medical School (UMMS) miRhythm Study	phs001434	phs001434.v1.p1	Atrial Fibrillation	SNP/CNV Genotypes (NGS)	Case Set	GRU	65
+BDC	NHLBI TOPMed: Walk-PHaSST SCD	phs001514	phs001514.v1.p1	Anemia, Sickle Cell	SNP/CNV Genotypes (NGS); WGS	Cross-Sectional	HMB-IRB-PUB-COL-NPU-MDS-GSO; DS-SCD-IRB-PUB-COL-NPU-MDS-RD	445
+BDC	NHLBI TOPMed: Whole Genome Sequencing and Related Phenotypes in the Framingham Heart Study	phs000974	phs000974.v4.p3	Cardiovascular Diseases	De-novo Mutations (NGS); SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-IRB-MDS; HMB-IRB-NPU-MDS	4155
+BDC	NHLBI TOPMed: Whole Genome Sequencing of Venous Thromboembolism (WGS of VTE)	phs001402	phs001402.v2.p1	Venous Thromboembolism	SNP/CNV Genotypes (NGS); WGS	Case Set	GRU	1535
+BDC	NHLBI TOPMed: Women's Health Initiative (WHI)	phs001237	phs001237.v2.p1	Stroke	SNP/CNV Genotypes (NGS); WGS	Prospective Longitudinal Cohort	HMB-IRB; HMB-IRB-NPU	11357
+BDC	Optimizing Primary Stroke Prevention in Children with Sickle Cell Anemia (STOP II)	phs002386	phs002386.v1.p1	--	--	Clinical Trial	GRU	79
+BDC	PCGC Study - CMG Collaboration	phs001843	phs001843.v1.p2	Heart Defects, Congenital	--	Family/Twin/Trios	HMB; DS-CHD	130
+BDC	Pediatric Cardiac Genomics Consortium (PCGC) Study	phs001194	phs001194.v2.p2	Heart Defects, Congenital	AMPLICON; RNA-Seq; SNP Genotypes (Array); WGS; WXS	Prospective Longitudinal Cohort	HMB; DS-CHD	9463
+BDC	PETAL Network: Outcomes Related to COVID-19 Treated With Hydroxychloroquine Among Inpatients With Symptomatic Disease (ORCHID) Trial	phs002299	phs002299.v1.p1	COVID-19	--	Clinical Trial	HMB	479
+BDC	PETAL Repository of Electronic Data COVID-19 Observational Study (RED CORAL)	phs002363	phs002363.v1.p1	COVID-19	--	Control Set	HMB	1480
+BDC	PGRN-RIKEN: Rate Control Therapy in Patients with Atrial Fibrillation	phs000439	phs000439.v1.p1	Atrial Fibrillation	SNP Genotypes (Array)	Case-Control	HMB	1888
+BDC	SNP Health Association Resource (SHARe) Asthma Resource Project (SHARP)	phs000166	phs000166.v2.p1	--	SNP Genotypes (Array)	Cross-Sectional	NRUP; ARR	4046
+BDC	The Diabetes Heart Study (DHS)	phs001012	phs001012.v1.p1	Cardiovascular Diseases	SNP Genotypes (Array)	Cross-Sectional	NRUP; DS-DRC-IRB	1177
+BDC	The Jackson Heart Study (JHS)	phs000286	phs000286.v6.p2	Cardiovascular Diseases	SNP Genotypes (Array); SNP Genotypes (NGS); SNP/CNV Genotypes (NGS); WXS	Prospective Longitudinal Cohort	NRUP; HMB-IRB-NPU; DS-FDO-IRB-NPU; HMB-IRB; DS-FDO-IRB	3889
+BDC	Treatment of Pulmonary Hypertension and Sickle Cell Disease with Sildenafil Therapy (Walk-PHaSST)	phs002383	phs002383.v1.p1	Anemia, Sickle Cell	--	Clinical Trial	DS-SCD-IRB-PUB-COL-NPU-MDS-RD	720
+BDC	Women's Health Initiative	phs000200	phs000200.v12.p3	Women's Health	Methylation (CpG); SNP Genotypes (Array); SNP Genotypes (NGS); SNP Genotypes (PCR); SNP Genotypes (imputed); WGS; WXS; miRNA Expression (Array)	Prospective Longitudinal Cohort	NRUP; HMB-IRB; HMB-IRB-NPU	143213
+CRDC	AACR Project GENIE	phs001337	phs001337.v1.p1	Neoplasms	--	Case Set	GRU-PUB	46510
+CRDC	Clinical Crenolanib Resistance in AML	phs001628	phs001628.v1.p1	Leukemia, Myeloid, Acute	--	Prospective Longitudinal Cohort	DS-LEU	56
+CRDC	Count Me In: Angiosarcoma Project (CMI-ASCproject)	phs001931	phs001931.v1.p1	Sarcoma	--	Prospective Longitudinal Cohort	GRU	36
+CRDC	Count Me In: Metastatic Breast Cancer Project (CMI-MBCproject)	phs001709	phs001709.v1.p1	Breast Neoplasms	RNA-Seq; WXS	Prospective Longitudinal Cohort	GRU	200
+CRDC	Count Me In: Metastatic Prostate Cancer Project (CMI-MPCproject)	phs001939	phs001939.v1.p1	Prostatic Neoplasms	--	Prospective Longitudinal Cohort	GRU	30
+CRDC	CPTAC 3 Study	phs001287	phs001287.v10.p5	Neoplasms	--	Case Set	GRU	5131
+CRDC	CPTAC Proteogenomic Confirmatory Study	phs000892	phs000892.v6.p1	Neoplasms	RNA-Seq; SNP Genotypes (Array); SNP Genotypes (NGS); WXS; miRNA-Seq	Case Set	GRU	334
+CRDC	Foundation Medicine Adult Cancer Clinical Dataset (FM-AD)	phs001179	phs001179.v1.p1	Neoplasms	--	Case Set	HMB-PUB	18004
+CRDC	Functional Genomic Landscape of Acute Myeloid Leukemia	phs001657	phs001657.v1.p1	Leukemia, Myeloid, Acute	--	Prospective Longitudinal Cohort	DS-LEU	583
+CRDC	Genomic Characterization of Metastatic Castration Resistant Prostate Cancer	phs001648	phs001648.v2.p1	Prostatic Neoplasms, Castration-Resistant	Bisulfite-Seq	Prospective Longitudinal Cohort	GRU	101
+CRDC	Genomic landscape of Neutrophilic Leukemias of Ambiguous Diagnosis	phs001799	phs001799.v1.p1	Leukemia	--	Prospective Longitudinal Cohort	DS-LEU	176
+CRDC	Genomic Variation in Diffuse Large B Cell Lymphomas	phs001444	phs001444.v2.p1	Lymphoma, Large B-Cell, Diffuse	--	Case Set	GRU	489
+CRDC	MP2PRT: Identification of Genetic Changes Associated with Relapse and/or Adaptive Resistance in Patients Registered as Favorable Histology Wilms Tumor on AREN03B2	phs001965	phs001965.v1.p1	Wilms Tumor	--	Case Set	GRU	84
+CRDC	Multiple Myeloma CoMMpass Study	phs000748	phs000748.v7.p4	Multiple Myeloma	RNA-Seq; WGS; WXS	Prospective Longitudinal Cohort	GRU-MDS; DS-MCRD-MDS	1014
+CRDC	National Cancer Institute (NCI) TARGET: Therapeutically Applicable Research to Generate Effective Treatments	phs000218	phs000218.v23.p8	Neoplasms	Bisulfite-Seq; ChIP-Seq; RNA-Seq; Targeted-Capture; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	6120
+CRDC	NCI Cancer Model Development for the Human Cancer Model Initiative	phs001486	phs001486.v2.p2	Neoplasms	--	Prospective Longitudinal Cohort	GRU	451
+CRDC	Pancreas Cancer Organoid Profiling	phs001611	phs001611.v1.p1	Neoplasms	--	Prospective Longitudinal Cohort	GRU	71
+CRDC	TARGET: Acute Lymphoblastic Leukemia (ALL) Expansion Phase 2	phs000464	phs000464.v20.p8	Precursor Cell Lymphoblastic Leukemia-Lymphoma	RNA-Seq; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	1199
+CRDC	TARGET: Acute Lymphoblastic Leukemia (ALL) Pilot Phase 1	phs000463	phs000463.v20.p8	Precursor Cell Lymphoblastic Leukemia-Lymphoma	--	Tumor vs. Matched-Normal	PCR	289
+CRDC	TARGET: Acute Myeloid Leukemia (AML)	phs000465	phs000465.v20.p8	Leukemia, Myeloid, Acute	RNA-Seq; Targeted-Capture; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	2271
+CRDC	TARGET: Cancer Model Systems (MDLS): Cell Lines and Xenografts (including PPTP)	phs000469	phs000469.v20.p8	Xenograft Model Antitumor Assays	Bisulfite-Seq; ChIP-Seq; RNA-Seq; Targeted-Capture; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	132
+CRDC	TARGET: Kidney, Clear Cell Sarcoma of the Kidney (CCSK)	phs000466	phs000466.v20.p8	Sarcoma, Clear Cell	RNA-Seq; WGS	Tumor vs. Matched-Normal	PCR	14
+CRDC	TARGET: Kidney, Rhabdoid Tumor (RT)	phs000470	phs000470.v20.p8	Rhabdoid Tumor	Bisulfite-Seq; ChIP-Seq; RNA-Seq; WGS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	70
+CRDC	TARGET: Kidney, Wilms Tumor (WT)	phs000471	phs000471.v20.p8	Wilms Tumor	RNA-Seq; Targeted-Capture; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	653
+CRDC	TARGET: Neuroblastoma (NBL)	phs000467	phs000467.v20.p8	Neuroblastoma	RNA-Seq; Targeted-Capture; WGS; WXS; miRNA-Seq	Tumor vs. Matched-Normal	PCR	1195
+CRDC	TARGET: Osteosarcoma (OS)	phs000468	phs000468.v20.p8	Osteosarcoma	RNA-Seq; WGS; WXS	Tumor vs. Matched-Normal	PCR	310
+CRDC	The Cancer Genome Atlas (TCGA)	phs000178	phs000178.v11.p8	Neoplasms	SNV Aggregate (.MAF)	Tumor vs. Matched-Normal	GRU	11429
+CRDC	VA APOLLO Project - Research for Precision Oncology (RePOP)	phs001374	phs001374.v2.p1	Neoplasms	--	Prospective Longitudinal Cohort	GRU	170
+KFDRC	Discovering the Genetic Basis of Human Neuroblastoma: A Kids First Project	phs001436	phs001436.v1.p1	Neuroblastoma	--	Tumor vs. Matched-Normal	GRU	1694
+KFDRC	Gabriella Miller Kids First Pediatric Research Program in Craniofacial Microsomia	phs002130	phs002130.v1.p1	--	--	Family/Twin/Trios	DS-CFD	278
+KFDRC	Gabriella Miller Kids First Pediatric Research Project in Microtia in Hispanic Populations	phs002172	phs002172.v1.p1	Congenital Microtia	--	Family/Twin/Trios	GRU	403
+KFDRC	GMKF: Congenital Cranial Dysinnervation Disorders (CCDD) and Related Conditions	phs001247	phs001247.v1.p1	Cranial Nerve Diseases	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	DS-EMD; DS-ELMD; DS-CCDD-RD	899
+KFDRC	GMKF: Kids First Pediatric Research Program in Congenital Heart Disease	phs001138	phs001138.v3.p2	Heart Defects, Congenital	WGS	Family/Twin/Trios	HMB; DS-CHD	2208
+KFDRC	Kids First: Enchondromatoses and Related Malignant Tumors	phs001987	phs001987.v1.p1	Enchondromatosis	--	Family/Twin/Trios	HMB-IRB-NPU	79
+KFDRC	Kids First: Familial Predisposition to Hematopoietic Malignancies (SJFAMILY-HM)	phs001738	phs001738.v1.p1	Precursor Cell Lymphoblastic Leukemia-Lymphoma	--	Prospective Longitudinal Cohort	GRU	366
+KFDRC	Kids First: Genetics of  Kidney and Urinary Tract Malformations	phs002162	phs002162.v1.p1	--	--	Family/Twin/Trios	GRU	147
+KFDRC	Kids First: Genomic Analysis of Treatment Failure in Pediatric Osteosarcoma	phs001714	phs001714.v1.p1	Osteosarcoma	--	Tumor vs. Matched-Normal	GRU	84
+KFDRC	Kids First: Genomic Studies of Orofacial Cleft Birth Defects	phs001168	phs001168.v2.p2	Cleft Lip	WGS	Family/Twin/Trios	DS-OBDR-MDS; DS-OBD-MDS; DS-OC-PUB-MDS; HMB-MDS; GRU	1378
+KFDRC	Kids First: Genomics of African and Asian Orofacial Clefts Triads	phs001997	phs001997.v1.p1	Cleft Lip	--	Prospective Longitudinal Cohort	DS-OC-PUB-MDS; GRU	791
+KFDRC	Kids First: Genomics of Orofacial Cleft Birth Defects in Latin American Families	phs001420	phs001420.v1.p1	Cleft Lip	--	Family/Twin/Trios	DS-OBDR-RD	828
+KFDRC	Kids First Pediatric Research Program in Susceptibility to Ewing Sarcoma Based on Germline Risk and Familial History of Cancer	phs001228	phs001228.v1.p1	Sarcoma, Ewing	--	Family/Twin/Trios	GRU	1112
+KFDRC	Kids First: Pediatric Research Project on Adolescent Idiopathic Scoliosis	phs001410	phs001410.v1.p1	Scoliosis	--	Prospective Longitudinal Cohort	NRUP; HMB; DS-MUS-SKEL-IRB	300
+KFDRC	Kids First: Pediatric Research Project on the Genomic Analysis of Congenital Diaphragmatic Hernia	phs001110	phs001110.v3.p1	Hernias, Diaphragmatic, Congenital	CNV Genotypes; SNP Genotypes (NGS); WGS	Family/Twin/Trios	GRU	2312
+KFDRC	Kids First: The Intersection of Childhood Cancer and Birth Defects	phs001846	phs001846.v1.p1	Neoplasms	--	Family/Twin/Trios	GRU	1805
+KFDRC	UCLA/Gabriella Miller Kids First Disorders of Sex Development Study	phs001178	phs001178.v1.p1	Disorders of Sex Development	SNP/CNV Genotypes (NGS); WGS	Family/Twin/Trios	GRU	300
