@@ -58,3 +58,17 @@ class DbGaPParser(FileParser):
 
         # You don't actually create any concepts
         return elements
+
+
+class AnvilDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "AnVIL"
+
+
+class CRDCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "Cancer Data Commons"
+
+class KFDRCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "Kids First"
