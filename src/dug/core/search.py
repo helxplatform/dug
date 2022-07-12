@@ -176,6 +176,26 @@ class Search:
             body=doc
         )
 
+    def dump_concepts(self, index, query={}, offset=0, size=None, fuzziness=1, prefix_length=3):
+        """
+        Get everything from concept index
+        """
+        query = {
+            "match_all" : {}
+        }
+
+        body = json.dumps({'query': query})
+        total_items = self.es.count(body=body, index=index)
+        search_results = self.es.search(
+            index=index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         Changed to a long boolean match query to optimize search results
