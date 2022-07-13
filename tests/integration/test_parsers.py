@@ -7,6 +7,10 @@ def test_dbgap_parse_study_name_from_filename():
     filename = "whatever/phs000166.v2.pht000700.v1.CAMP_CData.data_dict_2009_09_03.xml"
     studyname = parser.parse_study_name_from_filename(filename)
     assert studyname == "CAMP_CData"
+    # test if version numbers are > 9
+    filename = "whatever/phs000166.v23.pht000700.v13.CAMP_CData.data_dict_2009_09_03.xml"
+    studyname = parser.parse_study_name_from_filename(filename)
+    assert studyname == "CAMP_CData"
 
 def test_nida_parse_study_name_from_filename():
     parser = NIDAParser()
