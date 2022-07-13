@@ -15,7 +15,7 @@ class DbGaPParser(FileParser):
     @staticmethod
     def parse_study_name_from_filename(filename: str):
         # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
+        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]+\.pht[0-9]+\.v[0-9]+\.(.+)\.data_dict.*')
         match = re.match(dbgap_file_pattern, filename)
         if match is not None:
             return match.group(1)
