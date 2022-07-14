@@ -26,7 +26,7 @@ class DbGaPParser(FileParser):
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
-        tree = ET.parse(input_file)
+        tree = ET.parse(input_file, ET.XMLParser(encoding='iso-8859-5'))
         root = tree.getroot()
         study_id = root.attrib['study_id']
         participant_set = root.get('participant_set','0')

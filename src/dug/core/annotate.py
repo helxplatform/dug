@@ -3,11 +3,13 @@ import logging
 import os
 import urllib.parse
 from typing import TypeVar, Generic, Union, List, Tuple, Optional
-
+import nltk.data
 import requests
 from requests import Session
 
 import dug.core.tranql as tql
+
+sentence_detector = nltk.data.load("tokenizers/punkt/english.pickle")
 
 logger = logging.getLogger('dug')
 
@@ -271,9 +273,23 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def __init__(self, url: str):
         self.url = url
 
+    def yeild_text_chunks(self, text, max_length=2400):
+        sentences = sentence_detector.tokenize(text)
+        partial_text = ""
+        for index, sentence in enumerate(sentences):
+            if len(partial_text) + len(sentence) < max_length:
+                partial_text += sentence
+            else:
+                yield partial_text
+                partial_text = sentence
+        yield partial_text
+
     def annotate(self, text, http_session):
         logger.debug(f"Annotating: {text}")
-        return self(text, http_session)
+        identifiers = []
+        for chunk_text in self.yeild_text_chunks(text):
+            identifiers += self(chunk_text, http_session)
+        return identifiers
 
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)

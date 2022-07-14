@@ -234,3 +234,23 @@ def test_ontology_helper(ontology_api):
     assert name == 'primary circulatory organ'
     assert description == 'A hollow, muscular organ, which, by contracting rhythmically, keeps up the circulation of the blood or analogs[GO,modified].'
     assert ontology_type == 'anatomical entity'
+
+def test_yield_partial_text():
+    annotator = Annotator('foo')
+    # text contains 800 characters + 9 new lines
+    text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum euismod, 
+    orci vel dapibus pellentesque, magna lorem tempus tellus, 
+    vel mattis dui massa quis diam. Maecenas magna nunc, 
+    iaculis sed molestie et, fermentum eget nulla. Pellentesque 
+    nisl nunc, faucibus quis finibus venenatis, vehicula at odio. Quisque 
+    congue sed quam nec condimentum. In dapibus nisl non tempor auctor. Praesent 
+    porttitor eros ac mi vulputate, a posuere metus vestibulum. Mauris at velit vehicula, 
+    consectetur nulla in, feugiat purus. Aliquam porttitor tortor vehicula auctor faucibus. Fusce sed tincidunt 
+    odio. Donec in lorem rhoncus, scelerisque sapien vel, ornare leo. Pellentesque elementum lectus vitae 
+    convallis luctus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos."""
+    # divvy up into chunks,  sum of each chunk sould equal the original text.
+    chunks = ""
+    for chunk in annotator.yeild_text_chunks(text=text, max_length=160):
+        chunks += chunk
+    # since spaces are trimmed by tokenizer , we can execuled all spaces and do char
+    assert chunks.replace(" ", "") == text.replace(" ", "")
