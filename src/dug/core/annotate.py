@@ -3,12 +3,15 @@ import logging
 import os
 import urllib.parse
 from typing import TypeVar, Generic, Union, List, Tuple, Optional
-import nltk.data
+import nltk
 import requests
 from requests import Session
 
 import dug.core.tranql as tql
 
+# download punkt dataset if not present
+nltk.download('punkt')
+# initialize sentence tokenizer
 sentence_detector = nltk.data.load("tokenizers/punkt/english.pickle")
 
 logger = logging.getLogger('dug')
