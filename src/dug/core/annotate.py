@@ -3,11 +3,11 @@ import logging
 import os
 import urllib.parse
 from typing import TypeVar, Generic, Union, List, Tuple, Optional
-
 import requests
 from requests import Session
 
 import dug.core.tranql as tql
+
 
 logger = logging.getLogger('dug')
 
@@ -271,9 +271,40 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def __init__(self, url: str):
         self.url = url
 
+    def sliding_window(self, text, max_characters=2000, padding_words=5):
+        """
+        For long texts sliding window works as the following
+        "aaaa bbb ccc ddd eeee"
+        with a sliding max chars 8 and padding 1
+        first yeild would be "aaaa bbb"
+        next subsequent yeilds "bbb ccc", "ccc ddd" , "ddd eeee"
+        allowing context to be preserved with the scope of padding
+        For a text of length 7653 , with max_characters 2000 and padding 5 , 4 chunks are yielded.
+        """
+        words = text.split(' ')
+        total_words = len(words)
+        window_end = False
+        current_index = 0
+        while not window_end:
+            current_string = ""
+            for index, word in enumerate(words[current_index: ]):
+                if len(current_string) + len(word) + 1 >= max_characters:
+                    yield current_string + " "
+                    current_index += index - padding_words
+                    break
+                appendee = word if index == 0 else " " + word
+                current_string += appendee
+
+            if current_index + index == len(words) - 1:
+                window_end = True
+                yield current_string
+
     def annotate(self, text, http_session):
         logger.debug(f"Annotating: {text}")
-        return self(text, http_session)
+        identifiers = []
+        for chunk_text in self.sliding_window(text):
+            identifiers += self(chunk_text, http_session)
+        return identifiers
 
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)
