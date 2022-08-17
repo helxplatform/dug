@@ -4,12 +4,12 @@ from typing import Dict
 import pluggy
 
 from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
-from .dbgap_parser import DbGaPParser
+from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
 from .topmed_csv_parser import TOPMedCSVParser
-from .anvil_dbgap_parser import AnvilDbGaPParser
+
 
 logger = logging.getLogger('dug')
 
@@ -23,7 +23,9 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["topmedtag"] = TOPMedTagParser()
     parser_dict["topmedcsv"] = TOPMedCSVParser()
     parser_dict["scicrunch"] = SciCrunchParser()
-    parser_dict["anvil"] = AnvilDbGaPParser() 
+    parser_dict["anvil"] = AnvilDbGaPParser()
+    parser_dict["crdc"] = CRDCDbGaPParser()
+    parser_dict["kfdrc"] = KFDRCDbGaPParser()
 
 
 class ParserNotFoundException(Exception):

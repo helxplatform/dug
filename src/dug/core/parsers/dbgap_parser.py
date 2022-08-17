@@ -15,7 +15,7 @@ class DbGaPParser(FileParser):
     @staticmethod
     def parse_study_name_from_filename(filename: str):
         # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]\.pht[0-9]+\.v[0-9]\.(.+)\.data_dict.*')
+        dbgap_file_pattern = re.compile(r'.*/*phs[0-9]+\.v[0-9]+\.pht[0-9]+\.v[0-9]+\.(.+)\.data_dict.*')
         match = re.match(dbgap_file_pattern, filename)
         if match is not None:
             return match.group(1)
@@ -26,7 +26,7 @@ class DbGaPParser(FileParser):
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
-        tree = ET.parse(input_file)
+        tree = ET.parse(input_file, ET.XMLParser(encoding='iso-8859-5'))
         root = tree.getroot()
         study_id = root.attrib['study_id']
         participant_set = root.get('participant_set','0')
@@ -58,3 +58,17 @@ class DbGaPParser(FileParser):
 
         # You don't actually create any concepts
         return elements
+
+
+class AnvilDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "AnVIL"
+
+
+class CRDCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "Cancer Data Commons"
+
+class KFDRCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "Kids First"
