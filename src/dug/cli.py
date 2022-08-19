@@ -93,6 +93,16 @@ def get_argparser():
         help="Optional keyword arguments that will be passed into the search target",
     )
 
+    # Summary subcommand
+    summary_parser = subparsers.add_parser('summary', help='Summarize current Dug Index')
+    summary_parser.add_argument(
+        '-v', '--verbose',
+        dest='verbose',
+        default=False,
+        action='store_true',
+        help='Verbose summary (lists out all study ids and data types currently indexed)',
+    )
+
     # Status subcommand
     # TODO implement this
     # status_parser = subparsers.add_parser('status', help='Check status of dug server')
@@ -120,12 +130,23 @@ def search(args):
     jsonResponse = json.dumps(response, indent = 2)
     print(jsonResponse)
 
+
 def datatypes(args):
     config = Config.from_env()
     factory = DugFactory(config)
     dug = Dug(factory)
-    # dug = Dug()
-    response = dug.info(args.target, **args.kwargs)
+    jsonResponse = dug.info(args.target, **args.kwargs)
+    print(jsonResponse)
+
+
+def summary(args):
+    config = Config.from_env()
+    factory = DugFactory(config)
+    dug = Dug(factory)
+    print("HELLO")
+    response = dug.summary(args.verbose)
+    jsonResponse = json.dumps(response, indent = 2)
+    print(jsonResponse)
 
 
 def status(args):
