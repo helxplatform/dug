@@ -102,5 +102,8 @@ class Dug:
 
         return func(query=query, **kwargs)
 
+    def summary(self, verbose=False):
+        return self._search.summary(verbose=verbose)
+
     def status(self):
         ...

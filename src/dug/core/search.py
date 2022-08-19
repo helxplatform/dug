@@ -498,67 +498,6 @@ class Search:
         data_type_list = [data_type['key'] for data_type in search_results['aggregations']['data_type']['buckets']]
         search_results.update({'data type list': data_type_list})
         return data_type_list
-    
-    def summary(self):
-        """
-        Return a summary of Dug datasets available.
-        """
-        indices = ['concepts_index', 'variables_index', 'kg_index']
-        summary_results = {}
-        
-        body = json.dumps({})
-        
-        for i in indices:
-            summary_count = self.es.count(
-                body=body,
-                index=i
-            )
-            summary_results[i] = summary_count['count']
-        return summary_results
-
-    def summary_verbose(self):
-        """
-        Return a verbose summary returning a list of concept_ids, variables_ids, and study_ids.
-        """
-        indices = ['concepts_index', 'variables_index', 'kg_index']
-        summary_results = {}
-        
-        query = {
-            "query": {
-                "match_all" : {}
-            }
-        }
-        body = json.dumps(query)
-
-        for i in indices:
-            search_values = self.es.search(
-                index=i,
-                body=body,
-                filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
-                size=None
-            )
-            if i == 'variables_index':
-                var_collection = {}
-                for data in search_values['hits']['hits']:
-                    source_coll_id = data['_source']['collection_id']
-                    if source_coll_id not in var_collection:
-                        var_collection[source_coll_id] = [data['_id']]
-                    else:
-                        var_collection[source_coll_id].append(data['_id'])
-                id_list = var_collection
-            else:
-                id_list = [data_type['_id'] for data_type in search_values['hits']['hits']]
-
-            print(id_list)
-            summary_count = self.es.count(
-                body=json.dumps({}),
-                index=i
-            )
-            summary_results[i] = {
-                'ids': id_list,
-                'count': summary_count['count']
-            }
-        return summary_results
 
     def search_kg(self, index, unique_id, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
@@ -672,6 +611,38 @@ class Search:
             index=index,
             doc=doc,
             doc_id=unique_doc_id)
+
+    def summary(self, verbose=False):
+        """
+        Return a summary of Dug datasets available.
+        """
+
+        summary_results = {}
+
+        body = json.dumps({})
+
+        # Get basic counts
+        for i in self.indices:
+            summary_count = self.es.count(
+                body=body,
+                index=i
+            )
+            summary_results[i] = summary_count['count']
+
+        # Get counts of studies and data types
+        all_elements = self.search_variables(index='variables_index')
+        data_types = list(all_elements.keys())
+        data_types = len(data_types) if not verbose else data_types
+
+        # Unpack and flatten study names
+        studies_by_datatype = [list(all_elements[data_type].keys()) for data_type in data_types]
+        studies = [study for studies in studies_by_datatype for study in studies]
+        studies = len(studies) if not verbose else studies
+
+        # Add to report
+        summary_results["data_types"] = data_types
+        summary_results["studies"] = studies
+        return summary_results
 
 
 class SearchException(Exception):
