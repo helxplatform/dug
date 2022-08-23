@@ -1,9 +1,14 @@
-from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser
+from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
+    CRDCDbGaPParser, KFDRCDbGaPParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 def test_dbgap_parse_study_name_from_filename():
     parser = DbGaPParser()
     filename = "whatever/phs000166.v2.pht000700.v1.CAMP_CData.data_dict_2009_09_03.xml"
+    studyname = parser.parse_study_name_from_filename(filename)
+    assert studyname == "CAMP_CData"
+    # test if version numbers are > 9
+    filename = "whatever/phs000166.v23.pht000700.v13.CAMP_CData.data_dict_2009_09_03.xml"
     studyname = parser.parse_study_name_from_filename(filename)
     assert studyname == "CAMP_CData"
 
@@ -70,3 +75,21 @@ def test_anvil_parser():
     assert len(elements) == 3
     for element in elements:
         assert element.type == "AnVIL"
+
+
+def test_crdc_parser():
+    parser = CRDCDbGaPParser()
+    parse_file = str(TEST_DATA_DIR / "phs001547.v1.pht009987.v1.TOPMed_CCDG_GENAF_Subject.data_dict.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 3
+    for element in elements:
+        assert element.type == "Cancer Data Commons"
+
+
+def test_kfdrc_parser():
+    parser = KFDRCDbGaPParser()
+    parse_file = str(TEST_DATA_DIR / "phs001547.v1.pht009987.v1.TOPMed_CCDG_GENAF_Subject.data_dict.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 3
+    for element in elements:
+        assert element.type == "Kids First"
