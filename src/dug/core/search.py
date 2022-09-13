@@ -197,6 +197,14 @@ class Search:
         return search_results
 
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
+
+        # Let's query the NER endpoint for the user query
+        print (f"NER_URL: {self._cfg.ner_url}")
+        print (f"NER_MODEL: {self._cfg.ner_model}")
+        params = {'text': query, 'model_name': self._cfg.ner_model}
+        response = requests.post(self._cfg.ner_url, json=params)
+        print(response.json())
+        return
         """
         Changed to a long boolean match query to optimize search results
         """

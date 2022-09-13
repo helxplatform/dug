@@ -24,6 +24,9 @@ class Config:
     nboost_host: str = "nboost"
     nboost_port: int = 8000
 
+    ner_url: str = "none"
+    ner_model: str = "none"
+
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(default_factory=lambda: {
         "debreviator": {
@@ -98,7 +101,9 @@ class Config:
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
             "nboost_host": "NBOOST_API_HOST",
-            "nboost_port": "NBOOST_API_PORT"
+            "nboost_port": "NBOOST_API_PORT",
+            "ner_url": "NER_URL",
+            "ner_model": "NER_MODEL",
         }
 
         kwargs = {}
