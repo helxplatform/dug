@@ -3,6 +3,7 @@ import logging
 
 import requests
 from elasticsearch import Elasticsearch
+from dug.core.annotate import Normalizer, Identifier, ConceptExpander
 
 from dug.config import Config
 
@@ -204,6 +205,22 @@ class Search:
         params = {'text': query, 'model_name': self._cfg.ner_model}
         response = requests.post(self._cfg.ner_url, json=params)
         print(response.json())
+        theJSON = response.json()
+        theMeshTerm = 'MESH:' + theJSON[1]
+        print(theMeshTerm)
+
+        # We want to normalize the term to the most preferred entry so that
+        # when we query the graph we get the best results.
+        normalizer = Normalizer(**self._cfg.normalizer)
+        identifier = Identifier(theMeshTerm, theJSON[0])
+        normalizedResult = None
+        with requests.session() as session:
+          normalizedResult = normalizer.normalize(identifier, session)
+          print(normalizedResult.id)
+        
+        # Now we want to query the graph
+        # Let's first try the tranql endpoint
+        expander = ConceptExpander(**self._cfg.concept_expander)
         return
         """
         Changed to a long boolean match query to optimize search results

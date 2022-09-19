@@ -83,7 +83,7 @@ class Config:
     })
 
     concept_expander: dict = field(default_factory=lambda: {
-        "url": "https://tranql-dev.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
+        "url": "https://tranql.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
         "min_tranql_score": 0.0
     })
 
