@@ -3,6 +3,10 @@ import logging
 
 import requests
 from elasticsearch import Elasticsearch
+
+import redis
+from redisgraph import Node, Edge, Graph, Path
+
 from dug.core.annotate import Normalizer, Identifier, ConceptExpander
 
 from dug.config import Config
@@ -29,6 +33,9 @@ class Search:
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
+        # Establish the connection to RedisGraph
+        self.redisConn = redis.Redis(host=self._cfg.redis_host, port=self._cfg.redis_port, password=self._cfg.redis_password)
+        self.redisGraph = = Graph(self._cfg.redis_graph,  r)
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port}]
 

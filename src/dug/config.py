@@ -20,6 +20,7 @@ class Config:
 
     redis_host: str = "redis"
     redis_port: int = 6379
+    redis_graph: str = "test"
 
     nboost_host: str = "nboost"
     nboost_port: int = 8000
