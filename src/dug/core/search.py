@@ -34,8 +34,15 @@ class Search:
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         # Establish the connection to RedisGraph
+        print(f"Redis password is: {self._cfg.redis_password}")
         self.redisConn = redis.Redis(host=self._cfg.redis_host, port=self._cfg.redis_port, password=self._cfg.redis_password)
-        self.redisGraph = = Graph(self._cfg.redis_graph,  r)
+        print(f"Connecting to graph: {self._cfg.redis_graph}")
+        self.redisGraph = Graph(self._cfg.redis_graph, self.redisConn)
+        print(f"graph connection: {self.redisGraph}")
+
+        # At this point, we would like to test the connnection, but there does not seem to be a command
+        # to do so.  We could probably execute a No-op type command.
+
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port}]
 
@@ -204,6 +211,18 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
+    def query_redis(self, concept):
+        # We are using a set of canned queries.  We could get fancy and put them in a config file
+        # or find some other way of creating them at run time, but that's for later, if ever
+
+        print(f"concept is {concept}")
+        query1 = """MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return c,x,b"""
+        query1 = query1.replace("CONCEPT", concept)
+        print(f"query1 is {query1}")
+
+        results1 = self.redisGraph.query(query1)
+        print(f"results1 is {results1}")
+
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
 
         # Let's query the NER endpoint for the user query
@@ -223,11 +242,15 @@ class Search:
         normalizedResult = None
         with requests.session() as session:
           normalizedResult = normalizer.normalize(identifier, session)
-          print(normalizedResult.id)
+          print(f"normalizedResult.id {normalizedResult.id}")
+          print(type(normalizedResult.id))
+
+        graphResults = self.query_redis(normalizedResult.id)  
         
         # Now we want to query the graph
+        # Call the function that queries the redis graph.
         # Let's first try the tranql endpoint
-        expander = ConceptExpander(**self._cfg.concept_expander)
+        #expander = ConceptExpander(**self._cfg.concept_expander)
         return
         """
         Changed to a long boolean match query to optimize search results
