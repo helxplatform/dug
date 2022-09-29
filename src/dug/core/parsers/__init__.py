@@ -4,7 +4,7 @@ from typing import Dict
 import pluggy
 
 from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
-from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser
+from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser, SPRINTParser
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
@@ -26,6 +26,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["anvil"] = AnvilDbGaPParser()
     parser_dict["crdc"] = CRDCDbGaPParser()
     parser_dict["kfdrc"] = KFDRCDbGaPParser()
+    parser_dict["sprint"] = SPRINTParser()
 
 
 class ParserNotFoundException(Exception):
