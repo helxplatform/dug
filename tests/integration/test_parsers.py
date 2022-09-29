@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 def test_dbgap_parse_study_name_from_filename():
@@ -93,3 +93,12 @@ def test_kfdrc_parser():
     assert len(elements) == 3
     for element in elements:
         assert element.type == "Kids First"
+
+
+def test_sprint_parser():
+    parser = SPRINTParser()
+    parse_file = str(TEST_DATA_DIR / "phs001547.v1.pht009987.v1.TOPMed_CCDG_GENAF_Subject.data_dict.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 3
+    for element in elements:
+        assert element.type == "SPRINT"

@@ -72,3 +72,8 @@ class CRDCDbGaPParser(DbGaPParser):
 class KFDRCDbGaPParser(DbGaPParser):
     def _get_element_type(self):
         return "Kids First"
+
+
+class SPRINTParser(DbGaPParser):
+    def _get_element_type(self):
+        return "SPRINT"
