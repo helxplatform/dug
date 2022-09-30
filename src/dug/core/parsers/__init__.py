@@ -4,11 +4,12 @@ from typing import Dict
 import pluggy
 
 from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
-from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser, SPRINTParser
+from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
 from .topmed_csv_parser import TOPMedCSVParser
+from .sprint_parser import SPRINTParser
 
 
 logger = logging.getLogger('dug')
