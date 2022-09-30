@@ -73,13 +73,3 @@ class KFDRCDbGaPParser(DbGaPParser):
     def _get_element_type(self):
         return "Kids First"
 
-
-class SPRINTParser(DbGaPParser):
-
-    @staticmethod
-    def parse_study_name_from_filename(filename: str):
-        # Parse the form name from the xml filename
-        return filename.split('/')[-1].replace('.xml', '')
-
-    def _get_element_type(self):
-        return "SPRINT"

@@ -97,11 +97,13 @@ def test_kfdrc_parser():
 
 def test_sprint_parser():
     parser = SPRINTParser()
-    parse_file = str(TEST_DATA_DIR / "phs001547.v1.pht009987.v1.TOPMed_CCDG_GENAF_Subject.data_dict.xml")
+    parse_file = str(TEST_DATA_DIR / "adolescent_sleep_wake_scale_short_form_aswssf.xml")
     elements = parser(parse_file)
-    assert len(elements) == 3
+    assert len(elements) == 27
     for element in elements:
         assert element.type == "SPRINT"
+    element_names = [e.name for e in elements]
+    assert "awsw_i2" in element_names
 
 def test_sprint_parser_form_name():
     filename = "/opt/***/share/data/dug/input_files/sprint/adolescent_sleep_wake_scale_short_form_aswssf.xml"
