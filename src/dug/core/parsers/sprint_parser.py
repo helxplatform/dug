@@ -33,9 +33,10 @@ class SPRINTParser(FileParser):
 
         elements = []
         for variable in root.iter('variable'):
+            description = variable.find('description').text or ""
             elem = DugElement(elem_id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
-                              desc=variable.find('description').text.lower(),
+                              desc=description.lower(),
                               elem_type="SPRINT",
                               collection_id=f"{study_id}",
                               collection_name=study_name)
