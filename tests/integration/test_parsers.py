@@ -102,3 +102,7 @@ def test_sprint_parser():
     assert len(elements) == 3
     for element in elements:
         assert element.type == "SPRINT"
+
+def test_sprint_parser_form_name():
+    filename = "/opt/***/share/data/dug/input_files/sprint/adolescent_sleep_wake_scale_short_form_aswssf.xml"
+    assert SPRINTParser.parse_study_name_from_filename(filename) == "adolescent_sleep_wake_scale_short_form_aswssf"
