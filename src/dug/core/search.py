@@ -211,17 +211,41 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def query_redis(self, concept):
+    def query_description(self, concept):
+       # Currently the description for the concept is not reliably in the graph.
+       # so we are retrieving it from a hard coded URL.  This is OK because we expect
+       # to move the descriptions into the RedisGraph and this code will go away.
+       url = f"https://api.monarchinitiative.org/api/bioentity/{concept}"
+       print(f"retrieving URL: {url}")
+       response = requests.get(url)
+       print(response.json())
+       return(response.json()['description'])
+
+    def query_redis(self, concept, leafType):
         # We are using a set of canned queries.  We could get fancy and put them in a config file
         # or find some other way of creating them at run time, but that's for later, if ever
 
         print(f"concept is {concept}")
-        query1 = """MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return c,x,b"""
+        query1 = """MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:ClinicalModifier`) return c,x,b"""
         query1 = query1.replace("CONCEPT", concept)
         print(f"query1 is {query1}")
 
         results1 = self.redisGraph.query(query1)
         print(f"results1 is {results1}")
+        print(type(results1.result_set))
+        print(len(results1.result_set))
+        for record in results1.result_set:
+           print(len(record))
+           print("***********************************************************")
+           print(type(record[0]))
+           string1 = record[0].toString()
+           print(f"theRecord: {string1}")
+           print("***********************************************************")
+           print(record[0].properties)
+           print("***********************************************************")
+           print(record[1].properties)
+           print("***********************************************************")
+           print(record[2].properties)
 
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
 
@@ -243,9 +267,16 @@ class Search:
         with requests.session() as session:
           normalizedResult = normalizer.normalize(identifier, session)
           print(f"normalizedResult.id {normalizedResult.id}")
-          print(type(normalizedResult.id))
 
-        graphResults = self.query_redis(normalizedResult.id)  
+          # The first type in the list is a leaf node. This is the
+          # most specific type available and what we want to use in the query.
+          print(f"normalizedResult.types {normalizedResult.types}")
+          leafType = normalizedResult.types[0]
+
+        description = self.query_description(normalizedResult.id)
+        print(f"description: {description}")
+
+        graphResults = self.query_redis(normalizedResult.id, leafType)  
         
         # Now we want to query the graph
         # Call the function that queries the redis graph.
