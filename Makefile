@@ -31,7 +31,6 @@ install:
 
 #test: Run all tests
 test:
-	echo ${PYTHONPATH}
 	# ${PYTHON} -m flake8 src
 	${PYTHON} -m pytest --doctest-modules src
 	coverage run -m pytest tests
