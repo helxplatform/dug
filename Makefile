@@ -1,4 +1,5 @@
 PYTHON       = /usr/bin/env python3
+PYTHONPATH 	 = $(shell echo ${PWD})/src
 VERSION_FILE = ./src/dug/_version.py
 VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
 DOCKER_REPO  = docker.io
@@ -27,7 +28,6 @@ clean:
 install:
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install -r requirements.txt
-	${PYTHON} -m pip install .
 
 #test: Run all tests
 test:
