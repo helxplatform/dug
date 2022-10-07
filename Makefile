@@ -1,5 +1,4 @@
 PYTHON       = /usr/bin/env python3
-PYTHONPATH 	 = $(shell echo ${PWD})/src
 VERSION_FILE = ./src/dug/_version.py
 VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
 DOCKER_REPO  = docker.io
@@ -7,6 +6,7 @@ DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
 DOCKER_TAG   = ${VERSION}
 DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
+export PYTHONPATH = $(shell echo ${PWD})/src
 
 .DEFAULT_GOAL = help
 
@@ -31,9 +31,13 @@ install:
 
 #test: Run all tests
 test:
+	echo ${PYTHONPATH}
 	# ${PYTHON} -m flake8 src
 	${PYTHON} -m pytest --doctest-modules src
-	${PYTHON} -m pytest tests
+	coverage run -m pytest tests
+
+coverage:
+	coverage report
 
 #build: Build Docker image
 build:
