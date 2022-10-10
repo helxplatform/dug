@@ -6,6 +6,7 @@ DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
 DOCKER_TAG   = ${VERSION}
 DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
+export PYTHONPATH = $(shell echo ${PWD})/src
 
 .DEFAULT_GOAL = help
 
@@ -27,13 +28,15 @@ clean:
 install:
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install -r requirements.txt
-	${PYTHON} -m pip install .
 
 #test: Run all tests
 test:
 	# ${PYTHON} -m flake8 src
 	${PYTHON} -m pytest --doctest-modules src
-	${PYTHON} -m pytest tests
+	coverage run -m pytest tests
+
+coverage:
+	coverage report
 
 #build: Build Docker image
 build:
