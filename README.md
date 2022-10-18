@@ -11,6 +11,8 @@ To achieve this, we annotate study metadata with terms from [biomedical ontologi
 
 ## Quickstart
 
+NOTE: You must run `make init` once you've cloned the repo to enable the commit-msg git hook so that conventional commits will apply automatically.
+
 To install Dug in your environment , run `make install`. Alternatively,
 
 ```shell
