@@ -1,0 +1,81 @@
+#!/bin/bash
+
+# set -xe
+
+script_name=`basename "$0"`
+
+# Make sure stdin is open--it's sometimes open when we come in here
+exec 0< /dev/tty
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# Get user's original commit text.
+orig_msg=$(awk '!/^#/{print}' $1);
+
+# Test for commit type/breaking change info already in commit text.
+# This can occur if the user entered command using "-m" and the
+# pre-commmit hook already handled getting this info.
+
+rgx="^(feat:|fix:|test:|doc:|Merge).*"
+if grep -E  $rgx <<< "$orig_msg" > /dev/null 2>&1; then
+    echo "$script_name: Commit message passes commmit-type check."
+    echo "--------------------------------------------------------------------------------"
+    echo "$orig_msg"
+    echo "--------------------------------------------------------------------------------"
+    exit 0
+fi
+
+echo
+echo 'Please select the type of your commmit from the following list:'
+echo
+nl $SCRIPT_DIR/commit_types.txt | awk '{ print $1, $2 }'
+echo
+count=$(wc -l $SCRIPT_DIR/commit_types.txt | awk '{ print $1 }')
+n=0
+while true; do
+    read -p 'Select option: ' n
+    # If $n is an integer between one and $count...
+    if [[ "$n" -eq $n ]] &&
+       [[ "$n" -gt 0 ]] &&
+       [[ "$n" -le "$count" ]]; then
+        break
+    fi
+done
+
+commit_type="$(sed -n "${n}p" $SCRIPT_DIR/commit_types.txt | awk '{ print $2 }')"
+echo
+yesno="n"
+if [ $commit_type == "feat" ] || [ $commit_type == "fix" ]; then
+    while true; do
+        read -p 'Is this a breaking change [y/n]: ' yn
+        yesno="$(tr [A-Z] [a-z] <<< "$yn")"
+        if [ "$yesno" == "y" ] || [ "$yesno" == "yes" ] || \
+           [ "$yesno" == "n" ] || [ "$yesno" == "no" ]; then
+            break
+        fi
+    done
+fi
+
+breaking_commit=0
+if [ "$yesno" == "y" ] || [ "$yesno" == "yes" ]; then
+    breaking_commit=1
+fi
+
+NL=$'\n'
+if [ "$breaking_commit" -eq 1 ]; then
+    # Explicitly state it's a breaking change
+    msg="$msg${NL}${NL}BREAKING CHANGE"
+fi
+
+# Prepend commit type to original commit text.
+new_msg="${commit_type}: $orig_msg";
+echo $new_msg > $1;
+
+echo
+echo "Updated message:"
+echo
+echo "--------------------------------------------------------------------------------"
+echo "$new_msg"
+echo "--------------------------------------------------------------------------------"
+echo
+exit 0
