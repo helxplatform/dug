@@ -1,5 +1,7 @@
 library 'pipeline-utils@master'
 
+CCV = ""
+
 pipeline {
   agent {
     kubernetes {
@@ -56,28 +58,31 @@ spec:
         GITHUB_CREDS = credentials("${env.GITHUB_CREDS_ID_STR}")
         REGISTRY = "${env.REGISTRY}"
         REG_OWNER="helxplatform"
-        REG_APP="dug"
+        REPO_NAME="dug"
         COMMIT_HASH="${sh(script:"git rev-parse --short HEAD", returnStdout: true).trim()}"
-        VERSION_FILE="src/dug/_version.py"
-        VERSION="${sh(script:'awk \'{ print $3 }\' src/dug/_version.py | xargs', returnStdout: true).trim()}"
-        IMAGE_NAME="${REGISTRY}/${REG_OWNER}/${REG_APP}"
-        TAG1="$BRANCH_NAME"
-        TAG2="$COMMIT_HASH"
-        TAG3="$VERSION"
-        TAG4="latest"
+        IMAGE_NAME="${REGISTRY}/${REG_OWNER}/${REPO_NAME}"
     }
     stages {
         stage('Build') {
             steps {
                 script {
-                    container(name: 'kaniko', shell: '/busybox/sh') {
-                        kaniko.build("./Dockerfile", ["$IMAGE_NAME:$TAG1", "$IMAGE_NAME:$TAG2", "$IMAGE_NAME:$TAG3", "$IMAGE_NAME:$TAG4"])
+                    container(name: 'go', shell: '/bin/bash') {
+                        if (BRANCH_NAME.equals("master")) { 
+                            CCV = go.ccv()
+                        }
                     }
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'image.tar', onlyIfSuccessful: true
+                    container(name: 'kaniko', shell: '/busybox/sh') {
+                        def tagsToPush = ["$IMAGE_NAME:$BRANCH_NAME", "$IMAGE_NAME:$COMMIT_HASH"]
+                        if (CCV != null && !CCV.trim().isEmpty() && BRANCH_NAME.equals("master")) {
+                            tagsToPush.add("$IMAGE_NAME:$CCV")
+                            tagsToPush.add("$IMAGE_NAME:latest")
+                        } else if (BRANCH_NAME.equals("develop")) {
+                            def now = new Date()
+                            def currTimestamp = now.format("yyyy-MM-dd'T'HH.mm'Z'", TimeZone.getTimeZone('UTC'))
+                            tagsToPush.add("$IMAGE_NAME:$currTimestamp")
+                        }
+                        kaniko.buildAndPush("./Dockerfile", tagsToPush)
+                    }
                 }
             }
         }
@@ -86,22 +91,6 @@ spec:
                 sh '''
                 echo "Test stage"
                 '''
-            }
-        }
-        stage('Publish') {
-            steps {
-                script {
-                    container(name: 'crane', shell: '/busybox/sh') {
-                        def imageTagsPushAlways = ["$IMAGE_NAME:$TAG1", "$IMAGE_NAME:$TAG2"]
-                        def imageTagsPushForDevelopBranch = ["$IMAGE_NAME:$TAG3"]
-                        def imageTagsPushForMasterBranch = ["$IMAGE_NAME:$TAG4"]
-                        image.publish(
-                            imageTagsPushAlways,
-                            imageTagsPushForDevelopBranch,
-                            imageTagsPushForMasterBranch
-                        )
-                    }
-                }
             }
         }
     }
