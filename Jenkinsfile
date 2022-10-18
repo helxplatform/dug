@@ -1,5 +1,7 @@
 library 'pipeline-utils@master'
 
+CCV = ""
+
 pipeline {
   agent {
     kubernetes {
