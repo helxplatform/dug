@@ -34,11 +34,11 @@ class Search:
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         # Establish the connection to RedisGraph
-        print(f"Redis password is: {self._cfg.redis_password}")
+        #print(f"Redis password is: {self._cfg.redis_password}")
         self.redisConn = redis.Redis(host=self._cfg.redis_host, port=self._cfg.redis_port, password=self._cfg.redis_password)
-        print(f"Connecting to graph: {self._cfg.redis_graph}")
+        #print(f"Connecting to graph: {self._cfg.redis_graph}")
         self.redisGraph = Graph(self._cfg.redis_graph, self.redisConn)
-        print(f"graph connection: {self.redisGraph}")
+        #print(f"graph connection: {self.redisGraph}")
 
         # At this point, we would like to test the connnection, but there does not seem to be a command
         # to do so.  We could probably execute a No-op type command.
@@ -216,48 +216,78 @@ class Search:
        # so we are retrieving it from a hard coded URL.  This is OK because we expect
        # to move the descriptions into the RedisGraph and this code will go away.
        url = f"https://api.monarchinitiative.org/api/bioentity/{concept}"
-       print(f"retrieving URL: {url}")
+       #print("***********************************************************")
+       #print(f"retrieving URL: {url}")
        response = requests.get(url)
-       print(response.json())
-       return(response.json()['description'])
+       #print(json.dumps(response.json(),indent=4))
+       #print("***********************************************************")
+       return(response.json())
 
     def query_redis(self, concept, leafType):
         # We are using a set of canned queries.  We could get fancy and put them in a config file
         # or find some other way of creating them at run time, but that's for later, if ever
+        queryList = []
+        # Concept queries
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:biolink:ClinicalModifier)-->(d:biolink:ClinicalTrial) return c""")
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(x)-->(b:`biolink:ClinicalModifier`)-->(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+        queryList.append("""MATCH (c{id:"CONCEPT"})-->(x)--(b:`biolink:Publication`) return distinct x""")
 
-        print(f"concept is {concept}")
-        query1 = """MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:ClinicalModifier`) return c,x,b"""
-        query1 = query1.replace("CONCEPT", concept)
-        print(f"query1 is {query1}")
+        # Variable/study queries
+        # Get the CDEs
+        #queryList.append("""MATCH (c{id:"CONCEPT"})-->(b:`biolink:Publication`) return c,b""")
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:biolink:ClinicalModifier)-->(d:biolink:ClinicalTrial) return b,d""")
+        #print (queryList[0])
+
+        allResults = None
+        # send each query to the lower level for query execution and data extraction
+        for query in queryList:
+           theseResults = self.execute_redis_query(concept, leafType, query)
+           if allResults is None:
+              allResults = theseResults
+           else:
+              allResults = allResults + theseResults
+
+        return allResults   
+
+    def execute_redis_query(self, concept, leafType, protoQuery): 
+        #print(f"concept is {concept}")
+        #print(f"leafType is {leafType}")
+        query1 = protoQuery.replace("CONCEPT", concept)
+        query1 = query1.replace("TYPE", leafType)
+        #print(f"query1 is {query1}")
 
         results1 = self.redisGraph.query(query1)
-        print(f"results1 is {results1}")
-        print(type(results1.result_set))
-        print(len(results1.result_set))
-        for record in results1.result_set:
-           print(len(record))
-           print("***********************************************************")
-           print(type(record[0]))
-           string1 = record[0].toString()
-           print(f"theRecord: {string1}")
-           print("***********************************************************")
-           print(record[0].properties)
-           print("***********************************************************")
-           print(record[1].properties)
-           print("***********************************************************")
-           print(record[2].properties)
+        #print(f"results1 is {results1}")
+        #print(type(results1.result_set))
+        #print(len(results1.result_set))
+        #resultNum = 0
+        #for record in results1.result_set:
+           #print(len(record))
+           #print(f"************************** Record 0 Result {resultNum} *********************************")
+           #print(type(record[0]))
+           #string1 = record[0].toString()
+           #print(f"theRecord: {string1}")
+           #print("***********************************************************")
+           #print(json.dumps(record[0].properties, indent=4))
+           #print(f"************************** Record 1 Result {resultNum} *********************************")
+           #print(json.dumps(record[1].properties, indent=4))
+           #print(f"************************** Record 2 Result {resultNum} *********************************")
+           #print(json.dumps(record[2].properties, indent=4))
+           #resultNum = resultNum + 1
+
+        return results1.result_set
 
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
 
         # Let's query the NER endpoint for the user query
-        print (f"NER_URL: {self._cfg.ner_url}")
-        print (f"NER_MODEL: {self._cfg.ner_model}")
+        #print (f"NER_URL: {self._cfg.ner_url}")
+        #print (f"NER_MODEL: {self._cfg.ner_model}")
         params = {'text': query, 'model_name': self._cfg.ner_model}
         response = requests.post(self._cfg.ner_url, json=params)
-        print(response.json())
+        #print(response.json())
         theJSON = response.json()
         theMeshTerm = 'MESH:' + theJSON[1]
-        print(theMeshTerm)
+        #print(theMeshTerm)
 
         # We want to normalize the term to the most preferred entry so that
         # when we query the graph we get the best results.
@@ -266,127 +296,48 @@ class Search:
         normalizedResult = None
         with requests.session() as session:
           normalizedResult = normalizer.normalize(identifier, session)
-          print(f"normalizedResult.id {normalizedResult.id}")
+          #print(f"normalizedResult.id {normalizedResult.id}")
 
           # The first type in the list is a leaf node. This is the
           # most specific type available and what we want to use in the query.
-          print(f"normalizedResult.types {normalizedResult.types}")
+          #print(f"normalizedResult.types {normalizedResult.types}")
           leafType = normalizedResult.types[0]
 
         description = self.query_description(normalizedResult.id)
-        print(f"description: {description}")
+        #print(f"description: {description}")
 
         graphResults = self.query_redis(normalizedResult.id, leafType)  
+        #print(f"number of graphResults is {len(graphResults)}")
+
+        # Build the result object.  This is going to match what was returned from the ElasticSearch search
+        redisResults = {}
+        redisResults['status'] = 'success'
+        redisResults['result'] = {}
+        redisResults['result']['hits'] = {}
+        redisResults['result']['hits']['hits'] = []
         
-        # Now we want to query the graph
-        # Call the function that queries the redis graph.
-        # Let's first try the tranql endpoint
-        #expander = ConceptExpander(**self._cfg.concept_expander)
-        return
-        """
-        Changed to a long boolean match query to optimize search results
-        """
-        query = {
-            "bool": {
-                "should": [
-                    {
-                        "match_phrase": {
-                            "name": {
-                                "query": query,
-                                "boost": 10
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "description": {
-                                "query": query,
-                                "boost": 6
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "search_terms": {
-                                "query": query,
-                                "boost": 8
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "name": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 4
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 5
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "description": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 3
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "description": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "boost": 2
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "boost": 1
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "optional_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length
-                            }
-                        }
-                    }
-                ]
-            }
-        }
-        body = json.dumps({'query': query})
-        total_items = self.es.count(body=body, index=index)
-        search_results = self.es.search(
-            index=index,
-            body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
-            from_=offset,
-            size=size
-        )
+        # for each result in the gragh results, we build json that matches the used parts of
+        # the existing ElasticSearch json and 
+        # add it to the redisResults['results']['hits']['hits'] array
+        node = 0
+        for thisRecord in graphResults:
+           thisJson = {}
+           thisJson['_type'] = '_doc'
+           thisJson['_id'] = thisRecord[node].properties['id']
+           description = self.query_description(thisRecord[node].properties['id'])
+           resultSource = {}
+           resultSource['_id'] = thisRecord[node].properties['id']
+           resultSource['description'] = description['description']
+           resultSource['type'] = description['category'][0]
+           resultSource['name'] = description['label']
+           thisJson['_source'] = resultSource
+           redisResults['result']['hits']['hits'].append(thisJson)
+        
+        #print(json.dumps(redisResults, indent = 4))
+        redisResults['result']['total_items'] = len(graphResults)
+        redisResults['message'] = 'Search result'
+        return redisResults
+
         search_results.update({'total_items': total_items['count']})
         return search_results
 
