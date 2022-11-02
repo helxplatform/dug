@@ -47,4 +47,6 @@ data['Proto'] = proto
 with open(outputFile, 'w') as theFile:
     sys.stdout = theFile # Change the standard output to the file we created.
     df = pd.DataFrame(data)
+    df.fillna('', inplace=True)
+    df.sort_index()
     print(df.to_string()) 
