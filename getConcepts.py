@@ -11,7 +11,7 @@ theSearch = Search(Config.from_env())
 
 # First arg is the concept, second is the output file
 concept = sys.argv[1]
-outputFile = sys.argv[2]
+outputDir = sys.argv[2]
 url = 'https://helx-howard.apps.renci.org/search-api/search'
 headers = {'content-type': 'application/json'}
 body = """{"index": "concepts_index", "query": "CONCEPT", "offset": 0, "size": 1000}"""
@@ -29,16 +29,27 @@ current={}
 for thisHit in theHits:
   thisId = thisHit['_source']['id']
   thisName = thisHit['_source']['name']
+  if thisName == "":
+     thisName = "None"
   current[thisId] = thisName
 
 data['Current'] = current
 
 protoResults = theSearch.search_concepts("one", concept)
+query = protoResults['query']
+query = query.replace(' ', '_')
+concept=protoResults['concept']
+outputFile = outputDir + "/" + query + "-" + concept
+
+print(f"user query {protoResults['query']}")
+print(f"concept {protoResults['concept']}")
 protoHits = protoResults['result']['hits']['hits']
 proto = {}
 for thisProtoHit in protoHits:
   protoId = thisProtoHit['_source']['_id']
   protoName = thisProtoHit['_source']['name']
+  if protoName == "":
+    protoName = 'None'
   proto[protoId] = protoName
 
 data['Proto'] = proto
@@ -48,5 +59,5 @@ with open(outputFile, 'w') as theFile:
     sys.stdout = theFile # Change the standard output to the file we created.
     df = pd.DataFrame(data)
     df.fillna('', inplace=True)
-    df.sort_index()
+    #df = df.sort_index(ascending = True)
     print(df.to_string()) 

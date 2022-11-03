@@ -223,15 +223,7 @@ class Search:
        #print("***********************************************************")
        return(response.json())
 
-    def query_redis(self, concept, leafType):
-        # We are using a set of canned queries.  We could get fancy and put them in a config file
-        # or find some other way of creating them at run time, but that's for later, if ever
-        queryList = []
-        # Concept queries
-        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:biolink:ClinicalModifier)-->(d:biolink:ClinicalTrial) return c""")
-        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(x)-->(b:`biolink:ClinicalModifier`)-->(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
-        queryList.append("""MATCH (c{id:"CONCEPT"})-->(x)--(b:`biolink:Publication`) return distinct x""")
-
+    def query_redis(self, concept, leafType, queryList):
         # Variable/study queries
         # Get the CDEs
         #queryList.append("""MATCH (c{id:"CONCEPT"})-->(b:`biolink:Publication`) return c,b""")
@@ -254,7 +246,7 @@ class Search:
         #print(f"leafType is {leafType}")
         query1 = protoQuery.replace("CONCEPT", concept)
         query1 = query1.replace("TYPE", leafType)
-        #print(f"query1 is {query1}")
+        print(f"query1 is {query1}")
 
         results1 = self.redisGraph.query(query1)
         #print(f"results1 is {results1}")
@@ -277,14 +269,12 @@ class Search:
 
         return results1.result_set
 
-    def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
-
-        # Let's query the NER endpoint for the user query
-        #print (f"NER_URL: {self._cfg.ner_url}")
-        #print (f"NER_MODEL: {self._cfg.ner_model}")
+    def normalize_query(self, query):
         params = {'text': query, 'model_name': self._cfg.ner_model}
         response = requests.post(self._cfg.ner_url, json=params)
-        #print(response.json())
+        print(self._cfg.ner_url)
+        print(response)
+        print(response.json())
         theJSON = response.json()
         theMeshTerm = 'MESH:' + theJSON[1]
         #print(theMeshTerm)
@@ -296,27 +286,42 @@ class Search:
         normalizedResult = None
         with requests.session() as session:
           normalizedResult = normalizer.normalize(identifier, session)
-          #print(f"normalizedResult.id {normalizedResult.id}")
+        return normalizedResult
 
-          # The first type in the list is a leaf node. This is the
-          # most specific type available and what we want to use in the query.
-          #print(f"normalizedResult.types {normalizedResult.types}")
-          leafType = normalizedResult.types[0]
+    def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
 
+        # Let's query the NER endpoint for the user query
+        normalizedResult = self.normalize_query(query)
+        leafType = normalizedResult.types[0]
         description = self.query_description(normalizedResult.id)
         #print(f"description: {description}")
 
-        graphResults = self.query_redis(normalizedResult.id, leafType)  
+        queryList = []
+        # Concept queries
+        # Does the user provided concept have any variables. 
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(b:biolink:ClinicalModifier)--(d:biolink:ClinicalTrial) return c""")
+        # Find concepts one hop away from the user concept that have variables
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+        # Find concepts 2 hops away from the user concept that have variables
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+        # Find concepts one hop away that are related to CDE
+        queryList.append("""MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return distinct x""")
+        # Find concepts two hops away that are related to CDE
+        queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+        
+        graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
         #print(f"number of graphResults is {len(graphResults)}")
 
         # Build the result object.  This is going to match what was returned from the ElasticSearch search
         redisResults = {}
         redisResults['status'] = 'success'
+        redisResults['query'] = query
+        redisResults['concept'] = normalizedResult.id
         redisResults['result'] = {}
         redisResults['result']['hits'] = {}
         redisResults['result']['hits']['hits'] = []
         
-        # for each result in the gragh results, we build json that matches the used parts of
+        # for each result in the graph results, we build json that matches the used parts of
         # the existing ElasticSearch json and 
         # add it to the redisResults['results']['hits']['hits'] array
         node = 0
@@ -325,21 +330,30 @@ class Search:
            thisJson['_type'] = '_doc'
            thisJson['_id'] = thisRecord[node].properties['id']
            description = self.query_description(thisRecord[node].properties['id'])
+           #print(f"description: {json.dumps(description, indent=4)}")
            resultSource = {}
            resultSource['_id'] = thisRecord[node].properties['id']
-           resultSource['description'] = description['description']
-           resultSource['type'] = description['category'][0]
-           resultSource['name'] = description['label']
+           resultSource['name'] = description.get('label', thisRecord[node].properties['name'])
+           #print('*************************************************')
+           #print(resultSource['_id'])
+           #print(resultSource['name'])
+           if 'error' in description.keys():
+              resultSource['type'] = ""
+           elif  description['category'] is None:
+              resultSource['type'] = ""
+           else:
+              resultSource['type'] = description['category'][0]
            thisJson['_source'] = resultSource
            redisResults['result']['hits']['hits'].append(thisJson)
         
         #print(json.dumps(redisResults, indent = 4))
         redisResults['result']['total_items'] = len(graphResults)
         redisResults['message'] = 'Search result'
+        #print(json.dumps(redisResults, indent=4))
         return redisResults
 
-        search_results.update({'total_items': total_items['count']})
-        return search_results
+        #search_results.update({'total_items': total_items['count']})
+        #return search_results
 
     def search_variables(self, index, concept="", query="", size=None, data_type=None, offset=0, fuzziness=1,
                          prefix_length=3):
@@ -354,6 +368,29 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
+        # Variable/study queries
+        # Get the CDEs
+        # Let's query the NER endpoint for the user query
+        normalizedResult = self.normalize_query(query)
+        leafType = normalizedResult.types[0]
+        description = self.query_description(normalizedResult.id)
+        queryList = []
+        queryList.append("""MATCH (c{id:"CONCEPT"})-->(b:`biolink:Publication`) return c,b""")
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:ClinicalModifier`) return c,b""")
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:ClinicalModifier`)-->(d:`biolink:ClinicalTrial`) return b,d""")
+        #print (queryList[0])
+        graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
+        print(f"number of graphResults is {len(graphResults)}")
+        for thisRecord in graphResults:
+           print("***********************************************************")
+           print(f"properties c: {thisRecord[0].properties}")
+           print("***********************************************************")
+           print(f"properties b: {thisRecord[1].properties}")
+           thisJson = {}
+           #thisJson['_type'] = '_doc'
+           #thisJson['_id'] = thisRecord[node].properties['id']
+
+        return
         query = {
             'bool': {
                 'should': {
