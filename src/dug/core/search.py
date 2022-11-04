@@ -212,6 +212,8 @@ class Search:
         return search_results
 
     def query_description(self, concept):
+       # This call dummied up for now in the hope that it can eventually be removed
+       return({'dummy':'response'})
        # Currently the description for the concept is not reliably in the graph.
        # so we are retrieving it from a hard coded URL.  This is OK because we expect
        # to move the descriptions into the RedisGraph and this code will go away.
@@ -234,6 +236,7 @@ class Search:
         # send each query to the lower level for query execution and data extraction
         for query in queryList:
            theseResults = self.execute_redis_query(concept, leafType, query)
+           print(f"nResults of query is {len(theseResults)}")
            if allResults is None:
               allResults = theseResults
            else:
@@ -277,7 +280,7 @@ class Search:
         print(response.json())
         theJSON = response.json()
         theMeshTerm = 'MESH:' + theJSON[1]
-        #print(theMeshTerm)
+        print(f"theMeshTerm is {theMeshTerm}")
 
         # We want to normalize the term to the most preferred entry so that
         # when we query the graph we get the best results.
@@ -286,6 +289,8 @@ class Search:
         normalizedResult = None
         with requests.session() as session:
           normalizedResult = normalizer.normalize(identifier, session)
+          print(f"identifier: {identifier}")
+          print(f"normalized result: {normalizedResult.types[0]}")
         return normalizedResult
 
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
@@ -300,14 +305,18 @@ class Search:
         # Concept queries
         # Does the user provided concept have any variables. 
         queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(b:biolink:ClinicalModifier)--(d:biolink:ClinicalTrial) return c""")
+
         # Find concepts one hop away from the user concept that have variables
         queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+
         # Find concepts 2 hops away from the user concept that have variables
-        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
+
         # Find concepts one hop away that are related to CDE
         queryList.append("""MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return distinct x""")
+
         # Find concepts two hops away that are related to CDE
-        queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+        #queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
         
         graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
         #print(f"number of graphResults is {len(graphResults)}")
@@ -333,16 +342,25 @@ class Search:
            #print(f"description: {json.dumps(description, indent=4)}")
            resultSource = {}
            resultSource['_id'] = thisRecord[node].properties['id']
-           resultSource['name'] = description.get('label', thisRecord[node].properties['name'])
+           #resultSource['name'] = description.get('label', thisRecord[node].properties['name'])
+           if 'name' in thisRecord[node].properties:
+              resultSource['name'] = thisRecord[node].properties['name']
+           else:
+              resultSource['name'] = 'None'
            #print('*************************************************')
            #print(resultSource['_id'])
            #print(resultSource['name'])
-           if 'error' in description.keys():
-              resultSource['type'] = ""
-           elif  description['category'] is None:
-              resultSource['type'] = ""
-           else:
-              resultSource['type'] = description['category'][0]
+
+           # The below code is commented out because, for development purposes, we are going to
+           # avoid calling the monarch API for now. In the long run, we should probably add whatever
+           # info we get from that code to the redis graph so that the API call is unneeded at
+           # query time.
+           #if 'error' in description.keys():
+           #   resultSource['type'] = ""
+           #elif  description['category'] is None:
+           #   resultSource['type'] = ""
+           #else:
+           #   resultSource['type'] = description['category'][0]
            thisJson['_source'] = resultSource
            redisResults['result']['hits']['hits'].append(thisJson)
         

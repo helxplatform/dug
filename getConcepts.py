@@ -20,18 +20,22 @@ body = body.replace("CONCEPT", concept)
 req = requests.post(url, headers=headers, data=body)
 
 theJson = json.loads(req.text)
-theHits = theJson['result']['hits']['hits']
+theHits = {}
+
+total_items = theJson['result']['total_items']
+if total_items > 0 :
+   theHits = theJson['result']['hits']['hits']
 
 data = {}
 
 # Set up the dict for the results of the current dug2
 current={}
 for thisHit in theHits:
-  thisId = thisHit['_source']['id']
+  thisId = thisHit['_source']['id'].strip()
   thisName = thisHit['_source']['name']
   if thisName == "":
      thisName = "None"
-  current[thisId] = thisName
+  current[thisId] = thisName.strip()
 
 data['Current'] = current
 
@@ -46,11 +50,11 @@ print(f"concept {protoResults['concept']}")
 protoHits = protoResults['result']['hits']['hits']
 proto = {}
 for thisProtoHit in protoHits:
-  protoId = thisProtoHit['_source']['_id']
-  protoName = thisProtoHit['_source']['name']
+  protoId = thisProtoHit['_source']['_id'].strip()
+  protoName = thisProtoHit['_source']['name'].strip()
   if protoName == "":
     protoName = 'None'
-  proto[protoId] = protoName
+  proto[protoId] = protoName[:70]
 
 data['Proto'] = proto
 #print(json.dumps(result, indent=4))
