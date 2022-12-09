@@ -6,6 +6,7 @@ import os
 import subprocess
 from dug.core.search import Search
 from dug.config import Config
+from tabulate import tabulate
 
 theSearch = Search(Config.from_env())
 
@@ -64,4 +65,5 @@ with open(outputFile, 'w') as theFile:
     df = pd.DataFrame(data)
     df.fillna('', inplace=True)
     #df = df.sort_index(ascending = True)
-    print(df.to_string()) 
+    #print(df.to_string()) 
+    print(tabulate(df, headers = ["Terms", "Current", "Two Hop"], tablefmt = "tsv")) 
