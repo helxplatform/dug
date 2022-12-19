@@ -1,5 +1,4 @@
 import logging
-import os
 from typing import List
 from xml.etree import ElementTree as ET
 
