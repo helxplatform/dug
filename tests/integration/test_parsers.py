@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser
 from tests.integration.conftest import TEST_DATA_DIR
 
 def test_dbgap_parse_study_name_from_filename():
@@ -93,3 +93,28 @@ def test_kfdrc_parser():
     assert len(elements) == 3
     for element in elements:
         assert element.type == "Kids First"
+
+
+def test_sprint_parser():
+    parser = SPRINTParser()
+    parse_file = str(TEST_DATA_DIR / "adolescent_sleep_wake_scale_short_form_aswssf.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 27
+    for element in elements:
+        assert element.type == "SPRINT"
+    element_names = [e.name for e in elements]
+    assert "awsw_i2" in element_names
+
+def test_sprint_parser_form_name():
+    filename = "/opt/***/share/data/dug/input_files/sprint/adolescent_sleep_wake_scale_short_form_aswssf.xml"
+    assert SPRINTParser.parse_study_name_from_filename(filename) == "adolescent_sleep_wake_scale_short_form_aswssf"
+
+def test_bacpac_parser():
+    parser = BACPACParser()
+    parse_file = str(TEST_DATA_DIR / "bacpac_baseline_do_measures.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 3
+    for element in elements:
+        assert element.type == "BACPAC"
+    element_names = [e.name for e in elements]
+    assert "record_id.demographic_and_baseline_characteristic_core_data_elements" in element_names

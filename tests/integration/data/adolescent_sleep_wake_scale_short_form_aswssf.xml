@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data_table id="adolescent_sleep_wake_scale_short_form_aswssf" study_id="adolescent_sleep_wake_scale_short_form_aswssf" study_name="adolescent_sleep_wake_scale_short_form_aswssf">
+  <variable id="awsw_i1">
+    <name>awsw_i1</name>
+    <description>Using the choices below, select how often the following things have happened during the past month . Never - has not happened Once in Awhile - happened 20% of the time Sometimes - happened 40% of the time Quite Often - happened 60% of the time Frequently, if not always - happened 80% of the time Always - happened 100% of the time Questions 1 - 3 are only about you Going to Bed at bedtime</description>
+  </variable>
+  <variable id="awsw_i2">
+    <name>awsw_i2</name>
+    <description>When its time to go to bed...</description>
+  </variable>
+  <variable id="awsw_1">
+    <name>awsw_1</name>
+    <description>1. ...I want to stay up and do other things (for example: watch TV, play video games, or talk on the phone).</description>
+  </variable>
+  <variable id="awsw_i3">
+    <name>awsw_i3</name>
+    <description>In general...</description>
+  </variable>
+  <variable id="awsw_2">
+    <name>awsw_2</name>
+    <description>2. ...I am ready to go to bed at bedtime.</description>
+  </variable>
+  <variable id="awsw_3">
+    <name>awsw_3</name>
+    <description>3. ...I try to "put off" or delay going to bed.</description>
+  </variable>
+  <variable id="awsw_i4">
+    <name>awsw_i4</name>
+    <description>Questions 4 &amp; 5 are only about you Falling Asleep after "lights-out" When it's time to go to sleep (lights-out)...</description>
+  </variable>
+  <variable id="awsw_4">
+    <name>awsw_4</name>
+    <description>4. ...I have trouble settling down.</description>
+  </variable>
+  <variable id="awsw_i5">
+    <name>awsw_i5</name>
+    <description>In general...</description>
+  </variable>
+  <variable id="awsw_5">
+    <name>awsw_5</name>
+    <description>5. ...I need help getting to sleep (for example: I need to listen to music, watch TV, take medication, or have someone else in the bed with me).</description>
+  </variable>
+  <variable id="awsw_i6">
+    <name>awsw_i6</name>
+    <description>Questions 6-8 are only about you Going back to sleep after waking during the night After waking up during the night...</description>
+  </variable>
+  <variable id="awsw_6">
+    <name>awsw_6</name>
+    <description>6. ... I have trouble going back to sleep.</description>
+  </variable>
+  <variable id="awsw_7">
+    <name>awsw_7</name>
+    <description>7. ...I have trouble getting comfortable.</description>
+  </variable>
+  <variable id="awsw_8">
+    <name>awsw_8</name>
+    <description>8. ... I need help to go back to sleep (for example: I need to watch TV, read, or sleep with another person).</description>
+  </variable>
+  <variable id="awsw_i7">
+    <name>awsw_i7</name>
+    <description>Questions 9 &amp; 10 are only about you Waking in the morning In the morning, I wake up...</description>
+  </variable>
+  <variable id="awsw_9">
+    <name>awsw_9</name>
+    <description>9. ...and feel ready to get up for the day.</description>
+  </variable>
+  <variable id="awsw_10">
+    <name>awsw_10</name>
+    <description>10. ...feeling rested and alert.</description>
+  </variable>
+  <variable id="awsw_i8">
+    <name>awsw_i8</name>
+    <description>The next set of questions has to do with your usual schedule on WEEKDAYS when you go to school.</description>
+  </variable>
+  <variable id="awsw_11">
+    <name>awsw_11</name>
+    <description>What time do you usually go to bed on weekdays?</description>
+  </variable>
+  <variable id="awsw_11a">
+    <name>awsw_11a</name>
+    <description>Enter what time you usually go to bed on weekdays:</description>
+  </variable>
+  <variable id="awsw_12">
+    <name>awsw_12</name>
+    <description>What time do you usually wake up on weekdays?</description>
+  </variable>
+  <variable id="awsw_12a">
+    <name>awsw_12a</name>
+    <description>Enter what time you usually wake up on weekdays:</description>
+  </variable>
+  <variable id="awsw_i9">
+    <name>awsw_i9</name>
+    <description>The next set of questions has to do with your usual schedule on WEEKENDS or during the summer when you don't go to school.</description>
+  </variable>
+  <variable id="awsw_13">
+    <name>awsw_13</name>
+    <description>What time do you usually go to bed on weekends?</description>
+  </variable>
+  <variable id="awsw_13a">
+    <name>awsw_13a</name>
+    <description>Enter what time you usually go to bed on weekends:</description>
+  </variable>
+  <variable id="awsw_14">
+    <name>awsw_14</name>
+    <description>What time do you usually wake up on weekends?</description>
+  </variable>
+  <variable id="awsw_14a">
+    <name>awsw_14a</name>
+    <description>Enter what time you usually wake up on weekends:</description>
+  </variable>
+</data_table>

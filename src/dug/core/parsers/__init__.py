@@ -9,6 +9,8 @@ from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
 from .topmed_csv_parser import TOPMedCSVParser
+from .sprint_parser import SPRINTParser
+from .bacpac_parser import BACPACParser
 
 
 logger = logging.getLogger('dug')
@@ -26,6 +28,8 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["anvil"] = AnvilDbGaPParser()
     parser_dict["crdc"] = CRDCDbGaPParser()
     parser_dict["kfdrc"] = KFDRCDbGaPParser()
+    parser_dict["sprint"] = SPRINTParser()
+    parser_dict["bacpac"] = BACPACParser()
 
 
 class ParserNotFoundException(Exception):
