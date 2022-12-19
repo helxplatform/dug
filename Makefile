@@ -34,6 +34,10 @@ install:
 	${PYTHON} -m pip install --upgrade pip
 	${PYTHON} -m pip install -r requirements.txt
 
+#install.dug: Install dug as a library to the current Python environment.
+install.dug:
+	${PYTHON} -m pip install .
+
 #test: Run all tests
 test:
 	# ${PYTHON} -m flake8 src

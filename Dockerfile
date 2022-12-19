@@ -28,6 +28,7 @@ COPY --chown=$USER . dug/
 WORKDIR $HOME/dug
 
 RUN make install
+RUN make install.dug
 
 # Run it
 ENTRYPOINT dug
