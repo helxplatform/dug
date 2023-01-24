@@ -1,0 +1,17 @@
+<data_table id="bacpac_baseline_do_measures" study_id="bacpac_baseline_do_measures" study_name="bacpac_baseline_do_measures">
+  <variable id="record_id.demographic_and_baseline_characteristic_core_data_elements">
+    <name>record_id.demographic_and_baseline_characteristic_core_data_elements</name>
+    <description>Record ID</description>
+    <type>nan</type>
+  </variable>
+  <variable id="dob">
+    <name>dob</name>
+    <description>Date of birth:</description>
+    <type>text</type>
+  </variable>
+  <variable id="age">
+    <name>age</name>
+    <description>Age:</description>
+    <type>text</type>
+  </variable>
+</data_table>
