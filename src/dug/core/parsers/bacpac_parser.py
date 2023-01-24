@@ -9,7 +9,7 @@ logger = logging.getLogger('dug')
 
 
 class BACPACParser(FileParser):
-    # Class for parsers SPRINT Data dictionary into a set of Dug Elements
+    # Class for parsing BACPAC data dictionaries in dbGaP XML format into a set of Dug Elements.
 
     @staticmethod
     def parse_study_name_from_filename(filename: str):
