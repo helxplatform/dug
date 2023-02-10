@@ -27,6 +27,7 @@ class Config:
 
     ner_url: str = "none"
     ner_model: str = "none"
+    query_set: str = "none"
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(default_factory=lambda: {
@@ -105,6 +106,7 @@ class Config:
             "nboost_port": "NBOOST_API_PORT",
             "ner_url": "NER_URL",
             "ner_model": "NER_MODEL",
+            "query_set": "QUERY_SET"
         }
 
         kwargs = {}

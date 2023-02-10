@@ -1,0 +1,20 @@
+How to run the prototype:
+
+Start a local copy of elastic search.  Note that it doesn't matter what's in it, but the code
+exits if it can't connect to port 9200.
+
+Make sure the REDIS_PASSWORD is correct in the .env file.  Don't check this back in to github.
+
+Make sure you have an appropriate python environment.
+
+source activate dug-prototype
+
+set the REDIS_HOST to heal-dev-redis.apps.renci.org 
+
+source .env
+export $(cut -d= -f1 .env)
+export ELASTIC_API_HOST=localhost
+export REDIS_HOST=heal-dev-redis.apps.renci.org
+
+Set the python path:
+export PYTHONPATH=`PWD`:`PWD`/src/:`PWD`/src/dug

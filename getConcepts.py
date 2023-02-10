@@ -48,6 +48,7 @@ outputFile = outputDir + "/" + query + "-" + concept
 
 print(f"user query {protoResults['query']}")
 print(f"concept {protoResults['concept']}")
+print(f"query_list {protoResults['query_list']}")
 protoHits = protoResults['result']['hits']['hits']
 proto = {}
 for thisProtoHit in protoHits:
@@ -66,4 +67,4 @@ with open(outputFile, 'w') as theFile:
     df.fillna('', inplace=True)
     #df = df.sort_index(ascending = True)
     #print(df.to_string()) 
-    print(tabulate(df, headers = ["Terms", "Current", "Two Hop"], tablefmt = "tsv")) 
+    print(tabulate(df, headers = ["Terms", "Current", "Left"], tablefmt = "tsv")) 
