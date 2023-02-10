@@ -229,7 +229,7 @@ class Search:
         # Variable/study queries
         # Get the CDEs
         #queryList.append("""MATCH (c{id:"CONCEPT"})-->(b:`biolink:Publication`) return c,b""")
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:biolink:ClinicalModifier)-->(d:biolink:ClinicalTrial) return b,d""")
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:biolink:StudyVariable)-->(d:biolink:Study) return b,d""")
         #print (queryList[0])
 
         allResults = None
@@ -279,7 +279,7 @@ class Search:
         print(response)
         print(response.json())
         theJSON = response.json()
-        theMeshTerm = 'MESH:' + theJSON[0]['MESH ID']
+        theMeshTerm = 'MESH:' + theJSON[0]['curie']
         print(f"theMeshTerm is {theMeshTerm}")
 
         # We want to normalize the term to the most preferred entry so that
@@ -304,27 +304,36 @@ class Search:
         queryList = []
         # Concept queries
         # Does the user provided concept have any variables. 
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(b:biolink:ClinicalModifier)--(d:biolink:ClinicalTrial) return c""")
+        # The following 3 queries used for "one hop"
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(b:biolink:StudyVariable)--(d:biolink:Study) return c""")
 
         # Find concepts one hop away from the user concept that have variables
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
-
-        # Find concepts 2 hops away from the user concept that have variables
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
-
-        # 11/20/2022 CAB suggestion
-        # Find concepts 2 hops away from the user concept that have variables restricted by subclass
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
-
-        # 11/20/2022 CAB suggestion
-        # Find concepts 2 hops away from the user concept that have variables restricted by subclass
-        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:ClinicalModifier`)--(d:`biolink:ClinicalTrial`) where labels(x) <> "biolink:ClinicalModifier" return distinct x""")
-
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+        #################################################################################################
+     
         # Find concepts one hop away that are related to CDE
         #queryList.append("""MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return distinct x""")
 
+        # The following 2 queries used for "two hop"
+        # 11/20/2022 CAB suggestion
+        # Find concepts 2 hops away from the user concept that have variables restricted by subclass
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+
         # Find concepts two hops away that are related to CDE
-        queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+        #queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+        #################################################################################################
+
+        # The following query used for "right subclass"
+        # Find concepts 2 hops away from the user concept that have variables
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+        #################################################################################################
+
+
+        # The following query used for "left subclass"
+        # 11/20/2022 CAB suggestion
+        # Find concepts 2 hops away from the user concept that have variables restricted by subclass
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+        #################################################################################################
         
         graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
         #print(f"number of graphResults is {len(graphResults)}")
@@ -402,8 +411,8 @@ class Search:
         description = self.query_description(normalizedResult.id)
         queryList = []
         queryList.append("""MATCH (c{id:"CONCEPT"})-->(b:`biolink:Publication`) return c,b""")
-        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:ClinicalModifier`) return c,b""")
-        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:ClinicalModifier`)-->(d:`biolink:ClinicalTrial`) return b,d""")
+        queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:StudyVariable`) return c,b""")
+        #queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})-->(b:`biolink:StudyVariable`)-->(d:`biolink:Study`) return b,d""")
         #print (queryList[0])
         graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
         print(f"number of graphResults is {len(graphResults)}")
