@@ -1,4 +1,6 @@
-elasticsearch==7.12.0
+# OLD elasticsearch==7.12.0 https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/migration.html
+elasticsearch>=7.16,<8
+# elasticsearch==8
 flake8
 flasgger
 Flask
@@ -9,13 +11,14 @@ itsdangerous
 Jinja2
 jsonschema
 MarkupSafe
-mistune==2.0.1
+mistune==2.0.3
 pluggy==1.0.0
 pyrsistent==0.17.3
 pytest
 pytz==2021.1
 PyYAML==6.0
-redis==4.4.2
+# old redis==4.4.2
+redis==4.5.1
 requests==2.28.2
 requests-cache==0.9.8
 six==1.16.0

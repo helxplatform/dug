@@ -56,7 +56,7 @@ services:
   ##
   #################################################################################
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
     networks:
       - dug-network
     environment:
@@ -72,17 +72,19 @@ services:
   #################################################################################
   ##
   ## A memory cache for results of high volume service requests.
+  ## https://redis.io/docs/stack/get-started/install/docker/
   ##
   #################################################################################
   redis:
-    image: 'bitnami/redis:5.0.8'
+    # image: 'bitnami/redis:7.0.9'
+    image: 'redis/redis-stack:6.2.4-v2'
     networks:
       - dug-network
     environment:
       - REDIS_PASSWORD=$REDIS_PASSWORD
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
     volumes:
-      - $DATA_DIR/redis:/bitnami/redis/data
+      - $DATA_DIR/redis:/data
     ports:
       - '6379:6379'
 
@@ -90,6 +92,7 @@ services:
   ##
   ## A scalable, search-engine-boosting platform for developing models to improve
   ## search results.
+  ## Image Info: Last push 3 years ago. This is the latest version.
   ##
   #################################################################################
   nboost:
