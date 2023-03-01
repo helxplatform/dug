@@ -26,10 +26,10 @@ class Search:
             indices = ['concepts_index', 'variables_index', 'kg_index']
 
         self._cfg = cfg
-        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
+        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_scheme} {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         self.indices = indices
-        self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port}]
+        self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
 
@@ -292,11 +292,10 @@ class Search:
                 ]
             }
         }
-        body = json.dumps({'query': query})
-        total_items = self.es.count(body=body, index=index)
+        total_items = self.es.count(query=query, index=index)
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
@@ -585,7 +584,7 @@ class Search:
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
-        if self.es.exists(index, concept.id):
+        if self.es.exists(index=index, id=concept.id):
             return
         """ Index the document. """
         self.index_doc(
@@ -594,7 +593,7 @@ class Search:
             doc_id=concept.id)
 
     def index_element(self, elem, index):
-        if not self.es.exists(index, elem.id):
+        if not self.es.exists(index=index, id=elem.id):
             # If the element doesn't exist, add it directly
             self.index_doc(
                 index=index,
@@ -602,7 +601,7 @@ class Search:
                 doc_id=elem.id)
         else:
             # Otherwise update to add any new identifiers that weren't there last time around
-            results = self.es.get(index, elem.id)
+            results = self.es.get(index=index, id=elem.id)
             identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
             doc = {"doc": {}}
             doc['doc']['identifiers'] = list(set(identifiers))

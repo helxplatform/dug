@@ -57,6 +57,7 @@ services:
   #################################################################################
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+    #image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     networks:
       - dug-network
     environment:
@@ -76,8 +77,8 @@ services:
   ##
   #################################################################################
   redis:
-    # image: 'bitnami/redis:7.0.9'
-    image: 'redis/redis-stack:6.2.4-v2'
+    image: 'bitnami/redis:7.0.9'
+    # image: 'redis/redis-stack:6.2.4-v2'
     networks:
       - dug-network
     environment:

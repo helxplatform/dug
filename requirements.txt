@@ -1,6 +1,5 @@
 # OLD elasticsearch==7.12.0 https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/migration.html
-elasticsearch>=7.16,<8
-# elasticsearch==8
+elasticsearch==8.5.2
 flake8
 flasgger
 Flask
