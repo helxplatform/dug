@@ -52,7 +52,7 @@ export REDIS_HOST=localhost
 Then you can actually crawl the data:
 
 ```shell
-dug crawl data/test_variables_v1.0.csv -p "TOPMedTag"
+dug crawl tests/integration/data/test_variables_v1.0.csv -p "TOPMedTag"
 ````
 
 After crawling, you can search:
