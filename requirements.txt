@@ -1,9 +1,6 @@
-elasticsearch==7.12.0
-flake8
-flasgger
-Flask
-Flask-Cors
-Flask-RESTful
+elasticsearch[async]==7.16.3
+fastapi==0.95.0
+uvicorn
 gunicorn
 itsdangerous
 Jinja2
