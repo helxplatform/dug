@@ -1,19 +1,19 @@
 import json
 import logging
-import traceback
-from functools import lru_cache
-
+import os
 import uvicorn
-from fastapi import Depends, FastAPI
-from fastapi.responses import StreamingResponse
+
+from fastapi import FastAPI
 from dug.config import Config
 from dug.core.async_search import Search
-from typing import Annotated
 from pydantic import BaseModel
 
 logger = logging.getLogger (__name__)
 
-APP = FastAPI(title="Dug Search API")
+APP = FastAPI(
+    title="Dug Search API",
+    root_path=os.environ.get("ROOT_PATH", "/"),
+)
 
 
 class GetFromIndex(BaseModel):
