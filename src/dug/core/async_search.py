@@ -1,7 +1,5 @@
-import asyncio
 import json
 import logging
-import requests
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
 
