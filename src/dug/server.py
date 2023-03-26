@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
+import asyncio
 
 logger = logging.getLogger (__name__)
 
@@ -41,6 +42,11 @@ class SearchKgQuery(BaseModel):
 
 
 search = Search(Config.from_env())
+
+
+@APP.on_event("shutdown")
+def shutdown_event():
+    asyncio.run(search.es.close())
 
 
 @APP.post('/dump_concepts')
