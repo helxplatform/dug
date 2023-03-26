@@ -38,7 +38,7 @@ class SearchKgQuery(BaseModel):
     query: str
     unique_id: str
     index: str = "kg_index"
-    size: 100
+    size:int = 100
 
 
 search = Search(Config.from_env())
