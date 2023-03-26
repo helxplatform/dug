@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 import uvicorn
@@ -46,8 +45,6 @@ search = Search(Config.from_env())
 
 @APP.post('/dump_concepts')
 async def dump_concepts(request: GetFromIndex):
-    logger.debug(f"search:{json.dumps(request.json())}")
-    logger.info(f"search: {json.dumps(request.json(), indent=2)}")
     return {
         "message": "Dump result",
         "result": await search.dump_concepts(**request.dict()),
