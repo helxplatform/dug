@@ -57,7 +57,7 @@ async def search_concepts(search_query: SearchQueryModel):
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "concepts_index"
-        "results": await search.search_concepts(**search_query.dict(exclude={"index"})),
+        "result": await search.search_concepts(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
 
@@ -68,7 +68,7 @@ async def search_kg(search_query: SearchQueryModel):
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "kg_index"
-        "results": await search.search_kg(**search_query.dict(exclude={"index"})),
+        "result": await search.search_kg(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
 
@@ -79,7 +79,7 @@ async def search_var(search_query: SearchQueryModel):
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "variables_index"
-        "results": await search.search_concepts(**search_query.dict(exclude={"index"})),
+        "result": await search.search_concepts(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
 
