@@ -6,7 +6,7 @@ itsdangerous
 Jinja2
 jsonschema
 MarkupSafe
-mistune==2.0.1
+mistune==2.0.3
 pluggy==1.0.0
 pyrsistent==0.17.3
 pytest
