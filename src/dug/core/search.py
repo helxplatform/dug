@@ -184,7 +184,7 @@ class Search:
             "match_all" : {}
         }
 
-        body = json.dumps({'query': query})
+        body = {'query': query}
         total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
@@ -431,7 +431,7 @@ class Search:
                 }
             }
 
-        body = json.dumps({'query': query})
+        body = {'query': query}
         total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
@@ -507,7 +507,7 @@ class Search:
                 }
             }
         }
-        body = json.dumps({'aggs': aggs})
+        body = {'aggs': aggs}
 
         search_results = self.es.search(
             index=index,
@@ -541,7 +541,7 @@ class Search:
                 ]
             }
         }
-        body = json.dumps({'query': query})
+        body = {'query': query}
         total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
