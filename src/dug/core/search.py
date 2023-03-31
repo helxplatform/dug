@@ -292,10 +292,11 @@ class Search:
                 ]
             }
         }
-        total_items = self.es.count(query=query, index=index)
+        body = {'query': query}
+        total_items = self.es.count(body=body, index=index)
         search_results = self.es.search(
             index=index,
-            query=query,
+            body=body,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size

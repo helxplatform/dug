@@ -1,0 +1,452 @@
+[
+    {
+        "id": "a3489b4c406e4042",
+        "type": "inject",
+        "z": "e0f952926c55ddd4",
+        "name": "SEARCH \"HEART ATTACK\"",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"query\":{\"index\":\"concepts_index\",\"query\":\"heart attack\"},\"route\":\"/search\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 180,
+        "wires": [
+            [
+                "a01f8f337909d6c0"
+            ]
+        ]
+    },
+    {
+        "id": "068991d2d7f47675",
+        "type": "debug",
+        "z": "e0f952926c55ddd4",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "cf329649418098fe",
+        "type": "http request",
+        "z": "e0f952926c55ddd4",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 570,
+        "y": 180,
+        "wires": [
+            [
+                "068991d2d7f47675"
+            ]
+        ]
+    },
+    {
+        "id": "a01f8f337909d6c0",
+        "type": "function",
+        "z": "e0f952926c55ddd4",
+        "name": "SET PAYLOAD",
+        "func": "msg.method = \"POST\"\nmsg.url = `http://dug-api-service${msg.payload.route}`\nmsg.headers = \"Content-Type: application/json\"\n\nmsg.payload = msg.payload.query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 180,
+        "wires": [
+            [
+                "cf329649418098fe"
+            ]
+        ]
+    },
+    {
+        "id": "0c818e81feefa95d",
+        "type": "comment",
+        "z": "e0f952926c55ddd4",
+        "name": "Test Internal Dug API",
+        "info": "",
+        "x": 280,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "5d2c6d5f6f631414",
+        "type": "inject",
+        "z": "e0f952926c55ddd4",
+        "name": "VAR HEART ATTACK",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"query\":{\"index\":\"variables_index\",\"concept\":\"MONDO:0005068\"},\"route\":\"/search_var\"}",
+        "payloadType": "json",
+        "x": 160,
+        "y": 260,
+        "wires": [
+            [
+                "af59aad2806e6443"
+            ]
+        ]
+    },
+    {
+        "id": "47d558ef89bc377e",
+        "type": "debug",
+        "z": "e0f952926c55ddd4",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "be93502a9591ae77",
+        "type": "http request",
+        "z": "e0f952926c55ddd4",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 530,
+        "y": 260,
+        "wires": [
+            [
+                "47d558ef89bc377e"
+            ]
+        ]
+    },
+    {
+        "id": "af59aad2806e6443",
+        "type": "function",
+        "z": "e0f952926c55ddd4",
+        "name": "SET PAYLOAD",
+        "func": "msg.method = \"POST\"\nmsg.url = `http://dug-api-service${msg.payload.route}`\nmsg.headers = \"Content-Type: application/json\"\n\nmsg.payload = msg.payload.query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 260,
+        "wires": [
+            [
+                "be93502a9591ae77"
+            ]
+        ]
+    },
+    {
+        "id": "a48de67eb2cd43c4",
+        "type": "inject",
+        "z": "e0f952926c55ddd4",
+        "name": "DUMP CONCEPTS",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"query\":{\"index\":\"concepts_index\"},\"route\":\"/dump_concepts\"}",
+        "payloadType": "json",
+        "x": 170,
+        "y": 360,
+        "wires": [
+            [
+                "9fc3a9db050d4588"
+            ]
+        ]
+    },
+    {
+        "id": "8bc762ba81a4b23f",
+        "type": "debug",
+        "z": "e0f952926c55ddd4",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "bd79ea248cfc1f3c",
+        "type": "http request",
+        "z": "e0f952926c55ddd4",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "8bc762ba81a4b23f"
+            ]
+        ]
+    },
+    {
+        "id": "9fc3a9db050d4588",
+        "type": "function",
+        "z": "e0f952926c55ddd4",
+        "name": "SET PAYLOAD",
+        "func": "msg.method = \"POST\"\nmsg.url = `http://dug-api-service${msg.payload.route}`\nmsg.headers = \"Content-Type: application/json\"\n\nmsg.payload = msg.payload.query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "bd79ea248cfc1f3c"
+            ]
+        ]
+    },
+    {
+        "id": "b0e6721f606f9869",
+        "type": "inject",
+        "z": "e0f952926c55ddd4",
+        "name": "AGG TYPE",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"query\":{\"index\":\"variables_index\"},\"route\":\"/agg_data_types\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 460,
+        "wires": [
+            [
+                "435ba39a47930989"
+            ]
+        ]
+    },
+    {
+        "id": "e2faafc4dbc58f98",
+        "type": "debug",
+        "z": "e0f952926c55ddd4",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "113a2f9d6703d5ab",
+        "type": "http request",
+        "z": "e0f952926c55ddd4",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 550,
+        "y": 460,
+        "wires": [
+            [
+                "e2faafc4dbc58f98"
+            ]
+        ]
+    },
+    {
+        "id": "435ba39a47930989",
+        "type": "function",
+        "z": "e0f952926c55ddd4",
+        "name": "SET PAYLOAD",
+        "func": "msg.method = \"POST\"\nmsg.url = `http://dug-api-service${msg.payload.route}`\nmsg.headers = \"Content-Type: application/json\"\n\nmsg.payload = msg.payload.query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 460,
+        "wires": [
+            [
+                "113a2f9d6703d5ab"
+            ]
+        ]
+    },
+    {
+        "id": "de2dcdd686a2b98b",
+        "type": "inject",
+        "z": "e0f952926c55ddd4",
+        "name": "SEARCH KG",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"query\":{\"index\":\"concepts_index\",\"unique_id\":\"id_001\",\"query\":\"cough\"},\"route\":\"/search_kg\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 540,
+        "wires": [
+            [
+                "6cb4c28e689276b8"
+            ]
+        ]
+    },
+    {
+        "id": "04d9d3427e8bfbba",
+        "type": "debug",
+        "z": "e0f952926c55ddd4",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "28d5f8da425cd7c5",
+        "type": "http request",
+        "z": "e0f952926c55ddd4",
+        "name": "",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 550,
+        "y": 540,
+        "wires": [
+            [
+                "04d9d3427e8bfbba"
+            ]
+        ]
+    },
+    {
+        "id": "6cb4c28e689276b8",
+        "type": "function",
+        "z": "e0f952926c55ddd4",
+        "name": "SET PAYLOAD",
+        "func": "msg.method = \"POST\"\nmsg.url = `http://dug-api-service${msg.payload.route}`\nmsg.headers = \"Content-Type: application/json\"\n\nmsg.payload = msg.payload.query\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 540,
+        "wires": [
+            [
+                "28d5f8da425cd7c5"
+            ]
+        ]
+    }
+]

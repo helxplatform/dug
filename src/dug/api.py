@@ -8,7 +8,7 @@ import traceback
 import jsonschema
 import yaml
 from flasgger import Swagger
-from flask import Flask, g, Response, request
+from flask import Flask, g, Response, request, jsonify
 from flask_cors import CORS
 from flask_restful import Api, Resource
 
@@ -59,18 +59,18 @@ class DugResource(Resource):
     def validate (self, request, component):
         return
         """ Validate a request against the schema. """
-        if not self.specs:
-            with open(schema_file_path, 'r') as file_obj:
-                self.specs = yaml.load(file_obj)
-        to_validate = self.specs["components"]["schemas"][component]
-        try:
-            app.logger.debug (f"--:Validating obj {json.dumps(request.json, indent=2)}")
-            app.logger.debug (f"  schema: {json.dumps(to_validate, indent=2)}")
-            jsonschema.validate(request.json, to_validate)
-        except jsonschema.exceptions.ValidationError as error:
-            app.logger.error (f"ERROR: {str(error)}")
-            traceback.print_exc (error)
-            abort(Response(str(error), 400))
+        # if not self.specs:
+        #     with open(schema_file_path, 'r') as file_obj:
+        #         self.specs = yaml.load(file_obj)
+        # to_validate = self.specs["components"]["schemas"][component]
+        # try:
+        #     # app.logger.debug (f"--:Validating obj {json.dumps(request.json, indent=2)}")
+        #     # app.logger.debug (f"  schema: {json.dumps(to_validate, indent=2)}")
+        #     jsonschema.validate(request.json, to_validate)
+        # except jsonschema.exceptions.ValidationError as error:
+        #     app.logger.error (f"ERROR: {str(error)}")
+        #     traceback.print_exc (error)
+        #     abort(Response(str(error), 400))
 
     def create_response (self, result=None, status='success', message='', exception=None):
         """ Create a response. Handle formatting and modifiation of status for exceptions. """
@@ -81,11 +81,18 @@ class DugResource(Resource):
             result = {
                 'error' : repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
             }
-        return {
-            'status'  : status,
-            'result'  : result,
-            'message' : message
-        }
+        try:
+            return {
+                'status'  : status,
+                'result'  : result,
+                'message' : message
+            }
+        except:
+            return {
+                'status'  : 'error',
+                'result'  : {},
+                'message' : "Invalid ES Response"
+            }
 
 class DugSearchResource(DugResource):
     """ Execute a search """
@@ -122,10 +129,10 @@ class DugSearchResource(DugResource):
                             type: string
 
         """
-        logger.debug(f"search:{json.dumps(request.json)}")
+        # logger.debug(f"search:{request.json}")
         response = {}
         try:
-            app.logger.info (f"search: {json.dumps(request.json, indent=2)}")
+            app.logger.info(f"search")
             self.validate(request, component="Search")
             boosted = request.json.pop('boosted', False)
 
@@ -134,14 +141,15 @@ class DugSearchResource(DugResource):
                 api_request = dug().search_nboost(**request.json)
             else:
                 api_request = dug().search_concepts(**request.json)
-
+            api_request = dict(api_request)
             response = self.create_response(
                 result=api_request,
-                message=f"Search result")
+                message="Search result")
         except Exception as e:
+            print(e)
             response = self.create_response(
                 exception=e,
-                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+                message="Failed to execute search Search.")
         return response
 
 class DugDumpConcept(DugResource):
@@ -178,22 +186,23 @@ class DugDumpConcept(DugResource):
                             type: string
 
         """
-        logger.debug(f"search:{json.dumps(request.json)}")
+        # logger.debug(f"search:{json.dumps(request.json, default=lambda x: None)}")
         response = {}
         try:
-            app.logger.info (f"search: {json.dumps(request.json, indent=2)}")
+            app.logger.info(f"dump_concepts:")
             self.validate(request, component="Search")
             # boosted = request.json.pop('boosted', False)
 
             api_request = dug().dump_concepts(**request.json)
-
+            api_request = dict(api_request)
             response = self.create_response(
                 result=api_request,
-                message=f"Search result")
+                message="Search result")
         except Exception as e:
+            print(e)
             response = self.create_response(
                 exception=e,
-                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+                message="Failed to execute search dump_concepts.")
         return response
 
 
@@ -233,18 +242,22 @@ class DugSearchKGResource(DugResource):
                             type: string
 
         """
-        logger.debug(f"search_kg:{json.dumps(request.json)}")
+        # logger.debug(f"search_kg:{json.dumps(request.json)}")
         response = {}
         try:
-            app.logger.info(f"search_kg: {json.dumps(request.json, indent=2)}")
+            app.logger.info("search_kg")
+            # app.logger.info(f"search_kg: {json.dumps(request.json, default=lambda x: None, indent=2)}")
             self.validate(request, component="Search")
+            api_request = dict(dug().search_kg(**request.json))
+            api_request = dict(api_request)
             response = self.create_response(
-                result=dug().search_kg(**request.json),
-                message=f"Search result")
+                result=api_request,
+                message="Search result")
         except Exception as e:
+            print(e)
             response = self.create_response(
                 exception=e,
-                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+                message="Failed to execute search search_kg.")
         return response
 
 class DugSearchVarResource(DugResource):
@@ -283,18 +296,20 @@ class DugSearchVarResource(DugResource):
                             type: string
 
         """
-        logger.debug(f"search_kg:{json.dumps(request.json)}")
+        # logger.debug(f"search_kg:{json.loads(request.json)}")
         response = {}
         try:
-            app.logger.info(f"search_var: {json.dumps(request.json, indent=2)}")
+            app.logger.info("search_var")
+            # app.logger.info(f"search_var: {json.dumps(request.json, indent=2)}")
             self.validate(request, component="Search")
             response = self.create_response(
                 result=dug().search_variables(**request.json),
-                message=f"Search result")
+                message="Search result")
         except Exception as e:
+            print(e)
             response = self.create_response(
                 exception=e,
-                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+                message="Failed to execute search.")
         return response
 
 
@@ -304,18 +319,19 @@ class DugAggDataType(DugResource):
     """ System initiation. """
 
     def post(self):
-        logger.debug(f"data_type:{json.dumps(request.json)}")
+        # logger.debug(f"data_type:{request.json}")
         response = {}
         try:
-            app.logger.info(f"data_type: {json.dumps(request.json, indent=2)}")
+            app.logger.info(f"data_type: ")
             self.validate(request, component="Search")
             response = self.create_response(
                 result=dug().agg_data_type(**request.json),
-                message=f"Aggregate result")
+                message="Aggregate result")
         except Exception as e:
+            print(e)
             response = self.create_response(
                 exception=e,
-                message=f"Failed to execute search {json.dumps(request.json, indent=2)}.")
+                message="Failed to execute search data_type.")
         return response
 
 """ Register endpoints. """
