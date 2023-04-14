@@ -61,8 +61,8 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
     study_ids = list(set(metadata_ids) - set(datadict_ids))
 
     # Download studies.
-    studies_by_appl = {}
-    studies_with_dds =
+    studies = {}
+    studies_to_dds = {}
     for count, study_id in enumerate(study_ids):
         logging.debug(f"Downloading study {study_id} ({count + 1}/{len(study_ids)})")
 
@@ -72,12 +72,28 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
         result_json = result.json()
 
-        if study_id in studies_by_appl:
+        # Record studies if we need to look them up later.
+        if study_id in studies:
             raise RuntimeError(f'Duplicate study ID: {study_id}')
-        studies_by_appl[study_id] = result_json
+        studies[study_id] = result_json
+
+        # Record studies that have data dictionaries.
+        if 'gen3_discovery' in result_json:
+            if '__manifest' in result_json['gen3_discovery']:
+                manifest = result_json['gen3_discovery']['__manifest']
+                for entry in manifest:
+                    if 'object_id' in entry and entry['object_id'].startswith('dg.H34L/'):
+                        if study_id not in studies_to_dds:
+                            studies_to_dds[study_id] = set()
+                        studies_to_dds[study_id].add(entry['object_id'])
 
         with open(os.path.join(studies_dir, study_id + '.json'), 'w') as f:
             json.dump(result_json, f)
+
+    logging.info(f"Downloaded {len(studies)} studies, of which {len(studies_to_dds)} studies have data dictionaries.")
+
+    # Return the list of studies and the data dictionary identifiers
+    return studies, datadict_ids
 
 def generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint):
     return []
@@ -118,7 +134,7 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    studies = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
