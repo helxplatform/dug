@@ -16,3 +16,6 @@ redis==4.4.2
 requests==2.28.2
 requests-cache==0.9.8
 six==1.16.0
+
+# Click for command line arguments
+click~=8
