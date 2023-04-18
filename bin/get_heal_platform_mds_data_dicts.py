@@ -135,7 +135,7 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
             raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
 
         with open(dd_id_json_path, 'w') as f:
-            json.dump(study_json, f)
+            json.dump(result.json(), f)
 
         logging.debug(f"Wrote data dictionary to {dd_id_json_path}.json")
 
@@ -145,8 +145,40 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
     return studies, datadict_ids
 
 
-def generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint):
-    return []
+def generate_dbgap_files(dbgap_dir, data_dicts_dir):
+    """
+    Generate dbGaP files.
+
+    :param dbgap_dir: The dbGaP directory into which we write the dbGaP files.
+    :param data_dicts_dir: The directory that contains data dicts (both studies with embedded data dicts, and free-flowing data dicts).
+    :return:
+    """
+
+    data_dict_files = os.listdir(data_dicts_dir)
+    for data_dict_file in data_dict_files:
+        file_path = os.path.join(data_dicts_dir, data_dict_file)
+
+        # We're only interested in files.
+        if not os.path.isfile(file_path):
+            continue
+
+        # We're only interested in JSON files.
+        if not file_path.lower().endswith('.json'):
+            continue
+
+        # Read the JSON file.
+        with open(file_path, 'r') as f:
+            data_dict = json.load(f)
+
+        # Check if this contains data dictionaries or if it _is_ a data dictionary.
+        data_dicts = []
+        if 'data_dictionaries' in data_dict:
+            data_dicts = data_dict['data_dictionaries']
+        else:
+            data_dicts = [data_dict]
+
+        # Begin writing to a
+
 
 
 # Set up command line arguments.
@@ -190,7 +222,8 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
     os.makedirs(dbgap_dir, exist_ok=True)
-    dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint)
+    # dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint)
+    dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dicts_dir)
 
     logging.info(f"Generated {len(dbgap_filenames)} dbGaP files for ingest in {dbgap_dir}.")
 
