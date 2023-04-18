@@ -103,7 +103,12 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
         for dd_id in studies_to_dds[study_id]:
             result = requests.get(mds_metadata_endpoint + '/' + dd_id)
-            if not result.ok:
+            if result.status_code == 404:
+                logging.warning(
+                    f"Study {study_id} refers to data dictionary {dd_id}, but no such data dictionary was found in "
+                    f"the MDS.")
+                result = {'error': result}
+            elif not result.ok:
                 raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
 
             study_json.push(result.json())
@@ -116,14 +121,16 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
     # Return the list of studies and the data dictionary identifiers
     return studies, datadict_ids
 
+
 def generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint):
     return []
 
 
 # Set up command line arguments.
 @click.command()
-@click.argument('output', type=click.Path(), required=True) # TODO: restore exists=False once we're done developing.
-@click.option('--mds-metadata-endpoint', '--mds', default=DEFAULT_MDS_ENDPOINT, help='The MDS metadata endpoint to use, e.g. https://healdata.org/mds/metadata')
+@click.argument('output', type=click.Path(), required=True)  # TODO: restore exists=False once we're done developing.
+@click.option('--mds-metadata-endpoint', '--mds', default=DEFAULT_MDS_ENDPOINT,
+              help='The MDS metadata endpoint to use, e.g. https://healdata.org/mds/metadata')
 @click.option('--limit', default=MDS_DEFAULT_LIMIT, help='The maximum number of entries to retrieve from the Platform '
                                                          'MDS. Note that some MDS instances have their own built-in '
                                                          'limit; if you hit that limit, you will need to update the '
