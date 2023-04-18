@@ -107,11 +107,13 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
                 logging.warning(
                     f"Study {study_id} refers to data dictionary {dd_id}, but no such data dictionary was found in "
                     f"the MDS.")
-                result = {'error': result}
+                result_json = {'error': result.json()}
             elif not result.ok:
                 raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
+            else:
+                result_json = result.json()
 
-            study_json.push(result.json())
+            study_json['data_dictionaries'].append(result_json)
 
         with open(os.path.join(data_dicts_dir, study_id + '.json'), 'w') as f:
             json.dump(study_json, f)
