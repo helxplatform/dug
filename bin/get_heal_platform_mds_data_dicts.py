@@ -92,6 +92,27 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
     logging.info(f"Downloaded {len(studies)} studies, of which {len(studies_to_dds)} studies have data dictionaries.")
 
+    # For studies containing data dictionaries, write them into data_dicts_dir, but after adding a
+    # `data_dictionaries` key that has a list of the data dictionaries associated with it, which we
+    # download separately from the MDS.
+    for count, study_id in enumerate(studies_to_dds.keys()):
+        logging.debug(f"Adding data dictionaries to study {study_id} ({count + 1}/{len(studies_to_dds)})")
+
+        study_json = studies[study_id]
+        study_json['data_dictionaries'] = []
+
+        for dd_id in studies_to_dds[study_id]:
+            result = requests.get(mds_metadata_endpoint + '/' + dd_id)
+            if not result.ok:
+                raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
+
+            study_json.push(result.json())
+
+        with open(os.path.join(data_dicts_dir, study_id + '.json'), 'w') as f:
+            json.dump(study_json, f)
+
+        logging.debug(f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {data_dicts_dir}/{study_id}.json")
+
     # Return the list of studies and the data dictionary identifiers
     return studies, datadict_ids
 
