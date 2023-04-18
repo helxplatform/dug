@@ -95,6 +95,7 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
     # For studies containing data dictionaries, write them into data_dicts_dir, but after adding a
     # `data_dictionaries` key that has a list of the data dictionaries associated with it, which we
     # download separately from the MDS.
+    data_dict_ids_within_studies = set()
     for count, study_id in enumerate(studies_to_dds.keys()):
         logging.debug(f"Adding data dictionaries to study {study_id} ({count + 1}/{len(studies_to_dds)})")
 
@@ -111,6 +112,7 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
             elif not result.ok:
                 raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
             else:
+                data_dict_ids_within_studies.add(dd_id)
                 result_json = result.json()
 
             study_json['data_dictionaries'].append(result_json)
@@ -119,6 +121,25 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
             json.dump(study_json, f)
 
         logging.debug(f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {data_dicts_dir}/{study_id}.json")
+
+    # We shouldn't need to do this, but at the moment we have multiple data dictionaries that aren't linked to from
+    # within studies. So let's download them separately!
+    data_dict_ids_not_within_studies = list(set(datadict_ids) - data_dict_ids_within_studies)
+    for count, dd_id in enumerate(data_dict_ids_not_within_studies):
+        dd_id_json_path = os.path.join(data_dicts_dir, dd_id.replace('/', '_') + '.json')
+
+        logging.debug(f"Downloading data dictionary not linked to a study {dd_id} ({count + 1}/{len(data_dict_ids_not_within_studies)})")
+
+        result = requests.get(mds_metadata_endpoint + '/' + dd_id)
+        if not result.ok:
+            raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
+
+        with open(dd_id_json_path, 'w') as f:
+            json.dump(study_json, f)
+
+        logging.debug(f"Wrote data dictionary to {dd_id_json_path}.json")
+
+    logging.debug(f"Wrote out {len(data_dict_ids_not_within_studies)} data dictionaries unconnected to studies.")
 
     # Return the list of studies and the data dictionary identifiers
     return studies, datadict_ids
