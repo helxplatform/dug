@@ -22,7 +22,7 @@ MDS_DEFAULT_LIMIT = 10000
 DATA_DICT_GUID_TYPE = 'data_dictionary'
 
 # Turn on logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_limit):
@@ -78,14 +78,13 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
         studies[study_id] = result_json
 
         # Record studies that have data dictionaries.
-        if 'gen3_discovery' in result_json:
-            if '__manifest' in result_json['gen3_discovery']:
-                manifest = result_json['gen3_discovery']['__manifest']
-                for entry in manifest:
-                    if 'object_id' in entry and entry['object_id'].startswith('dg.H34L/'):
-                        if study_id not in studies_to_dds:
-                            studies_to_dds[study_id] = set()
-                        studies_to_dds[study_id].add(entry['object_id'])
+        if 'data_dictionaries' in result_json:
+            dicts = result_json['data_dictionaries'].items()
+            for (key, dd_id) in dicts:
+                logging.info(f"Found data dictionary {key} in study {study_id}: {dd_id}")
+                if study_id not in studies_to_dds:
+                    studies_to_dds[study_id] = set()
+                studies_to_dds[study_id].add(dd_id)
 
         with open(os.path.join(studies_dir, study_id + '.json'), 'w') as f:
             json.dump(result_json, f)
