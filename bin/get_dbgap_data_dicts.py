@@ -53,7 +53,7 @@ def download_dbgap_study(study_id, output_dir):
 
 @click.command()
 @click.argument('input_file')
-@click.option('--format', help='The format of the input file.', type=click.Choice(['CSV', 'TSV']), default='tsv', case_sensitive=False)
+@click.option('--format', help='The format of the input file.', type=click.Choice(['CSV', 'TSV']), default='tsv')
 @click.option('--field', help='The field name containing dbGaP study IDs or accession IDs.', default='dbgap_study_accession', type=str, multiple=True)
 @click.option('--outdir', help='The output directory to create and write dbGaP files to.', type=click.Path(file_okay=False, dir_okay=True, exists=False), default='data/ncpi-dataset-catalog')
 def get_dbgap_data_dicts(input_file, format, field, outdir):
@@ -61,12 +61,14 @@ def get_dbgap_data_dicts(input_file, format, field, outdir):
     Given a TSV or CSV file with a `dbgap_study_id` field, download all dbGaP variables for Dug ingest.
 
     SYNOPSIS
-        python get_dbgap_data_dicts.py [input_file]
+
+    python get_dbgap_data_dicts.py [input_file]
 
     Where input_file is the TSV file to read data from. (To use a CSV file instead, add `--format csv`).
 
     EXAMPLE
-        python get_dbgap_data_dicts.py data/ncpi-dataset-catalog-results.tsv --format tsv --field "Study Accession" --outdir
+    
+    python get_dbgap_data_dicts.py data/ncpi-dataset-catalog-results.tsv --format tsv --field "Study Accession" --outdir
 
     :param input_file: The input file containing dbGaP identifiers.
     :param format: The format of the input file.
