@@ -2,10 +2,10 @@
 # Script to download all HEAL Platform
 #
 # USAGE:
-#   HEAL_PLATFORM_MDS_ENDPOINT=https://healdata.org/mds/metadata python bin/get_heal_platform_mds_data_dicts.py [--output-dir OUTPUT_DIR]
+#   python bin/get_heal_platform_mds_data_dicts.py
 #
-# If no HEAL_PLATFORM_MDS_ENDPOINT is specified, we default to the production endpoint at https://healdata.org/mds/metadata
-# If no OUTPUT_DIR is specified, we default to the `data/heal_platform_mds` directory in this repository.
+# If no MDS endpoint  is specified, we default to the production endpoint at https://healdata.org/mds/metadata
+# If no output_dir is specified, we default to the `data/heal_platform_mds` directory in this repository.
 #
 # This code was written with the assistance of ChatGPT (https://help.openai.com/en/articles/6825453-chatgpt-release-notes).
 #
@@ -14,7 +14,7 @@ import os
 import click
 import logging
 import requests
-import urllib
+import xml.etree.ElementTree as ET
 
 # Some defaults.
 DEFAULT_MDS_ENDPOINT = 'https://healdata.org/mds/metadata'
@@ -166,6 +166,7 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
             continue
 
         # Read the JSON file.
+        print(f"Loading {file_path}")
         with open(file_path, 'r') as f:
             data_dict = json.load(f)
 
@@ -173,11 +174,27 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
         data_dicts = []
         if 'data_dictionaries' in data_dict:
             data_dicts = data_dict['data_dictionaries']
+            study = data_dict
         else:
             data_dicts = [data_dict]
+            study = {}
 
-        # Begin writing to a
+        # Begin writing a dbGaP file for each data dictionary.
+        for data_dict in data_dicts:
+            data_table = ET.Element('data_table')
+            for var_dict in data_dict.get('data_dictionary', []):
+                print(f"Generating dbGaP for variable {var_dict}")
 
+                variable = ET.SubElement(data_table, 'variable')
+                variable['id'] = var_dict['name'] # TODO: make this unique
+
+                name = ET.SubElement(variable, 'name')
+                name.text = var_dict['name']
+
+            # Write out ElementTree.
+            tree = ET.ElementTree(data_table)
+            tree.write(os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml')))
+            print(f"Writing {tree} to {os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))}")
 
 
 # Set up command line arguments.
