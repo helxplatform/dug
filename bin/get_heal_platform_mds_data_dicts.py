@@ -168,28 +168,45 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
         # Read the JSON file.
         print(f"Loading {file_path}")
         with open(file_path, 'r') as f:
-            data_dict = json.load(f)
+            json_data = json.load(f)
 
         # Check if this contains data dictionaries or if it _is_ a data dictionary.
         data_dicts = []
-        if 'data_dictionaries' in data_dict:
-            data_dicts = data_dict['data_dictionaries']
-            study = data_dict
-        else:
-            data_dicts = [data_dict]
+        if 'data_dictionaries' in json_data:
+            data_dicts = json_data['data_dictionaries']
+            study = json_data
+        elif 'data_dictionary' in json_data:
+            data_dicts = [json_data['data_dictionary']]
             study = {}
+        else:
+            raise RuntimeError(f"Could not read {file_path}: unknown format.")
 
         # Begin writing a dbGaP file for each data dictionary.
         for data_dict in data_dicts:
             data_table = ET.Element('data_table')
-            for var_dict in data_dict.get('data_dictionary', []):
-                print(f"Generating dbGaP for variable {var_dict}")
 
-                variable = ET.SubElement(data_table, 'variable')
-                variable['id'] = var_dict['name'] # TODO: make this unique
 
-                name = ET.SubElement(variable, 'name')
-                name.text = var_dict['name']
+            if isinstance(data_dict, list):
+                top_level_dict = {}
+                second_tier_dicts = data_dict
+            elif isinstance(data_dict, dict) and 'data_dictionary' in data_dict:
+                top_level_dict = data_dict
+                second_tier_dicts = data_dict['data_dictionary']
+            else:
+                raise RuntimeError(f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
+
+        for var_dict in second_tier_dicts:
+            print(f"Generating dbGaP for variable {var_dict} in {file_path}")
+
+            variable = ET.SubElement(data_table, 'variable')
+            variable.set('id', var_dict['name']) # TODO: make this unique
+
+            name = ET.SubElement(variable, 'name')
+            name.text = var_dict['name']
+
+            if 'description' in var_dict:
+                desc = ET.SubElement(variable, 'description')
+                desc.text = var_dict['description']
 
             # Write out ElementTree.
             tree = ET.ElementTree(data_table)
@@ -233,7 +250,7 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    # studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
