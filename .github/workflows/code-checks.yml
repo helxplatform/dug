@@ -100,10 +100,17 @@ jobs:
         cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 
   pytest:
-    # needs: flake8-linter
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Requirements
+      run: |
+        pip install -r requirements.txt
 
     - name: Test with pytest
       run: |
