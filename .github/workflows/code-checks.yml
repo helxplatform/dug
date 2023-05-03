@@ -134,8 +134,8 @@ jobs:
         pip install -r requirements.txt
         pip install bandit
         pip install .
-        
+
     # Only report high security issues
     - name: Test with Bandit
       run: |
-        bandit -r /src -lll
+        bandit -r src 
