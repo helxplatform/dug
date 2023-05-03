@@ -138,4 +138,4 @@ jobs:
     # Only report high security issues
     - name: Test with Bandit
       run: |
-        bandit -r src 
+        bandit -r src -n3 -lll
