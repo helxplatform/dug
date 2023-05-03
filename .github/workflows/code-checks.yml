@@ -64,7 +64,7 @@ jobs:
     - name: Lint with flake8
       run: |
         pip install flake8
-        flake8 --ignore=E,W . 
+        flake8 --ignore=E,W src 
       # We continue on error here until the code is clean
       # flake8 --ignore=E,W --exit-zero . 
       continue-on-error: true
@@ -98,7 +98,7 @@ jobs:
         push: false
         cache-from: type=registry,ref=${{ github.repository }}:buildcache
         cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
-
+################################### PYTEST ###################################
   pytest:
     runs-on: ubuntu-latest
     steps:
@@ -112,6 +112,7 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+
     - name: Test with pytest
       run: |
-        pytest .
+        pytest --doctest-modules src
