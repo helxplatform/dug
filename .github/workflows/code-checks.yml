@@ -116,4 +116,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest tests/unit
+        coverage run -m pytest tests
