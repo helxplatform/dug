@@ -1,3 +1,6 @@
+
+pytest.skip("skipping as dug.api is no longer present", allow_module_level=True)
+
 import json
 
 from unittest.mock import patch, Mock
@@ -7,7 +10,7 @@ from pytest import mark
 
 from dug.api import app, main, DugResource
 
-pytest.skip("skipping as dug.api is no longer present", allow_module_level=True)
+
 
 @pytest.fixture
 def dug_api_test_client():
