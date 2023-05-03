@@ -7,3 +7,4 @@ omit =
     **/_version.py
     src/dug/config.py
     src/dug/hookspecs.py
+    tests/unit/test_api.py

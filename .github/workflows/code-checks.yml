@@ -112,9 +112,10 @@ jobs:
       run: |
         pip install -r requirements.txt
         pip install coverage
-        pip install /src/dug
+        pip install .
 
 
     - name: Test with pytest
       run: |
+        pytest --doctest-modules src
         coverage run -m pytest tests
