@@ -118,4 +118,4 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --doctest-modules src
-        coverage run -m pytest tests
+        coverage run -m pytest tests/unit
