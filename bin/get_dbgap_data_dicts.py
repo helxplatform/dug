@@ -13,7 +13,7 @@ import click
 import socket
 
 # Default to logging at the INFO level.
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 # Helper function
 def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
@@ -40,13 +40,14 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     # Step 1: First we try and get all the data_dict files
     try:
         ftp.cwd(f"{study_id_path}/pheno_variable_summaries")
-    except error_perm:
+    except error_perm as e1:
+        logging.warning(f"Exception {e1} thrown when trying to access {study_id_path}/pheno_variable_summaries on the dbGaP FTP server.")
         # Delete subdirectory so we don't think it's full
         shutil.rmtree(local_path)
         try:
             files_in_dir = ftp.nlst(study_id_path)
-        except:
-            logging.error(f"dbGaP study accession identifier not found on dbGaP server: {study_id_path}")
+        except error_perm as e2:
+            logging.error(f"dbGaP study accession identifier not found on dbGaP server ({e2}): {study_id_path}")
             return 0
 
         logging.warning(f"No data dictionaries available for study {dbgap_accession_id}: {files_in_dir}")
