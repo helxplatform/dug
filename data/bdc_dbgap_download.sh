@@ -9,4 +9,4 @@ OUTPUT_DIR=bdc_dbgap_data_dicts
 SCRIPT=../bin/get_dbgap_data_dicts.py
 
 mkdir -p $OUTPUT_DIR
-python $SCRIPT $CSV_FILE --format CSV --field Accession --outdir $OUTPUT_DIR
+python $SCRIPT $CSV_FILE --format CSV --field Accession --outdir $OUTPUT_DIR --skip phs000571.v6.p2

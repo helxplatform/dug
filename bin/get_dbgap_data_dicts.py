@@ -62,14 +62,14 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
 
                 # ftp.retrbinary() seems to cause this program to crash.
                 # Luckily, dbGaP is also available on HTTP!
-                filename_url = urljoin("https://ftp.ncbi.nlm.nih.gov/", ftp_filename)
+                filename_url = f"https://ftp.ncbi.nlm.nih.gov/{study_id_path}/pheno_variable_summaries/{ftp_filename}"
                 response = requests.get(filename_url)
                 if not response.ok:
                     logging.error(f"Could not download {filename_url}: {response}")
                     continue
 
                 data_dict_file.write(response.content)
-                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
+                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename} in {response.elapsed.microseconds} microseconds.")
             count_downloaded_vars += 1
 
     # Step 2: Check to see if there's a GapExchange file in the parent folder
@@ -164,7 +164,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
             # TODO: this skip logic was added to deal with phs000285.v3.p2 and phs000007.v32.p13, which doesn't work
             # for some reason.
             if dbgap_id in dbgap_ids_to_skip:
-                logging.info(f"Skipping dbGaP ID {dbgap_id}")
+                logging.info(f"Skipping dbGaP accession {dbgap_id}")
                 continue
 
             dbgap_dir = os.path.join(output_dir_for_row, dbgap_id)
