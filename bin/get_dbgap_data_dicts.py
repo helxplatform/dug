@@ -10,6 +10,7 @@ import shutil
 from ftplib import FTP, error_perm
 import csv
 import click
+import socket
 
 # Default to logging at the INFO level.
 logging.basicConfig(level=logging.DEBUG)
@@ -45,7 +46,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         try:
             files_in_dir = ftp.nlst(study_id_path)
         except:
-            logging.error(f"dbGaP study accession identifier not found in dbGaP data: {dbgap_accession_id}")
+            logging.error(f"dbGaP study accession identifier not found on dbGaP server: {study_id_path}")
             return 0
 
         logging.warning(f"No data dictionaries available for study {dbgap_accession_id}: {files_in_dir}")
@@ -55,7 +56,16 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     for ftp_filename in ftp_filelist:
         if 'data_dict' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
-                ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
+                logging.debug(f"Downloading {ftp_filename} to {local_path}/{ftp_filename}")
+                try:
+                    ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
+                except error_perm as e:
+                    logging.error(f"FTP error, skipping file {ftp_filename}:", e)
+                    continue
+                except socket.error as e:
+                    logging.error(f"Socket error, skipping file {ftp_filename}:", e)
+                    continue
+
                 logging.debug(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
             count_downloaded_vars += 1
 
