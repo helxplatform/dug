@@ -13,7 +13,7 @@ import click
 import socket
 
 # Default to logging at the INFO level.
-# logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # Helper function
 def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
@@ -67,7 +67,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
                     logging.error(f"Socket error, skipping file {ftp_filename}:", e)
                     continue
 
-                logging.debug(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
+                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
             count_downloaded_vars += 1
 
     # Step 2: Check to see if there's a GapExchange file in the parent folder
@@ -78,7 +78,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         if 'GapExchange' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
                 ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
-                logging.debug(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
+                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
     ftp.quit()
     return count_downloaded_vars
 
