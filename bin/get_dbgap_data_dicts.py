@@ -10,7 +10,8 @@ import shutil
 from ftplib import FTP, error_perm
 import csv
 import click
-import socket
+import requests
+from urllib.parse import urljoin
 
 # Default to logging at the INFO level.
 logging.basicConfig(level=logging.INFO)
@@ -58,15 +59,16 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         if 'data_dict' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
                 logging.debug(f"Downloading {ftp_filename} to {local_path}/{ftp_filename}")
-                try:
-                    ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
-                except error_perm as e:
-                    logging.error(f"FTP error, skipping file {ftp_filename}:", e)
-                    continue
-                except socket.error as e:
-                    logging.error(f"Socket error, skipping file {ftp_filename}:", e)
+
+                # ftp.retrbinary() seems to cause this program to crash.
+                # Luckily, dbGaP is also available on HTTP!
+                filename_url = urljoin("https://ftp.ncbi.nlm.nih.gov/", ftp_filename)
+                response = requests.get(filename_url)
+                if not response.ok:
+                    logging.error(f"Could not download {filename_url}: {response}")
                     continue
 
+                data_dict_file.write(response.content)
                 logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
             count_downloaded_vars += 1
 
