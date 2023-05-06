@@ -216,10 +216,14 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     desc = ET.SubElement(variable, 'description')
                     desc.text = var_dict['description']
 
-                # Write out ElementTree.
-                tree = ET.ElementTree(data_table)
-                tree.write(os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml')))
-                print(f"Writing {tree} to {os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))}")
+                # Write out XML.
+                xml_str = ET.tostring(data_table, encoding='unicode')
+                pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
+
+                output_xml_filename = os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))
+                with open(output_xml_filename, 'w') as f:
+                    f.write(pretty_xml_str)
+                print(f"Writing {data_table} to {output_xml_filename}")
 
 
 # Set up command line arguments.
@@ -258,7 +262,7 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    # studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
