@@ -15,6 +15,7 @@ import click
 import logging
 import requests
 import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
 
 # Some defaults.
 DEFAULT_MDS_ENDPOINT = 'https://healdata.org/mds/metadata'
@@ -113,8 +114,11 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
             else:
                 data_dict_ids_within_studies.add(dd_id)
                 result_json = result.json()
+                result_json['@id'] = dd_id
 
             study_json['data_dictionaries'].append(result_json)
+
+
 
         with open(os.path.join(data_dicts_dir, study_id + '.json'), 'w') as f:
             json.dump(study_json, f)
@@ -133,8 +137,10 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
         if not result.ok:
             raise RuntimeError(f'Could not retrieve data dictionary {dd_id}: {result}')
 
+        data_dict_json = result.json()
+        data_dict_json['@id'] = dd_id
         with open(dd_id_json_path, 'w') as f:
-            json.dump(result.json(), f)
+            json.dump(data_dict_json, f)
 
         logging.debug(f"Wrote data dictionary to {dd_id_json_path}.json")
 
@@ -185,6 +191,8 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
         for data_dict in data_dicts:
             data_table = ET.Element('data_table')
 
+            if 'gen3_discovery' in study and 'appl_id' in study['gen3_discovery']:
+                data_table.set('study_id', 'APPL:' + study['gen3_discovery']['appl_id'])
 
             if isinstance(data_dict, list):
                 top_level_dict = {}
@@ -195,23 +203,23 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
             else:
                 raise RuntimeError(f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
 
-        for var_dict in second_tier_dicts:
-            print(f"Generating dbGaP for variable {var_dict} in {file_path}")
+            for var_dict in second_tier_dicts:
+                print(f"Generating dbGaP for variable {var_dict} in {file_path}")
 
-            variable = ET.SubElement(data_table, 'variable')
-            variable.set('id', var_dict['name']) # TODO: make this unique
+                variable = ET.SubElement(data_table, 'variable')
+                variable.set('id', var_dict['name']) # TODO: make this unique
 
-            name = ET.SubElement(variable, 'name')
-            name.text = var_dict['name']
+                name = ET.SubElement(variable, 'name')
+                name.text = var_dict['name']
 
-            if 'description' in var_dict:
-                desc = ET.SubElement(variable, 'description')
-                desc.text = var_dict['description']
+                if 'description' in var_dict:
+                    desc = ET.SubElement(variable, 'description')
+                    desc.text = var_dict['description']
 
-            # Write out ElementTree.
-            tree = ET.ElementTree(data_table)
-            tree.write(os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml')))
-            print(f"Writing {tree} to {os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))}")
+                # Write out ElementTree.
+                tree = ET.ElementTree(data_table)
+                tree.write(os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml')))
+                print(f"Writing {tree} to {os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))}")
 
 
 # Set up command line arguments.
@@ -250,7 +258,7 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    # studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
