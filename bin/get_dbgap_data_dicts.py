@@ -10,9 +10,11 @@ import shutil
 from ftplib import FTP, error_perm
 import csv
 import click
+import requests
+from urllib.parse import urljoin
 
 # Default to logging at the INFO level.
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # Helper function
 def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
@@ -39,13 +41,14 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     # Step 1: First we try and get all the data_dict files
     try:
         ftp.cwd(f"{study_id_path}/pheno_variable_summaries")
-    except error_perm:
+    except error_perm as e1:
+        logging.warning(f"Exception {e1} thrown when trying to access {study_id_path}/pheno_variable_summaries on the dbGaP FTP server.")
         # Delete subdirectory so we don't think it's full
         shutil.rmtree(local_path)
         try:
             files_in_dir = ftp.nlst(study_id_path)
-        except:
-            logging.error(f"dbGaP study accession identifier not found in dbGaP data: {dbgap_accession_id}")
+        except error_perm as e2:
+            logging.error(f"dbGaP study accession identifier not found on dbGaP server ({e2}): {study_id_path}")
             return 0
 
         logging.warning(f"No data dictionaries available for study {dbgap_accession_id}: {files_in_dir}")
@@ -55,8 +58,18 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     for ftp_filename in ftp_filelist:
         if 'data_dict' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
-                ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
-                logging.debug(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
+                logging.debug(f"Downloading {ftp_filename} to {local_path}/{ftp_filename}")
+
+                # ftp.retrbinary() seems to cause this program to crash.
+                # Luckily, dbGaP is also available on HTTP!
+                filename_url = f"https://ftp.ncbi.nlm.nih.gov/{study_id_path}/pheno_variable_summaries/{ftp_filename}"
+                response = requests.get(filename_url)
+                if not response.ok:
+                    logging.error(f"Could not download {filename_url}: {response}")
+                    continue
+
+                data_dict_file.write(response.content)
+                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename} in {response.elapsed.microseconds} microseconds.")
             count_downloaded_vars += 1
 
     # Step 2: Check to see if there's a GapExchange file in the parent folder
@@ -67,7 +80,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         if 'GapExchange' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
                 ftp.retrbinary(f"RETR {ftp_filename}", data_dict_file.write)
-                logging.debug(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
+                logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename}")
     ftp.quit()
     return count_downloaded_vars
 
@@ -151,7 +164,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
             # TODO: this skip logic was added to deal with phs000285.v3.p2 and phs000007.v32.p13, which doesn't work
             # for some reason.
             if dbgap_id in dbgap_ids_to_skip:
-                logging.info(f"Skipping dbGaP ID {dbgap_id}")
+                logging.info(f"Skipping dbGaP accession {dbgap_id}")
                 continue
 
             dbgap_dir = os.path.join(output_dir_for_row, dbgap_id)
