@@ -44,7 +44,8 @@ services:
     entrypoint: [ "gunicorn",
                      "--workers=$API_WORKERS", "--name=dug",
                      "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
-                     "--log-level=DEBUG", "--enable-stdio-inheritance", "--reload", "dug.api:app" ]
+                     "--log-level=DEBUG", "--enable-stdio-inheritance",
+                     "-k", "uvicorn.workers.UvicornWorker", "--reload", "dug.server:APP" ]
     volumes:
       - ./src:/home/dug/dug/
     ports:

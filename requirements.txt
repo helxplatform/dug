@@ -1,15 +1,12 @@
-elasticsearch==7.12.0
-flake8
-flasgger
-Flask
-Flask-Cors
-Flask-RESTful
+elasticsearch[async]==7.16.3
+fastapi==0.95.0
+uvicorn
 gunicorn
 itsdangerous
 Jinja2
 jsonschema
 MarkupSafe
-mistune==2.0.1
+mistune==2.0.3
 pluggy==1.0.0
 pyrsistent==0.17.3
 pytest
@@ -19,3 +16,7 @@ redis==4.4.2
 requests==2.28.2
 requests-cache==0.9.8
 six==1.16.0
+
+# Click for command line arguments
+# We use Click 7.0 because that's what one of the pinned packages above use.
+click~=7.0
