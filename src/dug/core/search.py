@@ -185,10 +185,10 @@ class Search:
         }
 
         body = {'query': query}
-        total_items = self.es.count(body=body, index=index)
+        total_items = self.es.count(query=query, index=index)
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
@@ -293,10 +293,10 @@ class Search:
             }
         }
         body = {'query': query}
-        total_items = self.es.count(body=body, index=index)
+        total_items = self.es.count(query=query, index=index)
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
@@ -433,10 +433,10 @@ class Search:
             }
 
         body = {'query': query}
-        total_items = self.es.count(body=body, index=index)
+        total_items = self.es.count(query=query, index=index)
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'hits.hits._score'],
             from_=offset,
             size=size
@@ -512,7 +512,7 @@ class Search:
 
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             size=size
         )
         data_type_list = [data_type['key'] for data_type in search_results['aggregations']['data_type']['buckets']]
@@ -543,10 +543,10 @@ class Search:
             }
         }
         body = {'query': query}
-        total_items = self.es.count(body=body, index=index)
+        total_items = self.es.count(query=query, index=index)
         search_results = self.es.search(
             index=index,
-            body=body,
+            query=query,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size

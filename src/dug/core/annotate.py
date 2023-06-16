@@ -149,7 +149,7 @@ class ConceptExpander:
 
             # Case: Skip if empty KG
             try:
-                if not len(response["message"]["knowledge_graph"]["nodes"]):
+                if response["message"] == 'Internal Server Error' or len(response["message"]["knowledge_graph"]["nodes"]) == 0:
                     logger.debug(f"Did not find a knowledge graph for {query}")
                     logger.debug(f"{self.url} returned response: {response}")
                     return []
