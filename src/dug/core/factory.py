@@ -9,7 +9,7 @@ from dug.core.annotate import DugAnnotator, Annotator, Normalizer, OntologyHelpe
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
 from dug.core.parsers import Parser
-from dug.core.search import Search
+from dug.core.async_search import Search
 
 
 class DugFactory:

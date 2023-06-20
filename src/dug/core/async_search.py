@@ -614,14 +614,4 @@ class Search:
         return search_results
 
 
-if __name__ == '__main__':
-    import asyncio
-    from dug.config import Config
-    cfg = Config(
-        elastic_password="NkFgWqw5lg",
-        elastic_username="elastic",
-        elastic_host="localhost",
-        elastic_port=9200
-    )
-    search_clt = Search(cfg=cfg)
-    asyncio.run(search_clt.search_vars_unscored("MONDO:0021117", "lung neoplasm", size=10_000))
+
