@@ -208,7 +208,7 @@ class Crawler:
         target_node_type = casting_config["node_type"]
         curie_filter = casting_config["curie_prefix"]
         attribute_mapping = casting_config["attribute_mapping"]
-        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
+        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink.", ""))
         for ident_id, identifier in concept.identifiers.items():
 
             # Check to see if the concept identifier has types defined, this is used to create
@@ -218,7 +218,7 @@ class Crawler:
 
             # convert the first type to snake case to be used in tranql query.
             # first type is the leaf type, this is coming from Node normalization.
-            node_type = biolink_snake_case(identifier.types[0].replace("biolink:", ""))
+            node_type = biolink_snake_case(identifier.types[0].replace("biolink.", ""))
             try:
                 # Tranql query factory currently supports select node types as valid query
                 # Types missing from QueryFactory.data_types will be skipped with this try catch
