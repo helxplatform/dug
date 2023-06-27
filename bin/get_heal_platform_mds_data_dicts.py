@@ -250,10 +250,10 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     # Check for minimum and maximum constraints.
                     if 'minimum' in var_dict['constraints']:
                         logical_min = ET.SubElement(variable, 'logical_min')
-                        logical_min.text = var_dict['constraints']['minimum']
+                        logical_min.text = str(var_dict['constraints']['minimum'])
                     if 'maximum' in var_dict['constraints']:
                         logical_max = ET.SubElement(variable, 'logical_max')
-                        logical_max.text = var_dict['constraints']['maximum']
+                        logical_max.text = str(var_dict['constraints']['maximum'])
 
                     # Determine a type for this variable.
                     typ = var_dict.get('type')
