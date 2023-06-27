@@ -11,6 +11,7 @@
 #
 import json
 import os
+import re
 import click
 import logging
 import requests
@@ -206,6 +207,8 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     logging.warning(f"No HDP ID found in data dictionary file {file_path}")
 
                 # Create a non-standard appl_id field just in case we need it later.
+                # This should be fine for now, but there is also a `comments` element that we can
+                # store information like this in if we need to.
                 if 'appl_id' in study['gen3_discovery']:
                     data_table.set('appl_id', study['gen3_discovery']['appl_id'])
                 else:
@@ -239,7 +242,42 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     desc = ET.SubElement(variable, 'description')
                     desc.text = var_dict['description']
 
+                # Export the `module` field so we can look for instruments.
+                if 'module' in var_dict:
+                    variable.set('module', var_dict['module'])
 
+                if 'constraints' in var_dict:
+                    # Check for minimum and maximum constraints.
+                    if 'minimum' in var_dict['constraints']:
+                        logical_min = ET.SubElement(variable, 'logical_min')
+                        logical_min.text = var_dict['constraints']['minimum']
+                    if 'maximum' in var_dict['constraints']:
+                        logical_max = ET.SubElement(variable, 'logical_max')
+                        logical_max.text = var_dict['constraints']['maximum']
+
+                    # Determine a type for this variable.
+                    typ = var_dict.get('type')
+                    if 'enum' in var_dict['constraints'] and len(var_dict['constraints']['enum']) > 0:
+                        typ = 'encoded value'
+                    if typ:
+                        type_element = ET.SubElement(variable, 'type')
+                        type_element.text = typ
+
+                # If there are encodings, we need to convert them into values.
+                if 'encodings' in var_dict:
+                    encs = {}
+                    for encoding in re.split("\\s*\\|\\s*", var_dict['encodings']):
+                        key, value, err = re.split("\\s*=\\s*", encoding)
+                        if err or not value:
+                            raise RuntimeError(f"Could not parse encoding value {var_dict['encodings']} in data dictionary file {file_path}")
+                        if key in encs:
+                            raise RuntimeError(f"Duplicate key detected in encodings {var_dict['encodings']} in data dictionary file {file_path}")
+                        encs[key] = value
+
+                    for key, value in encs:
+                        value_element = ET.SubElement(variable, 'value')
+                        value_element.set('code', key)
+                        value_element.text = value
 
                 # Write out XML.
                 xml_str = ET.tostring(data_table, encoding='unicode')
