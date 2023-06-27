@@ -268,14 +268,16 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                 if 'encodings' in var_dict:
                     encs = {}
                     for encoding in re.split("\\s*\\|\\s*", var_dict['encodings']):
-                        key, value, err = re.split("\\s*=\\s*", encoding)
-                        if err or not value:
-                            raise RuntimeError(f"Could not parse encoding value {var_dict['encodings']} in data dictionary file {file_path}")
+                        m = re.fullmatch("^\\s*(.*?)\\s*=\\s*(.*)\\s*$", encoding)
+                        if not m:
+                            raise RuntimeError("Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
+                        key = m.group(1)
+                        value = m.group(2)
                         if key in encs:
                             raise RuntimeError(f"Duplicate key detected in encodings {var_dict['encodings']} in data dictionary file {file_path}")
                         encs[key] = value
 
-                    for key, value in encs:
+                    for key, value in encs.items():
                         value_element = ET.SubElement(variable, 'value')
                         value_element.set('code', key)
                         value_element.text = value
