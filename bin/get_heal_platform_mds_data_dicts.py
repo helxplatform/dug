@@ -216,6 +216,8 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     desc = ET.SubElement(variable, 'description')
                     desc.text = var_dict['description']
 
+
+
                 # Write out XML.
                 xml_str = ET.tostring(data_table, encoding='unicode')
                 pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
@@ -228,7 +230,7 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
 
 # Set up command line arguments.
 @click.command()
-@click.argument('output', type=click.Path(), required=True)  # TODO: restore exists=False once we're done developing.
+@click.argument('output', type=click.Path(exists=False), required=True)
 @click.option('--mds-metadata-endpoint', '--mds', default=DEFAULT_MDS_ENDPOINT,
               help='The MDS metadata endpoint to use, e.g. https://healdata.org/mds/metadata')
 @click.option('--limit', default=MDS_DEFAULT_LIMIT, help='The maximum number of entries to retrieve from the Platform '
@@ -262,12 +264,11 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    # studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
     os.makedirs(dbgap_dir, exist_ok=True)
-    # dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dict_ids, data_dicts_dir, studies, mds_metadata_endpoint)
     dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dicts_dir)
 
     logging.info(f"Generated {len(dbgap_filenames)} dbGaP files for ingest in {dbgap_dir}.")
