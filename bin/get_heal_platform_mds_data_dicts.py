@@ -320,6 +320,11 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     :param output: The output directory, which should not exist when the script is run.
     """
 
+    # Don't allow the program to run if the output directory already exists.
+    if os.path.exists(output):
+        logging.error(f"To ensure that existing data is not partially overwritten, the specified output directory ({output}) must not exist.")
+        exit(1)
+
     # Create the output directory.
     os.makedirs(output, exist_ok=True)
 
