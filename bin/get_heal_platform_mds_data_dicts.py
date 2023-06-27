@@ -83,6 +83,7 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
         if 'data_dictionaries' in result_json:
             dicts = result_json['data_dictionaries'].items()
             for (key, dd_id) in dicts:
+                # TODO: should we retain this data dictionary name (e.g. SPRINT_2020-12-16)?
                 logging.info(f"Found data dictionary {key} in study {study_id}: {dd_id}")
                 if study_id not in studies_to_dds:
                     studies_to_dds[study_id] = set()
