@@ -191,8 +191,31 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
         for data_dict in data_dicts:
             data_table = ET.Element('data_table')
 
-            if 'gen3_discovery' in study and 'appl_id' in study['gen3_discovery']:
-                data_table.set('study_id', 'APPL:' + study['gen3_discovery']['appl_id'])
+            if 'gen3_discovery' in study:
+                # Every data dictionary from the HEAL Data Platform should have an ID, and
+                # the previous code should have stored it in the `@id` field in the data dictionary JSON file.
+                if '@id' in study['gen3_discovery']:
+                    data_table.set('id', study['gen3_discovery']['@id'])
+                else:
+                    logging.warning(f"No identifier found in data dictionary file {file_path}")
+
+                # Determine the data_table study_id from the internal HEAL Data Platform (HDP) identifier.
+                if '_hdp_uid' in study['gen3_discovery']:
+                    data_table.set('study_id', study['gen3_discovery']['_hdp_uid'])
+                else:
+                    logging.warning(f"No HDP ID found in data dictionary file {file_path}")
+
+                # Create a non-standard appl_id field just in case we need it later.
+                if 'appl_id' in study['gen3_discovery']:
+                    data_table.set('appl_id', study['gen3_discovery']['appl_id'])
+                else:
+                    logging.warning(f"No APPL ID found in data dictionary file {file_path}")
+
+                # Determine the data_table date_created
+                if 'date_added' in study['gen3_discovery']:
+                    data_table.set('date_created', study['gen3_discovery']['date_added'])
+                else:
+                    logging.warning(f"No date_added found in data dictionary file {file_path}")
 
             if isinstance(data_dict, list):
                 top_level_dict = {}
