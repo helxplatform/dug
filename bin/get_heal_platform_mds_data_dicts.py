@@ -21,6 +21,7 @@ import xml.dom.minidom as minidom
 DEFAULT_MDS_ENDPOINT = 'https://healdata.org/mds/metadata'
 MDS_DEFAULT_LIMIT = 10000
 DATA_DICT_GUID_TYPE = 'data_dictionary'
+HDP_ID_PREFIX = 'HEALDATAPLATFORM:'
 
 # Turn on logging
 logging.basicConfig(level=logging.INFO)
@@ -133,7 +134,8 @@ def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, 
         with open(os.path.join(studies_with_data_dicts_dir, study_id + '.json'), 'w') as f:
             json.dump(study_json, f)
 
-        logging.debug(f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {studies_with_data_dicts_dir}/{study_id}.json")
+        logging.debug(
+            f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {studies_with_data_dicts_dir}/{study_id}.json")
 
     # We shouldn't need to do this, but at the moment we have multiple data dictionaries (in pre-prod, not prod) that aren't linked to from
     # within studies. So let's download them separately!
@@ -141,7 +143,8 @@ def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, 
     for count, dd_id in enumerate(data_dict_ids_not_within_studies):
         dd_id_json_path = os.path.join(data_dicts_dir, dd_id.replace('/', '_') + '.json')
 
-        logging.debug(f"Downloading data dictionary not linked to a study {dd_id} ({count + 1}/{len(data_dict_ids_not_within_studies)})")
+        logging.debug(
+            f"Downloading data dictionary not linked to a study {dd_id} ({count + 1}/{len(data_dict_ids_not_within_studies)})")
 
         result = requests.get(mds_metadata_endpoint + '/' + dd_id)
         if not result.ok:
@@ -162,18 +165,21 @@ def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, 
     return study_ids, data_dict_ids_within_studies
 
 
-def generate_dbgap_files(dbgap_dir, data_dicts_dir):
+def generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir):
     """
-    Generate dbGaP files.
+    Generate dbGaP files from data dictionaries containing
 
     :param dbgap_dir: The dbGaP directory into which we write the dbGaP files.
-    :param data_dicts_dir: The directory that contains data dicts (both studies with embedded data dicts, and free-flowing data dicts).
-    :return:
+    :param studies_with_data_dicts_dir: The directory that contains studies containing data dictionaries.
+        (This should work for the data_dicts directory too, but then we have no way of linking them to studies.)
+    :return: The list of dbGaP files generated.
     """
 
-    data_dict_files = os.listdir(data_dicts_dir)
+    dbgap_files_generated = set()
+
+    data_dict_files = os.listdir(studies_with_data_dicts_dir)
     for data_dict_file in data_dict_files:
-        file_path = os.path.join(data_dicts_dir, data_dict_file)
+        file_path = os.path.join(studies_with_data_dicts_dir, data_dict_file)
 
         # We're only interested in files.
         if not os.path.isfile(file_path):
@@ -184,11 +190,14 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
             continue
 
         # Read the JSON file.
-        print(f"Loading {file_path}")
+        logging.info(f"Loading study containing data dictionaries: {file_path}")
         with open(file_path, 'r') as f:
             json_data = json.load(f)
 
         # Check if this contains data dictionaries or if it _is_ a data dictionary.
+        # (This is not currently used, but the idea is that you could call this function on
+        # the data_dict directory instead of the studies_with_data_dicts directory and generate
+        # dbGaP XML files for all of them instead.
         data_dicts = []
         if 'data_dictionaries' in json_data:
             data_dicts = json_data['data_dictionaries']
@@ -201,19 +210,29 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
 
         # Begin writing a dbGaP file for each data dictionary.
         for data_dict in data_dicts:
+            # A list of unique variable identifiers in this data dictionary file.
+            # If you need to make sure every variable from MDS is uniquely identified, you can move this set to the
+            # top-level of this file.
+            unique_variable_ids = set()
+
             data_table = ET.Element('data_table')
 
             if 'gen3_discovery' in study:
-                # Every data dictionary from the HEAL Data Platform should have an ID, and
-                # the previous code should have stored it in the `@id` field in the data dictionary JSON file.
+                # Every data dictionary from the HEAL Data Platform should have an ID, and the previous code should have
+                # stored it in the `@id` field in the data dictionary JSON file.
+                #
+                # There may also be a `label`, which is the key of the data dictionary in the study.
                 if '@id' in study['gen3_discovery']:
                     data_table.set('id', study['gen3_discovery']['@id'])
                 else:
                     logging.warning(f"No identifier found in data dictionary file {file_path}")
 
+                if 'label' in study['gen3_discovery']:
+                    data_table.set('label', study['gen3_discovery']['label'])
+
                 # Determine the data_table study_id from the internal HEAL Data Platform (HDP) identifier.
                 if '_hdp_uid' in study['gen3_discovery']:
-                    data_table.set('study_id', study['gen3_discovery']['_hdp_uid'])
+                    data_table.set('study_id', HDP_ID_PREFIX + study['gen3_discovery']['_hdp_uid'])
                 else:
                     logging.warning(f"No HDP ID found in data dictionary file {file_path}")
 
@@ -238,25 +257,41 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                 top_level_dict = data_dict
                 second_tier_dicts = data_dict['data_dictionary']
             else:
-                raise RuntimeError(f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
+                raise RuntimeError(
+                    f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
 
             for var_dict in second_tier_dicts:
-                print(f"Generating dbGaP for variable {var_dict} in {file_path}")
+                logging.info(f"Generating dbGaP for variable {var_dict} in {file_path}")
 
+                # Retrieve the variable name.
                 variable = ET.SubElement(data_table, 'variable')
-                variable.set('id', var_dict['name']) # TODO: make this unique
 
+                # Make sure the variable ID is unique (by adding `_1`, `_2`, ... to the end of it).
+                var_name = var_dict['name']
+                variable_index = 0
+                while var_name in unique_variable_ids:
+                    variable_index += 1
+                    var_name = var_dict['name'] + '_' + variable_index
+                variable.set('id', var_name)
+                if var_name != var_dict['name']:
+                    logging.warning(f"Duplicate variable ID detected for {var_dict['name']}, so replaced it with "
+                                    f"{var_name} -- note that the name element is unchanged.")
+
+                # Create a name element for the variable. We don't uniquify this field.
                 name = ET.SubElement(variable, 'name')
-                name.text = var_dict['name']
+                name.text = var_name
 
                 if 'description' in var_dict:
                     desc = ET.SubElement(variable, 'description')
                     desc.text = var_dict['description']
 
-                # Export the `module` field so we can look for instruments.
+                # Export the `module` field so that we can look for instruments.
+                # TODO: this is a custom field. Instead of this, we could export each data dictionary as a separate dbGaP
+                # file. Need to check to see what works better for Dug ingest.
                 if 'module' in var_dict:
                     variable.set('module', var_dict['module'])
 
+                # Add constraints.
                 if 'constraints' in var_dict:
                     # Check for minimum and maximum constraints.
                     if 'minimum' in var_dict['constraints']:
@@ -280,11 +315,13 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                     for encoding in re.split("\\s*\\|\\s*", var_dict['encodings']):
                         m = re.fullmatch("^\\s*(.*?)\\s*=\\s*(.*)\\s*$", encoding)
                         if not m:
-                            raise RuntimeError("Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
+                            raise RuntimeError(
+                                "Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
                         key = m.group(1)
                         value = m.group(2)
                         if key in encs:
-                            raise RuntimeError(f"Duplicate key detected in encodings {var_dict['encodings']} in data dictionary file {file_path}")
+                            raise RuntimeError(
+                                f"Duplicate key detected in encodings {var_dict['encodings']} in data dictionary file {file_path}")
                         encs[key] = value
 
                     for key, value in encs.items():
@@ -296,10 +333,16 @@ def generate_dbgap_files(dbgap_dir, data_dicts_dir):
                 xml_str = ET.tostring(data_table, encoding='unicode')
                 pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
 
+                # Produce the XML file by changing the .json to .xml.
                 output_xml_filename = os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))
                 with open(output_xml_filename, 'w') as f:
                     f.write(pretty_xml_str)
-                print(f"Writing {data_table} to {output_xml_filename}")
+                logging.info(f"Writing {data_table} to {output_xml_filename}")
+
+                # Make a list of dbGaP files to report to the main program.
+                dbgap_files_generated.add(output_xml_filename)
+
+    return dbgap_files_generated
 
 
 # Set up command line arguments.
@@ -332,26 +375,28 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
 
     # Don't allow the program to run if the output directory already exists.
     if os.path.exists(output):
-        logging.error(f"To ensure that existing data is not partially overwritten, the specified output directory ({output}) must not exist.")
+        logging.error(
+            f"To ensure that existing data is not partially overwritten, the specified output directory ({output}) must not exist.")
         exit(1)
 
     # Create the output directory.
     os.makedirs(output, exist_ok=True)
 
-    # Download studies and data dictionaries from the MDS endpoint.
+    # Download studies and data dictionaries from the MDS endpoint. We create a lot of directories and temp files to
+    # help with debugging -- we can simplify this later on if needed.
     studies_dir = os.path.join(output, 'studies')
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
     studies_with_data_dicts_dir = os.path.join(output, 'studies_with_data_dicts')
     os.makedirs(studies_with_data_dicts_dir, exist_ok=True)
-    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, mds_metadata_endpoint, limit)
+    download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
     os.makedirs(dbgap_dir, exist_ok=True)
-    dbgap_filenames = generate_dbgap_files(dbgap_dir, data_dicts_dir)
 
+    dbgap_filenames = generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir)
     logging.info(f"Generated {len(dbgap_filenames)} dbGaP files for ingest in {dbgap_dir}.")
 
 
