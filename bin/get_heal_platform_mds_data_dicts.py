@@ -5,7 +5,6 @@
 #   python bin/get_heal_platform_mds_data_dicts.py
 #
 # If no MDS endpoint is specified, we default to the production endpoint at https://healdata.org/mds/metadata
-# If no output_dir is specified, we default to the `data/heal_platform_mds` directory in this repository.
 #
 import json
 import os
@@ -69,7 +68,7 @@ def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, 
     # allows us to complain about stray data dictionaries that are not connected to any study.
     #
     studies = {}
-    studies_to_dds = defaultdict(set)
+    studies_to_dds = defaultdict(list)
     for count, study_id in enumerate(study_ids):
         logging.debug(f"Downloading study {study_id} ({count + 1}/{len(study_ids)})")
 
@@ -89,7 +88,7 @@ def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, 
             dicts = result_json['data_dictionaries'].items()
             for (key, dd_id) in dicts:
                 logging.info(f"Found data dictionary {key} in study {study_id}: {dd_id}")
-                studies_to_dds[study_id].add({
+                studies_to_dds[study_id].append({
                     'id': dd_id,
                     'label': key
                 })
@@ -261,7 +260,7 @@ def generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir):
                     f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
 
             for var_dict in second_tier_dicts:
-                logging.info(f"Generating dbGaP for variable {var_dict} in {file_path}")
+                logging.debug(f"Generating dbGaP for variable {var_dict} in {file_path}")
 
                 # Retrieve the variable name.
                 variable = ET.SubElement(data_table, 'variable')
@@ -329,18 +328,18 @@ def generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir):
                         value_element.set('code', key)
                         value_element.text = value
 
-                # Write out XML.
-                xml_str = ET.tostring(data_table, encoding='unicode')
-                pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
+            # Write out XML.
+            xml_str = ET.tostring(data_table, encoding='unicode')
+            pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
 
-                # Produce the XML file by changing the .json to .xml.
-                output_xml_filename = os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))
-                with open(output_xml_filename, 'w') as f:
-                    f.write(pretty_xml_str)
-                logging.info(f"Writing {data_table} to {output_xml_filename}")
+            # Produce the XML file by changing the .json to .xml.
+            output_xml_filename = os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))
+            with open(output_xml_filename, 'w') as f:
+                f.write(pretty_xml_str)
+            logging.info(f"Writing {data_table} to {output_xml_filename}")
 
-                # Make a list of dbGaP files to report to the main program.
-                dbgap_files_generated.add(output_xml_filename)
+            # Make a list of dbGaP files to report to the main program.
+            dbgap_files_generated.add(output_xml_filename)
 
     return dbgap_files_generated
 
