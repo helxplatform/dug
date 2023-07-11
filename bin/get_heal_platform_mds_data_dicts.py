@@ -1,13 +1,11 @@
 #
-# Script to download all HEAL Platform
+# Script to download all data dictionaries from the HEAL Platform Metadata Service (MDS).
 #
 # USAGE:
 #   python bin/get_heal_platform_mds_data_dicts.py
 #
-# If no MDS endpoint  is specified, we default to the production endpoint at https://healdata.org/mds/metadata
+# If no MDS endpoint is specified, we default to the production endpoint at https://healdata.org/mds/metadata
 # If no output_dir is specified, we default to the `data/heal_platform_mds` directory in this repository.
-#
-# This code was written with the assistance of ChatGPT (https://help.openai.com/en/articles/6825453-chatgpt-release-notes).
 #
 import json
 import os
@@ -15,6 +13,7 @@ import re
 import click
 import logging
 import requests
+from collections import defaultdict
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 
@@ -27,7 +26,7 @@ DATA_DICT_GUID_TYPE = 'data_dictionary'
 logging.basicConfig(level=logging.INFO)
 
 
-def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_limit):
+def download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, mds_metadata_endpoint, mds_limit):
     """
     Download all the studies and data dictionaries from the Platform MDS.
     (At the moment, we assume everything that isn't a data dictionary is a
@@ -35,11 +34,14 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
     :param studies_dir: The directory into which to write the studies.
     :param data_dicts_dir: The directory into which to write the data dictionaries.
+    :param studies_with_data_dicts_dir: The directory into which to write the studies with data dictionaries.
     :param mds_metadata_endpoint: The Platform MDS endpoint to use.
     :return: A dictionary of all the studies, with the study ID as keys.
     """
 
-    # Download data dictionary identifiers.
+    # Download data dictionary identifiers. We filter using the DATA_DICT_GUID_TYPE provided earlier.
+    # This allows us to download (and complain about) the data dictionaries that are not part of studies.
+    #
     # TODO: extend this so it can function even if there are more than mds_limit data dictionaries.
     result = requests.get(mds_metadata_endpoint, params={
         '_guid_type': DATA_DICT_GUID_TYPE,
@@ -47,24 +49,26 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
     })
     if not result.ok:
         raise RuntimeError(f'Could not retrieve data dictionary list: {result}')
-
     datadict_ids = result.json()
-
     logging.debug(f"Downloaded {len(datadict_ids)} data dictionaries.")
 
-    # Download "studies" (everything that isn't a data dictionary).
+    # Download "studies" (everything that isn't a data dictionary). To do this, we download every metadata ID
+    # (which we store in metadata_ids) and filter out the data dictionary identifiers we've seen before.
+    #
+    # TODO: extend this so it can function even if there are more than mds_limit data dictionaries.
     result = requests.get(mds_metadata_endpoint, params={
         'limit': mds_limit,
     })
     if not result.ok:
         raise RuntimeError(f'Could not retrieve metadata list: {result}')
-
     metadata_ids = result.json()
     study_ids = list(set(metadata_ids) - set(datadict_ids))
 
-    # Download studies.
+    # Download all the studies. This allows us to identify which study each data dictionary is connected to, and
+    # allows us to complain about stray data dictionaries that are not connected to any study.
+    #
     studies = {}
-    studies_to_dds = {}
+    studies_to_dds = defaultdict(set)
     for count, study_id in enumerate(study_ids):
         logging.debug(f"Downloading study {study_id} ({count + 1}/{len(study_ids)})")
 
@@ -74,7 +78,7 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
         result_json = result.json()
 
-        # Record studies if we need to look them up later.
+        # Record all the studies in case we need to look them up later.
         if study_id in studies:
             raise RuntimeError(f'Duplicate study ID: {study_id}')
         studies[study_id] = result_json
@@ -83,12 +87,13 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
         if 'data_dictionaries' in result_json:
             dicts = result_json['data_dictionaries'].items()
             for (key, dd_id) in dicts:
-                # TODO: should we retain this data dictionary name (e.g. SPRINT_2020-12-16)?
                 logging.info(f"Found data dictionary {key} in study {study_id}: {dd_id}")
-                if study_id not in studies_to_dds:
-                    studies_to_dds[study_id] = set()
-                studies_to_dds[study_id].add(dd_id)
+                studies_to_dds[study_id].add({
+                    'id': dd_id,
+                    'label': key
+                })
 
+        # For debugging (and later Dug ingest), write the study-level metadata into the studies directory.
         with open(os.path.join(studies_dir, study_id + '.json'), 'w') as f:
             json.dump(result_json, f)
 
@@ -104,7 +109,10 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
         study_json = studies[study_id]
         study_json['data_dictionaries'] = []
 
-        for dd_id in studies_to_dds[study_id]:
+        for dd in studies_to_dds[study_id]:
+            dd_id = dd['id']
+            dd_label = dd['label']
+
             result = requests.get(mds_metadata_endpoint + '/' + dd_id)
             if result.status_code == 404:
                 logging.warning(
@@ -117,17 +125,17 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
                 data_dict_ids_within_studies.add(dd_id)
                 result_json = result.json()
                 result_json['@id'] = dd_id
+                result_json['label'] = dd_label
 
             study_json['data_dictionaries'].append(result_json)
 
-
-
-        with open(os.path.join(data_dicts_dir, study_id + '.json'), 'w') as f:
+        # Write out the data dictionaries.
+        with open(os.path.join(studies_with_data_dicts_dir, study_id + '.json'), 'w') as f:
             json.dump(study_json, f)
 
-        logging.debug(f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {data_dicts_dir}/{study_id}.json")
+        logging.debug(f"Wrote {len(study_json['data_dictionaries'])} dictionaries to {studies_with_data_dicts_dir}/{study_id}.json")
 
-    # We shouldn't need to do this, but at the moment we have multiple data dictionaries that aren't linked to from
+    # We shouldn't need to do this, but at the moment we have multiple data dictionaries (in pre-prod, not prod) that aren't linked to from
     # within studies. So let's download them separately!
     data_dict_ids_not_within_studies = list(set(datadict_ids) - data_dict_ids_within_studies)
     for count, dd_id in enumerate(data_dict_ids_not_within_studies):
@@ -146,10 +154,12 @@ def download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, mds_li
 
         logging.debug(f"Wrote data dictionary to {dd_id_json_path}.json")
 
-    logging.debug(f"Wrote out {len(data_dict_ids_not_within_studies)} data dictionaries unconnected to studies.")
+    if len(data_dict_ids_not_within_studies) > 0:
+        logging.warning(f"Some data dictionaries ({len(data_dict_ids_not_within_studies)}are present in the Platform "
+                        f"MDS, but aren't associated with studies: {data_dict_ids_not_within_studies}")
 
-    # Return the list of studies and the data dictionary identifiers
-    return studies, datadict_ids
+    # Return the list of studies and the studies with data dictionaries.
+    return study_ids, data_dict_ids_within_studies
 
 
 def generate_dbgap_files(dbgap_dir, data_dicts_dir):
@@ -333,7 +343,9 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
     os.makedirs(studies_dir, exist_ok=True)
     data_dicts_dir = os.path.join(output, 'data_dicts')
     os.makedirs(data_dicts_dir, exist_ok=True)
-    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, mds_metadata_endpoint, limit)
+    studies_with_data_dicts_dir = os.path.join(output, 'studies_with_data_dicts')
+    os.makedirs(studies_with_data_dicts_dir, exist_ok=True)
+    studies, data_dict_ids = download_from_mds(studies_dir, data_dicts_dir, studies_with_data_dicts_dir, mds_metadata_endpoint, limit)
 
     # Generate dbGaP entries from the studies and the data dictionaries.
     dbgap_dir = os.path.join(output, 'dbGaPs')
