@@ -97,13 +97,20 @@ class Search:
         results.update({'data type list': data_type_list})
         return data_type_list
 
-
     async def search_concepts(self, query, offset=0, size=None, fuzziness=1, prefix_length=3):
         """
         Changed to a long boolean match query to optimize search results
         """
         query = {
             "bool": {
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {"wildcard": {"description": "?*"}},
+                            {"wildcard": {"name": "?*"}}
+                        ]
+                    }
+                },
                 "should": [
                     {
                         "match_phrase": {
@@ -193,6 +200,7 @@ class Search:
                     }
                 ],
                 "minimum_should_match": 1,
+            }
         }
         body = json.dumps({'query': query})
         total_items = await self.es.count(body=body, index="concepts_index")
@@ -551,8 +559,6 @@ class Search:
                 "e_link": elem_s['element_action'],
                 "id": elem_id,
                 "name": elem_s['element_name']
->>>>>>>> develop:src/dug/core/async_search.py
->>>>>>> develop
             }
 
             # Case: collection not in dictionary for given data_type
