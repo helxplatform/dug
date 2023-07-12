@@ -9,7 +9,8 @@ from dug.core.annotate import DugAnnotator, Annotator, Normalizer, OntologyHelpe
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
 from dug.core.parsers import Parser
-from dug.core.search import Search
+from dug.core.async_search import Search
+from dug.core.index import Index
 
 
 class DugFactory:
@@ -79,6 +80,9 @@ class DugFactory:
 
     def build_search_obj(self, indices) -> Search:
         return Search(self.config, indices=indices)
+
+    def build_indexer_obj(self, indices) -> Index:
+        return Index(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):
         # Method reformats the node_to_element_queries object

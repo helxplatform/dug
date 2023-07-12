@@ -1,0 +1,110 @@
+# Workflow responsible for the 
+# development release processes.
+#
+
+name: Build-Push-Dev-Image
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - README.md
+      - .old_cicd/*
+      - .github/*
+      - .github/workflows/*
+      - LICENSE
+      - .gitignore
+      - .dockerignore
+      - .githooks
+  # Do not build another image on a pull request.
+  # Any push to develop will trigger a new build however.
+  pull_request:
+    branches-ignore:
+      - '*'
+
+jobs:
+  build-push-dev-image:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }} 
+        # fetch-depth: 0 means, get all branches and commits
+        fetch-depth: 0
+
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        echo "short_sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
+    # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+
+    - name: Confirm git commit SHA output
+      run: echo ${{ steps.vars.outputs.short_sha }}
+
+    # https://github.com/marketplace/actions/git-semantic-version
+    - name: Semver Check
+      uses: paulhatch/semantic-version@v5.0.2
+      id: version
+      with:
+        # The prefix to use to identify tags
+        tag_prefix: "v"
+        # A string which, if present in a git commit, indicates that a change represents a
+        # major (breaking) change, supports regular expressions wrapped with '/'
+        major_pattern: "/breaking|major/"
+        # A string which indicates the flags used by the `major_pattern` regular expression. Supported flags: idgs
+        major_regexp_flags: "ig"
+        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+        minor_pattern: "/feat|feature|minor/"
+        # A string which indicates the flags used by the `minor_pattern` regular expression. Supported flags: idgs
+        minor_regexp_flags: "ig"
+        # A string to determine the format of the version output
+        # version_format: "${major}.${minor}.${patch}-prerelease${increment}"
+        version_format: "${major}.${minor}.${patch}-prerelease${increment}"
+        search_commit_body: false
+
+    # Docker Buildx is important to caching in the Build And Push Container
+    # step
+    # https://github.com/marketplace/actions/build-and-push-docker-images
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        driver-opts: |
+          network=host
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        logout: true
+
+    - name: Login to Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: containers.renci.org
+        username: ${{ secrets.CONTAINERHUB_USERNAME }}
+        password: ${{ secrets.CONTAINERHUB_TOKEN }}
+        logout: true
+
+
+    # Notes on Cache: 
+    # https://docs.docker.com/build/ci/github-actions/examples/#inline-cache
+    - name: Build Push Container
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        # Push to renci-registry and dockerhub here.
+        # cache comes from dockerhub.
+        tags: |
+          ${{ github.repository }}:v${{ steps.version.outputs.version }}
+          ${{ github.repository }}:develop
+          ${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
+          containers.renci.org/${{ github.repository }}:v${{ steps.version.outputs.version }}
+          containers.renci.org/${{ github.repository }}:develop
+          containers.renci.org/${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
+        cache-from: type=registry,ref=${{ github.repository }}:buildcache-dev
+        cache-to: type=registry,ref=${{ github.repository }}:buildcache-dev,mode=max
