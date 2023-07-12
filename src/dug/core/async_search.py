@@ -97,6 +97,14 @@ class Search:
         """
         query = {
             "bool": {
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {"wildcard": {"description": "?*"}},
+                            {"wildcard": {"name": "?*"}}
+                        ]
+                    }
+                },
                 "should": [
                     {
                         "match_phrase": {
@@ -184,7 +192,8 @@ class Search:
                             }
                         }
                     }
-                ]
+                ],
+                "minimum_should_match": 1,
             }
         }
         body = json.dumps({'query': query})
