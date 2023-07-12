@@ -1,9 +1,3 @@
-###
-# Deprication Notice:
-# New Changes to search and indexing should be made in the async flavor of dug.
-# see : ./async_search.py
-###
-
 import json
 import logging
 from elasticsearch import AsyncElasticsearch
