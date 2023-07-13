@@ -114,10 +114,7 @@ jobs:
         curl \
         -s --fail -X POST \
         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-<<<<<<< HEAD
-=======
         -H "X-GitHub-Api-Version: 2022-11-28" \
->>>>>>> master
         https://api.github.com/repos/${{ github.repository }}/git/refs \
         -d '{"ref":"refs/tags/v${{ steps.version.outputs.version }}","sha":"${{ github.sha }}"}'
 
