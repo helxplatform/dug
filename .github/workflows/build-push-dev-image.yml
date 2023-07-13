@@ -43,26 +43,6 @@ jobs:
     - name: Confirm git commit SHA output
       run: echo ${{ steps.vars.outputs.short_sha }}
 
-    # https://github.com/marketplace/actions/git-semantic-version
-    - name: Semver Check
-      uses: paulhatch/semantic-version@v5.0.2
-      id: version
-      with:
-        # The prefix to use to identify tags
-        tag_prefix: "v"
-        # A string which, if present in a git commit, indicates that a change represents a
-        # major (breaking) change, supports regular expressions wrapped with '/'
-        major_pattern: "/breaking|major/"
-        # A string which indicates the flags used by the `major_pattern` regular expression. Supported flags: idgs
-        major_regexp_flags: "ig"
-        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
-        minor_pattern: "/feat|feature|minor/"
-        # A string which indicates the flags used by the `minor_pattern` regular expression. Supported flags: idgs
-        minor_regexp_flags: "ig"
-        # A string to determine the format of the version output
-        # version_format: "${major}.${minor}.${patch}-prerelease${increment}"
-        version_format: "${major}.${minor}.${patch}-prerelease${increment}"
-        search_commit_body: false
 
     # Docker Buildx is important to caching in the Build And Push Container
     # step
@@ -100,10 +80,8 @@ jobs:
         # Push to renci-registry and dockerhub here.
         # cache comes from dockerhub.
         tags: |
-          ${{ github.repository }}:v${{ steps.version.outputs.version }}
           ${{ github.repository }}:develop
           ${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
-          containers.renci.org/${{ github.repository }}:v${{ steps.version.outputs.version }}
           containers.renci.org/${{ github.repository }}:develop
           containers.renci.org/${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
         cache-from: type=registry,ref=${{ github.repository }}:buildcache-dev
