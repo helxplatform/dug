@@ -96,9 +96,7 @@ class Config:
             "elastic_password": "ELASTIC_PASSWORD",
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
-            "redis_password": "REDIS_PASSWORD",
-            "nboost_host": "NBOOST_API_HOST",
-            "nboost_port": "NBOOST_API_PORT"
+            "redis_password": "REDIS_PASSWORD"
         }
 
         kwargs = {}
@@ -107,5 +105,4 @@ class Config:
             env_value = os.environ.get(env_var)
             if env_value:
                 kwargs[kwarg] = env_value
-
         return cls(**kwargs)

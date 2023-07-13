@@ -3,7 +3,7 @@ import os
 import pytest
 from elasticsearch import Elasticsearch
 
-from dug.core.search import Search
+from dug.core.async_search import Search
 from dug.config import Config
 
 
