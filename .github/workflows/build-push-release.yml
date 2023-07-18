@@ -11,13 +11,8 @@ on:
     paths-ignore:
       - README.md
       - .old_cicd/*
-<<<<<<< HEAD
-#       - .github/*
-#       - .github/workflows/*
-=======
       - .github/*
       - .github/workflows/*
->>>>>>> develop
       - LICENSE
       - .gitignore
       - .dockerignore
@@ -45,30 +40,18 @@ jobs:
 
     # https://github.com/marketplace/actions/git-semantic-version
     - name: Semver Check
-<<<<<<< HEAD
-      uses: paulhatch/semantic-version@v5.0.2
-=======
       uses: paulhatch/semantic-version@v5.0.3
->>>>>>> develop
       id: version
       with:
         # The prefix to use to identify tags
         tag_prefix: "v"
         # A string which, if present in a git commit, indicates that a change represents a
         # major (breaking) change, supports regular expressions wrapped with '/'
-<<<<<<< HEAD
-        major_pattern: "/breaking|major/"
-        # A string which indicates the flags used by the `major_pattern` regular expression. Supported flags: idgs
-        major_regexp_flags: "ig"
-        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
-        minor_pattern: "/feat|feature|minor/"
-=======
         major_pattern: "/breaking:|major:/"
         # A string which indicates the flags used by the `major_pattern` regular expression. Supported flags: idgs
         major_regexp_flags: "ig"
         # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
         minor_pattern: "/feat:|feature:|minor:/"
->>>>>>> develop
         # A string which indicates the flags used by the `minor_pattern` regular expression. Supported flags: idgs
         minor_regexp_flags: "ig"
         # A string to determine the format of the version output
@@ -130,19 +113,12 @@ jobs:
       run: |
         curl \
         -s --fail -X POST \
-<<<<<<< HEAD
-=======
         -H "Accept: application/vnd.github+json" \
->>>>>>> develop
         -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
         https://api.github.com/repos/${{ github.repository }}/git/refs \
         -d '{"ref":"refs/tags/v${{ steps.version.outputs.version }}","sha":"${{ github.sha }}"}'
-<<<<<<< HEAD
-
-=======
         
->>>>>>> develop
 #   https://cli.github.com/manual/gh_release_create
     - name: Create Release
       env:
