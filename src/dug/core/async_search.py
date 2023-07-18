@@ -91,11 +91,10 @@ class Search:
         results.update({'data type list': data_type_list})
         return data_type_list
 
-    async def search_concepts(self, query, offset=0, size=None, fuzziness=1, prefix_length=3):
-        """
-        Changed to a long boolean match query to optimize search results
-        """
-        query = {
+    @staticmethod
+    def _build_concepts_query(query, fuzziness=1, prefix_length=3):
+        "Static data structure populator, pulled for easier testing"
+        query_object = {
             "bool": {
                 "filter": {
                     "bool": {
@@ -196,16 +195,46 @@ class Search:
                 "minimum_should_match": 1,
             }
         }
-        body = json.dumps({'query': query})
-        total_items = await self.es.count(body=body, index="concepts_index")
+        return query_object
+
+    async def search_concepts(self, query, offset=0, size=None, types=None,
+                              **kwargs):
+        """
+        Changed to a long boolean match query to optimize search results
+        """
+        query_object = {'query': self._build_concepts_query(query, **kwargs)}
+        total_items = await self.es.count(
+            body=json.dumps(query_object),
+            index="concepts_index")
+        # Get aggregated counts of biolink types
+        query_object['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
+        # Add post_filter on types
+        if types:
+            assert type(types) == list
+            query_object['post_filter'] = {
+                "bool": {
+                    "should": [
+                        {'term': {'type': {'value': t}}} for t in types
+                    ],
+                    "minimum_should_match": 1
+                }
+            }
         search_results = await self.es.search(
             index="concepts_index",
-            body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'hits.hits._score'],
+            body=json.dumps(query_object),
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                         'hits.hits._source', 'hits.hits._score',
+                         'aggregations'],
             from_=offset,
             size=size
         )
+        aggregations = search_results.pop('aggregations')
+        concept_types = {
+            bucket['key']: bucket['doc_count'] for bucket in
+            aggregations['type-count']['buckets']
+        }
         search_results.update({'total_items': total_items['count']})
+        search_results['concept_types'] = concept_types
         return search_results
 
     async def search_variables(self, concept="", query="", size=None, data_type=None, offset=0, fuzziness=1,
