@@ -43,7 +43,6 @@ jobs:
     - name: Confirm git commit SHA output
       run: echo ${{ steps.vars.outputs.short_sha }}
 
-
     # Docker Buildx is important to caching in the Build And Push Container
     # step
     # https://github.com/marketplace/actions/build-and-push-docker-images
