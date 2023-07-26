@@ -30,6 +30,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
 
     ftp = FTP('ftp.ncbi.nlm.nih.gov')
     ftp.login()
+    ftp.sendcmd('PASV')
     study_variable = dbgap_accession_id.split('.')[0]
 
     # The output directory already includes the study accession number.
