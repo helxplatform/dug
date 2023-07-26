@@ -7,7 +7,7 @@ Based on get_ncpi_data_dicts.py.
 import logging
 import os
 import shutil
-from ftplib import FTP, error_perm
+from ftplib import FTP, error_perm, error_temp
 import csv
 import click
 import requests
@@ -76,18 +76,15 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     # Step 2: Check to see if there's a GapExchange file in the parent folder
     #         and if there is, get it.
     
-    import ftplib
     try:
         ftp.cwd(study_id_path)
-    except ftplib.error_temp as e:
+    except error_temp as e:
         logging.error("Ftp session timed out... Reconnecting")
         ftp.login()
         resp = ftp.cwd(study_id_path)
         if resp[:1] == '2':
             logging.info("command success")
     
-
-     
     ftp_filelist = ftp.nlst(".")
     for ftp_filename in ftp_filelist:
         if 'GapExchange' in ftp_filename:
