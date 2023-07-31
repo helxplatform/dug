@@ -202,16 +202,17 @@ class Search:
         """
         Changed to a long boolean match query to optimize search results
         """
-        query_object = {'query': self._build_concepts_query(query, **kwargs)}
+        query_dict = self._build_concepts_query(query, **kwargs)
         total_items = await self.es.count(
-            body=json.dumps(query_object),
+            body={"query": query_object},
             index="concepts_index")
         # Get aggregated counts of biolink types
-        query_object['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
+        search_body = {"query": query_object}
+        search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
         # Add post_filter on types
         if types:
             assert type(types) == list
-            query_object['post_filter'] = {
+            search_body['post_filter'] = {
                 "bool": {
                     "should": [
                         {'term': {'type': {'value': t}}} for t in types
@@ -221,13 +222,17 @@ class Search:
             }
         search_results = await self.es.search(
             index="concepts_index",
-            body=json.dumps(query_object),
+            body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score',
                          'aggregations'],
             from_=offset,
             size=size
         )
+
+        # Simplify the data structure we get from aggregations to put into the
+        # return value. This should be a count of documents hit for every type
+        # in the search results.
         aggregations = search_results.pop('aggregations')
         concept_types = {
             bucket['key']: bucket['doc_count'] for bucket in
