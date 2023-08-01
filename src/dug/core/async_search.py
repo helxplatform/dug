@@ -201,9 +201,10 @@ class Search:
         search_results = await self.es.search(
             index="concepts_index",
             body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'hits.hits._score'],
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'hits.hits._score', 'hits.hits._explanation'],
             from_=offset,
-            size=size
+            size=size,
+            explain=True
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
