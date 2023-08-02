@@ -26,6 +26,7 @@ class SearchConceptQuery(BaseModel):
     index: str = "concepts_index"
     offset: int = 0
     size: int = 20
+    types: list = None
 
 class SearchVariablesQuery(BaseModel):
     query: str
@@ -40,9 +41,7 @@ class SearchKgQuery(BaseModel):
     index: str = "kg_index"
     size:int = 100
 
-
 search = Search(Config.from_env())
-
 
 @APP.on_event("shutdown")
 def shutdown_event():

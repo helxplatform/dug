@@ -20,3 +20,4 @@ six==1.16.0
 # Click for command line arguments
 # We use Click 7.0 because that's what one of the pinned packages above use.
 click~=7.0
+httpx>=0.24.1
