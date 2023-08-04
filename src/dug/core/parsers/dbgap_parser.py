@@ -35,7 +35,7 @@ class DbGaPParser(FileParser):
             return None
         tree = ET.parse(gap_exchange_filepath, ET.XMLParser(encoding='iso-8859-5'))
         tree_root = tree.getroot()
-        return tree_root.attrib['Configuration']['StudyNameEntrez']
+        return tree_root.find("./Studies/Study/Configuration/StudyNameEntrez").text
 
 
     def _get_element_type(self):
