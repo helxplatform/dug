@@ -75,7 +75,6 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
 
     # Step 2: Check to see if there's a GapExchange file in the parent folder
     #         and if there is, get it.
-
     try:
         ftp.cwd(study_id_path)
     except error_temp as e:
@@ -84,7 +83,6 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         resp = ftp.cwd(study_id_path)
         if resp[:1] == '2':
             logging.info("command success")
-
     ftp_filelist = ftp.nlst(".")
     for ftp_filename in ftp_filelist:
         if 'GapExchange' in ftp_filename:
