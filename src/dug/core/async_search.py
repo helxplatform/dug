@@ -101,7 +101,7 @@ class Search:
         return data_type_list
 
     @staticmethod
-    def _build_concepts_query(query, fuzziness=1, prefix_length=3):
+    def _build_concepts_query(query, types, fuzziness=1, prefix_length=3):
         "Static data structure populator, pulled for easier testing"
         query_object = {
             "bool": {
@@ -111,7 +111,15 @@ class Search:
                             {"wildcard": {"description": "?*"}},
                             {"wildcard": {"name": "?*"}}
                         ]
-                    }
+                    },
+                    **({
+                        "bool": {
+                            "should": [
+                                {'term': {'type': {'value': t}}} for t in types
+                            ],
+                            "minimum_should_match": 1
+                        }
+                    } if isinstance(types, list) else {})
                 },
                 "should": [
                     {
@@ -211,24 +219,10 @@ class Search:
         """
         Changed to a long boolean match query to optimize search results
         """
-        query_dict = self._build_concepts_query(query, **kwargs)
-        total_items = await self.es.count(
-            body={"query": query_dict},
-            index="concepts_index")
+        query_dict = self._build_concepts_query(query, types, **kwargs)
         # Get aggregated counts of biolink types
         search_body = {"query": query_dict}
         search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
-        # Add post_filter on types
-        if types:
-            assert isinstance(types, list)
-            search_body['post_filter'] = {
-                "bool": {
-                    "should": [
-                        {'term': {'type': {'value': t}}} for t in types
-                    ],
-                    "minimum_should_match": 1
-                }
-            }
         search_results = await self.es.search(
             index="concepts_index",
             body=search_body,
@@ -238,6 +232,11 @@ class Search:
             from_=offset,
             size=size,
             explain=True
+        )
+        del search_body["aggs"]
+        total_items = await self.es.count(
+            body=search_body,
+            index="concepts_index"
         )
 
         # Simplify the data structure we get from aggregations to put into the
