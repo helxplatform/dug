@@ -28,7 +28,7 @@ class SearchTestCase(TestCase):
         "Build mock elasticsearch responses"
         search_result = _brain_search_result()
         self.search = async_search.Search(Config.from_env())
-        self.query_body = self.search._build_concepts_query("brain", types=None)
+        self.query_body = self.search._build_concepts_query("brain")
         self.search.es = es_mock
 
     def test_concepts_search(self):
