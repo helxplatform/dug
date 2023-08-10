@@ -101,7 +101,7 @@ class Search:
         return data_type_list
 
     @staticmethod
-    def _build_concepts_query(query, types, fuzziness=1, prefix_length=3):
+    def _build_concepts_query(query, types=None, fuzziness=1, prefix_length=3):
         "Static data structure populator, pulled for easier testing"
         query_object = {
             "bool": {
