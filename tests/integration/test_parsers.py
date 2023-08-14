@@ -1,6 +1,7 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
     CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser
 from tests.integration.conftest import TEST_DATA_DIR
+from pathlib import Path
 
 def test_dbgap_parse_study_name_from_filename():
     parser = DbGaPParser()
@@ -20,6 +21,12 @@ def test_nida_parse_study_name_from_filename():
     filename = "whatever/NIDA-CSP1019_DD.xml"
     studyname = parser.parse_study_name_from_filename(filename)
     assert studyname == "NIDA-CSP1019"
+
+def test_dbgap_parse_study_name_from_gap_exchange_file():
+    parser = DbGaPParser()
+    parse_filepath = Path(TEST_DATA_DIR / "phs001252.v1.p1" / "phs001252.v1.pht006366.v1.ECLIPSE_Subject.data_dict.xml")
+    studyname = parser.parse_study_name_from_gap_exchange_file(parse_filepath)
+    assert studyname == "Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)"
 
 def test_dbgap_parser():
     parser = DbGaPParser()
