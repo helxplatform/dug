@@ -26,6 +26,7 @@ class Index:
 
         self.es = Elasticsearch(hosts=self.hosts,
                                 http_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+        self.replicas = self.get_es_node_count()
 
         if self.es.ping():
             logger.info('connected to elasticsearch')
@@ -36,6 +37,10 @@ class Index:
             raise SearchException(
                 message='failed to connect to elasticsearch',
                 details=f"connecting to host {self._cfg.elastic_host} and port {self._cfg.elastic_port}")
+        
+    def get_es_node_count(self):
+        return self.es.nodes.info()["_nodes"]["total"]
+        
 
     def init_indices(self):
         # The concepts and variable indices include an analyzer that utilizes the english
@@ -49,7 +54,7 @@ class Index:
         kg_index = {
             "settings": {
                 "number_of_shards": 1,
-                "number_of_replicas": 0
+                "number_of_replicas": self.replicas
             },
             "mappings": {
                 "properties": {
@@ -66,7 +71,7 @@ class Index:
             "settings": {
                 "index.mapping.coerce": "false",
                 "number_of_shards": 1,
-                "number_of_replicas": 0,
+                "number_of_replicas": self.replicas,
                 "analysis": {
                     "analyzer": {
                         "std_with_stopwords": {
@@ -104,7 +109,7 @@ class Index:
             "settings": {
                 "index.mapping.coerce": "false",
                 "number_of_shards": 1,
-                "number_of_replicas": 0,
+                "number_of_replicas": self.replicas,
                 "analysis": {
                     "analyzer": {
                         "std_with_stopwords": {
@@ -148,6 +153,11 @@ class Index:
         for index in self.indices:
             try:
                 if self.es.indices.exists(index=index):
+                    # if index exists check if replication is good 
+                    index_replicas = self.es.indices.get_settings(index=index)[index]["settings"]["index"]["number_of_replicas"]
+                    if index_replicas != self.replicas:
+                        self.es.indices.put_settings(index=index, body={"number_of_replicas": (self.replicas - 1) or 1 })
+                        self.es.indices.refresh(index=index)
                     logger.info(f"Ignoring index {index} which already exists.")
                 else:
                     result = self.es.indices.create(
