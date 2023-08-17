@@ -38,8 +38,6 @@ class MockIndex:
     def count(self, body):
         return len(self.values)
     
-    def nodes():
-        return MockEsNode()
 
 
 class MockIndices:
@@ -99,6 +97,10 @@ class MockElastic:
                 if body in v
             }
         }
+
+    def nodes():
+        return MockEsNode()
+    
 
 
 @pytest.fixture
