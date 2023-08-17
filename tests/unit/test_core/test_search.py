@@ -16,6 +16,9 @@ password = 'hunter2'
 nboost_host = 'localhost'
 hosts = [{'host': host, 'port': port}]
 
+class MockEsNode():
+    def info():
+        return {"_nodes" : {"total": 1}}
 
 @dataclass
 class MockIndex:
@@ -34,6 +37,9 @@ class MockIndex:
 
     def count(self, body):
         return len(self.values)
+    
+    def nodes():
+        return MockEsNode()
 
 
 class MockIndices:
