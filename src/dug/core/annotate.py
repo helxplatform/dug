@@ -378,10 +378,10 @@ class Normalizer(ApiClient[Identifier, Identifier]):
         identifier.description = preferred_id.get('description', '')
         identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]        
         try: 
-            identifier.type = self.bl_toolkit.get_element(biolink_type[0]).name
+            identifier.types = self.bl_toolkit.get_element(biolink_type[0]).name
         except:
             # converts biolink:SmallMolecule to small molecule 
-            identifier.type = (" ".join(re.split("(?=[A-Z])", biolink_type[0].replace('biolink:', ''))[1:])).lower()
+            identifier.types = (" ".join(re.split("(?=[A-Z])", biolink_type[0].replace('biolink:', ''))[1:])).lower()
         return identifier
 
 
