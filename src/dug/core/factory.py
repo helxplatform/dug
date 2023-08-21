@@ -4,8 +4,12 @@ import redis
 from requests_cache import CachedSession
 
 import dug.core.tranql as tql
-from dug.core.annotate import DugAnnotator, Annotator, Normalizer, Preprocessor, SynonymFinder, \
-    ConceptExpander
+from dug.core.annotate import (DugAnnotator, 
+                               Annotator, 
+                               Normalizer, 
+                               Preprocessor, 
+                               SynonymFinder,
+                               ConceptExpander)
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
 from dug.core.parsers import Parser
