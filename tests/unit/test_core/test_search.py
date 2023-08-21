@@ -16,6 +16,9 @@ password = 'hunter2'
 nboost_host = 'localhost'
 hosts = [{'host': host, 'port': port}]
 
+class MockEsNode():
+    def info():
+        return {"_nodes" : {"total": 1}}
 
 @dataclass
 class MockIndex:
@@ -34,6 +37,7 @@ class MockIndex:
 
     def count(self, body):
         return len(self.values)
+    
 
 
 class MockIndices:
@@ -63,6 +67,7 @@ class MockElastic:
     def __init__(self, indices: MockIndices):
         self.indices = indices
         self._up = True
+        self.nodes = MockEsNode
 
     def index(self, index, id=None, body=None):
         self.indices.get_index(index).index(id, body)
@@ -93,6 +98,8 @@ class MockElastic:
                 if body in v
             }
         }
+
+    
 
 
 @pytest.fixture

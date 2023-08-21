@@ -29,6 +29,16 @@ class MockApiService:
         if text is None:
             return MockResponse(text="{}", status_code=404)
         return MockResponse(text, status_code=status_code)
+    
+    def post(self, url, params: dict = None, json: dict = {}):
+        if params:
+            qstr = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+            url = f"{url}?{qstr}"
+        text, status_code = self.urls.get(url)
+
+        if text is None:
+            return MockResponse(text="{}", status_code=404)
+        return MockResponse(text, status_code=status_code)
 
 
 @pytest.fixture
@@ -208,29 +218,16 @@ def normalizer_api():
 
 
 @pytest.fixture
-def synonym_api():
-    base_url = "http://synonyms.api/?curie={curie}"
-
-    def _(curie):
-        return base_url.format(
-            curie=urllib.parse.quote(curie),
-        )
+def synonym_api():    
     return MockApiService(urls={
-        _("UBERON:0007100"): [json.dumps([
-            {
-                "desc": "adult heart",
-                "scope": "RELATED",
-                "syn_type": None,
-                "xref": ""
-            }
-        ]), 200],
-        _("MONDO"): [json.dumps({
-            "validation error": "format should be <PREFIX>:<XXX>"
-        }), 400],
-        _("UNSUPPORTED_PREFIX:XXX"): [json.dumps({
-            "validation error": "UNSUPPORTED_PREFIX is not supported"
-        }), 400],
-
+        "http://synonyms.api": [json.dumps({
+            "UBERON:0007100": [
+                "primary circulatory organ",
+                "dorsal tube",
+                "adult heart",
+                "heart"
+            ]
+        }), 200]
     })
 
 

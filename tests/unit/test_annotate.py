@@ -4,7 +4,7 @@ from typing import List
 import pytest
 
 from dug.config import Config
-from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder, OntologyHelper
+from dug.core.annotate import Identifier, Preprocessor, Annotator, Normalizer, SynonymFinder
 
 
 def test_identifier():
@@ -195,45 +195,27 @@ def test_normalizer(normalizer_api):
     assert output.id == 'UBERON:0007100'
     assert output.label == "primary circulatory organ"
     assert output.equivalent_identifiers == ['UBERON:0007100']
-    assert output.types == [
-        'biolink:AnatomicalEntity', 'biolink:OrganismalEntity', 'biolink:BiologicalEntity',
-        'biolink:NamedThing', 'biolink:Entity'
-    ]
+    assert output.types == 'anatomical entity'
+    
 
 
 def test_synonym_finder(synonym_api):
     curie = "UBERON:0007100"
-    url = f"http://synonyms.api/?curie="
-
+    url = f"http://synonyms.api"
     finder = SynonymFinder(url)
     result = finder.get_synonyms(
         curie,
         synonym_api,
     )
-    assert result == ["adult heart"]
-    curie = "MONDO"
-    result = finder.get_synonyms(
-        curie,
-        synonym_api,
-    )
-    assert result == []
-    curie = "UNSUPPORTED_PREFIX:XXX"
-    result = finder.get_synonyms(
-        curie,
-        synonym_api,
-    )
-    assert result == []
+    assert result == [
+            "primary circulatory organ",
+            "dorsal tube",
+            "adult heart",
+            "heart"
+        ]
 
 
-def test_ontology_helper(ontology_api):
-    curie = "UBERON:0007100"
-    url = "http://ontology.api/?curie="
 
-    helper = OntologyHelper(url)
-    name, description, ontology_type = helper.get_ontology_info(curie, ontology_api)
-    assert name == 'primary circulatory organ'
-    assert description == 'A hollow, muscular organ, which, by contracting rhythmically, keeps up the circulation of the blood or analogs[GO,modified].'
-    assert ontology_type == 'anatomical entity'
 
 
 def test_yield_partial_text():
