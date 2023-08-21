@@ -212,15 +212,10 @@ class Search:
         Changed to a long boolean match query to optimize search results
         """
         query_dict = self._build_concepts_query(query, **kwargs)
-        total_items = await self.es.count(
-            body={"query": query_dict},
-            index="concepts_index")
         # Get aggregated counts of biolink types
         search_body = {"query": query_dict}
         search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
-        # Add post_filter on types
-        if types:
-            assert isinstance(types, list)
+        if isinstance(types, list):
             search_body['post_filter'] = {
                 "bool": {
                     "should": [
@@ -238,6 +233,18 @@ class Search:
             from_=offset,
             size=size,
             explain=True
+        )
+        # Aggs/post_filter aren't supported by count
+        del search_body["aggs"]
+        if "post_filter" in search_body:
+            # We'll move the post_filter into the actual filter
+            search_body["query"]["bool"]["filter"]["bool"].update(
+                search_body["post_filter"]["bool"]
+            )
+            del search_body["post_filter"]
+        total_items = await self.es.count(
+            body=search_body,
+            index="concepts_index"
         )
 
         # Simplify the data structure we get from aggregations to put into the

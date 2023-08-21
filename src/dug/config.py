@@ -39,12 +39,12 @@ class Config:
 
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(default_factory=lambda: {
-        "url": "https://nodenormalization-sri.renci.org/get_normalized_nodes?conflate=false&curie="
+        "url": "https://nodenormalization-dev.apps.renci.org/get_normalized_nodes?conflate=false&description=true&curie="
     })
 
     # Synonym service config that will be passed to annotate.SynonymHelper constructor
     synonym_service: dict = field(default_factory=lambda: {
-        "url": "https://onto.renci.org/synonyms/"
+        "url": "https://name-resolution-sri.renci.org/reverse_lookup"
     })
 
     # Ontology metadata helper config that will be passed to annotate.OntologyHelper constructor
@@ -59,7 +59,9 @@ class Config:
         "disease": ["disease", "phenotypic_feature"],
         "pheno": ["phenotypic_feature", "disease"],
         "anat": ["disease", "anatomical_entity"],
-        "chem_to_disease": ["chemical_substance", "disease"],
+        "chem_to_disease": ["chemical_entity", "disease"],
+        "small_molecule_to_disease": ["small_molecule", "disease"],
+        "chemical_mixture_to_disease": ["chemical_mixture", "disease"],
         "phen_to_anat": ["phenotypic_feature", "anatomical_entity"],
     })
 

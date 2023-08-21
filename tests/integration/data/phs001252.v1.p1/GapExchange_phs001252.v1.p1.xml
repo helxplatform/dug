@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GaPExchange xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./dbGaPEx2.1.5.xsd">
+
+<MetaVariables>
+	<Submitter/>
+	<Method/>
+</MetaVariables>
+<MetaLinks/>
+
+<Projects>
+	<Project/>
+</Projects>
+
+<Studies>
+
+<Study source="dbGaP" accession="phs001252.v1.p1" parentStudy="phs001252.v1.p1" createDate="2016-11-17" modDate="2016-12-01">
+
+<Configuration>
+	<Data_Provider><![CDATA[
+		<table border="1">
+		<tr><th>Title</th><th>Name</th><th>Institute</th></tr>
+		<tr><td>Principal Investigator</td><td>Jorgen Vestbo, Professor</td><td>the University of Manchester, Manchester, UK</td></tr>
+		<tr><td>Principal Investigator</td><td>Edwin K. Silverman, MD, PhD</td><td>Brigham and Women &#39;s Hospital, Boston, MA</td></tr>
+		<tr><td>ECLIPSE Investigators</td><td>Y. Ivanov</td><td>Pleven, Bulgaria</td></tr>
+		<tr><td>ECLIPSE Investigators</td><td>K. Kostov</td><td>Sofia, Bulgaria</td></tr>
+		<tr><td>ECLIPSE Investigators</td><td>J. Bourbeau</td><td>Montreal, Canada</td></tr>
+		</table>
+	]]></Data_Provider>
+	<StudyNameEntrez>Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)</StudyNameEntrez>
+	<StudyNameReportPage>Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)</StudyNameReportPage>
+	<StudyTypes>
+		<StudyType>Case-Control</StudyType>
+		<StudyType>Longitudinal Cohort</StudyType>
+		<StudyType>Cohort</StudyType>
+	</StudyTypes>
+	<Description><![CDATA[
+<p>ECLIPSE was a longitudinal observational study of 2164 COPD subjects and a smaller number of smoking controls (337) and nonsmoking controls (245) followed regularly for three years, with three chest CT scans (at baseline, one year, and three years) (Vestbo, European Respiratory Journal 2008; 31: 869). Inclusion criteria included age 40-75, at least 10 pack-years of smoking, and spirometry in GOLD grades 2-4 (COPD cases) or normal spirometry with post-bronchodilator FEV1 &#62;85% predicted and FEV1/FVC&#62;0.7 (controls). Study visits were performed at enrollment, three months, and every six months thereafter with spirometry, questionnaires, and other clinical evaluations. The ECLIPSE CT scans have been analyzed with the VIDA software for emphysema and airway phenotypes. ECLIPSE has provided key insights into the clinical epidemiology of COPD, including COPD exacerbations (Hurst, NEJM 2010; 363: 1128) and lung function decline in COPD (Vestbo, NEJM 2011; 365: 1184). ECLIPSE has been used in a number of genetic studies of COPD susceptibility and protein biomarkers(Faner, Thorax 2014; 69: 666). Genome-wide gene expression microarray data are available in 147 induced sputum samples from COPD subjects and 248 peripheral blood samples from COPD and control subjects.</p>]]>
+	</Description>
+	<StudyInEx><![CDATA[
+<p>Inclusion criteria included age 40-75, at least 10 pack-years of smoking, and spirometry in GOLD grades 2-4 (COPD cases) or normal spirometry with post-bronchodilator FEV1 &#62;85% predicted and FEV1/FVC &#62;0.7 (controls). Exclusion criteria included respiratory disorders other than COPD, known severe &#945;1-antitrypsin deficiency, history of significant inflammatory disease other than COPD, a COPD exacerbation or blood transfusions within 4 weeks of enrollment, prior lung surgery, recent diagnosis of cancer, inability to walk, and therapy with oral corticosteroids at inclusion. </p>]]>
+	</StudyInEx>
+	<StudyProjects>
+		<Project/>
+	</StudyProjects>
+	<Publications>
+		<Publication>
+			<Pubmed pmid="18216052"/>
+		</Publication>
+		<Publication>
+			<Pubmed pmid="24310110"/>
+		</Publication>
+		<Publication>
+			<Pubmed pmid="24552242"/>
+		</Publication>
+	</Publications>
+	<Diseases>
+		<Disease vocab_source="MESH" vocab_term="Pulmonary Disease, Chronic Obstructive"/>
+		<Disease vocab_source="MESH" vocab_term="Pulmonary Emphysema"/>
+		<Disease vocab_source="MESH" vocab_term="Smoking"/>
+	</Diseases>
+	<Attributions>
+		<Header title="Principal Investigator">
+			<AttName>Jorgen Vestbo, Professor</AttName>
+			<Institution>the University of Manchester, Manchester, UK</Institution>
+		</Header>
+		<Header title="Principal Investigator">
+			<AttName>Edwin K. Silverman, MD, PhD</AttName>
+			<Institution>Brigham and Women &#39;s Hospital, Boston, MA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>Y. Ivanov</AttName>
+			<Institution>Pleven, Bulgaria</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>K. Kostov</AttName>
+			<Institution>Sofia, Bulgaria</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>J. Bourbeau</AttName>
+			<Institution>Montreal, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>M. Fitzgerald</AttName>
+			<Institution>Vancouver, BC, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>P. Hernandez</AttName>
+			<Institution>Halifax, NS, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>K. Killian</AttName>
+			<Institution>Hamilton, ON, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>R. Levy</AttName>
+			<Institution>Vancouver, BC, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>F. Maltais</AttName>
+			<Institution>Montreal, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. O&#39;Donnell</AttName>
+			<Institution>Kingston, ON, Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>J. Krepelka</AttName>
+			<Institution>Prague, Czech Republic</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>J. Vestbo</AttName>
+			<Institution>Hvidovre, Denmark</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>E. Wouters</AttName>
+			<Institution>Horn-Maastricht, The Netherlands</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. Quinn</AttName>
+			<Institution>Wellington, New Zealand</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>P. Bakke</AttName>
+			<Institution>Bergen, Norway</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>M. Kosnik</AttName>
+			<Institution>Golnik, Slovenia</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>A. Agusti</AttName>
+			<Institution>Spain</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>J. Sauleda</AttName>
+			<Institution>Spain</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>P. de Mallorca</AttName>
+			<Institution>Spain</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>Y. Feschenko</AttName>
+			<Institution>Kiev, Ukraine</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>V. Gavrisyuk</AttName>
+			<Institution>Kiev, Ukraine</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>L. Yashina</AttName>
+			<Institution>Kiev, Ukraine</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>N. Monogarova</AttName>
+			<Institution>Donetsk, Ukraine</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>P. Calverley</AttName>
+			<Institution>Liverpool, United Kingdom</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. Lomas</AttName>
+			<Institution>Cambridge, United Kingdom</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>W. MacNee</AttName>
+			<Institution>Edinburgh, United Kingdom</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. Singh</AttName>
+			<Institution>Manchester, United Kingdom</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>J. Wedzicha</AttName>
+			<Institution>London, United Kingdom</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>A. Anzueto</AttName>
+			<Institution>San Antonio, TX, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>S. Braman</AttName>
+			<Institution>Providence, RI, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>R. Casaburi</AttName>
+			<Institution>Torrance, CA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>B. Celli</AttName>
+			<Institution>Boston, MA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>G. Giessel</AttName>
+			<Institution>Richmond, VA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>M. Gotfried</AttName>
+			<Institution>Phoenix, AZ, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>G. Greenwald</AttName>
+			<Institution>Rancho Mirage, CA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>N. Hanania</AttName>
+			<Institution>Houston, TX, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. Mahler</AttName>
+			<Institution>Lebanon, NH, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>B. Make</AttName>
+			<Institution>Denver, CO, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>S. Rennard</AttName>
+			<Institution>Omaha, NE, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>C. Rochester</AttName>
+			<Institution>New Haven, CT, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>P. Scanlon</AttName>
+			<Institution>Rochester, MN, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>D. Schuller</AttName>
+			<Institution>Omaha, NE, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>F. Sciurba</AttName>
+			<Institution>Pittsburgh, PA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>A. Sharafkhaneh</AttName>
+			<Institution>Houston, TX, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>T. Siler</AttName>
+			<Institution>St. Charles, MO, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>E. Silverman</AttName>
+			<Institution>Boston, MA, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>A. Wanner</AttName>
+			<Institution>Miami, FL, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>R. Wise</AttName>
+			<Institution>Baltimore, MD, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Investigators">
+			<AttName>R. ZuWallack</AttName>
+			<Institution>Hartford, CT, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>H. Coxson</AttName>
+			<Institution>Canada</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>C. Crim</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>L. Edwards</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>D. Lomas</AttName>
+			<Institution>UK</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>W. MacNee</AttName>
+			<Institution>UK</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>E. Silverman</AttName>
+			<Institution>USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>R. Tal-Singer</AttName>
+			<Institution>Co-chair, GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>J. Vestbo</AttName>
+			<Institution>Co-chair, Denmark</Institution>
+		</Header>
+		<Header title="ECLIPSE Steering Committee">
+			<AttName>J. Yates</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>A. Agusti</AttName>
+			<Institution>Spain</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>P. Calverley</AttName>
+			<Institution>UK</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>B. Celli</AttName>
+			<Institution>USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>C. Crim</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>B. Miller</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>W. MacNee</AttName>
+			<Institution>Chair, UK</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>S. Rennard</AttName>
+			<Institution>USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>R. Tal-Singer</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>E. Wouters</AttName>
+			<Institution>The Netherlands</Institution>
+		</Header>
+		<Header title="ECLIPSE Scientific Committee">
+			<AttName>J. Yates</AttName>
+			<Institution>GSK, USA</Institution>
+		</Header>
+	</Attributions>
+	<DisplayPublicSummary>yes</DisplayPublicSummary>
+	<StudyURLs>
+		<Url name="ECLIPSE" url="http://www.eclipse-copd.com/"/>
+	</StudyURLs>
+	<StudyHistory><![CDATA[
+<p>The ECLIPSE study protocol was finalized in 2005, and subject recruitment began in 2006.</p>]]>
+	</StudyHistory>
+	<ConsentGroups>
+		<ConsentGroup groupNum="1" shortName="DS-COPD-RD" longName="Disease-Specific (Chronic Obstructive Pulmonary Disease, RD)"/>
+	</ConsentGroups>
+</Configuration>
+
+  <AuthorizedAccess>
+    <DacInfo ssDacId="0">
+      <DacName>NHLBI</DacName>
+      <DacFullName>National Heart, Lung, and Blood Institute DAC</DacFullName>
+      <DacEmail>0</DacEmail>
+      <DacPhone></DacPhone>
+      <DacUrl></DacUrl>
+    </DacInfo>
+    <Policy Policy_ID="phs001252.v1.p1_policy" ref_ssDacId="0">
+      <DisplayResearchStatement>yes</DisplayResearchStatement>
+      <DisplayPublicSummary>yes</DisplayPublicSummary>
+      <EmbargoLength>0</EmbargoLength>
+      <YearsUntilRenewal>1</YearsUntilRenewal>
+      <WeeksCancelRequest>8</WeeksCancelRequest>
+      <PdfSupplementReqired>no</PdfSupplementReqired>
+      <AcknowledgementText>
+        <para>
+          http://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=DUC&amp;view_pdf&amp;stacc=phs001252.v1.p1
+        </para>
+      </AcknowledgementText>
+      <DocumentSet>
+        <DataUseCertificate Label="Data Use Certificate" FilePath="https://dbgap.ncbi.nlm.nih.gov/aa/wga.cgi?page=DUC&amp;view_pdf&amp;stacc=phs001252.v1.p1" FileName=""/>
+      </DocumentSet>
+    </Policy>
+    <ConsentGroups>
+      <ParticipantSet groupNum-REF="1">
+        <ConsentName>Disease-Specific (Chronic Obstructive Pulmonary Disease, RD)</ConsentName>
+        <ConsentAbbrev>DS-COPD-RD</ConsentAbbrev>
+        <UseLimitation>Use of the data must be related to Chronic Obstructive Pulmonary Disease and related disorders.</UseLimitation>
+        <IrbRequired>No</IrbRequired>
+      </ParticipantSet>
+    </ConsentGroups>
+  </AuthorizedAccess>
+
+
+</Study>
+
+</Studies>
+
+</GaPExchange>
