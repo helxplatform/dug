@@ -154,10 +154,10 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                 # description later if that is useful.
                 if row.get('constraints.pattern'):
                     counters['constraints.pattern'] += 1
-                    logging.warning(f"`constraints.pattern` found in row {row_index}, skipped.")
+                    logging.warning(f"`constraints.pattern` of {row['constraints.pattern']} found in row {row_index}, skipped.")
                 if row.get('format'):
                     counters['format'] += 1
-                    logging.warning(f"`format` found in row {row_index}, skipped.")
+                    logging.warning(f"Found `format` of {row['format']} found in row {row_index}, skipped.")
 
                 # Process enumerated and encoded values.
                 encs = {}
