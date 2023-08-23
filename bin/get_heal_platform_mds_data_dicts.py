@@ -315,7 +315,7 @@ def generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir):
                         m = re.fullmatch("^\\s*(.*?)\\s*=\\s*(.*)\\s*$", encoding)
                         if not m:
                             raise RuntimeError(
-                                "Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
+                                f"Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
                         key = m.group(1)
                         value = m.group(2)
                         if key in encs:

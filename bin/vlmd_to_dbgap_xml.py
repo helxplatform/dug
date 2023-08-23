@@ -8,6 +8,7 @@
 # by the vlmd tool, see https://github.com/norc-heal/healdata-utils), but we hope to extend this to
 # support HEAL VLMD JSON files as well. See format documentation at https://github.com/HEAL/heal-metadata-schemas
 #
+import csv
 import json
 import os
 import re
@@ -68,137 +69,139 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
 
         data_table.set('date_created', datetime.now().isoformat())
 
-        # Convert variables.
-        #
-        # if 'gen3_discovery' in study:
-        #     # Every data dictionary from the HEAL Data Platform should have an ID, and the previous code should have
-        #     # stored it in the `@id` field in the data dictionary JSON file.
-        #     #
-        #     # There may also be a `label`, which is the key of the data dictionary in the study.
-        #     if '@id' in study['gen3_discovery']:
-        #         data_table.set('id', study['gen3_discovery']['@id'])
-        #     else:
-        #         logging.warning(f"No identifier found in data dictionary file {file_path}")
-        #
-        #     if 'label' in study['gen3_discovery']:
-        #         data_table.set('label', study['gen3_discovery']['label'])
-        #
-        #     # Determine the data_table study_id from the internal HEAL Data Platform (HDP) identifier.
-        #     if '_hdp_uid' in study['gen3_discovery']:
-        #         data_table.set('study_id', HDP_ID_PREFIX + study['gen3_discovery']['_hdp_uid'])
-        #     else:
-        #         logging.warning(f"No HDP ID found in data dictionary file {file_path}")
-        #
-        #     # Create a non-standard appl_id field just in case we need it later.
-        #     # This should be fine for now, but there is also a `comments` element that we can
-        #     # store information like this in if we need to.
-        #     if 'appl_id' in study['gen3_discovery']:
-        #         data_table.set('appl_id', study['gen3_discovery']['appl_id'])
-        #     else:
-        #         logging.warning(f"No APPL ID found in data dictionary file {file_path}")
-        #
-        #     # Determine the data_table date_created
-        #     if 'date_added' in study['gen3_discovery']:
-        #         data_table.set('date_created', study['gen3_discovery']['date_added'])
-        #     else:
-        #         logging.warning(f"No date_added found in data dictionary file {file_path}")
-        #
-        # if isinstance(data_dict, list):
-        #     top_level_dict = {}
-        #     second_tier_dicts = data_dict
-        # elif isinstance(data_dict, dict) and 'data_dictionary' in data_dict:
-        #     top_level_dict = data_dict
-        #     second_tier_dicts = data_dict['data_dictionary']
-        # else:
-        #     raise RuntimeError(
-        #         f"Could not read {file_path}: list of data dictionaries not as expected: {data_dict}")
-        #
-        # for var_dict in second_tier_dicts:
-        #     logging.debug(f"Generating dbGaP for variable {var_dict} in {file_path}")
-        #
-        #     # Retrieve the variable name.
-        #     variable = ET.SubElement(data_table, 'variable')
-        #
-        #     # Make sure the variable ID is unique (by adding `_1`, `_2`, ... to the end of it).
-        #     var_name = var_dict['name']
-        #     variable_index = 0
-        #     while var_name in unique_variable_ids:
-        #         variable_index += 1
-        #         var_name = var_dict['name'] + '_' + variable_index
-        #     variable.set('id', var_name)
-        #     if var_name != var_dict['name']:
-        #         logging.warning(f"Duplicate variable ID detected for {var_dict['name']}, so replaced it with "
-        #                         f"{var_name} -- note that the name element is unchanged.")
-        #
-        #     # Create a name element for the variable. We don't uniquify this field.
-        #     name = ET.SubElement(variable, 'name')
-        #     name.text = var_name
-        #
-        #     if 'description' in var_dict:
-        #         desc = ET.SubElement(variable, 'description')
-        #         desc.text = var_dict['description']
-        #
-        #     # Export the `module` field so that we can look for instruments.
-        #     # TODO: this is a custom field. Instead of this, we could export each data dictionary as a separate dbGaP
-        #     # file. Need to check to see what works better for Dug ingest.
-        #     if 'module' in var_dict:
-        #         variable.set('module', var_dict['module'])
-        #
-        #     # Add constraints.
-        #     if 'constraints' in var_dict:
-        #         # Check for minimum and maximum constraints.
-        #         if 'minimum' in var_dict['constraints']:
-        #             logical_min = ET.SubElement(variable, 'logical_min')
-        #             logical_min.text = str(var_dict['constraints']['minimum'])
-        #         if 'maximum' in var_dict['constraints']:
-        #             logical_max = ET.SubElement(variable, 'logical_max')
-        #             logical_max.text = str(var_dict['constraints']['maximum'])
-        #
-        #         # Determine a type for this variable.
-        #         typ = var_dict.get('type')
-        #         if 'enum' in var_dict['constraints'] and len(var_dict['constraints']['enum']) > 0:
-        #             typ = 'encoded value'
-        #         if typ:
-        #             type_element = ET.SubElement(variable, 'type')
-        #             type_element.text = typ
-        #
-        #     # If there are encodings, we need to convert them into values.
-        #     if 'encodings' in var_dict:
-        #         encs = {}
-        #         for encoding in re.split("\\s*\\|\\s*", var_dict['encodings']):
-        #             m = re.fullmatch("^\\s*(.*?)\\s*=\\s*(.*)\\s*$", encoding)
-        #             if not m:
-        #                 raise RuntimeError(
-        #                     "Could not parse encodings {var_dict['encodings']} in data dictionary file {file_path}")
-        #             key = m.group(1)
-        #             value = m.group(2)
-        #             if key in encs:
-        #                 raise RuntimeError(
-        #                     f"Duplicate key detected in encodings {var_dict['encodings']} in data dictionary file {file_path}")
-        #             encs[key] = value
-        #
-        #         for key, value in encs.items():
-        #             value_element = ET.SubElement(variable, 'value')
-        #             value_element.set('code', key)
-        #             value_element.text = value
-        #
-        # # Write out XML.
-        # xml_str = ET.tostring(data_table, encoding='unicode')
-        # pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
-        #
-        # # Produce the XML file by changing the .json to .xml.
-        # output_xml_filename = os.path.join(dbgap_dir, data_dict_file.replace('.json', '.xml'))
-        # with open(output_xml_filename, 'w') as f:
-        #     f.write(pretty_xml_str)
-        # logging.info(f"Writing {data_table} to {output_xml_filename}")
-        #
-        # # Make a list of dbGaP files to report to the main program.
-        # dbgap_files_generated.add(output_xml_filename)
+        # Read input file and convert variables into
+        if file_format == 'CSV':
+            reader = csv.DictReader(input)
+
+            # Some counts that are currently useful.
+            counters = defaultdict(int)
+
+            unique_variable_ids = set()
+            for index, row in enumerate(reader):
+                counters['row'] += 1
+                row_index = index + 1  # Convert from zero-based index to one-based index.
+
+                variable = ET.SubElement(data_table, 'variable')
+
+                # Variable name
+                var_name = row.get('name')
+                if not var_name:
+                    logging.error(f"No variable name found in row on line {index + 1}, skipping.")
+                    counters['no_varname'] += 1
+                    continue
+                # Make sure the variable ID is unique (by adding `_1`, `_2`, ... to the end of it).
+                variable_index = 0
+                while var_name in unique_variable_ids:
+                    variable_index += 1
+                    var_name = row['name'] + '_' + variable_index
+                variable.set('id', var_name)
+                if var_name != row['name']:
+                    logging.warning(f"Duplicate variable ID detected for {row['name']}, so replaced it with "
+                                    f"{var_name} -- note that the name element is unchanged.")
+                name = ET.SubElement(variable, 'name')
+                name.text = var_name
+
+                # Variable title
+                # NOTE: this is not yet supported by Dug!
+                if row.get('title'):
+                    title = ET.SubElement(variable, 'title')
+                    title.text = row['title']
+                else:
+                    counters['no_title'] += 1
+
+                # Variable description
+                if row.get('description'):
+                    desc = ET.SubElement(variable, 'description')
+                    desc.text = row['description']
+                else:
+                    counters['no_description'] += 1
+
+                # Module (questionnaire/subsection name)
+                # Export the `module` field so that we can look for instruments.
+                # TODO: this is a custom field. Instead of this, we could export each data dictionary as a separate dbGaP
+                # file. Need to check to see what works better for Dug ingest.
+                if row.get('module'):
+                    variable.set('module', row['module'])
+                else:
+                    counters['no_module'] += 1
+
+                # Constraints
+
+                # Minium and maximum values
+                if row.get('constraints.maximum'):
+                    logical_max = ET.SubElement(variable, 'logical_max')
+                    logical_max.text = str(row['constraints.maximum'])
+                if row.get('constraints.minimum'):
+                    logical_min = ET.SubElement(variable, 'logical_min')
+                    logical_min.text = str(row['constraints.minimum'])
+
+                # Maximum length ('constraints.maxLength') is not supported in dbGaP XML, so we ignore it.
+
+                # We ignore 'constraints.pattern' and 'format' for now, but we can try to include them in the
+                # description later if that is useful.
+                if row.get('constraints.pattern'):
+                    counters['constraints.pattern'] += 1
+                if row.get('format'):
+                    counters['format'] += 1
+
+                # Process enumerated and encoded values.
+                encs = {}
+                if row.get('encodings'):
+                    counters['encodings'] += 1
+
+                    for encoding in re.split("\\s*\\|\\s*", row['encodings']):
+                        m = re.fullmatch("^\\s*(.*?)\\s*=\\s*(.*)\\s*$", encoding)
+                        if not m:
+                            raise RuntimeError(
+                                f"Could not parse encodings {row['encodings']} on row {row_index}")
+                        key = m.group(1)
+                        value = m.group(2)
+
+                        if key in encs:
+                            raise RuntimeError(
+                                f"Duplicate key detected in encodings {row['encodings']} on row {row_index}")
+                        encs[key] = value
+
+                for key, value in encs.items():
+                    value_element = ET.SubElement(variable, 'value')
+                    value_element.set('code', key)
+                    value_element.text = value
+
+                # Double-check encodings with constraints.enum
+                if row.get('constraints.enum'):
+                    enums = re.split("\\s*\\|\\s*", row['constraints.enum'])
+                    if set(enums) != set(encs.keys()):
+                        logging.error(f"`constraints.enum` ({row['constraints.enum']}) and `encodings` ({row['encodings']}) do not match.")
+                        counters['enum_encoding_mismatch'] += 1
+
+                # Variable type.
+                typ = row.get('type')
+                if encs:
+                    typ = 'encoded value'
+                if typ:
+                    type_element = ET.SubElement(variable, 'type')
+                    type_element.text = typ
+
+                # We currently ignore metadata fields not usually filled in for input VLMD files:
+                # ordered, missingValues, trueValues, falseValues, repo_link
+
+                # We currently ignore all standardMappings: standardsMappings.type, standardsMappings.label,
+                # standardsMappings.url, standardsMappings.source, standardsMappings.id
+                # We currently ignore all relatedConcepts: relatedConcepts.type, relatedConcepts.label,
+                # relatedConcepts.url, relatedConcepts.source, relatedConcepts.id
+
+                # We currently ignore all univarStats vars: univarStats.median, univarStats.mean, univarStats.std,
+                # univarStats.min, univarStats.max, univarStats.mode, univarStats.count,
+                # univarStats.twentyFifthPercentile, univarStats.seventyFifthPercentile,
+                # univarStats.categoricalMarginals.name, univarStats.categoricalMarginals.count
 
         # Write out dbGaP XML.
         xml_str = ET.tostring(data_table, encoding='unicode')
         pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
         print(pretty_xml_str, file=output)
+
+        # Display counters.
+        logging.info(f"Counters: {json.dumps(counters, sort_keys=True, indent=2)}")
 
 
 # Run vlmd_to_dbgap_xml() if not used as a library.
