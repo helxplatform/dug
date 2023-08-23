@@ -36,7 +36,8 @@ logging.basicConfig(level=logging.INFO)
 @click.option('--output', '-o', type=click.File(mode='w'), default=sys.stdout)
 @click.option('--study-id', type=str)
 @click.option('--appl-id', type=str)
-def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
+@click.option('--study-name', type=str)
+def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_name):
     """
     Convert a VLMD file into a dbGaP XML file for ingest into Dug.
 
@@ -45,6 +46,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
     :param file_format: The file format to read. Only [HEAL VLMD] 'CSV' is currently supported.
     :param study_id: The HEAL Data Platform Study ID to use in Dug (without a prefix).
     :param appl_id: The APPL ID to use in Dug.
+    :param study_name: The study name ot use.
     """
 
     assert file_format == 'CSV', 'HEAL VLMD CSV is the only currently supported input format.'
@@ -66,6 +68,11 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
         # Add the APPL ID.
         if appl_id:
             data_table.set('appl_id', appl_id)
+
+        # Add the study title.
+        # Note: not a dbGaP XML field!
+        if study_name:
+            data_table.set('study_name', study_name)
 
         data_table.set('date_created', datetime.now().isoformat())
 
@@ -89,6 +96,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
                     logging.error(f"No variable name found in row on line {index + 1}, skipping.")
                     counters['no_varname'] += 1
                     continue
+                counters['has_varname'] += 1
                 # Make sure the variable ID is unique (by adding `_1`, `_2`, ... to the end of it).
                 variable_index = 0
                 while var_name in unique_variable_ids:
@@ -106,6 +114,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
                 if row.get('title'):
                     title = ET.SubElement(variable, 'title')
                     title.text = row['title']
+                    counters['has_title'] += 1
                 else:
                     counters['no_title'] += 1
 
@@ -113,6 +122,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
                 if row.get('description'):
                     desc = ET.SubElement(variable, 'description')
                     desc.text = row['description']
+                    counters['has_description'] += 1
                 else:
                     counters['no_description'] += 1
 
@@ -122,6 +132,9 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
                 # file. Need to check to see what works better for Dug ingest.
                 if row.get('module'):
                     variable.set('module', row['module'])
+                    if 'module_counts' not in counters:
+                        counters['module_counts'] = defaultdict(int)
+                    counters['module_counts'][row['module']] += 1
                 else:
                     counters['no_module'] += 1
 
@@ -141,8 +154,10 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id):
                 # description later if that is useful.
                 if row.get('constraints.pattern'):
                     counters['constraints.pattern'] += 1
+                    logging.warning(f"`constraints.pattern` found in row {row_index}, skipped.")
                 if row.get('format'):
                     counters['format'] += 1
+                    logging.warning(f"`format` found in row {row_index}, skipped.")
 
                 # Process enumerated and encoded values.
                 encs = {}
