@@ -9,19 +9,19 @@ from ._base import DugElement, FileParser, Indexable, InputFile
 logger = logging.getLogger('dug')
 
 
-class NIDAParser(FileParser):
-    # Class for parsers NIDA Data dictionary into a set of Dug Elements
+class HEALDPParser(FileParser):
+    # Class for parsers Heal data platform converted Data dictionary into a set of Dug Elements
 
-    @staticmethod
-    def parse_study_name_from_filename(filename: str):
-        # Parse the study name from the xml filename if it exists. Return None if filename isn't right format to get id from
-        stemname = os.path.splitext( os.path.basename(filename) )[0]
-        if stemname.startswith("NIDA-"):
-            sn = stemname
-            for s in ["-Dictionary", "_DD"]:
-                sn = sn.removesuffix(s) if sn.endswith(s) else sn
-            return sn
-        return None
+    def __init__(self, study_type="HEAL Studies"):
+        super()
+        self.study_type = study_type
+
+
+    def get_study_type(self):
+        return self.study_type
+    
+    def set_study_type(self, study_type):
+        self.study_type = study_type
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
@@ -31,10 +31,10 @@ class NIDAParser(FileParser):
         participant_set = root.get('participant_set','0')
 
         # Parse study name from file handle
-        study_name = self.parse_study_name_from_filename(str(input_file))
+        study_name = root.get('study_name')
 
         if study_name is None:
-            err_msg = f"Unable to parse NIDA study name from data dictionary: {input_file}!"
+            err_msg = f"Unable to parse study name from data dictionary: {input_file}!"
             logger.error(err_msg)
             raise IOError(err_msg)
 
@@ -43,12 +43,12 @@ class NIDAParser(FileParser):
             elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
                               name=variable.find('name').text,
                               desc=variable.find('description').text.lower(),
-                              elem_type="NIDA",
+                              elem_type=self.get_study_type(),
                               collection_id=f"{study_id}.p{participant_set}",
                               collection_name=study_name)
 
             # Create NIDA links as study/variable actions
-            elem.collection_action = utils.get_nida_study_link(study_id=study_id)
+            elem.collection_action = utils.get_heal_platform_link(study_id=study_id)
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)

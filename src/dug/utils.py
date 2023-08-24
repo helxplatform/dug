@@ -37,6 +37,11 @@ def get_nida_study_link(study_id):
     base_url = "https://datashare.nida.nih.gov/study"
     return f'{base_url}/{study_id}'
 
+def get_heal_platform_link(study_id):
+    base_url = "https://healdata.org/portal/discovery"
+    accession = study_id.split(':')[1]
+    return f'{base_url}/{accession}'
+
 
 def biolink_snake_case(arg):
     """Convert such SnakeCase to snake_case.

@@ -152,7 +152,7 @@ class Crawler:
                 concept = DugConcept(concept_id=identifier.id,
                                                        name=identifier.label,
                                                        desc=identifier.description,
-                                                       concept_type=identifier.type)
+                                                       concept_type=identifier.types)
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
