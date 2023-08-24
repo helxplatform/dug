@@ -11,6 +11,7 @@ from .topmed_tag_parser import TOPMedTagParser
 from .topmed_csv_parser import TOPMedCSVParser
 from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
+from .heal_dp_parser import HEALDPParser
 
 
 logger = logging.getLogger('dug')
@@ -30,6 +31,10 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["kfdrc"] = KFDRCDbGaPParser()
     parser_dict["sprint"] = SPRINTParser()
     parser_dict["bacpac"] = BACPACParser()
+    parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
+    parser_dict["heal-reasearch"] = HEALDPParser(study_type="HEAL Research Programs")
+    
+
 
 
 class ParserNotFoundException(Exception):
