@@ -32,7 +32,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["sprint"] = SPRINTParser()
     parser_dict["bacpac"] = BACPACParser()
     parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
-    parser_dict["heal-reasearch"] = HEALDPParser(study_type="HEAL Research Programs")
+    parser_dict["heal-research"] = HEALDPParser(study_type="HEAL Research Programs")
     
 
 
