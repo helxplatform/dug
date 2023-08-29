@@ -35,7 +35,9 @@ class Search:
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         # Establish the connection to RedisGraph
-        #print(f"Redis password is: {self._cfg.redis_password}")
+        print(f"Redis host is: {self._cfg.redis_host}")
+        print(f"Redis port is: {self._cfg.redis_port}")
+        print(f"Redis password is: {self._cfg.redis_password}")
         self.redisConn = redis.Redis(host=self._cfg.redis_host, port=self._cfg.redis_port, password=self._cfg.redis_password)
         #print(f"Connecting to graph: {self._cfg.redis_graph}")
         self.redisGraph = Graph(self._cfg.redis_graph, self.redisConn)
@@ -249,8 +251,9 @@ class Search:
         #print(f"concept is {concept}")
         #print(f"leafType is {leafType}")
         query1 = protoQuery.replace("CONCEPT", concept)
+        leafType = leafType.replace("biolink:", '')
         query1 = query1.replace("TYPE", leafType)
-        print(f"query1 is {query1}")
+        print(f"query to execute is {query1}")
 
         results1 = self.redisGraph.query(query1)
         #print(f"results1 is {results1}")
@@ -297,7 +300,7 @@ class Search:
     def search_concepts(self, index, query, offset=0, size=None, fuzziness=1, prefix_length=3):
 
         # Which query set we want to run is defined by the env var QUERY_SET. QUERY_SET must be
-        # one of "one", "two, "left", "right". If none of these is found, it's an error
+        # one of "One", "Two, "Left", "Right". If none of these is found, it's an error
         print(self._cfg.query_set)
         query_set = self._cfg.query_set
         # Let's query the NER endpoint for the user query
@@ -309,43 +312,65 @@ class Search:
         queryList = []
         # Concept queries
         # Does the user provided concept have any variables. 
-        if (query_set == "one"):
+        if (query_set == "One"):
            # The following 3 queries used for "one hop"
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(b:biolink:StudyVariable)--(d:biolink:Study) return c""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) return c""")
 
            # Find concepts one hop away from the user concept that have variables
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
      
            # Find concepts one hop away that are related to CDE
            queryList.append("""MATCH (c{id:"CONCEPT"})--(x)--(b:`biolink:Publication`) return distinct x""")
            #################################################################################################
            
-        elif (query_set == "two"):
+        elif (query_set == "Two"):
            # The following 2 queries used for "two hop"
            # Find concepts 2 hops away from the user concept that have variables restricted by subclass
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})--(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
 
            # Find concepts two hops away that are related to CDE
            queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
            #################################################################################################
+           
+        elif (query_set == "Two-New"):
+           # The following 2 queries used for "two hop"
+           # Find concepts 2 hops away from the user concept that have variables restricted by subclass
+           #queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[a]-(y)-[e]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable"  return distinct x""")
 
-        elif (query_set == "right"):
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[a]-(y)-[e]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" and not (type(a) = "biolink:subclass_of" and type(e) = "biolink:subclass_of" and startnode(a) = c and startnode(e) = x) return distinct x""")
+
+           # Find concepts two hops away that are related to CDE
+           #queryList.append("""MATCH (c{id:"CONCEPT"})--(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+           #################################################################################################
+
+        elif (query_set == "Right-old"):
            # The following queries used for "right subclass"
            # Find concepts 2 hops away from the user concept that have variables
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:Publication`) return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})--(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:Publication`) return distinct x""")
            #################################################################################################
 
 
-        elif (query_set == "left"):
+        elif (query_set == "Right"):
+           # The following queries used for "right subclass"
+           # Find concepts 2 hops away from the user concept that have variables
+           #queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[g]-(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" and where type(g) <> `biolink:subclass_of` and not c pointing to y return distinct x""")
+           #queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[g]-(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[g]-(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" and not (endnode(g) = endnode(e) and type(g) = "biolink:subclass_of") return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})-[g]-(y)<-[e:`biolink:subclass_of`]-(x)--(b:`biolink:Publication`) where not (endnode(g) = endnode(e) and type(g) = "biolink:subclass_of") return distinct x""")
+           #################################################################################################
+
+
+
+        elif (query_set == "Left"):
            # The following query used for "left subclass"
            # 11/20/2022 CAB suggestion
            # Find concepts 2 hops away from the user concept that have variables restricted by subclass
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
-           queryList.append("""MATCH(c:`TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:Publication`) return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:StudyVariable`)--(d:`biolink:Study`) where labels(x) <> "biolink:StudyVariable" return distinct x""")
+           queryList.append("""MATCH(c:`biolink:TYPE`{id:"CONCEPT"})<-[e:`biolink:subclass_of`]-(y)--(x)--(b:`biolink:Publication`) return distinct x""")
            #################################################################################################
         else:
-           print("No valid query set selected. Set the QUERY_SET env var to one, two, left or right")
+           print("No valid query set selected. Set the QUERY_SET env var to One, Two, Left or Right")
            sys.exit(0)
         graphResults = self.query_redis(normalizedResult.id, leafType, queryList)  
         #print(f"number of graphResults is {len(graphResults)}")
@@ -353,6 +378,7 @@ class Search:
         # Build the result object.  This is going to match what was returned from the ElasticSearch search
         redisResults = {}
         redisResults['query_list'] = queryList
+        redisResults['query_set'] = query_set
         redisResults['status'] = 'success'
         redisResults['query'] = query
         redisResults['concept'] = normalizedResult.id
