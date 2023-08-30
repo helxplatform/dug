@@ -5,7 +5,7 @@ import traceback
 
 from dug.core.parsers import Parser, DugElement, DugConcept
 import dug.core.tranql as tql
-from dug.utils import biolink_snake_case
+from dug.utils import biolink_snake_case, get_formatted_biolink_name
 
 logger = logging.getLogger('dug')
 
@@ -218,7 +218,7 @@ class Crawler:
 
             # convert the first type to snake case to be used in tranql query.
             # first type is the leaf type, this is coming from Node normalization.
-            node_type = biolink_snake_case(identifier.types[0].replace("biolink:", ""))
+            node_type = biolink_snake_case(get_formatted_biolink_name(identifier.types).replace("biolink:", ""))
             try:
                 # Tranql query factory currently supports select node types as valid query
                 # Types missing from QueryFactory.data_types will be skipped with this try catch

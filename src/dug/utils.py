@@ -1,4 +1,7 @@
 import re
+import bmt
+
+bmt_tk = bmt.Toolkit()
 
 class ObjectFactory:
     def __init__(self):
@@ -63,3 +66,12 @@ def biolink_snake_case(arg):
         tmp
     )
     return tmp
+
+def get_formatted_biolink_name(bl_type):
+    category = bl_type
+    if isinstance(bl_type, str):
+        bl_element = bmt_tk.get_element(bl_type)
+        category = bl_element.class_uri or bl_element.slot_uri
+    if isinstance(bl_type, list):
+        return get_formatted_biolink_name(bl_type[0])
+    return category
