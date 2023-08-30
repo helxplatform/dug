@@ -58,7 +58,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
     assert file_format == 'CSV', 'HEAL VLMD CSV is the only currently supported input format.'
 
     with open(click.format_filename(input_file), 'r') as input:
-        # dbGaP files are represented in XML as data_tables. We start by creating one.
+        # dbGaP files are represented in XML as `data_table`s. We start by creating one.
         data_table = ET.Element('data_table')
 
         # Write out the study_id.
@@ -76,10 +76,11 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
             data_table.set('appl_id', appl_id)
 
         # Add the study title.
-        # Note: not a dbGaP XML field!
+        # Note: not a dbGaP XML field! We make this up for communication.
         if study_name:
             data_table.set('study_name', study_name)
 
+        # Record the creation date as this moment.
         data_table.set('date_created', datetime.now().isoformat())
 
         # Read input file and convert variables into
@@ -215,6 +216,9 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                 # univarStats.min, univarStats.max, univarStats.mode, univarStats.count,
                 # univarStats.twentyFifthPercentile, univarStats.seventyFifthPercentile,
                 # univarStats.categoricalMarginals.name, univarStats.categoricalMarginals.count
+        else:
+            # This shouldn't be needed, since Click should catch any file format not in the accepted list.
+            raise RuntimeError(f"Unsupported file format {file_format}")
 
         # Write out dbGaP XML.
         xml_str = ET.tostring(data_table, encoding='unicode')
