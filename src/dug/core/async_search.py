@@ -679,3 +679,48 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+    async def get_concepts(self, ids: list[str]):
+        return await self.es.mget(
+            index="concepts_index",
+            body={'ids': ids},
+            filter_path=['docs._source']
+        )
+
+    async def get_studies(self, ids: list[str]):
+        # Studies aren't actual documents, but their metadata lies in associated variable documents,
+        # so we can't perform a direct lookup.
+        query = {
+            "terms": {
+                "collection_id.keyword": ids
+            },
+        }
+        body = {
+            "query": query,
+            "collapse": {
+                "field": "collection_id.keyword"
+            }
+        }
+        search_results = await self.es.search(
+            index="variables_index",
+            body=body
+        )
+        new_results = []
+        for result in search_results["hits"]["hits"]:
+            elem_s = result["_source"]
+            existing_study = next((r for r in new_results if elem_s["collection_id"] == r["c_id"]), None)
+            if existing_study is None:
+                new_results.append({
+                    "c_id": elem_s["collection_id"],
+                    "c_link": elem_s["collection_action"],
+                    "c_name": elem_s["collection_name"],
+                })
+
+        return new_results
+
+    async def get_variables(self, ids: list[str]):
+        return await self.es.mget(
+            index="variables_index",
+            body={'ids': ids},
+            filter_path=['docs._source']
+        )

@@ -2,7 +2,7 @@ import logging
 import os
 import uvicorn
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
@@ -14,7 +14,6 @@ APP = FastAPI(
     title="Dug Search API",
     root_path=os.environ.get("ROOT_PATH", "/"),
 )
-
 
 class GetFromIndex(BaseModel):
     index: str = "concepts_index"
@@ -40,6 +39,8 @@ class SearchKgQuery(BaseModel):
     unique_id: str
     index: str = "kg_index"
     size:int = 100
+
+
 
 search = Search(Config.from_env())
 
@@ -97,6 +98,38 @@ async def search_var(search_query: SearchVariablesQuery):
         "result": await search.search_variables(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
+
+@APP.get('/concepts')
+async def get_concepts(
+    ids: list[str] = Query([])
+):
+    return {
+        "message": "Search result",
+        "result": await search.get_concepts(ids),
+        "status": "success"
+    }
+
+@APP.get('/studies')
+async def get_studies(
+    ids: list[str] = Query([])
+):
+    return {
+        "message": "Search result",
+        "result": await search.get_studies(ids),
+        "status": "success"
+    }
+
+@APP.get('/variables')
+async def get_variables(
+    ids: list[str] = Query([])
+):
+    return {
+        "message": "Search result",
+        "result": await search.get_variables(ids),
+        "status": "success"
+    }
+
+
 
 
 if __name__ == '__main__':
