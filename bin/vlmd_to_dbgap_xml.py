@@ -10,16 +10,16 @@
 #
 import csv
 import json
+import logging
 import os
 import re
 import sys
+import xml.dom.minidom as minidom
+import xml.etree.ElementTree as ETree
+from collections import defaultdict
 from datetime import datetime
 
 import click
-import logging
-from collections import defaultdict
-import xml.etree.ElementTree as ETree
-import xml.dom.minidom as minidom
 
 # Some defaults.
 HDP_ID_PREFIX = 'HEALDATAPLATFORM:'
