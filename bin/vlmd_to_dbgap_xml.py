@@ -32,14 +32,20 @@ logging.basicConfig(level=logging.INFO)
 # Set up command line arguments.
 @click.command()
 @click.argument('input_file', type=click.Path(exists=True), required=True)
-@click.option('--file-format', '--format', type=click.Choice(['CSV'], case_sensitive=False), default='CSV')
-@click.option('--output', '-o', type=click.File(mode='w'), default=sys.stdout)
-@click.option('--study-id', type=str)
-@click.option('--appl-id', type=str)
-@click.option('--study-name', type=str)
+@click.option('--file-format', '--format',
+              type=click.Choice(['CSV'], case_sensitive=False), default='CSV',
+              help="The file format to convert from (CSV in the VLMD format is the default, and the only one "
+                   "currently supported)")
+@click.option('--output', '-o', type=click.File(mode='w'), default=sys.stdout,
+              help="Where the output dbGaP XML file is written. Defaults to STDOUT.")
+@click.option('--study-id', type=str, help="The HEAL Data Platform study ID of this study. Should start with 'HDP'.")
+@click.option('--appl-id', type=str, help="The NIH APPLication ID of this study. Usually a numerical identifier.")
+@click.option('--study-name', type=str, help="The name or title of this study.")
 def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_name):
     """
-    Convert a VLMD file into a dbGaP XML file for ingest into Dug.
+    Convert a VLMD file (INPUT_FILE) into a dbGaP XML file for ingest into Dug.
+    \f
+    # \f truncates the help text as per https://click.palletsprojects.com/en/8.1.x/documentation/#truncating-help-texts
 
     :param input_file: The VLMD file to read.
     :param output: Where the dbGaP XML file should be written.
