@@ -17,9 +17,8 @@ from datetime import datetime
 
 import click
 import logging
-import requests
 from collections import defaultdict
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ETree
 import xml.dom.minidom as minidom
 
 # Some defaults.
@@ -59,7 +58,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
 
     with open(click.format_filename(input_file), 'r') as input:
         # dbGaP files are represented in XML as `data_table`s. We start by creating one.
-        data_table = ET.Element('data_table')
+        data_table = ETree.Element('data_table')
 
         # Write out the study_id.
         if not study_id:
@@ -95,7 +94,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                 counters['row'] += 1
                 row_index = index + 1  # Convert from zero-based index to one-based index.
 
-                variable = ET.SubElement(data_table, 'variable')
+                variable = ETree.SubElement(data_table, 'variable')
 
                 # Variable name
                 var_name = row.get('name')
@@ -113,13 +112,13 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                 if var_name != row['name']:
                     logging.warning(f"Duplicate variable ID detected for {row['name']}, so replaced it with "
                                     f"{var_name} -- note that the name element is unchanged.")
-                name = ET.SubElement(variable, 'name')
+                name = ETree.SubElement(variable, 'name')
                 name.text = var_name
 
                 # Variable title
                 # NOTE: this is not yet supported by Dug!
                 if row.get('title'):
-                    title = ET.SubElement(variable, 'title')
+                    title = ETree.SubElement(variable, 'title')
                     title.text = row['title']
                     counters['has_title'] += 1
                 else:
@@ -127,16 +126,17 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
 
                 # Variable description
                 if row.get('description'):
-                    desc = ET.SubElement(variable, 'description')
+                    desc = ETree.SubElement(variable, 'description')
                     desc.text = row['description']
                     counters['has_description'] += 1
                 else:
                     counters['no_description'] += 1
 
-                # Module (questionnaire/subsection name)
-                # Export the `module` field so that we can look for instruments.
-                # TODO: this is a custom field. Instead of this, we could export each data dictionary as a separate dbGaP
-                # file. Need to check to see what works better for Dug ingest.
+                # Module (questionnaire/subsection name) Export the `module` field so that we can look for
+                # instruments.
+                #
+                # TODO: this is a custom field. Instead of this, we could export each data dictionary as a separate
+                # dbGaP file. Need to check to see what works better for Dug ingest.
                 if row.get('module'):
                     variable.set('module', row['module'])
                     if 'module_counts' not in counters:
@@ -149,10 +149,10 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
 
                 # Minium and maximum values
                 if row.get('constraints.maximum'):
-                    logical_max = ET.SubElement(variable, 'logical_max')
+                    logical_max = ETree.SubElement(variable, 'logical_max')
                     logical_max.text = str(row['constraints.maximum'])
                 if row.get('constraints.minimum'):
-                    logical_min = ET.SubElement(variable, 'logical_min')
+                    logical_min = ETree.SubElement(variable, 'logical_min')
                     logical_min.text = str(row['constraints.minimum'])
 
                 # Maximum length ('constraints.maxLength') is not supported in dbGaP XML, so we ignore it.
@@ -185,7 +185,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                         encs[key] = value
 
                 for key, value in encs.items():
-                    value_element = ET.SubElement(variable, 'value')
+                    value_element = ETree.SubElement(variable, 'value')
                     value_element.set('code', key)
                     value_element.text = value
 
@@ -201,7 +201,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
                 if encs:
                     typ = 'encoded value'
                 if typ:
-                    type_element = ET.SubElement(variable, 'type')
+                    type_element = ETree.SubElement(variable, 'type')
                     type_element.text = typ
 
                 # We currently ignore metadata fields not usually filled in for input VLMD files:
@@ -221,7 +221,7 @@ def vlmd_to_dbgap_xml(input_file, output, file_format, study_id, appl_id, study_
             raise RuntimeError(f"Unsupported file format {file_format}")
 
         # Write out dbGaP XML.
-        xml_str = ET.tostring(data_table, encoding='unicode')
+        xml_str = ETree.tostring(data_table, encoding='unicode')
         pretty_xml_str = minidom.parseString(xml_str).toprettyxml()
         print(pretty_xml_str, file=output)
 
