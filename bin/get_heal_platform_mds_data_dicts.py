@@ -404,5 +404,4 @@ def get_heal_platform_mds_data_dicts(output, mds_metadata_endpoint, limit):
 
 # Run get_heal_platform_mds_data_dicts() if not used as a library.
 if __name__ == "__main__":
-    # get_heal_platform_mds_data_dicts()
-    generate_dbgap_files('mds_data/dbGaPs', 'mds_data/studies_with_data_dicts')
+    get_heal_platform_mds_data_dicts()
