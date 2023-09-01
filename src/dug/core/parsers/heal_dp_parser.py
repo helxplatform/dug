@@ -28,7 +28,6 @@ class HEALDPParser(FileParser):
         tree = ET.parse(input_file)
         root = tree.getroot()
         study_id = root.attrib['study_id']
-        participant_set = root.get('participant_set','0')
 
         # Parse study name from file handle
         study_name = root.get('study_name')
@@ -40,11 +39,11 @@ class HEALDPParser(FileParser):
 
         elements = []
         for variable in root.iter('variable'):
-            elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
+            elem = DugElement(elem_id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               desc=variable.find('description').text.lower(),
                               elem_type=self.get_study_type(),
-                              collection_id=f"{study_id}.p{participant_set}",
+                              collection_id=f"{study_id}",
                               collection_name=study_name)
 
             # Create NIDA links as study/variable actions
