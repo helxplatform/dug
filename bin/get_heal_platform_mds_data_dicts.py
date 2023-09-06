@@ -225,9 +225,12 @@ def generate_dbgap_files(dbgap_dir, studies_with_data_dicts_dir):
                     data_table.set('id', study['gen3_discovery']['@id'])
                 else:
                     logging.warning(f"No identifier found in data dictionary file {file_path}")
-
-                if 'label' in study['gen3_discovery']:
-                    data_table.set('label', study['gen3_discovery']['label'])
+                study_name =  study.get('gen3_discovery', {}).get('label') or study.get('gen3_discovery', {}).get('study_metadata',{}).get('minimal_info',{}).get('study_name')
+                if study_name:
+                    data_table.set('study_name', study_name)                
+                study_description = study.get('gen3_discovery', {}).get('study_metadata',{}).get('minimal_info',{}).get('study_description')
+                if study_description:
+                    data_table.set('study_description', study_description)
 
                 # Determine the data_table study_id from the internal HEAL Data Platform (HDP) identifier.
                 if '_hdp_uid' in study['gen3_discovery']:
