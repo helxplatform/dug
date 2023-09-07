@@ -303,7 +303,16 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)
         url = f'{self.url}{value}'
-        response = http_session.get(url)
+
+        # This could be moved to a config file
+        NUM_TRIES = 5
+        for _ in range(NUM_TRIES):
+           response = http_session.get(url)
+           if response is not None:
+              # looks like it worked
+              break
+
+        # if the reponse is still None here, throw an error         
         if response is None:
             raise RuntimeError(f"no response from {url}")
         return response.json()
