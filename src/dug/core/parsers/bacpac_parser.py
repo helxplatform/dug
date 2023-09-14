@@ -14,7 +14,7 @@ class BACPACParser(FileParser):
     @staticmethod
     def parse_study_name_from_filename(filename: str):
         # Parse the form name from the xml filename
-        return filename.split('/')[-1].replace('.xml', '')
+        return "Back Pain Consortium (BACPAC) Minimum Dataset"
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
@@ -38,7 +38,9 @@ class BACPACParser(FileParser):
                               desc=description.lower(),
                               elem_type="BACPAC",
                               collection_id=f"{study_id}",
-                              collection_name=study_name)
+                              collection_name=study_name
+            )
+            elem.action = ""                 
 
             # Add to set of variables
             logger.debug(elem)
