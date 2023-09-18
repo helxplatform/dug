@@ -252,7 +252,7 @@ class Crawler:
                                 for key in attribute_mapping:
                                     mapped_value = node.get(attribute_mapping[key], "")
                                     # treat all attributes as strings 
-                                    if isinstance(mapped_value, list) and len(mapped_value) > 0:
+                                    if key in array_to_string and isinstance(mapped_value, list) and len(mapped_value) > 0:
                                         mapped_value = mapped_value[0]
                                     element_attribute_args.update({key: mapped_value})
                                 element = DugElement(
