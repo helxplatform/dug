@@ -71,9 +71,10 @@ class Config:
             # Parse nodes matching criteria in kg
             "node_type": "biolink:Publication",
             "curie_prefix": "HEALCDE",
+            # list of attributes that are lists to be casted to strings 
             "array_to_string": [
                 "files"
-            ]
+            ],
             "attribute_mapping": {
                 # "DugElement Attribute" : "KG Node attribute"
                 "name": "name",
