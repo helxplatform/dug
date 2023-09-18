@@ -40,8 +40,8 @@ class BACPACParser(FileParser):
                               collection_id=f"{study_id}",
                               collection_name=study_name
             )
-            elem.action = "https://healdata.org/portal/discovery/HDP00692"                 
-
+            elem.action = "https://healdata.org/portal/discovery/HDP00692"      
+            elem.collection_action = "https://healdata.org/portal/discovery/HDP00692"
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
