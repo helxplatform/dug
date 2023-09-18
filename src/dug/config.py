@@ -71,12 +71,16 @@ class Config:
             # Parse nodes matching criteria in kg
             "node_type": "biolink:Publication",
             "curie_prefix": "HEALCDE",
+            "array_to_string": [
+                "files"
+            ]
             "attribute_mapping": {
                 # "DugElement Attribute" : "KG Node attribute"
                 "name": "name",
                 "desc": "summary",
                 "collection_name": "cde_category",
-                "collection_id":  "cde_category"
+                "collection_id":  "cde_category",
+                "collection_action": "files"
             }
         }
     })
