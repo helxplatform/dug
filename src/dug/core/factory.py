@@ -104,7 +104,8 @@ class DugFactory:
                 "casting_config": {
                     "node_type": queries[dug_type]["node_type"],
                     "curie_prefix": queries[dug_type]["curie_prefix"],
-                    "attribute_mapping": queries[dug_type]["attribute_mapping"]
+                    "attribute_mapping": queries[dug_type]["attribute_mapping"],
+                    "array_to_string": queries[dug_type]["array_to_string"]
                     # CDE's are only ones
                     # but if we had two biolink:Publication nodes we want to conditionally
                     # cast to other output_dug_type, we could extend this config
