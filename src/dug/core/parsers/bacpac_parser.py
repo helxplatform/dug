@@ -12,7 +12,7 @@ class BACPACParser(FileParser):
     # Class for parsing BACPAC data dictionaries in dbGaP XML format into a set of Dug Elements.
 
     @staticmethod
-    def parse_study_name_from_filename(filename: str):
+    def get_study_file_name():
         # Parse the form name from the xml filename
         return "Back Pain Consortium (BACPAC) Minimum Dataset"
 
@@ -20,10 +20,10 @@ class BACPACParser(FileParser):
         logger.debug(input_file)
         tree = ET.parse(input_file)
         root = tree.getroot()
-        study_id = root.attrib['study_id']
+        study_id = "HEALPLATFORM:HDP00692"
 
         # Parse study name from file handle
-        study_name = self.parse_study_name_from_filename(str(input_file))
+        study_name = self.get_study_file_name()
 
         if study_name is None:
             err_msg = f"Unable to parse BACPAC Form name from data dictionary: {input_file}!"
