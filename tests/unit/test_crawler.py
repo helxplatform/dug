@@ -92,7 +92,8 @@ def test_expand_to_dug_element(crawler):
                 "desc": "summary",
                 "collection_name": "cde_category",
                 "collection_id":  "cde_category"
-            }
+            },
+            "array_to_string": []
         },
         dug_element_type="test-element",
         tranql_source="test:graph"
