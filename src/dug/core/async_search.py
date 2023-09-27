@@ -39,7 +39,7 @@ class Search:
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host,
                        'port': self._cfg.elastic_port,
-                        'scheme': self._cfg.elastic_scheme}]
+                       'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user "
                      f"{self._cfg.elastic_username} "
