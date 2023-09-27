@@ -20,7 +20,7 @@ class Index:
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         self.indices = indices
-        self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port}]
+        self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
 
