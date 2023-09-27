@@ -100,7 +100,7 @@ class Config:
         env_vars = {
             "elastic_host": "ELASTIC_API_HOST",
             "elastic_port": "ELASTIC_API_PORT",
-            "elastic_schema": "ELASTIC_API_SCHEME",
+            "elastic_scheme": "ELASTIC_API_SCHEME",
             "elastic_username": "ELASTIC_USERNAME",
             "elastic_password": "ELASTIC_PASSWORD",
             "redis_host": "REDIS_HOST",
