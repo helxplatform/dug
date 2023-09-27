@@ -72,7 +72,7 @@ class Config:
             "node_type": "biolink:Publication",
             "curie_prefix": "HEALCDE",
             # list of attributes that are lists to be casted to strings 
-            "array_to_string": [
+            "list_field_choose_first": [
                 "files"
             ],
             "attribute_mapping": {

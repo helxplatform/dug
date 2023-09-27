@@ -208,7 +208,7 @@ class Crawler:
         target_node_type = casting_config["node_type"]
         curie_filter = casting_config["curie_prefix"]
         attribute_mapping = casting_config["attribute_mapping"]
-        array_to_string = casting_config["array_to_string"]
+        array_to_string = casting_config["list_field_choose_first"]
         target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
