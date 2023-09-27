@@ -10,7 +10,7 @@ class DugElement:
     # Basic class for holding information for an object you want to make searchable via Dug
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
-    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc=""):
+    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action=""):
         self.id = elem_id
         self.name = name
         self.description = desc
@@ -18,8 +18,8 @@ class DugElement:
         self.collection_id = collection_id
         self.collection_name = collection_name
         self.collection_desc = collection_desc
-        self.action = ""
-        self.collection_action = ""
+        self.action = action
+        self.collection_action = collection_action
         self.concepts = {}
         self.ml_ready_desc = desc
         self.search_terms = []

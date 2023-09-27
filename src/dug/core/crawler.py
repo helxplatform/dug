@@ -208,6 +208,7 @@ class Crawler:
         target_node_type = casting_config["node_type"]
         curie_filter = casting_config["curie_prefix"]
         attribute_mapping = casting_config["attribute_mapping"]
+        array_to_string = casting_config["list_field_choose_first"]
         target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
@@ -248,9 +249,12 @@ class Crawler:
                         if target_node_type in node["category"]:
                             if node['id'].startswith(curie_filter):
                                 element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
-                                element_attribute_args.update({key: node.get(attribute_mapping[key], "")
-                                                               for key in attribute_mapping
-                                                               })
+                                for key in attribute_mapping:
+                                    mapped_value = node.get(attribute_mapping[key], "")
+                                    # treat all attributes as strings 
+                                    if key in array_to_string and isinstance(mapped_value, list) and len(mapped_value) > 0:
+                                        mapped_value = mapped_value[0]
+                                    element_attribute_args.update({key: mapped_value})
                                 element = DugElement(
                                     **element_attribute_args
                                 )
