@@ -17,6 +17,7 @@ class Config:
     elastic_host: str = "elasticsearch"
     elastic_port: int = 9200
     elastic_username: str = "elastic"
+    elastic_scheme: str = "http"
 
     redis_host: str = "redis"
     redis_port: int = 6379

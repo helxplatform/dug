@@ -1,8 +1,8 @@
-PYTHON       = /usr/bin/env python3
+PYTHON       = $(shell which python3)
 VERSION_FILE = ./src/dug/_version.py
 VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
 DOCKER_REPO  = docker.io
-DOCKER_OWNER = helxplatform
+DOCKER_OWNER = rti
 DOCKER_APP	 = dug
 DOCKER_TAG   = ${VERSION}
 DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)

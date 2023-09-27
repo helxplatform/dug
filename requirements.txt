@@ -1,6 +1,6 @@
-elasticsearch[async]==7.16.3
 fastapi==0.95.0
 uvicorn==0.23.2
+elasticsearch==8.5.2
 gunicorn
 itsdangerous
 Jinja2
@@ -12,8 +12,9 @@ pyrsistent==0.17.3
 pytest
 pytz==2021.1
 PyYAML==6.0
-redis==4.4.4
 requests==2.31.0
+# old redis==4.4.2
+redis==4.5.1
 requests-cache==0.9.8
 six==1.16.0
 

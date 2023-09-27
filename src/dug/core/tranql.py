@@ -142,7 +142,11 @@ class QueryKG:
         for q_id in query_graph["nodes"]:
             node_details = query_graph["nodes"][q_id]
             node_curie = node_details.get("id", "")
-            node_type = [self._snake_case(x.replace('biolink:', '')) for x in node_details.get("category", [])]
+            category = node_details.get("category", [])
+            if type(category) == list:
+                node_type = [self._snake_case(x.replace('biolink.', '')) for x in category]
+            else:
+                node_type = [self._snake_case(category.replace('biolink.', ''))]
             old_node = {"id": q_id, "type": node_type}
             if node_curie:
                 old_node.update({"curie": node_curie})

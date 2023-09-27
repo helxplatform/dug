@@ -3,12 +3,12 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.9.6-slim
+FROM python:3.10.10-slim
 
 # Install required packages
 RUN apt-get update && \
     apt-get install -y curl make vim && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apt/*
 
 # Create a non-root user.
 ENV USER dug
