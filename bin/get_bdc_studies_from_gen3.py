@@ -88,7 +88,7 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
     \f
     # \f truncates the help text as per https://click.palletsprojects.com/en/8.1.x/documentation/#truncating-help-texts
 
-    :param output_file: The location of the CSV file to be generated.
+    :param output: The CSV file to be generated.
     :param bdc_gen3_base_url: The BDC Gen3 base URL (i.e. everything before the `/mds/...`). Defaults to
         https://gen3.biodatacatalyst.nhlbi.nih.gov/.
     """
@@ -102,6 +102,36 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
     logging.debug(f"Downloading study identifiers from MDS discovery metadata URL: {mds_discovery_metadata_url}.")
     discovery_list = download_gen3_list(mds_discovery_metadata_url, download_limit=GEN3_DOWNLOAD_LIMIT)
     logging.info(f"Downloaded {len(discovery_list)} discovery_metadata from BDC Gen3 with a limit of {GEN3_DOWNLOAD_LIMIT}.")
+    sorted_study_ids = sorted(discovery_list)
+
+    # Step 2. For every study ID, write out an entry into the CSV output file.
+    csv_writer = csv.DictWriter(output, fieldnames=['Accession', 'Consent', 'Study Name', 'Last modified', 'Notes'])
+    csv_writer.writeheader()
+    for study_id in sorted_study_ids:
+        m = re.match(r'^(phs.*?)(?:\.(c\d+))?$', study_id)
+        if not m:
+            logging.warning(f"Skipping study_id '{study_id}' as non-dbGaP identifiers are not currently supported by Dug.")
+            continue
+
+        if m.group(2):
+            accession = m.group(1)
+            consent = m.group(2)
+        else:
+            accession = study_id
+            consent = ''
+
+        # TODO
+        study_name = ''
+        last_modified = ''
+        notes = ''
+
+        csv_writer.writerow({
+            'Accession': accession,
+            'Consent': consent,
+            'Study Name': study_name,
+            'Last modified': last_modified,
+            'Notes': notes
+        })
 
     exit(0)
 
