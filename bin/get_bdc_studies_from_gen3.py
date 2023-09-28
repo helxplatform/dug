@@ -12,29 +12,79 @@ import logging
 import os
 import re
 import sys
+import urllib.parse
 import xml.dom.minidom as minidom
 import xml.etree.ElementTree as ETree
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime
 
 import click
+import requests
+
+# Configuration
+# The number of items to download at a single go. This is usually capped by the Gen3 instance, so you need to make sure
+# that this limit is lower than theirs!
+GEN3_DOWNLOAD_LIMIT = 50
 
 # Turn on logging
 logging.basicConfig(level=logging.INFO)
 
 
+def download_gen3_list(input_url, download_limit=GEN3_DOWNLOAD_LIMIT):
+    """
+    This function helps download a list of items from Gen3 by downloading the list and -- as long as there are
+    as many items as the download_limit -- by using `offset` to get the next set of results.
+
+    :param input_url: The URL to download. This function will concatenate `&limit=...&offset=...` to it, so it should
+    end with arguments or at least a question mark.
+
+    :param download_limit: The maximum number of items to download (as set by `limit=...`). Note that Gen3 has an
+    internal limit, so you should make sure your limit is smaller than that -- otherwise, you will request e.g. 3000
+    entries but retrieve the Gen3 limit (say, 2000), which this function will interpret to mean that all entries have
+    been downloaded.
+
+    :return: A list of retrieved strings. (This function only works when the result is a simple JSON list of strings.)
+    """
+    complete_list = []
+    offset = 0
+    while True:
+        url = input_url + f"&limit={download_limit}&offset={offset}"
+        logging.debug(f"Requesting GET {url} from Gen3")
+        partial_list_response = requests.get(url)
+        if not partial_list_response.ok:
+            raise RuntimeError(f"Could not download discovery_metadata from BDC Gen3 {url}: " +
+                               f"{partial_list_response.status_code} {partial_list_response.text}")
+
+        partial_list = partial_list_response.json()
+        complete_list.extend(partial_list)
+        if len(partial_list) < GEN3_DOWNLOAD_LIMIT:
+            # No more entries to download!
+            break
+
+        # Otherwise, increment offset by DOWNLOAD_SIZE
+        offset += download_limit
+
+    # Make sure we don't have duplicates -- this is more likely to be an error in the offset algorithm than an actual
+    # error.
+    if len(complete_list) != len(set(complete_list)):
+        duplicate_ids = sorted([ident for ident, count in Counter(complete_list).items() if count > 1])
+        logging.warning(f"Found duplicate discovery_metadata: {duplicate_ids}")
+
+    return complete_list
+
+
 # Set up command line arguments.
 @click.command()
-@click.argument('output_file', type=click.Path(), required=True)
+@click.argument('output', type=click.File('w'), required=True)
 @click.option('--bdc-gen3-base-url',
               help='The base URL of the BDC Gen3 instance (before `/mds/...`)',
               type=str,
               metavar='URL',
               default='https://gen3.biodatacatalyst.nhlbi.nih.gov/')
-def get_bdc_studies_from_gen3(output_file, bdc_gen3_base_url):
+def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
     """
-    Retrieve BDC studies from the BDC Gen3 instance and write them out as a CSV file to OUTPUT_FILE for
-    get_dbgap_data_dicts.py to use.
+    Retrieve BDC studies from the BDC Gen3 Metadata Service (MDS) instance and write them out as a CSV file to OUTPUT_FILE
+    for get_dbgap_data_dicts.py to use.
     \f
     # \f truncates the help text as per https://click.palletsprojects.com/en/8.1.x/documentation/#truncating-help-texts
 
@@ -42,6 +92,16 @@ def get_bdc_studies_from_gen3(output_file, bdc_gen3_base_url):
     :param bdc_gen3_base_url: The BDC Gen3 base URL (i.e. everything before the `/mds/...`). Defaults to
         https://gen3.biodatacatalyst.nhlbi.nih.gov/.
     """
+
+    # Step 1. Download all the discovery_metadata from the BDC Gen3 Metadata Service (MDS).
+    mds_discovery_metadata_url = urllib.parse.urljoin(
+        bdc_gen3_base_url,
+        f'/mds/metadata?_guid_type=discovery_metadata'
+    )
+
+    logging.debug(f"Downloading study identifiers from MDS discovery metadata URL: {mds_discovery_metadata_url}.")
+    discovery_list = download_gen3_list(mds_discovery_metadata_url, download_limit=GEN3_DOWNLOAD_LIMIT)
+    logging.info(f"Downloaded {len(discovery_list)} discovery_metadata from BDC Gen3 with a limit of {GEN3_DOWNLOAD_LIMIT}.")
 
     exit(0)
 
