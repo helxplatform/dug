@@ -105,12 +105,48 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
     sorted_study_ids = sorted(discovery_list)
 
     # Step 2. For every study ID, write out an entry into the CSV output file.
-    csv_writer = csv.DictWriter(output, fieldnames=['Accession', 'Consent', 'Study Name', 'Last modified', 'Notes'])
+    csv_writer = csv.DictWriter(output, fieldnames=['Accession', 'Consent', 'Study Name', 'Last modified', 'Notes', 'Description'])
     csv_writer.writeheader()
     for study_id in sorted_study_ids:
+        # Reset the variables we need.
+        study_name = ''
+        description = ''
+        notes = ''
+
+        # Gen3 doesn't have a last-modified date. We could eventually try to download that directly from dbGaP (but why?),
+        # but it's easier to use the current date.
+        last_modified = str(datetime.now().date())
+
+        # Download study information.
+        url = urllib.parse.urljoin(bdc_gen3_base_url, f'/mds/metadata/{study_id}')
+        study_info_response = requests.get(url)
+        if not study_info_response.ok:
+            raise RuntimeError(f"Could not download study information about study {study_id} at URL {url}.")
+
+        study_info = study_info_response.json()
+        if 'gen3_discovery' in study_info:
+            gen3_discovery = study_info['gen3_discovery']
+
+            # We prefer full_name to name, which is often identical to the short name.
+            if 'full_name' in gen3_discovery:
+                study_name = gen3_discovery['full_name']
+                notes += f"Name: {gen3_discovery.get('name', '')}, short name: {gen3_discovery.get('short_name', '')}.\n"
+            elif 'name' in gen3_discovery:
+                study_name = gen3_discovery['name']
+                notes += f"Short name: {gen3_discovery.get('short_name', '')}.\n"
+            elif 'short_name' in gen3_discovery:
+                study_name = gen3_discovery['short_name']
+            else:
+                study_name = '(no name)'
+
+            # Description.
+            description = gen3_discovery.get('study_description', '')
+
+        # Extract accession and consent.
         m = re.match(r'^(phs.*?)(?:\.(c\d+))?$', study_id)
         if not m:
-            logging.warning(f"Skipping study_id '{study_id}' as non-dbGaP identifiers are not currently supported by Dug.")
+            logging.warning(f"Skipping study_id '{study_id}' as non-dbGaP identifiers are not currently supported by "
+                            f"Dug.")
             continue
 
         if m.group(2):
@@ -120,17 +156,13 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
             accession = study_id
             consent = ''
 
-        # TODO
-        study_name = ''
-        last_modified = ''
-        notes = ''
-
         csv_writer.writerow({
             'Accession': accession,
             'Consent': consent,
             'Study Name': study_name,
+            'Description': description,
             'Last modified': last_modified,
-            'Notes': notes
+            'Notes': notes.strip()
         })
 
     exit(0)
