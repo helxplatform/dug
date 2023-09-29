@@ -1,12 +1,14 @@
 aiohttp
+asyncio
 fastapi==0.95.0
 uvicorn==0.23.2
-elasticsearch==8.5.2
+elasticsearch[async]==8.5.2
 gunicorn
 itsdangerous
 Jinja2
 jsonschema
 MarkupSafe
+ormar==0.12.1
 mistune==2.0.3
 pluggy==1.0.0
 pyrsistent==0.17.3

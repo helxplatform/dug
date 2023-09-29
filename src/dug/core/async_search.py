@@ -3,6 +3,7 @@
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
+import ssl
 
 from dug.config import Config
 
@@ -44,8 +45,16 @@ class Search:
         logger.debug(f"Authenticating as user "
                      f"{self._cfg.elastic_username} "
                      f"to host:{self.hosts}")
-
-        self.es = AsyncElasticsearch(hosts=self.hosts,
+        if self._cfg.elastic_scheme == "https":
+            ssl_context = ssl.create_default_context(
+                cafile=self._cfg.elastic_ca_path
+            )
+            self.es = AsyncElasticsearch(hosts=self.hosts,
+                                     http_auth=(self._cfg.elastic_username,
+                                                self._cfg.elastic_password),
+                                                ssl_context=ssl_context)
+        else:
+            self.es = AsyncElasticsearch(hosts=self.hosts,
                                      http_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password))
 
