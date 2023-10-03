@@ -4,6 +4,7 @@ This class is used for adding documents to elastic search index
 import logging
 
 from elasticsearch import Elasticsearch
+import ssl
 
 from dug.config import Config
 
@@ -23,9 +24,18 @@ class Index:
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
-
-        self.es = Elasticsearch(hosts=self.hosts,
-                                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+        if self._cfg.elastic_scheme == "https":
+            ssl_context = ssl.create_default_context(
+                cafile=self._cfg.elastic_ca_path
+            )
+            self.es = Elasticsearch(
+                hosts=self.hosts,
+                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                ssl_context=ssl_context)
+        else:
+            self.es = Elasticsearch(
+                hosts=self.hosts,
+                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
