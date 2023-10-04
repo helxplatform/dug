@@ -194,7 +194,7 @@ class Index:
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
-        if self.es.exists(index=index, doc_id=concept.id):
+        if self.es.exists(index=index, id=concept.id):
             return
         """ Index the document. """
         self.index_doc(
@@ -203,7 +203,7 @@ class Index:
             doc_id=concept.id)
 
     def index_element(self, elem, index):
-        if not self.es.exists(index=index, doc_id=elem.id):
+        if not self.es.exists(index=index, id=elem.id):
             # If the element doesn't exist, add it directly
             self.index_doc(
                 index=index,
