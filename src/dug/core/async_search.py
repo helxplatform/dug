@@ -266,7 +266,7 @@ class Search:
             aggregations['type-count']['buckets']
         }
         search_results.update({'total_items': total_items['count']})
-        search_results['concept_types'] = concept_types
+        search_results.update({'concept_types': concept_types})
         return search_results
 
     async def search_variables(self, concept="", query="", size=None,
