@@ -194,7 +194,7 @@ class Index:
 
     def index_concept(self, concept, index):
         # Don't re-index if already in index
-        if self.es.exists(index, concept.id):
+        if self.es.exists(index=index, doc_id=concept.id):
             return
         """ Index the document. """
         self.index_doc(
@@ -203,7 +203,7 @@ class Index:
             doc_id=concept.id)
 
     def index_element(self, elem, index):
-        if not self.es.exists(index, elem.id):
+        if not self.es.exists(index=index, doc_id=elem.id):
             # If the element doesn't exist, add it directly
             self.index_doc(
                 index=index,
@@ -211,7 +211,7 @@ class Index:
                 doc_id=elem.id)
         else:
             # Otherwise update to add any new identifiers that weren't there last time around
-            results = self.es.get(index, elem.id)
+            results = self.es.get(index=index, doc_id=elem.id)
             identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
             doc = {"doc": {}}
             doc['doc']['identifiers'] = list(set(identifiers))
