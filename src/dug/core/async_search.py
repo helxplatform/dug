@@ -417,11 +417,8 @@ class Search:
             # as a list of CDE links.
             if elem_s['element_action']:
                 e_link = elem_s['element_action']
-            elif elem_s['collection_action']:
-                if isinstance(elem_s['collection_action'], list):
-                    e_link = elem_s['collection_action'][0]
-                else:
-                    e_link = elem_s['collection_action']
+            elif elem_s['collection_action'] and elem_id.startswith('HEALCDE:') and isinstance(elem_s['collection_action'], list):
+                e_link = elem_s['collection_action'][0]
 
             elem_id = elem_s['element_id']
             coll_id = elem_s['collection_id']
