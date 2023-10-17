@@ -413,11 +413,21 @@ class Search:
             if elem_type not in new_results:
                 new_results[elem_type] = {}
 
+            # For CDEs, our data model is a bit weird, so the e_link is actually in the c_link field
+            # as a list of CDE links.
+            if elem_s['element_action']:
+                e_link = elem_s['element_action']
+            elif elem_s['collection_action']:
+                if isinstance(elem_s['collection_action'], list):
+                    e_link = elem_s['collection_action'][0]
+                else:
+                    e_link = elem_s['collection_action']
+
             elem_id = elem_s['element_id']
             coll_id = elem_s['collection_id']
             elem_info = {
                 "description": elem_s['element_desc'],
-                "e_link": elem_s['element_action'],
+                "e_link": e_link,
                 "id": elem_id,
                 "name": elem_s['element_name'],
                 "score": round(elem['_score'], 6)
