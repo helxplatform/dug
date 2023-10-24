@@ -211,7 +211,7 @@ class Index:
                 doc_id=elem.id)
         else:
             # Otherwise update to add any new identifiers that weren't there last time around
-            results = self.es.get(index=index, doc_id=elem.id)
+            results = self.es.get(index=index, id=elem.id)
             identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
             doc = {"doc": {}}
             doc['doc']['identifiers'] = list(set(identifiers))
