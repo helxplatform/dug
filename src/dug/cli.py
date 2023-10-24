@@ -117,8 +117,9 @@ def search(args):
     dug = Dug(factory)
     # dug = Dug()
     response = dug.search(args.target, args.query, **args.kwargs)
-    jsonResponse = json.dumps(response, indent = 2)
-    print(jsonResponse)
+    # Using json.dumps raises 'TypeError: Object of type ObjectApiResponse is not JSON serializable'
+    #jsonResponse = json.dumps(response, indent = 2)
+    print(response)
 
 def datatypes(args):
     config = Config.from_env()

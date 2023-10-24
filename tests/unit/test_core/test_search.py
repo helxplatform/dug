@@ -14,7 +14,7 @@ port = 9200
 username = 'elastic'
 password = 'hunter2'
 nboost_host = 'localhost'
-hosts = [{'host': host, 'port': port}]
+hosts = [{'host': host, 'port': port, 'scheme': 'http'}]
 
 class MockEsNode():
     def info():
