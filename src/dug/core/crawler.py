@@ -267,6 +267,4 @@ class Crawler:
                                 )
                                 element.add_concept(concept)
                                 elements.append(element)
-        print("okkkkkkaaayyy")
-        print(concept.identifiers.items())
         return elements
