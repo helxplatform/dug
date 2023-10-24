@@ -1,19 +1,23 @@
-elasticsearch[async]==7.16.3
+aiohttp
+asyncio
 fastapi==0.95.0
 uvicorn==0.23.2
+elasticsearch[async]==8.5.2
 gunicorn
 itsdangerous
 Jinja2
 jsonschema
 MarkupSafe
+ormar==0.12.1
 mistune==2.0.3
 pluggy==1.0.0
 pyrsistent==0.17.3
 pytest
 pytz==2021.1
 PyYAML==6.0
-redis==4.4.4
 requests==2.31.0
+# old redis==4.4.2
+redis==4.5.1
 requests-cache==0.9.8
 six==1.16.0
 
@@ -22,3 +26,4 @@ six==1.16.0
 click
 httpx>=0.24.1
 bmt==1.1.0
+urllib3>=1.26.17

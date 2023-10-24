@@ -209,7 +209,9 @@ class Crawler:
         curie_filter = casting_config["curie_prefix"]
         attribute_mapping = casting_config["attribute_mapping"]
         array_to_string = casting_config["list_field_choose_first"]
-        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink:", ""))
+        # converts any of the following notations 
+        # biolink:Publication , biolink.Publication  to publication 
+        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink.", "").replace("biolink:", ""))
         for ident_id, identifier in concept.identifiers.items():
 
             # Check to see if the concept identifier has types defined, this is used to create
@@ -219,6 +221,7 @@ class Crawler:
 
             # convert the first type to snake case to be used in tranql query.
             # first type is the leaf type, this is coming from Node normalization.
+            # note when using bmt it returns biolink: prefix so we need to replace biolink: and snake case it for tranql.
             node_type = biolink_snake_case(get_formatted_biolink_name(identifier.types).replace("biolink:", ""))
             try:
                 # Tranql query factory currently supports select node types as valid query
@@ -240,13 +243,17 @@ class Crawler:
                 answers = self.tranqlizer.expand_identifier(ident_id, query,
                                                             kg_filename=kg_outfile,
                                                             include_all_attributes=True)
-
                 # for each answer construct a dug element
                 for answer in answers:
                     # here we will inspect the answers create new dug elements based on target node type
                     # and return the variables.
                     for node_id, node in answer.nodes.items():
-                        if target_node_type in node["category"]:
+                        # support both biolink. and biolink: prefixes
+                        snake_case_category = [
+                            biolink_snake_case(cat.replace("biolink.", "").replace("biolink:", "")) 
+                            for cat in node['category']
+                            ]
+                        if target_node_type_snake_case in snake_case_category:
                             if node['id'].startswith(curie_filter):
                                 element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
                                 for key in attribute_mapping:
@@ -260,4 +267,6 @@ class Crawler:
                                 )
                                 element.add_concept(concept)
                                 elements.append(element)
+        print("okkkkkkaaayyy")
+        print(concept.identifiers.items())
         return elements

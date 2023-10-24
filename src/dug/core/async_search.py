@@ -3,6 +3,7 @@
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
+import ssl
 
 from dug.config import Config
 
@@ -38,13 +39,22 @@ class Search:
 
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host,
-                       'port': self._cfg.elastic_port}]
+                       'port': self._cfg.elastic_port,
+                       'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user "
                      f"{self._cfg.elastic_username} "
                      f"to host:{self.hosts}")
-
-        self.es = AsyncElasticsearch(hosts=self.hosts,
+        if self._cfg.elastic_scheme == "https":
+            ssl_context = ssl.create_default_context(
+                cafile=self._cfg.elastic_ca_path
+            )
+            self.es = AsyncElasticsearch(hosts=self.hosts,
+                                     http_auth=(self._cfg.elastic_username,
+                                                self._cfg.elastic_password),
+                                                ssl_context=ssl_context)
+        else:
+            self.es = AsyncElasticsearch(hosts=self.hosts,
                                      http_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password))
 
@@ -256,7 +266,7 @@ class Search:
             aggregations['type-count']['buckets']
         }
         search_results.update({'total_items': total_items['count']})
-        search_results['concept_types'] = concept_types
+        search_results.update({'concept_types': concept_types})
         return search_results
 
     async def search_variables(self, concept="", query="", size=None,

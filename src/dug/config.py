@@ -17,6 +17,8 @@ class Config:
     elastic_host: str = "elasticsearch"
     elastic_port: int = 9200
     elastic_username: str = "elastic"
+    elastic_scheme: str = "http"
+    elastic_ca_path: str = ""
 
     redis_host: str = "redis"
     redis_port: int = 6379
@@ -99,6 +101,8 @@ class Config:
         env_vars = {
             "elastic_host": "ELASTIC_API_HOST",
             "elastic_port": "ELASTIC_API_PORT",
+            "elastic_scheme": "ELASTIC_API_SCHEME",
+            "elastic_ca_path": "ELASTIC_CA_PATH",
             "elastic_username": "ELASTIC_USERNAME",
             "elastic_password": "ELASTIC_PASSWORD",
             "redis_host": "REDIS_HOST",
