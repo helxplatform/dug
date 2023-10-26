@@ -4,6 +4,7 @@ import os
 import traceback
 
 from dug.core.parsers import Parser, DugElement, DugConcept
+from dug.core.annotators import Annotator, DugAnnotator
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
 
@@ -11,7 +12,7 @@ logger = logging.getLogger('dug')
 
 
 class Crawler:
-    def __init__(self, crawl_file: str, parser: Parser, annotator,
+    def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
                  tranqlizer, tranql_queries,
                  http_session, exclude_identifiers=None, element_type=None,
                  element_extraction=None):
@@ -22,7 +23,7 @@ class Crawler:
         self.crawl_file = crawl_file
         self.parser: Parser = parser
         self.element_type = element_type
-        self.annotator = annotator
+        self.annotator: Annotator = annotator
         self.tranqlizer = tranqlizer
         self.tranql_queries = tranql_queries
         self.http_session = http_session

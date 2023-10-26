@@ -4,15 +4,17 @@ import redis
 from requests_cache import CachedSession
 
 import dug.core.tranql as tql
-from dug.core.annotate import (DugAnnotator, 
-                               Annotator, 
-                               Normalizer, 
-                               Preprocessor, 
-                               SynonymFinder,
-                               ConceptExpander)
+# from dug.core.annotate import (DugAnnotator, 
+#                             #    Annotator, 
+#                                Normalizer, 
+#                                Preprocessor, 
+#                                SynonymFinder,
+#                                ConceptExpander)
+from dug.core.concept_expander import ConceptExpander
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
 from dug.core.parsers import Parser
+from dug.core.annotators import Annotator
 from dug.core.async_search import Search
 from dug.core.index import Index
 
@@ -36,11 +38,11 @@ class DugFactory:
             connection=redis.StrictRedis(**redis_config)
         )
 
-    def build_crawler(self, target, parser: Parser, element_type: str, tranql_source=None) -> Crawler:
+    def build_crawler(self, target, parser: Parser, annotator: Annotator, element_type: str, tranql_source=None) -> Crawler:
         crawler = Crawler(
             crawl_file=str(target),
             parser=parser,
-            annotator=self.build_annotator(),
+            annotator=annotator,
             tranqlizer=self.build_tranqlizer(),
             tranql_queries=self.build_tranql_queries(tranql_source),
             http_session=self.build_http_session(),
@@ -51,21 +53,21 @@ class DugFactory:
 
         return crawler
 
-    def build_annotator(self) -> DugAnnotator:
+    # def build_annotator(self) -> Annotator:
 
-        preprocessor = Preprocessor(**self.config.preprocessor)
-        annotator = Annotator(**self.config.annotator)
-        normalizer = Normalizer(**self.config.normalizer)
-        synonym_finder = SynonymFinder(**self.config.synonym_service)
+    #     preprocessor = Preprocessor(**self.config.preprocessor)
+    #     annotator = Annotate(**self.config.annotator)
+    #     normalizer = Normalizer(**self.config.normalizer)
+    #     synonym_finder = SynonymFinder(**self.config.synonym_service)
 
-        annotator = DugAnnotator(
-            preprocessor=preprocessor,
-            annotator=annotator,
-            normalizer=normalizer,
-            synonym_finder=synonym_finder
-        )
+    #     annotator = Annotator(
+    #         preprocessor=preprocessor,
+    #         annotator=annotator,
+    #         normalizer=normalizer,
+    #         synonym_finder=synonym_finder
+    #     )
 
-        return annotator
+    #     return annotator
 
     def build_tranqlizer(self) -> ConceptExpander:
         return ConceptExpander(**self.config.concept_expander)
