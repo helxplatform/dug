@@ -20,7 +20,7 @@ def test_identifier():
 
     assert "PrimaryIdent" == ident_1.id_type
 
-def test_monarch_annotator():
+def test_monarch_annotator(annotator_api):
     cfg = Config.from_env()
     url = cfg.annotator["url"]
     preprocessor = PreprocessorMonarch(**cfg.preprocessor)
@@ -35,7 +35,12 @@ def test_monarch_annotator():
         synonym_finder=synonym_finder
     )
     # annotator = AnnotateMonarch()
-    assert annotator.annotate(text="Lama", http_session = MagicMock()) == url
+    # assert annotator.annotation_step(text="Lama", http_session = MagicMock()) == url
+    text = "heart attack"
+    identifiers: List[DugIdentifier] = annotator(text, annotator_api)
+
+    assert len(identifiers) == 7
+    assert isinstance(identifiers[0], DugIdentifier)
 
 # @pytest.mark.parametrize(
 #     "preprocessor,input_text,expected_text",

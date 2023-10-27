@@ -4,8 +4,8 @@ from typing import Dict
 import pluggy
 
 from dug.config import Config
-from ._base import DugIdentifier, Indexable, Annotator
-from .monarch_annotator import AnnotateMonarch, PreprocessorMonarch, AnnotatorMonarch, NormalizerMonarch, SynonymFinderMonarch
+from ._base import DugIdentifier, Indexable, Annotator, DefaultNormalizer, DefaultSynonymFinder
+from .monarch_annotator import AnnotateMonarch
 
 logger = logging.getLogger('dug')
 
@@ -13,7 +13,7 @@ hookimpl = pluggy.HookimplMarker("dug")
 
 @hookimpl
 def define_annotators(annotator_dict: Dict[str, Annotator]):
-    annotator_dict["annotator-monarch"] = build_monarch_annotator()
+    annotator_dict["annotator-monarch"] = build_annotator()
 
 
 class AnnotatorNotFoundException(Exception):
@@ -34,18 +34,15 @@ def get_annotator(hook, annotator_name) -> Annotator:
     logger.error(err_msg)
     raise AnnotatorNotFoundException(err_msg)
 
-def build_monarch_annotator(config: Config) -> AnnotateMonarch:
-    print(**config.preprocessor)
-    preprocessor = PreprocessorMonarch(**config.preprocessor)
-    annotator = AnnotatorMonarch(**config.annotator)
-    normalizer = NormalizerMonarch(**config.normalizer)
-    synonym_finder = SynonymFinderMonarch(**config.synonym_service)
+def build_annotator():
 
+    # annotator = AnnotatorMonarch(**config.annotator)
+    # normalizer = NormalizerMonarch(**config.normalizer)
+    # synonym_finder = SynonymFinderMonarch(**config.synonym_service)
+    config = Config
     annotator = AnnotateMonarch(
-        preprocessor=preprocessor,
-        annotator=annotator,
-        normalizer=normalizer,
-        synonym_finder=synonym_finder
+        normalizer=DefaultNormalizer(**config.normalizer),
+        synonym_finder=DefaultSynonymFinder(**config.synonym_service)
     )
 
     return annotator
