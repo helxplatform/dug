@@ -15,7 +15,7 @@ from dug.core import parsers
 from dug.core import annotators
 from dug.core.factory import DugFactory
 from dug.core.parsers import DugConcept, Parser, get_parser
-from dug.core.annotators import DugAnnotator, Annotator, get_annotator
+from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)

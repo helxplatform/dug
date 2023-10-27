@@ -5,11 +5,11 @@ import re
 import urllib.parse
 from typing import TypeVar, Generic, Union, List, Tuple, Optional
 import bmt
-import requests
+# import requests
 from requests import Session
 
-from ._base import DugIdentifier, AnnotatorSession, Input, AnnotatorConfig
-from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
+from ._base import DugIdentifier, AnnotatorSession, Input
+from .utils.biolink_purl_util import BioLinkPURLerizer
 
 logger = logging.getLogger('dug')
 
@@ -19,18 +19,16 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 class AnnotateMonarch:
     def __init__(
             self,
-            config: AnnotatorConfig,
             preprocessor: "PreprocessorMonarch",
             annotator: "AnnotatorMonarch",
             normalizer: "NormalizerMonarch",
             synonym_finder: "SynonymFinderMonarch",
             ontology_greenlist=[],
     ):
-        self.config = config
-        self.preprocessor = preprocessor(**self.config.preprocessor)
-        self.annotator = annotator(**self.config.annotator)
-        self.normalizer = normalizer(**self.config.normalizer)
-        self.synonym_finder = synonym_finder(**self.config.synonym_service)
+        self.preprocessor = preprocessor
+        self.annotator = annotator
+        self.normalizer = normalizer
+        self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"

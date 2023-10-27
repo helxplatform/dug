@@ -3,7 +3,6 @@ import logging
 from typing import Union, Callable, Any, Iterable, Awaitable, TypeVar, Generic
 from dug import utils as utils
 from requests import Session
-from dug.config import Config as AnnotatorConfig
 
 logger = logging.getLogger('dug')
 
@@ -24,8 +23,29 @@ class DugIdentifier:
         self.synonyms = []
         self.purl = ""
 
+    @property
+    def id_type(self):
+        return self.id.split(":")[0]
+
+    def add_search_text(self, text):
+        # Add text only if it's unique and if not empty string
+        if text and text not in self.search_text:
+            self.search_text.append(text)
+
+    def get_searchable_dict(self):
+        # Return a version of the identifier compatible with what's in ElasticSearch
+        es_ident = {
+            'id': self.id,
+            'label': self.label,
+            'equivalent_identifiers': self.equivalent_identifiers,
+            'type': self.types,
+            'synonyms': self.synonyms
+        }
+        return es_ident
+
     def jsonable(self):
         return self.__dict__
+    
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
 
@@ -46,22 +66,6 @@ class AnnotatorSession(Generic[Input, Output]):
         result = self.handle_response(value, response)
 
         return result
-
-# def build_annotator(self) -> DugAnnotator:
-
-#     preprocessor = Preprocessor(**self.config.preprocessor)
-#     annotator = Annotate(**self.config.annotator)
-#     normalizer = Normalizer(**self.config.normalizer)
-#     synonym_finder = SynonymFinder(**self.config.synonym_service)
-
-#     annotator = DugAnnotator(
-#         preprocessor=preprocessor,
-#         annotator=annotator,
-#         normalizer=normalizer,
-#         synonym_finder=synonym_finder
-#     )
-
-#     return annotator
 
 Indexable = Union[DugIdentifier, AnnotatorSession]
 # Indexable = DugIdentifier

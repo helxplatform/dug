@@ -1,12 +1,13 @@
-from dug.core.annotate import Identifier
 from dug.core.parsers._base import DugElement, DugConcept
+from dug.core.annotate import Identifier as DugIdentifier
+from dug.core.annotators.monarch_annotator import AnnotateMonarch
 
 
 def test_dug_concept():
     concept = DugConcept("concept-1", 'Concept-1', 'The first concept', 'secondary')
 
-    ident_1 = Identifier("ident-1", "Identifier-1")
-    ident_2 = Identifier("ident-2", "Identifier-2")
+    ident_1 = DugIdentifier("ident-1", "Identifier-1")
+    ident_2 = DugIdentifier("ident-2", "Identifier-2")
 
     concept.add_identifier(ident_1)
     concept.add_identifier(ident_2)

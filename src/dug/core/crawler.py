@@ -4,7 +4,7 @@ import os
 import traceback
 
 from dug.core.parsers import Parser, DugElement, DugConcept
-from dug.core.annotators import Annotator, DugAnnotator
+from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
 
@@ -145,6 +145,8 @@ class Crawler:
         # Annotate with a set of normalized ontology identifiers
         identifiers = self.annotator.annotate(text=element.ml_ready_desc,
                                               http_session=self.http_session)
+        # Future thoughts... should we be passing in the stpe DugIdentifier here instead?
+
 
         # Each identifier then becomes a concept that links elements together
         for identifier in identifiers:
