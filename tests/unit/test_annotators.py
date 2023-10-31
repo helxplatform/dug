@@ -3,9 +3,9 @@ from typing import List
 from attr import field
 
 import pytest
-from dug.core.annotate import BioLinkPURLerizer
+from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
 
-from tests.unit.mocks.data.test_config import TestConfig
+from tests.unit.mocks.data.mock_config import MockConfig
 from dug.core.annotators import (
     DugIdentifier,
     AnnotateMonarch,
@@ -22,55 +22,9 @@ def test_identifier():
 
     assert "PrimaryIdent" == ident_1.id_type
 
-def test_monarch_annotation_full(annotator_api, normalizer_api, synonym_api):
-    cfg = TestConfig.test_from_env()
-    normalizer = DefaultNormalizer(**cfg.normalizer)
-    synonym_finder = DefaultSynonymFinder(**cfg.synonym_service)
 
-    annotator = AnnotateMonarch(
-        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg
-    )
-    input_text = "heart attack"
-
-    text = annotator.preprocess_text(input_text)
-
-    # Fetch identifiers
-    raw_identifiers: List[DugIdentifier]  = annotator.annotate_text(text, annotator_api)
-
-    processed_identifiers: List[DugIdentifier] = []
-    for identifier in raw_identifiers:
-        print(identifier)
-        output = annotator.normalizer(identifier, normalizer_api)
-        print(output)
-
-
-        # Should be returning normalized identifier for each identifier passed in
-        if output is None:
-            output = identifier
-        # assert isinstance(output, DugIdentifier)
-        # assert output.id == 'UBERON:0007100'
-        # assert output.label == "primary circulatory organ"
-        # assert output.equivalent_identifiers == ['UBERON:0007100']
-        # assert output.types == 'anatomical entity'
-
-        # Add synonyms to identifier
-        output.synonyms = annotator.synonym_finder(output.id, synonym_api)
-        print(output.synonyms)
-        # Get pURL for ontology identifer for more info
-        output.purl = BioLinkPURLerizer.get_curie_purl(output.id)
-        processed_identifiers.append(output)
-    
-    # identifiers: List[DugIdentifier] = annotator(
-    #     text, monarch_annotation_session
-    # )
-    print(processed_identifiers[0])
-    assert isinstance(processed_identifiers, List[DugIdentifier])
-    assert len(processed_identifiers) == 7
-    assert isinstance(processed_identifiers[0], DugIdentifier)
-
-
-def test_monarch_annotator(annotator_api):
-    cfg = TestConfig.test_from_env()
+def test_annotator(annotator_api):
+    cfg = MockConfig.test_from_env()
     normalizer = DefaultNormalizer(cfg.normalizer)
     synonym_finder = DefaultSynonymFinder(cfg.synonym_service)
 

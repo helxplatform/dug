@@ -1,13 +1,9 @@
-import json
 import logging
-import os
-import re
 import urllib.parse
-from typing import TypeVar, Generic, Union, List, Tuple, Optional
-from dug.config import Config
+from typing import List
 from requests import Session
 
-from ._base import DugIdentifier, AnnotatorSession, Input
+from ._base import DugIdentifier, Input
 from .utils.biolink_purl_util import BioLinkPURLerizer
 
 logger = logging.getLogger('dug')

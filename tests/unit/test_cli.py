@@ -42,6 +42,12 @@ def test_dug_cli_main_extract_dug_elements_none(mock_crawl):
     assert not mock_crawl.call_args_list[0].args[0].extract_dug_elements
 
 @mark.cli
+@patch('dug.cli.crawl')
+def test_dug_cli_main_annotator(mock_crawl):
+    main(["crawl", "somefile.csv","--parser", "topmedtag", "--annotator", "annotator-monarch"])
+    assert mock_crawl.called_once()
+
+@mark.cli
 @patch('dug.cli.search')
 def test_dug_cli_main_search(mock_search):
     # mock_search.search.return_value = "Searching!"

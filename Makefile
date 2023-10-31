@@ -40,7 +40,6 @@ install.dug:
 
 #test: Run all tests
 test:
-	${PYTHON} -m pytest --doctest-modules src
 	coverage run -m pytest tests
 
 coverage:

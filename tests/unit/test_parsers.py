@@ -1,6 +1,6 @@
 from dug.core.parsers._base import DugElement, DugConcept
-from dug.core.annotate import Identifier as DugIdentifier
-from dug.core.annotators.monarch_annotator import AnnotateMonarch
+from dug.core.annotators import DugIdentifier, AnnotateMonarch
+# from dug.core.annotators.monarch_annotator import AnnotateMonarch
 
 
 def test_dug_concept():

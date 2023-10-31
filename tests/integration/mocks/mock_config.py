@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class TestConfig:
+class MockConfig:
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(default_factory=lambda: {
