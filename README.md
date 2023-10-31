@@ -57,13 +57,13 @@ dug crawl tests/integration/data/test_variables_v1.0.csv -p "TOPMedTag"
 
 After crawling, you can search:
 ```shell
-dug search -q "heart attack" -t "concepts"
-dug search -q "heart attack" -t "variables" -k "concept=MONDO:0005068"
+dug search -q "vein" -t "concepts"
+dug search -q "vein" -t "variables" -k "concept=UBERON:0001638"
 ```
 
 You can also query Dug's REST API:
 ```shell
-query="`echo '{"index" : "concepts_index", "query" : "heart attack"}'`"
+query="`echo '{"index" : "concepts_index", "query" : "vein"}'`"
 
 curl --data "$query" \
      --header "Content-Type: application/json" \

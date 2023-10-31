@@ -97,11 +97,11 @@ class Dug:
         event_loop = asyncio.get_event_loop()
         targets = {
             'concepts': partial(
-                self._search.search_concepts, index=kwargs.get('index', self.concepts_index)),
+                self._search.search_concepts),
             'variables': partial(
-                self._search.search_variables, index=kwargs.get('index', self.variables_index), concept=kwargs.pop('concept', None)),
+                self._search.search_variables, concept=kwargs.pop('concept', None)),
             'kg': partial(
-                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None))
+                self._search.search_kg, unique_id=kwargs.pop('unique_id', None))
         }
         kwargs.pop('index', None)
         func = targets.get(target)
