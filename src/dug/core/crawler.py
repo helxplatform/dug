@@ -143,6 +143,7 @@ class Crawler:
     def annotate_element(self, element):
 
         # Annotate with a set of normalized ontology identifiers
+        # self.DugAnnotator.annotator()
         identifiers = self.annotator(text=element.ml_ready_desc,
                                               http_session=self.http_session)
         # Future thoughts... should we be passing in the stpe DugIdentifier here instead?

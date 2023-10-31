@@ -35,6 +35,7 @@ def test_annotator_init():
     url = cfg.annotator["url"]
 
     annotator = Annotator(**cfg.annotator)
+    print(f"#########URL: {annotator.url}#########")
     assert annotator.url == url
 
 

@@ -32,7 +32,7 @@ for ids in ANNOTATED_IDS:
     ids.type = ids.types[0]
 # annotator with annotate method returning mocked concepts
 AnnotatorMock = MagicMock()
-AnnotatorMock.annotate = Mock(return_value=ANNOTATED_IDS)
+AnnotatorMock = Mock(return_value=ANNOTATED_IDS)
 
 # tranqlizer returning mock kg when expanding concepts
 TranqlizerMock = MagicMock()

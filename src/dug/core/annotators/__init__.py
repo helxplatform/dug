@@ -35,14 +35,11 @@ def get_annotator(hook, annotator_name) -> Annotator:
     raise AnnotatorNotFoundException(err_msg)
 
 def build_annotator():
-
-    # annotator = AnnotatorMonarch(**config.annotator)
-    # normalizer = NormalizerMonarch(**config.normalizer)
-    # synonym_finder = SynonymFinderMonarch(**config.synonym_service)
-    config = Config
+    config = Config.from_env()
     annotator = AnnotateMonarch(
         normalizer=DefaultNormalizer(**config.normalizer),
-        synonym_finder=DefaultSynonymFinder(**config.synonym_service)
+        synonym_finder=DefaultSynonymFinder(**config.synonym_service),
+        config=config,
     )
 
     return annotator

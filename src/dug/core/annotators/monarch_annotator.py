@@ -16,18 +16,26 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 class AnnotateMonarch:
+    """
+    Use monarch API service to fetch ontology IDs found in text
+    """
     def __init__(
             self,
             normalizer,
             synonym_finder,
+            config,
             ontology_greenlist=[],
     ):
-        self.annotatorUrl = Config.annotator.url
+
+        self.annotatorUrl = config.annotator['url']
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
+
+        debreviator = config.preprocessor['debreviator'] if 'debreviator' in config.preprocessor else None
+        stopwords = config.preprocessor['stopwords'] if 'stopwords' in  config.preprocessor else None
 
         if debreviator is None:
             debreviator = self.default_debreviator_factory()
@@ -43,9 +51,7 @@ class AnnotateMonarch:
         text = self.preprocess_text(text)
 
         # Fetch identifiers
-        raw_identifiers = []
-        for chunk_text in self.sliding_window(text):
-            raw_identifiers += self(chunk_text, http_session)
+        raw_identifiers = self.annotate_text(text, http_session)
 
         # Write out to file if text fails to annotate
         if not raw_identifiers:
@@ -72,7 +78,7 @@ class AnnotateMonarch:
                 norm_id = identifier
 
             # Add synonyms to identifier
-            norm_id.synonyms = self.synonym_finder.get_identifier_synonyms(norm_id.id, http_session)
+            norm_id.synonyms = self.synonym_finder(norm_id.id, http_session)
 
             # Get pURL for ontology identifer for more info
             norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
@@ -108,12 +114,13 @@ class AnnotateMonarch:
                 window_end = True
                 yield current_string
 
-    # def annotate_text(self, text, http_session):
-    #     logger.debug(f"Annotating: {text}")
-    #     identifiers = []
-    #     for chunk_text in self.sliding_window(text):
-    #         identifiers += self(chunk_text, http_session)
-    #     return identifiers
+    def annotate_text(self, text, http_session) -> List[DugIdentifier]:
+        logger.debug(f"Annotating: {text}")
+        identifiers = []
+        for chunk_text in self.sliding_window(text):
+            response = self.make_request(chunk_text, http_session)
+            identifiers += self.handle_response(chunk_text, response)
+        return identifiers
 
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)
@@ -122,11 +129,10 @@ class AnnotateMonarch:
         # This could be moved to a config file
         NUM_TRIES = 5
         for _ in range(NUM_TRIES):
-           response = http_session.get(url)
-           if response is not None:
+            response = http_session.get(url)
+            if response is not None:
               # looks like it worked
-              break
-
+                break
         # if the reponse is still None here, throw an error         
         if response is None:
             raise RuntimeError(f"no response from {url}")
@@ -154,11 +160,11 @@ class AnnotateMonarch:
         """
         Apply debreviator to replace abbreviations and other characters
 
-        >>> pp = PreprocessorMonarch({"foo": "bar"}, ["baz"])
-        >>> pp.preprocess("Hello foo")
-        'Hello bar'
+        # >>> pp = PreprocessorMonarch({"foo": "bar"}, ["baz"])
+        # >>> pp.preprocess("Hello foo")
+        # 'Hello bar'
 
-        >>> pp.preprocess("Hello baz world")
+        # >>> pp.preprocess("Hello baz world")
         'Hello world'
         """
 

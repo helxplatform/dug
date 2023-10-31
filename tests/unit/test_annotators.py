@@ -1,17 +1,19 @@
 from copy import copy
 from typing import List
+from attr import field
 
 import pytest
+from dug.core.annotate import BioLinkPURLerizer
 
-from dug.config import Config
-from dug.core.annotators import ( DugIdentifier, 
-                                 AnnotateMonarch, 
-                                 PreprocessorMonarch, 
-                                 AnnotatorMonarch, 
-                                 NormalizerMonarch, 
-                                 SynonymFinderMonarch
-                                 )
+from tests.unit.mocks.data.test_config import TestConfig
+from dug.core.annotators import (
+    DugIdentifier,
+    AnnotateMonarch,
+    DefaultNormalizer,
+    DefaultSynonymFinder,
+)
 from unittest.mock import MagicMock
+
 
 def test_identifier():
     ident_1 = DugIdentifier(
@@ -20,229 +22,104 @@ def test_identifier():
 
     assert "PrimaryIdent" == ident_1.id_type
 
-def test_monarch_annotator(annotator_api):
-    cfg = Config.from_env()
-    url = cfg.annotator["url"]
-    preprocessor = PreprocessorMonarch(**cfg.preprocessor)
-    annotator = AnnotatorMonarch(**cfg.annotator)
-    normalizer = NormalizerMonarch(**cfg.normalizer)
-    synonym_finder = SynonymFinderMonarch(**cfg.synonym_service)
+def test_monarch_annotation_full(annotator_api, normalizer_api, synonym_api):
+    cfg = TestConfig.test_from_env()
+    normalizer = DefaultNormalizer(**cfg.normalizer)
+    synonym_finder = DefaultSynonymFinder(**cfg.synonym_service)
 
     annotator = AnnotateMonarch(
-        preprocessor=preprocessor,
-        annotator=annotator,
-        normalizer=normalizer,
-        synonym_finder=synonym_finder
+        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg
     )
-    # annotator = AnnotateMonarch()
-    # assert annotator.annotation_step(text="Lama", http_session = MagicMock()) == url
+    input_text = "heart attack"
+
+    text = annotator.preprocess_text(input_text)
+
+    # Fetch identifiers
+    raw_identifiers: List[DugIdentifier]  = annotator.annotate_text(text, annotator_api)
+
+    processed_identifiers: List[DugIdentifier] = []
+    for identifier in raw_identifiers:
+        print(identifier)
+        output = annotator.normalizer(identifier, normalizer_api)
+        print(output)
+
+
+        # Should be returning normalized identifier for each identifier passed in
+        if output is None:
+            output = identifier
+        # assert isinstance(output, DugIdentifier)
+        # assert output.id == 'UBERON:0007100'
+        # assert output.label == "primary circulatory organ"
+        # assert output.equivalent_identifiers == ['UBERON:0007100']
+        # assert output.types == 'anatomical entity'
+
+        # Add synonyms to identifier
+        output.synonyms = annotator.synonym_finder(output.id, synonym_api)
+        print(output.synonyms)
+        # Get pURL for ontology identifer for more info
+        output.purl = BioLinkPURLerizer.get_curie_purl(output.id)
+        processed_identifiers.append(output)
+    
+    # identifiers: List[DugIdentifier] = annotator(
+    #     text, monarch_annotation_session
+    # )
+    print(processed_identifiers[0])
+    assert isinstance(processed_identifiers, List[DugIdentifier])
+    assert len(processed_identifiers) == 7
+    assert isinstance(processed_identifiers[0], DugIdentifier)
+
+
+def test_monarch_annotator(annotator_api):
+    cfg = TestConfig.test_from_env()
+    normalizer = DefaultNormalizer(cfg.normalizer)
+    synonym_finder = DefaultSynonymFinder(cfg.synonym_service)
+
+    annotator = AnnotateMonarch(
+        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg
+    )
     text = "heart attack"
-    identifiers: List[DugIdentifier] = annotator(text, annotator_api)
+    identifiers: List[DugIdentifier] = annotator.annotate_text(
+        text, annotator_api
+    )
 
     assert len(identifiers) == 7
     assert isinstance(identifiers[0], DugIdentifier)
 
-# @pytest.mark.parametrize(
-#     "preprocessor,input_text,expected_text",
-#     [
-#         (Preprocessor(), "Hello_world", "Hello world"),
-#         (Preprocessor({"Hello": "Hi"}, ["placeholder"]), "Hello placeholder world", "Hi world"),
-#     ]
-# )
-# def test_preprocessor_preprocess(preprocessor, input_text, expected_text):
-#     original_text = copy(input_text)
-#     output_text = preprocessor.preprocess(input_text)
 
-#     assert input_text == original_text  # Don't modify in-place
-#     assert output_text == expected_text
+def test_normalizer(normalizer_api):
+    url = "http://normalizer.api/?curie="
 
+    identifier = DugIdentifier(
+        "UBERON:0007100",
+        label='primary circulatory organ',
+        types=['anatomical entity'],
+        description="",
+        search_text=['heart'],
+    )
 
-# def test_annotator_init():
-#     cfg = Config.from_env()
-#     url = cfg.annotator["url"]
-
-#     annotator = Annotator(**cfg.annotator)
-#     assert annotator.url == url
+    normalizer = DefaultNormalizer(url)
+    output = normalizer(identifier, normalizer_api)
+    assert isinstance(output, DugIdentifier)
+    assert output.id == 'UBERON:0007100'
+    assert output.label == "primary circulatory organ"
+    assert output.equivalent_identifiers == ['UBERON:0007100']
+    assert output.types == 'anatomical entity'
 
 
-# def test_annotator_handle_response():
-#     annotator = Annotator('foo')
-
-#     response = {
-#             "content": "heart attack",
-#             "spans": [
-#                 {
-#                     "start": 0,
-#                     "end": 5,
-#                     "text": "heart",
-#                     "token": [
-#                         {
-#                             "id": "UBERON:0015230",
-#                             "category": [
-#                                 "anatomical entity"
-#                             ],
-#                             "terms": [
-#                                 "dorsal vessel heart"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 5,
-#                     "text": "heart",
-#                     "token": [
-#                         {
-#                             "id": "UBERON:0007100",
-#                             "category": [
-#                                 "anatomical entity"
-#                             ],
-#                             "terms": [
-#                                 "primary circulatory organ"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 5,
-#                     "text": "heart",
-#                     "token": [
-#                         {
-#                             "id": "UBERON:0015228",
-#                             "category": [
-#                                 "anatomical entity"
-#                             ],
-#                             "terms": [
-#                                 "circulatory organ"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 5,
-#                     "text": "heart",
-#                     "token": [
-#                         {
-#                             "id": "ZFA:0000114",
-#                             "category": [
-#                                 "anatomical entity"
-#                             ],
-#                             "terms": [
-#                                 "heart"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 5,
-#                     "text": "heart",
-#                     "token": [
-#                         {
-#                             "id": "UBERON:0000948",
-#                             "category": [
-#                                 "anatomical entity"
-#                             ],
-#                             "terms": [
-#                                 "heart"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 12,
-#                     "text": "heart attack",
-#                     "token": [
-#                         {
-#                             "id": "MONDO:0005068",
-#                             "category": [
-#                                 "disease"
-#                             ],
-#                             "terms": [
-#                                 "myocardial infarction (disease)"
-#                             ]
-#                         }
-#                     ]
-#                 },
-#                 {
-#                     "start": 0,
-#                     "end": 12,
-#                     "text": "heart attack",
-#                     "token": [
-#                         {
-#                             "id": "HP:0001658",
-#                             "category": [
-#                                 "phenotype",
-#                                 "quality"
-#                             ],
-#                             "terms": [
-#                                 "Myocardial infarction"
-#                             ]
-#                         }
-#                     ]
-#                 }
-#             ]
-#         }
-
-#     identifiers: List[DugIdentifier] = annotator.handle_response(None, response)
-
-#     assert len(identifiers) == 7
-#     assert isinstance(identifiers[0], DugIdentifier)
-
-
-# def test_annotator_call(annotator_api):
-#     url = "http://annotator.api/?content="
-
-#     annotator = Annotator(url)
-
-#     text = "heart attack"
-#     identifiers: List[DugIdentifier] = annotator.annotate(text, annotator_api)
-
-#     assert len(identifiers) == 7
-#     assert isinstance(identifiers[0], DugIdentifier)
-
-
-# def test_normalizer(normalizer_api):
-#     url = "http://normalizer.api/?curie="
-
-#     identifier = DugIdentifier(
-#         "UBERON:0007100",
-#         label='primary circulatory organ',
-#         types=['anatomical entity'],
-#         description="",
-#         search_text=['heart'],
-#     )
-
-#     normalizer = Normalizer(url)
-#     output = normalizer.normalize(identifier, normalizer_api)
-#     assert isinstance(output, DugIdentifier)
-#     assert output.id == 'UBERON:0007100'
-#     assert output.label == "primary circulatory organ"
-#     assert output.equivalent_identifiers == ['UBERON:0007100']
-#     assert output.types == 'anatomical entity'
-    
-
-
-# def test_synonym_finder(synonym_api):
-#     curie = "UBERON:0007100"
-#     url = f"http://synonyms.api"
-#     finder = SynonymFinder(url)
-#     result = finder.get_synonyms(
-#         curie,
-#         synonym_api,
-#     )
-#     assert result == [
-#             "primary circulatory organ",
-#             "dorsal tube",
-#             "adult heart",
-#             "heart"
-#         ]
-
-
-
+def test_synonym_finder(synonym_api):
+    curie = "UBERON:0007100"
+    url = f"http://synonyms.api"
+    finder = DefaultSynonymFinder(url)
+    result = finder(
+        curie,
+        synonym_api,
+    )
+    assert result == [
+            "primary circulatory organ",
+            "dorsal tube",
+            "adult heart",
+            "heart"
+        ]
 
 
 # def test_yield_partial_text():

@@ -45,6 +45,7 @@ class MockIndices:
     def __init__(self):
         self._indices = {}
         self.call_count = 0
+        self.number_of_replicas = 3
 
     def exists(self, index):
         return index in self._indices
