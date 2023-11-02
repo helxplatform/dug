@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import sys
@@ -10,7 +11,6 @@ from dug.core.loaders.filesystem_loader import load_from_filesystem
 from dug.core.loaders.network_loader import load_from_network
 
 from dug import hookspecs
-from dug.config import Config
 from dug.core import parsers
 from dug.core.factory import DugFactory
 from dug.core.parsers import DugConcept, Parser, get_parser
@@ -50,6 +50,11 @@ class Dug:
         self._search = self._factory.build_search_obj(indices=[
             self.concepts_index, self.variables_index, self.kg_index
         ])
+        self._index = self._factory.build_indexer_obj(
+            indices=[
+                self.concepts_index, self.variables_index, self.kg_index
+            ]
+        )
 
     def crawl(self, target_name: str, parser_type: str, element_type: str = None):
 
@@ -71,36 +76,36 @@ class Dug:
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
             if not isinstance(element, DugConcept):
-                self._search.index_element(element, index=self.variables_index)
+                self._index.index_element(element, index=self.variables_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
         for concept_id, concept in crawler.concepts.items():
-            self._search.index_concept(concept, index=self.concepts_index)
+            self._index.index_concept(concept, index=self.concepts_index)
 
             # Index knowledge graph answers for each concept
             for kg_answer_id, kg_answer in concept.kg_answers.items():
-                self._search.index_kg_answer(concept_id=concept_id,
+                self._index.index_kg_answer(concept_id=concept_id,
                                              kg_answer=kg_answer,
                                              index=self.kg_index,
                                              id_suffix=kg_answer_id)
 
     def search(self, target, query, **kwargs):
+        event_loop = asyncio.get_event_loop()
         targets = {
             'concepts': partial(
                 self._search.search_concepts, index=kwargs.get('index', self.concepts_index)),
             'variables': partial(
                 self._search.search_variables, index=kwargs.get('index', self.variables_index), concept=kwargs.pop('concept', None)),
             'kg': partial(
-                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None)),
-            'nboost': partial(
-                self._search.search_nboost, index=kwargs.get('index', None)),
+                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None))
         }
         kwargs.pop('index', None)
         func = targets.get(target)
         if func is None:
             raise ValueError(f"Target must be one of {', '.join(targets.keys())}")
-
-        return func(query=query, **kwargs)
+        results = event_loop.run_until_complete(func(query=query, **kwargs))
+        event_loop.run_until_complete(self._search.es.close())
+        return results
 
     def status(self):
         ...

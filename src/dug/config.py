@@ -17,6 +17,8 @@ class Config:
     elastic_host: str = "elasticsearch"
     elastic_port: int = 9200
     elastic_username: str = "elastic"
+    elastic_scheme: str = "http"
+    elastic_ca_path: str = ""
 
     redis_host: str = "redis"
     redis_port: int = 6379
@@ -39,12 +41,12 @@ class Config:
 
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(default_factory=lambda: {
-        "url": "https://nodenormalization-sri.renci.org/get_normalized_nodes?conflate=false&curie="
+        "url": "https://nodenormalization-dev.apps.renci.org/get_normalized_nodes?conflate=false&description=true&curie="
     })
 
     # Synonym service config that will be passed to annotate.SynonymHelper constructor
     synonym_service: dict = field(default_factory=lambda: {
-        "url": "https://onto.renci.org/synonyms/"
+        "url": "https://name-resolution-sri.renci.org/reverse_lookup"
     })
 
     # Ontology metadata helper config that will be passed to annotate.OntologyHelper constructor
@@ -59,7 +61,9 @@ class Config:
         "disease": ["disease", "phenotypic_feature"],
         "pheno": ["phenotypic_feature", "disease"],
         "anat": ["disease", "anatomical_entity"],
-        "chem_to_disease": ["chemical_substance", "disease"],
+        "chem_to_disease": ["chemical_entity", "disease"],
+        "small_molecule_to_disease": ["small_molecule", "disease"],
+        "chemical_mixture_to_disease": ["chemical_mixture", "disease"],
         "phen_to_anat": ["phenotypic_feature", "anatomical_entity"],
     })
 
@@ -69,12 +73,17 @@ class Config:
             # Parse nodes matching criteria in kg
             "node_type": "biolink:Publication",
             "curie_prefix": "HEALCDE",
+            # list of attributes that are lists to be casted to strings 
+            "list_field_choose_first": [
+                "files"
+            ],
             "attribute_mapping": {
                 # "DugElement Attribute" : "KG Node attribute"
                 "name": "name",
                 "desc": "summary",
                 "collection_name": "cde_category",
-                "collection_id":  "cde_category"
+                "collection_id":  "cde_category",
+                "collection_action": "files"
             }
         }
     })
@@ -92,13 +101,13 @@ class Config:
         env_vars = {
             "elastic_host": "ELASTIC_API_HOST",
             "elastic_port": "ELASTIC_API_PORT",
+            "elastic_scheme": "ELASTIC_API_SCHEME",
+            "elastic_ca_path": "ELASTIC_CA_PATH",
             "elastic_username": "ELASTIC_USERNAME",
             "elastic_password": "ELASTIC_PASSWORD",
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
-            "redis_password": "REDIS_PASSWORD",
-            "nboost_host": "NBOOST_API_HOST",
-            "nboost_port": "NBOOST_API_PORT"
+            "redis_password": "REDIS_PASSWORD"
         }
 
         kwargs = {}
@@ -107,5 +116,4 @@ class Config:
             env_value = os.environ.get(env_var)
             if env_value:
                 kwargs[kwarg] = env_value
-
         return cls(**kwargs)

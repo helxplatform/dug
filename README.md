@@ -52,7 +52,7 @@ export REDIS_HOST=localhost
 Then you can actually crawl the data:
 
 ```shell
-dug crawl data/test_variables_v1.0.csv -p "TOPMedTag"
+dug crawl tests/integration/data/test_variables_v1.0.csv -p "TOPMedTag"
 ````
 
 After crawling, you can search:
@@ -287,4 +287,6 @@ Once the test is complete, a command line search shows the contents of the index
 TOPMed phenotypic concept data is [here](https://github.com/helxplatform/dug/tree/master/data).
 
 
+## Release
 
+To release, commit the change and select feature.

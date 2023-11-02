@@ -1,8 +1,10 @@
 import json
 import logging
 import os
+import re
 import urllib.parse
 from typing import TypeVar, Generic, Union, List, Tuple, Optional
+import bmt
 import requests
 from requests import Session
 
@@ -59,14 +61,12 @@ class DugAnnotator:
             annotator: "Annotator",
             normalizer: "Normalizer",
             synonym_finder: "SynonymFinder",
-            ontology_helper: "OntologyHelper",
             ontology_greenlist=[],
     ):
         self.preprocessor = preprocessor
         self.annotator = annotator
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
-        self.ontology_helper = ontology_helper
         self.ontology_greenlist = ontology_greenlist
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
@@ -106,12 +106,6 @@ class DugAnnotator:
             # Add synonyms to identifier
             norm_id.synonyms = self.synonym_finder.get_synonyms(norm_id.id, http_session)
 
-            # Get canonical label, name, and description from ontology metadata service
-            name, desc, ontology_type = self.ontology_helper.get_ontology_info(norm_id.id, http_session)
-            norm_id.label = name
-            norm_id.description = desc
-            norm_id.type = ontology_type
-
             # Get pURL for ontology identifer for more info
             norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
             processed_identifiers.append(norm_id)
@@ -149,7 +143,7 @@ class ConceptExpander:
 
             # Case: Skip if empty KG
             try:
-                if not len(response["message"]["knowledge_graph"]["nodes"]):
+                if response["message"] == 'Internal Server Error' or len(response["message"]["knowledge_graph"]["nodes"]) == 0:
                     logger.debug(f"Did not find a knowledge graph for {query}")
                     logger.debug(f"{self.url} returned response: {response}")
                     return []
@@ -309,7 +303,16 @@ class Annotator(ApiClient[str, List[Identifier]]):
     def make_request(self, value: Input, http_session: Session):
         value = urllib.parse.quote(value)
         url = f'{self.url}{value}'
-        response = http_session.get(url)
+
+        # This could be moved to a config file
+        NUM_TRIES = 5
+        for _ in range(NUM_TRIES):
+           response = http_session.get(url)
+           if response is not None:
+              # looks like it worked
+              break
+
+        # if the reponse is still None here, throw an error         
         if response is None:
             raise RuntimeError(f"no response from {url}")
         return response.json()
@@ -335,6 +338,7 @@ class Annotator(ApiClient[str, List[Identifier]]):
 
 class Normalizer(ApiClient[Identifier, Identifier]):
     def __init__(self, url):
+        self.bl_toolkit = bmt.Toolkit()
         self.url = url
 
     def normalize(self, identifier: Identifier, http_session: Session):
@@ -380,9 +384,13 @@ class Normalizer(ApiClient[Identifier, Identifier]):
         logger.debug(f"Preferred id: {preferred_id}")
         identifier.id = preferred_id.get('identifier', '')
         identifier.label = preferred_id.get('label', '')
-        identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]
-        identifier.types = biolink_type
-
+        identifier.description = preferred_id.get('description', '')
+        identifier.equivalent_identifiers = [v['identifier'] for v in equivalent_identifiers]        
+        try: 
+            identifier.types = self.bl_toolkit.get_element(biolink_type[0]).name
+        except:
+            # converts biolink:SmallMolecule to small molecule 
+            identifier.types = (" ".join(re.split("(?=[A-Z])", biolink_type[0].replace('biolink:', ''))[1:])).lower()
         return identifier
 
 
@@ -400,51 +408,31 @@ class SynonymFinder(ApiClient[str, List[str]]):
         return self(curie, http_session)
 
     def make_request(self, curie: str, http_session: Session):
-
-        # Get response from synonym service
-        url = f"{self.url}{urllib.parse.quote(curie)}"
-
+        # Get response from namelookup reverse lookup op
+        # example (https://name-resolution-sri.renci.org/docs#/lookup/lookup_names_reverse_lookup_post)
+        url = f"{self.url}"
+        payload = {
+            'curies': [curie]
+        }
         try:
-            response = http_session.get(url)
-            if response.status_code == 400:
-                logger.error(f"No synonyms returned for: `{curie}`. Validation error.")
-                return []
-            if response.status_code == 500:
-                logger.error(f"No synonyms returned for: `{curie}`. Internal server error from {self.url}.")
-                return []
+            response = http_session.post(url, json=payload)
+            if str(response.status_code).startswith('4'):
+                logger.error(f"No synonyms returned for: `{curie}`. Validation error: {response.text}")
+                return {curie: []}
+            if str(response.status_code).startswith('5'):
+                logger.error(f"No synonyms returned for: `{curie}`. Internal server error from {self.url}. Error: {response.text}")
+                return {curie: []}
             return response.json()
         except json.decoder.JSONDecodeError as e:
             logger.error(f"Json parse error for response from `{url}`. Exception: {str(e)}")
-            return []
+            return {curie: []}
 
     def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
-        # List comprehension unpack all synonyms into a list
-        return [synonym['desc'] for synonym in raw_synonyms]
+        # Return curie synonyms
+        return raw_synonyms.get(curie, [])
 
 
-class OntologyHelper(ApiClient[str, Tuple[str, str, str]]):
-    def __init__(self, url):
-        self.url = url
 
-    def make_request(self, curie: str, http_session: Session):
-        url = f"{self.url}{urllib.parse.quote(curie)}"
-        try:
-            response = http_session.get(url).json()
-            return response
-        except json.decoder.JSONDecodeError as e:
-            logger.error(f"No labels returned for: {curie}")
-            return {}
-
-    def handle_response(self, curie: str, response: dict) -> Tuple[str,str,str]:
-        # List comprehension for synonyms
-        name = response.get('label', '')
-        description = '' if not response.get('description', None) else response.get('description', '')
-        ontology_type = '' if not response.get('category', None) else response.get('category', '')[0]
-
-        return name, description, ontology_type
-
-    def get_ontology_info(self, curie, http_session):
-        return self(curie, http_session)
 
 
 class BioLinkPURLerizer:

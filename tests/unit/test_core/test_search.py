@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from dug.core.search import Search, SearchException
+from dug.core.index import Index, SearchException
 from dug.config import Config
 
 default_indices = ['concepts_index', 'variables_index', 'kg_index']
@@ -14,8 +14,11 @@ port = 9200
 username = 'elastic'
 password = 'hunter2'
 nboost_host = 'localhost'
-hosts = [{'host': host, 'port': port}]
+hosts = [{'host': host, 'port': port, 'scheme': 'http'}]
 
+class MockEsNode():
+    def info():
+        return {"_nodes" : {"total": 1}}
 
 @dataclass
 class MockIndex:
@@ -34,6 +37,7 @@ class MockIndex:
 
     def count(self, body):
         return len(self.values)
+    
 
 
 class MockIndices:
@@ -63,6 +67,7 @@ class MockElastic:
     def __init__(self, indices: MockIndices):
         self.indices = indices
         self._up = True
+        self.nodes = MockEsNode
 
     def index(self, index, id=None, body=None):
         self.indices.get_index(index).index(id, body)
@@ -94,10 +99,12 @@ class MockElastic:
             }
         }
 
+    
+
 
 @pytest.fixture
 def elastic():
-    with patch('dug.core.search.Elasticsearch') as es_class:
+    with patch('dug.core.index.Elasticsearch') as es_class:
         es_instance = MockElastic(indices=MockIndices())
         es_class.return_value = es_instance
         yield es_instance
@@ -109,7 +116,7 @@ def test_init(elastic):
                  elastic_password='hunter2',
                  nboost_host='localhost')
 
-    search = Search(cfg)
+    search = Index(cfg)
 
     assert search.indices == default_indices
     assert search.hosts == hosts
@@ -119,11 +126,11 @@ def test_init(elastic):
 def test_init_no_ping(elastic):
     elastic.disconnect()
     with pytest.raises(SearchException):
-        _search = Search(Config.from_env())
+        _search = Index(Config.from_env())
 
-
-def test_init_indices(elastic):
-    search = Search(Config.from_env())
+@pytest.mark.asyncio
+async def test_init_indices(elastic):
+    search = Index(Config.from_env())
     assert elastic.indices.call_count == 3
 
     # Should take no action if called again
@@ -132,7 +139,7 @@ def test_init_indices(elastic):
 
 
 def test_index_doc(elastic: MockElastic):
-    search = Search(Config.from_env())
+    search = Index(Config.from_env())
 
     assert len(elastic.indices.get_index('concepts_index').values) == 0
     search.index_doc('concepts_index', {'name': 'sample'}, "ID:1")
@@ -141,7 +148,7 @@ def test_index_doc(elastic: MockElastic):
 
 
 def test_update_doc(elastic: MockElastic):
-    search = Search(Config.from_env())
+    search = Index(Config.from_env())
 
     search.index_doc('concepts_index', {'name': 'sample'}, "ID:1")
     search.update_doc('concepts_index', {'name': 'new value!'}, "ID:1")
