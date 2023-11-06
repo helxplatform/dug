@@ -25,5 +25,6 @@ six==1.16.0
 # We use Click 7.0 because that's what one of the pinned packages above use.
 click
 httpx>=0.24.1
+linkml==1.6.0
 bmt==1.1.0
 urllib3>=1.26.17
