@@ -119,7 +119,7 @@ class QueryKG:
         for node in self.get_nodes():
             if include_curie or node['id'] not in curie_ids:
                 syn = node.get('synonyms') 
-                if isinstance(list, syn):
+                if isinstance(syn,list):
                     node_synonyms +=  syn 
         return node_synonyms
 
