@@ -3,6 +3,7 @@ import os
 import uvicorn
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
@@ -15,6 +16,13 @@ APP = FastAPI(
     root_path=os.environ.get("ROOT_PATH", "/"),
 )
 
+APP.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class GetFromIndex(BaseModel):
     index: str = "concepts_index"
