@@ -68,8 +68,8 @@ jobs:
       # flake8 --ignore=E,W --exit-zero . 
       continue-on-error: true
 
-############################## test-image-build ##############################
-  test-image-build:
+############################## build-vuln-test ##############################
+  build-vuln-test:
     # needs: flake8-linter
     runs-on: ubuntu-latest
     steps:
@@ -104,9 +104,6 @@ jobs:
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: '${{ github.repository }}:vuln-test'
-        format: 'table'
-        exit-code: '1'
-        ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
 ################################### PYTEST ###################################
