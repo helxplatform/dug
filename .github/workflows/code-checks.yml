@@ -11,11 +11,17 @@
 
 name: Code-Checks
 on:
-  push:
-    branches-ignore:
-      - master
-      - main
+  # push:
+  #   branches-ignore:
+  #     - master
+  #     - main
+  #     - develop
+  pull_request:
+    branches:
       - develop
+      - master
+      - main 
+    types: [ opened, synchronize ]
     paths-ignore:
       - README.md
       - .old_cicd/*
@@ -25,12 +31,6 @@ on:
       - .gitignore
       - .dockerignore
       - .githooks
-  pull_request:
-    branches:
-      - develop
-      - master
-      - main 
-    types: [ opened, synchronize ]
 
 jobs:
 ############################## flake8-linter ##############################
