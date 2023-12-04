@@ -651,6 +651,7 @@ class Search:
                 new_results = new_results[data_type]
             else:
                 new_results = {}
+        new_results.update({'total_items': total_items['count']})
         return new_results
 
     async def search_kg(self, unique_id, query, offset=0, size=None,

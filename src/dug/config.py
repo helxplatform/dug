@@ -83,7 +83,7 @@ class Config:
                 "desc": "summary",
                 "collection_name": "cde_category",
                 "collection_id":  "cde_category",
-                "collection_action": "files"
+                "action": "files"
             }
         }
     })
