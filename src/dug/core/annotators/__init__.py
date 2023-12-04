@@ -6,6 +6,7 @@ import pluggy
 from dug.config import Config
 from ._base import DugIdentifier, Indexable, Annotator, DefaultNormalizer, DefaultSynonymFinder
 from .monarch_annotator import AnnotateMonarch
+from .sapbert_annotator import AnnotateSapbert
 
 logger = logging.getLogger('dug')
 
@@ -13,7 +14,8 @@ hookimpl = pluggy.HookimplMarker("dug")
 
 @hookimpl
 def define_annotators(annotator_dict: Dict[str, Annotator]):
-    annotator_dict["annotator-monarch"] = build_annotator()
+    annotator_dict["annotator-monarch"] = build_monarch_annotator()
+    annotator_dict["annotator-sapbert"] = build_sapbert_annotator()
 
 
 class AnnotatorNotFoundException(Exception):
@@ -34,7 +36,7 @@ def get_annotator(hook, annotator_name) -> Annotator:
     logger.error(err_msg)
     raise AnnotatorNotFoundException(err_msg)
 
-def build_annotator():
+def build_monarch_annotator():
     config = Config.from_env()
     annotator = AnnotateMonarch(
         normalizer=DefaultNormalizer(**config.normalizer),
@@ -43,3 +45,12 @@ def build_annotator():
     )
 
     return annotator
+
+def build_sapbert_annotator():
+    config = Config.from_env()
+    annotator = AnnotateSapbert(
+        normalizer=DefaultNormalizer(**config.normalizer),
+        synonym_finder=DefaultSynonymFinder(**config.synonym_service),
+    )
+    return annotator
+
