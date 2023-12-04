@@ -290,3 +290,8 @@ TOPMed phenotypic concept data is [here](https://github.com/helxplatform/dug/tre
 ## Release
 
 To release, commit the change and select feature.
+
+#### Fail on Vulnerability Detection
+
+During PR's several vulnerability scanners are run. If there are vulnerabilities detected, the pr checks will fail and a report will be sent to Github Security Dashboard for viewing. Please ensure the vulnerability is mitigated prior to continuing the merge to protected branches.
+
