@@ -429,7 +429,7 @@ class SynonymFinder(ApiClient[str, List[str]]):
 
     def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
         # Return curie synonyms
-        return raw_synonyms.get(curie, [])
+        return raw_synonyms.get(curie, {}).get('names', [])
 
 
 
