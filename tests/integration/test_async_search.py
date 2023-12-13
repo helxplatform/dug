@@ -5,12 +5,21 @@ from unittest import TestCase
 
 from fastapi.testclient import TestClient
 from elasticsearch.exceptions import ConnectionError
+from dug.config import Config
+
 class APISearchTestCase(TestCase):
     "API search with mocked elasticsearch"
 
     def test_concepts_types_parameter(self):
         "Test API concepts search with types parameter"
-        # This should patch the elasticsearch object with the mock
+        cfg = Config.from_env()
+        if cfg.elastic_password == "changeme":
+            # Dummy config is in place, skip the test
+            self.skipTest(
+                "For the integration test, a populated elasticsearch "
+                "instance must be available and configured in the "
+                "environment variables. See dug.config for more.")
+
         from dug.server import APP
         client = TestClient(APP)
         types = ['anatomical entity', 'drug']
