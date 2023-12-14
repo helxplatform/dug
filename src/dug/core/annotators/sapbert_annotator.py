@@ -99,6 +99,7 @@ class AnnotateSapbert:
 
     def make_classification_request(self, text: Input, http_session: Session):
         url = self.classificationUrl
+        logger.debug(f"response from {text}")
         payload = {
             "text": text,
             "model_name": "token_classification",
@@ -115,6 +116,8 @@ class AnnotateSapbert:
             raise RuntimeError(f"no response from {url}")
         if response.status_code == 403:
             raise RuntimeError(f"You are not authorized to use this API -- {url}")
+        if response.status_code == 500:
+            raise RuntimeError(f"Classification API is temporarily down -- vist docs here: {url.replace('annotate', 'docs')}")
         return response.json()
 
     def handle_classification_response(self, response: dict) -> List:
@@ -191,6 +194,8 @@ class AnnotateSapbert:
             raise RuntimeError(f"no response from {url}")
         if response.status_code == 403:
             raise RuntimeError(f"You are not authorized to use this API -- {url}")
+        if response.status_code == 500:
+            raise RuntimeError(f"Annotation API is temporarily down -- vist docs here: {url.replace('annotate', 'docs')}")
         return response.json()
 
     def handle_annotation_response(self, value, response: dict) -> List[DugIdentifier]:
