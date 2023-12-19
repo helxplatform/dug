@@ -31,7 +31,7 @@ class DugElement:
 
     def jsonable(self):
         copy_dict = copy.deepcopy(self.__dict__)
-        concepts = {k: v.jsonable() for k, v in self.concepts.items}
+        concepts = {k: v.jsonable() for k, v in self.concepts.items()}
         copy_dict['concepts'] = concepts
         return copy_dict
         
