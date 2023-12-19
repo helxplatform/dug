@@ -25,7 +25,10 @@ class Identifier:
         if types is None:
             types = []
         self.types = types
-        self.search_text = [search_text] if search_text else []
+        if isinstance(search_text, str):
+            self.search_text = [search_text] if search_text else []
+        elif isinstance(search_text, list):
+            self.search_text = search_text
         self.equivalent_identifiers = equivalent_identifiers
         self.synonyms = synonyms
         self.purl = purl
