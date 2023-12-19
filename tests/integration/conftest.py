@@ -136,7 +136,7 @@ def sapbert_annotator_api():
                             "curie": "XAO:0000336",
                             "category": "biolink:Disease",
                             "score": "0.206502258778",
-                        }
+                        },
                     ]
                 ),
                 200,
@@ -218,12 +218,14 @@ def synonym_api():
             "http://synonyms.api": [
                 json.dumps(
                     {
-                        "UBERON:0007100": [
-                            "primary circulatory organ",
-                            "dorsal tube",
-                            "adult heart",
-                            "heart",
-                        ]
+                        "UBERON:0007100": {
+                            "names": [
+                                "primary circulatory organ",
+                                "dorsal tube",
+                                "adult heart",
+                                "heart",
+                            ]
+                        }
                     }
                 ),
                 200,
@@ -235,5 +237,5 @@ def synonym_api():
 @pytest.fixture
 def null_synonym_api():
     return MockApiService(
-        urls={"http://synonyms.api": [json.dumps({"XAO:0000336": []}), 200]}
+        urls={"http://synonyms.api": [json.dumps({"XAO:0000336": {"names":[]}}), 200]}
     )
