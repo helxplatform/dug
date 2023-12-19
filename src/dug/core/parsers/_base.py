@@ -1,5 +1,6 @@
 import json
 from typing import Union, Callable, Any, Iterable
+import copy
 
 from dug.core.loaders import InputFile
 
@@ -29,7 +30,11 @@ class DugElement:
         self.concepts[concept.id] = concept
 
     def jsonable(self):
-        return self.__dict__
+        copy_dict = copy(self.__dict__)
+        concepts = {k: v.jsonable() for k, v in concepts.items}
+        copy_dict['concepts'] = concepts
+        return copy_dict
+        
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
@@ -132,7 +137,10 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
-        return self.__dict__
+        copy_dict = copy(self.__dict__)
+        identifiers = {k: v.jsonable() for k, v in self.identifiers.items()}
+        copy_dict['identifiers'] = identifiers
+        return copy_dict
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
