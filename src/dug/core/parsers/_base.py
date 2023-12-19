@@ -11,11 +11,11 @@ class DugElement:
     # Basic class for holding information for an object you want to make searchable via Dug
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
-    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action="", concepts={}, ml_ready_desc="", search_terms=[], optional_terms=[]):
+    def __init__(self, elem_id, name, desc="", elem_type="", type= "", collection_id="", collection_name="", collection_desc="", action="", collection_action="", concepts={}, ml_ready_desc="", search_terms=[], optional_terms=[]):
         self.id = elem_id
         self.name = name
         self.description = desc
-        self.type = elem_type
+        self.type = elem_type or type
         self.collection_id = collection_id
         self.collection_name = collection_name
         self.collection_desc = collection_desc
@@ -78,7 +78,7 @@ class DugElement:
 class DugConcept:
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    def __init__(self, concept_id, name, desc, concept_type, id="" , description="", type="", concept_action="", identifiers = {}, kg_answers={}, search_terms = [] , optional_terms=[], ml_ready_desc=""):
+    def __init__(self, concept_id="", name="", desc="", concept_type="", id="" , description="", type="", concept_action="", identifiers = {}, kg_answers={}, search_terms = [] , optional_terms=[], ml_ready_desc=""):
         self.id = concept_id or id
         self.name = name
         self.description = desc or description
