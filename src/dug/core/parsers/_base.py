@@ -11,7 +11,7 @@ class DugElement:
     # Basic class for holding information for an object you want to make searchable via Dug
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
-    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action=""):
+    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action="", concepts={}, ml_ready_desc="", search_terms=[], optional_terms=[]):
         self.id = elem_id
         self.name = name
         self.description = desc
@@ -21,10 +21,10 @@ class DugElement:
         self.collection_desc = collection_desc
         self.action = action
         self.collection_action = collection_action
-        self.concepts = {}
-        self.ml_ready_desc = desc
-        self.search_terms = []
-        self.optional_terms = []
+        self.concepts = concepts
+        self.ml_ready_desc = ml_ready_desc or desc
+        self.search_terms = search_terms
+        self.optional_terms = optional_terms
 
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
@@ -78,17 +78,17 @@ class DugElement:
 class DugConcept:
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    def __init__(self, concept_id, name, desc, concept_type):
-        self.id = concept_id
+    def __init__(self, concept_id, name, desc, concept_type, id="" , description="", type="", concept_action="", identifiers = {}, kg_answers={}, search_terms = [] , optional_terms=[], ml_ready_desc=""):
+        self.id = concept_id or id
         self.name = name
-        self.description = desc
-        self.type = concept_type
+        self.description = desc or description
+        self.type = concept_type or type
         self.concept_action = ""
-        self.identifiers = {}
-        self.kg_answers = {}
-        self.search_terms = []
-        self.optional_terms = []
-        self.ml_ready_desc = desc
+        self.identifiers = identifiers
+        self.kg_answers = kg_answers
+        self.search_terms = search_terms
+        self.optional_terms = optional_terms
+        self.ml_ready_desc = desc or ml_ready_desc
 
     def add_identifier(self, ident):
         if ident.id in self.identifiers:
