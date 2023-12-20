@@ -428,7 +428,9 @@ class SynonymFinder(ApiClient[str, List[str]]):
             return response.json()
         except json.decoder.JSONDecodeError as e:
             logger.error(f"Json parse error for response from `{url}`. Exception: {str(e)}")
-            return {curie: {"names": []}}
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f'connection reset')
+        return {curie: {"names": []}}
 
     def handle_response(self, curie: str, raw_synonyms: List[dict]) -> List[str]:
         # Return curie synonyms
