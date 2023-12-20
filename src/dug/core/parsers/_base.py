@@ -30,10 +30,10 @@ class DugElement:
         self.concepts[concept.id] = concept
 
     def jsonable(self):
-        copy_dict = copy.deepcopy(self.__dict__)
+        dict_style = self.__dict__
         concepts = {k: v.jsonable() for k, v in self.concepts.items()}
-        copy_dict['concepts'] = concepts
-        return copy_dict
+        dict_style['concepts'] = concepts
+        return dict_style
         
 
     def get_searchable_dict(self):
@@ -137,10 +137,10 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
-        copy_dict = copy.deepcopy(self.__dict__)
         identifiers = {k: v.jsonable() for k, v in self.identifiers.items()}
-        copy_dict['identifiers'] = identifiers
-        return copy_dict
+        dict_style = self.__dict__
+        dict_style['identifiers'] = identifiers
+        return dict_style
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
