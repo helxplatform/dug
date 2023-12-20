@@ -31,8 +31,13 @@ class DugElement:
 
     def jsonable(self):        
         concepts = {k: v.jsonable() for k, v in self.concepts.items()}
-        dict_style = self.__dict__
-        dict_style['concepts'] = concepts
+        dict_style = {}
+        # make a shallow copy
+        for k, v in self.__dict__.items():
+            if k == 'concepts':
+                dict_style[k] = concepts
+                continue
+            dict_style[k]  = v
         return dict_style
         
 
@@ -138,8 +143,12 @@ class DugConcept:
 
     def jsonable(self):
         identifiers = {k: v.jsonable() for k, v in self.identifiers.items()}
-        dict_style = self.__dict__
-        dict_style['identifiers'] = identifiers
+        dict_style = {}
+        for k, v in self.__dict__.items():
+            if k == 'identifiers':
+                dict_style[k] = identifiers
+                continue
+            dict_style[k] = v        
         return dict_style
 
     def __str__(self):
