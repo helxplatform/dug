@@ -146,6 +146,7 @@ class Crawler:
                                               http_session=self.http_session)
 
         # Each identifier then becomes a concept that links elements together
+        logger.info("Got %d identifiers for %s", len(identifiers) , element.ml_ready_desc)
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
