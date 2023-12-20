@@ -29,9 +29,9 @@ class DugElement:
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
 
-    def jsonable(self):
-        dict_style = self.__dict__
+    def jsonable(self):        
         concepts = {k: v.jsonable() for k, v in self.concepts.items()}
+        dict_style = self.__dict__
         dict_style['concepts'] = concepts
         return dict_style
         
