@@ -18,20 +18,17 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Identifier:
-    def __init__(self, id, label, types=None, search_text=[], description="", equivalent_identifiers=[], synonyms=[], purl = []):
+    def __init__(self, id, label, types=None, search_text="", description=""):
         self.id = id
         self.label = label
         self.description = description
         if types is None:
             types = []
         self.types = types
-        if isinstance(search_text, str):
-            self.search_text = [search_text] if search_text else []
-        elif isinstance(search_text, list):
-            self.search_text = search_text
-        self.equivalent_identifiers = equivalent_identifiers
-        self.synonyms = synonyms
-        self.purl = purl
+        self.search_text = [search_text] if search_text else []
+        self.equivalent_identifiers = []
+        self.synonyms = []
+        self.purl = ""
 
     @property
     def id_type(self):

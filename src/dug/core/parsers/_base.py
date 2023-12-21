@@ -1,6 +1,5 @@
 import json
 from typing import Union, Callable, Any, Iterable
-import copy
 
 from dug.core.loaders import InputFile
 
@@ -11,35 +10,26 @@ class DugElement:
     # Basic class for holding information for an object you want to make searchable via Dug
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
-    def __init__(self, elem_id="", name="", desc="", description="", elem_type="", id="", type= "", collection_id="", collection_name="", collection_desc="", action="", collection_action="", concepts={}, ml_ready_desc="", search_terms=[], optional_terms=[]):
-        self.id = elem_id or id 
+    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action=""):
+        self.id = elem_id
         self.name = name
-        self.description = desc or description
-        self.type = elem_type or type
+        self.description = desc
+        self.type = elem_type
         self.collection_id = collection_id
         self.collection_name = collection_name
         self.collection_desc = collection_desc
         self.action = action
         self.collection_action = collection_action
-        self.concepts = concepts
-        self.ml_ready_desc = ml_ready_desc or desc
-        self.search_terms = search_terms
-        self.optional_terms = optional_terms
+        self.concepts = {}
+        self.ml_ready_desc = desc
+        self.search_terms = []
+        self.optional_terms = []
 
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
 
-    def jsonable(self):        
-        concepts = {k: v.jsonable() for k, v in self.concepts.items()}
-        dict_style = {}
-        # make a shallow copy
-        for k, v in self.__dict__.items():
-            if k == 'concepts':
-                dict_style[k] = concepts
-                continue
-            dict_style[k]  = v
-        return dict_style
-        
+    def jsonable(self):
+        return self.__dict__
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
@@ -83,17 +73,17 @@ class DugElement:
 class DugConcept:
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    def __init__(self, concept_id="", name="", desc="", concept_type="", id="" , description="", type="", concept_action="", identifiers = {}, kg_answers={}, search_terms = [] , optional_terms=[], ml_ready_desc=""):
-        self.id = concept_id or id
+    def __init__(self, concept_id, name, desc, concept_type):
+        self.id = concept_id
         self.name = name
-        self.description = desc or description
-        self.type = concept_type or type
+        self.description = desc
+        self.type = concept_type
         self.concept_action = ""
-        self.identifiers = identifiers
-        self.kg_answers = kg_answers
-        self.search_terms = search_terms
-        self.optional_terms = optional_terms
-        self.ml_ready_desc = desc or ml_ready_desc
+        self.identifiers = {}
+        self.kg_answers = {}
+        self.search_terms = []
+        self.optional_terms = []
+        self.ml_ready_desc = desc
 
     def add_identifier(self, ident):
         if ident.id in self.identifiers:
@@ -142,14 +132,7 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
-        identifiers = {k: v.jsonable() for k, v in self.identifiers.items()}
-        dict_style = {}
-        for k, v in self.__dict__.items():
-            if k == 'identifiers':
-                dict_style[k] = identifiers
-                continue
-            dict_style[k] = v        
-        return dict_style
+        return self.__dict__
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
