@@ -135,7 +135,7 @@ class ConceptExpander:
                 response = json.load(stream)
         else:
             query = query_factory.get_query(identifier)
-            logger.debug(query)
+            logger.info(query)
             response = requests.post(
                 url=self.url,
                 headers=self.tranql_headers,
@@ -149,6 +149,9 @@ class ConceptExpander:
                     return []
             except KeyError as e:
                 logger.error(f"Could not find key: {e} in response: {response}")
+            except Exception as ex:
+                logger.error(response)
+                raise ex
 
             # Dump out to file if there's a knowledge graph
             with open(kg_filename, 'w') as stream:
