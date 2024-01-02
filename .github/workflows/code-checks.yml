@@ -116,7 +116,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        make tests
+        make test
 
 ############################ Bandit ################################
   bandit:
