@@ -5,7 +5,7 @@ import os
 import json
 
 
-from dug.core.annotate import Identifier
+from dug.core.annotators import DugIdentifier
 from dug.core.tranql import QueryFactory, QueryKG
 
 # Makes some simple mokes
@@ -25,14 +25,14 @@ for key, query in {
 ExcludedIDs = []
 
 ANNOTATED_IDS = [
-    Identifier("MONDO:0", "0", ["disease"]),
-    Identifier("PUBCHEM.COMPOUND:1", "1", ["chemical"])
+    DugIdentifier("MONDO:0", "0", ["disease"]),
+    DugIdentifier("PUBCHEM.COMPOUND:1", "1", ["chemical"])
     ]
 for ids in ANNOTATED_IDS:
     ids.type = ids.types[0]
 # annotator with annotate method returning mocked concepts
 AnnotatorMock = MagicMock()
-AnnotatorMock.annotate = Mock(return_value=ANNOTATED_IDS)
+AnnotatorMock = Mock(return_value=ANNOTATED_IDS)
 
 # tranqlizer returning mock kg when expanding concepts
 TranqlizerMock = MagicMock()
