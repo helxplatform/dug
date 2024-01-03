@@ -3,7 +3,7 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12.0-slim
+FROM python:3.12.1-slim-bullseye
 
 # Install required packages
 RUN apt-get update && \
