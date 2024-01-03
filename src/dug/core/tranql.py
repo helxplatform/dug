@@ -113,11 +113,14 @@ class QueryKG:
         return node_names
 
     def get_node_synonyms(self, include_curie=True):
+        # @TODO call name-resolver 
         node_synonyms = []
         curie_ids = self.get_curie_ids()
         for node in self.get_nodes():
             if include_curie or node['id'] not in curie_ids:
-                node_synonyms += node.get('synonyms') or []
+                syn = node.get('synonyms') 
+                if isinstance(syn,list):
+                    node_synonyms +=  syn 
         return node_synonyms
 
     def get_curie_ids(self):

@@ -3,8 +3,8 @@ from typing import List
 from requests import Session
 import json
 
-from ._base import DugIdentifier, Input
-from .utils.biolink_purl_util import BioLinkPURLerizer
+from dug.core.annotators._base import DugIdentifier, Input
+from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
 
 logger = logging.getLogger("dug")
 

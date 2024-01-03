@@ -4,9 +4,9 @@ from typing import Dict
 import pluggy
 
 from dug.config import Config
-from ._base import DugIdentifier, Indexable, Annotator, DefaultNormalizer, DefaultSynonymFinder
-from .monarch_annotator import AnnotateMonarch
-from .sapbert_annotator import AnnotateSapbert
+from dug.core.annotators._base import DugIdentifier, Indexable, Annotator, DefaultNormalizer, DefaultSynonymFinder
+from dug.core.annotators.monarch_annotator import AnnotateMonarch
+from dug.core.annotators.sapbert_annotator import AnnotateSapbert
 
 logger = logging.getLogger('dug')
 
