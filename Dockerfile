@@ -3,11 +3,11 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12.0-alpine3.18
+FROM python:3.12.0-slim
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y curl make vim && \
+    apt-get install -y g++ make  && \
     rm -rf /var/cache/apt/*
 
 # Create a non-root user.
