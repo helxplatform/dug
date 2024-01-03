@@ -3,19 +3,19 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.10.10-slim
+FROM python:3.12.0-alpine3.18
 
 # Install required packages
-RUN apt-get update && \
-    apt-get install -y curl make vim && \
-    rm -rf /var/cache/apt/*
+RUN apk update && \
+    apk add g++ make    
 
+RUN pip install --upgrade pip
 # Create a non-root user.
 ENV USER dug
 ENV HOME /home/$USER
 ENV UID 1000
 
-RUN adduser --disabled-login --home $HOME --shell /bin/bash --uid $UID $USER
+RUN adduser -D --home $HOME  --uid $UID $USER
 
 USER $USER
 WORKDIR $HOME

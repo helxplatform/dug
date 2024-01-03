@@ -2,8 +2,10 @@ import json
 import logging
 import os
 import traceback
+from typing import List
 
 from dug.core.parsers import Parser, DugElement, DugConcept
+from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
 
@@ -11,7 +13,7 @@ logger = logging.getLogger('dug')
 
 
 class Crawler:
-    def __init__(self, crawl_file: str, parser: Parser, annotator,
+    def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
                  tranqlizer, tranql_queries,
                  http_session, exclude_identifiers=None, element_type=None,
                  element_extraction=None):
@@ -22,7 +24,7 @@ class Crawler:
         self.crawl_file = crawl_file
         self.parser: Parser = parser
         self.element_type = element_type
-        self.annotator = annotator
+        self.annotator: Annotator = annotator
         self.tranqlizer = tranqlizer
         self.tranql_queries = tranql_queries
         self.http_session = http_session
@@ -142,8 +144,11 @@ class Crawler:
     def annotate_element(self, element):
 
         # Annotate with a set of normalized ontology identifiers
-        identifiers = self.annotator.annotate(text=element.ml_ready_desc,
+        # self.DugAnnotator.annotator()
+        identifiers: List[DugIdentifier] = self.annotator(text=element.ml_ready_desc,
                                               http_session=self.http_session)
+        # Future thoughts... should we be passing in the stpe DugIdentifier here instead?
+
 
         # Each identifier then becomes a concept that links elements together
         logger.info("Got %d identifiers for %s", len(identifiers) , element.ml_ready_desc)

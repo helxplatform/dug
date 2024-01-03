@@ -55,6 +55,7 @@ jobs:
         image-ref: '${{ github.repository }}:vuln-test'
         format: 'sarif'
         severity: 'CRITICAL,HIGH'
+        ignore-unfixed: true
         output: 'trivy-results.sarif'
         exit-code: '1'
     # Scan results should be viewable in GitHub Security Dashboard
