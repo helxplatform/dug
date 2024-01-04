@@ -24,8 +24,12 @@ class AnnotateSapbert:
         ontology_greenlist=[],
         **kwargs
     ):
-        self.classificationUrl = kwargs['classificationUrl']
-        self.annotatorUrl = kwargs['annotatorUrl']
+        self.classificationUrl = kwargs.get('classification_url')
+        self.annotatorUrl = kwargs.get('annotator_url')
+        if not self.classificationUrl:
+            raise TypeError('Classification url needs to be defined for sapbert annotator')
+        if not self.annotatorUrl:
+            raise TypeError('Annotator url needs to be defined for sapbert annotator')
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist

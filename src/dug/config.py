@@ -42,8 +42,8 @@ class Config:
                 "url": "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
             },
             "sapbert": {
-                "classificationUrl": "https://med-nemo.apps.renci.org/annotate/",
-                "annotatorUrl": "https://babel-sapbert.apps.renci.org/annotate/",
+                "classification_url": "https://med-nemo.apps.renci.org/annotate/",
+                "annotator_url": "https://babel-sapbert.apps.renci.org/annotate/",
             },
         }
     )
