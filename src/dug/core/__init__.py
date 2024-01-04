@@ -63,7 +63,7 @@ class Dug:
 
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
-        annotator = get_annotator(pm.hook, annotator_type)
+        annotator = get_annotator(pm.hook, annotator_type, self._factory.config)
         targets = get_targets(target_name)
 
         for target in targets:
