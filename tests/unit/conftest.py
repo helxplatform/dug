@@ -3,8 +3,7 @@ import urllib.parse
 from dataclasses import dataclass
 from typing import Dict
 
-import pytest
-
+import pytest_asyncio
 
 @dataclass
 class MockResponse:
@@ -41,7 +40,7 @@ class MockApiService:
         return MockResponse(text, status_code=status_code)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def annotator_api():
     base_url = "http://annotator.api/?content={query}"
 
@@ -150,7 +149,7 @@ def annotator_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def normalizer_api():
     base_url = "http://normalizer.api/?curie={curie}"
 
@@ -193,7 +192,7 @@ def normalizer_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def synonym_api():
     return MockApiService(
         urls={
@@ -216,7 +215,7 @@ def synonym_api():
     )
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture()
 def ontology_api():
     base_url = "http://ontology.api/?curie={curie}"
 

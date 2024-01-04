@@ -21,7 +21,7 @@ def is_elastic_up():
     try:
         es = Elasticsearch(
             hosts=hosts,
-            http_auth=(username, password)
+            basic_auth=(username, password)
         )
         return es.ping()
     except Exception:

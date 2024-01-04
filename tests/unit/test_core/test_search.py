@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from unittest.mock import patch
 
 import pytest
+import pytest_asyncio
 
 from dug.core.index import Index, SearchException
 from dug.config import Config
@@ -95,7 +96,7 @@ class MockElastic:
         return {"results": {k: v for k, v in values.items() if body in v}}
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def elastic():
     with patch("dug.core.index.Elasticsearch") as es_class:
         es_instance = MockElastic(indices=MockIndices())

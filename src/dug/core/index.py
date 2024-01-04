@@ -30,12 +30,12 @@ class Index:
             )
             self.es = Elasticsearch(
                 hosts=self.hosts,
-                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
                 ssl_context=ssl_context)
         else:
             self.es = Elasticsearch(
                 hosts=self.hosts,
-                http_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+                basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
