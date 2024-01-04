@@ -21,9 +21,10 @@ class AnnotateMonarch:
             synonym_finder,
             config,
             ontology_greenlist=[],
+            **kwargs
     ):
 
-        self.annotatorUrl = config.annotator['url']
+        self.annotatorUrl = kwargs['url']
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist
@@ -42,7 +43,6 @@ class AnnotateMonarch:
         self.stopwords = stopwords
 
     def __call__(self, text, http_session) -> List[DugIdentifier]:
-
         # Preprocess text (debraviate, remove stopwords, etc.)
         text = self.preprocess_text(text)
 

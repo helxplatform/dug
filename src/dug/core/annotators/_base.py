@@ -13,7 +13,6 @@ logger = logging.getLogger("dug")
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-
 class DugIdentifier:
     """ The Dug Identifier is the core piece of information about a concept that produced from a request to an annotator based on a some original source of data. 
     \n The information that is being stored is mostly meant to support the Monarch API but should be adjusted accordingly to suit new Annotators needs in the future.
