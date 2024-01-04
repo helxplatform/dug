@@ -14,8 +14,8 @@ hookimpl = pluggy.HookimplMarker("dug")
 
 @hookimpl
 def define_annotators(annotator_dict: Dict[str, Annotator], config: Config):
-    annotator_dict["annotator-monarch"] = build_monarch_annotator("annotator-monarch", config=config)
-    annotator_dict["annotator-sapbert"] = build_sapbert_annotator("annotator-sapbert", config=config)
+    annotator_dict["monarch"] = build_monarch_annotator("monarch", config=config)
+    annotator_dict["sapbert"] = build_sapbert_annotator("sapbert", config=config)
 
 
 class AnnotatorNotFoundException(Exception):

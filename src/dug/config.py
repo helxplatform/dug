@@ -34,14 +34,14 @@ class Config:
             "stopwords": ["the"],
         }
     )
-    annotator_type: str = "annotator-monarch"
+    annotator_type: str = "monarch"
     # Annotator config that will be passed to annotate.Annotator constructor
     annotator_args: dict = field(
         default_factory=lambda: {
-            "annotator-monarch": {
+            "monarch": {
                 "url": "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
             },
-            "annotator-sapbert": {
+            "sapbert": {
                 "classificationUrl": "https://med-nemo.apps.renci.org/annotate/",
                 "annotatorUrl": "https://babel-sapbert.apps.renci.org/annotate/",
             },
