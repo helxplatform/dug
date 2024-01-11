@@ -29,7 +29,18 @@ class DugElement:
         self.concepts[concept.id] = concept
 
     def jsonable(self):
-        return self.__dict__
+        """Output a pickleable object
+
+        used by dug.utils.complex_handler. Because search_terms and
+        optional_terms are considered unsorted lists by the parsers but will be
+        treated as sorted lists by python, sorting the lists before output
+        prevents changes in ordering from being treated as a change in output by
+        incremental change detection.
+        """
+        outdict = self.__dict__
+        outdict['search_terms'] = sorted(self.search_terms)
+        outdict['optional_terms'] = sorted(self.optional_terms)
+        return outdict
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
@@ -132,7 +143,18 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
-        return self.__dict__
+        """Output a pickleable object
+
+        used by dug.utils.complex_handler. Because search_terms and
+        optional_terms are considered unsorted lists by the parsers but will be
+        treated as sorted lists by python, sorting the lists before output
+        prevents changes in ordering from being treated as a change in output by
+        incremental change detection.
+        """
+        outdict = self.__dict__
+        outdict['search_terms'] = sorted(self.search_terms)
+        outdict['optional_terms'] = sorted(self.optional_terms)
+        return outdict
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
