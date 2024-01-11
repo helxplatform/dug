@@ -15,15 +15,26 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class DugIdentifier:
-    """ The Dug Identifier is the core piece of information about a concept that produced from a request to an annotator based on a some original source of data. 
-    \n The information that is being stored is mostly meant to support the Monarch API but should be adjusted accordingly to suit new Annotators needs in the future.
+    """Core information about a concept, produced from annotator request
+
+    The Dug Identifier is the core piece of information about a concept that
+    produced from a request to an annotator based on a some original source of
+    data.
+
+    \n The information that is being stored is mostly meant to support the
+    Monarch API but should be adjusted accordingly to suit new Annotators needs
+    in the future.
     \n The information that will be needed for all annotators are:
         \n id: The CURIE identifier
         \n label: The CURIE identifier
         \n description: The CURIE identifier
-    \n When there is another supported Normalizer it will be seperated into a separate plugin like annotator.
+    \n When there is another supported Normalizer it will be seperated into a
+    separate plugin like annotator.
     """
+
     def __init__(self, id, label, types=None, search_text="", description=""):
+        "custom init stores parameters to initial values"
+
         self.id = id
         self.label = label
         self.description = description
@@ -40,12 +51,12 @@ class DugIdentifier:
         return self.id.split(":")[0]
 
     def add_search_text(self, text):
-        # Add text only if it's unique and if not empty string
+        "Add text only if it's unique and if not empty string"
         if text and text not in self.search_text:
             self.search_text.append(text)
 
     def get_searchable_dict(self):
-        # Return a version of the identifier compatible with what's in ElasticSearch
+        "Return version of identifier compatible with what's in ElasticSearch"
         es_ident = {
             "id": self.id,
             "label": self.label,
@@ -56,7 +67,13 @@ class DugIdentifier:
         return es_ident
 
     def jsonable(self):
-        return self.__dict__
+        "Output pickleable object (used by utils.complex_handler)"
+        outdict = self.__dict__
+
+        outdict['search_text'] = sorted(self.search_text)
+        outdict['synonyms'] = sorted(self.synonyms)
+
+        return outdict
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
@@ -82,9 +99,18 @@ class AnnotatorSession(Generic[Input, Output]):
 
 
 class DefaultNormalizer():
-    """ After annotation there must be a Noramlizing step to collasce equivalent concepts into one official concept. This is a needed step for the knowledge graph to map between different concepts.
-    \n The reason why this class in integrated into the annotators.py is because currently there is only one supported Normalizer through the NCATs Translator API.
-    \n When there is another supported Normalizer it will be seperated into a separate plugin like annotator.
+    """Default concept normalizer class
+
+    After annotation there must be a Normalizing step to collasce equivalent
+    concepts into one official concept. This is a needed step for the knowledge
+    graph to map between different concepts.
+
+    The reason why this class in integrated into the annotators.py is because
+    currently there is only one supported Normalizer through the NCATs
+    Translator API.
+
+    When there is another supported Normalizer it will be seperated into a
+    separate plugin like annotator.
     """
 
     def __init__(self, url):
