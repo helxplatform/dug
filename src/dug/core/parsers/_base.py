@@ -29,18 +29,8 @@ class DugElement:
         self.concepts[concept.id] = concept
 
     def jsonable(self):
-        """Output a pickleable object
-
-        used by dug.utils.complex_handler. Because search_terms and
-        optional_terms are considered unsorted lists by the parsers but will be
-        treated as sorted lists by python, sorting the lists before output
-        prevents changes in ordering from being treated as a change in output by
-        incremental change detection.
-        """
-        outdict = self.__dict__
-        outdict['search_terms'] = sorted(self.search_terms)
-        outdict['optional_terms'] = sorted(self.optional_terms)
-        return outdict
+        """Output a pickleable object"""
+        return self.__dict__
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
@@ -66,7 +56,7 @@ class DugElement:
             concept.set_search_terms()
             search_terms.extend(concept.search_terms)
             search_terms.append(concept.name)
-        search_terms = list(set(search_terms))
+        search_terms = sorted(list(set(search_terms)))
         self.search_terms = search_terms
 
     def set_optional_terms(self):
@@ -74,7 +64,7 @@ class DugElement:
         for concept_id, concept in self.concepts.items():
             concept.set_optional_terms()
             optional_terms.extend(concept.optional_terms)
-        optional_terms = list(set(optional_terms))
+        optional_terms = sorted(list(set(optional_terms)))
         self.optional_terms = optional_terms
 
     def __str__(self):
@@ -110,15 +100,15 @@ class DugConcept:
             self.kg_answers[answer_id] = answer
 
     def clean(self):
-        self.search_terms = list(set(self.search_terms))
-        self.optional_terms = list(set(self.optional_terms))
+        self.search_terms = sorted(list(set(self.search_terms)))
+        self.optional_terms = sorted(list(set(self.optional_terms)))
 
     def set_search_terms(self):
         # Traverse set of identifiers to determine set of search terms
         search_terms = self.search_terms
         for ident_id, ident in self.identifiers.items():
             search_terms.extend(ident.search_text + ident.synonyms)
-        self.search_terms = list(set(search_terms))
+        self.search_terms = sorted(list(set(search_terms)))
 
     def set_optional_terms(self):
         # Traverse set of knowledge graph answers to determine set of optional search terms
@@ -126,7 +116,7 @@ class DugConcept:
         for kg_id, kg_answer in self.kg_answers.items():
             optional_terms += kg_answer.get_node_names()
             optional_terms += kg_answer.get_node_synonyms()
-        self.optional_terms = list(set(optional_terms))
+        self.optional_terms = sorted(list(set(optional_terms)))
 
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
@@ -143,18 +133,8 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
-        """Output a pickleable object
-
-        used by dug.utils.complex_handler. Because search_terms and
-        optional_terms are considered unsorted lists by the parsers but will be
-        treated as sorted lists by python, sorting the lists before output
-        prevents changes in ordering from being treated as a change in output by
-        incremental change detection.
-        """
-        outdict = self.__dict__
-        outdict['search_terms'] = sorted(self.search_terms)
-        outdict['optional_terms'] = sorted(self.optional_terms)
-        return outdict
+        """Output a pickleable object"""
+        return self.__dict__
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)

@@ -41,7 +41,7 @@ class DugIdentifier:
         if types is None:
             types = []
         self.types = types
-        self.search_text = [search_text] if search_text else []
+        self.search_text = sorted([search_text]) if search_text else []
         self.equivalent_identifiers = []
         self.synonyms = []
         self.purl = ""
@@ -53,7 +53,7 @@ class DugIdentifier:
     def add_search_text(self, text):
         "Add text only if it's unique and if not empty string"
         if text and text not in self.search_text:
-            self.search_text.append(text)
+            self.search_text = sorted(self.search_text + [text])
 
     def get_searchable_dict(self):
         "Return version of identifier compatible with what's in ElasticSearch"
@@ -68,12 +68,8 @@ class DugIdentifier:
 
     def jsonable(self):
         "Output pickleable object (used by utils.complex_handler)"
-        outdict = self.__dict__
+        return self.__dict__
 
-        outdict['search_text'] = sorted(self.search_text)
-        outdict['synonyms'] = sorted(self.synonyms)
-
-        return outdict
 
     def __str__(self):
         return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
