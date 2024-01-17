@@ -6,6 +6,7 @@ elasticsearch[async]==8.5.2
 gunicorn
 itsdangerous
 Jinja2
+jsonpickle
 jsonschema
 MarkupSafe
 ormar
