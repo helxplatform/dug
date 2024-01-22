@@ -76,7 +76,7 @@ services:
   ##
   #################################################################################
   redis:
-    image: 'redis/redis-stack:6.2.14'
+    image: 'redis/redis-stack:6.2.4-v2'
     networks:
       - dug-network
     environment:
