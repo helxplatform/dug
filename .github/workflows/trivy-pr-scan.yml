@@ -50,7 +50,7 @@ jobs:
 
     # We will not be concerned with Medium and Low vulnerabilities
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@v0.16.0
+      uses: aquasecurity/trivy-action@master
       with:
         image-ref: '${{ github.repository }}:vuln-test'
         format: 'sarif'
