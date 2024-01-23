@@ -45,8 +45,8 @@ jobs:
         push: false
         load: true
         tags: ${{ github.repository }}:vuln-test
-        # cache-from: type=registry,ref=${{ github.repository }}:buildcache
-        # cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
+        cache-from: type=registry,ref=${{ github.repository }}:buildcache
+        cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 
     # We will not be concerned with Medium and Low vulnerabilities
     - name: Run Trivy vulnerability scanner
