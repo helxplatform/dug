@@ -18,7 +18,7 @@ on:
       - .dockerignore
       - .githooks
     tags-ignore:
-      - 'v[0-9]+.[0-9]+.*'
+      - '*'
 jobs:
   build-push-release:
     runs-on: ubuntu-latest
