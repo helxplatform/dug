@@ -29,7 +29,7 @@ def test_annotator(annotator_api):
     synonym_finder = DefaultSynonymFinder(cfg.synonym_service)
 
     annotator = AnnotateMonarch(
-        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg
+        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg.annotator_args
     )
     text = "heart attack"
     identifiers: List[DugIdentifier] = annotator.annotate_text(
