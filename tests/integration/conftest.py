@@ -122,7 +122,7 @@ def token_classifier_api():
 def sapbert_annotator_api():
     return MockApiService(
         urls={
-            "https://babel-sapbert.apps.renci.org/annotate/": [
+            "https://med-nemo.apps.renci.org/annotate/": [
                 json.dumps(
                     [
                         {

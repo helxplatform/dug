@@ -28,7 +28,7 @@ def test_monarch_annotation_full(
     synonym_finder = DefaultSynonymFinder(**cfg.synonym_service)
 
     annotator = AnnotateMonarch(
-        normalizer=normalizer, synonym_finder=synonym_finder, **cfg.annotator_args["monarch"]
+        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg, **cfg.annotator_args["monarch"]
     )
     input_text = "heart attack"
 
