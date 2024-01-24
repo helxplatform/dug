@@ -13,6 +13,7 @@ mistune
 pluggy
 pyrsistent
 pytest
+pytest-asyncio
 pytz
 PyYAML
 requests
