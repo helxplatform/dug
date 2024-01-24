@@ -28,7 +28,7 @@ def test_monarch_annotation_full(
     synonym_finder = DefaultSynonymFinder(**cfg.synonym_service)
 
     annotator = AnnotateMonarch(
-        normalizer=normalizer, synonym_finder=synonym_finder, config=cfg
+        normalizer=normalizer, synonym_finder=synonym_finder, **cfg.annotator_args["monarch"]
     )
     input_text = "heart attack"
 
@@ -95,7 +95,7 @@ def test_sapbert_annotation_full(
     normalizer = DefaultNormalizer(**cfg.normalizer)
     synonym_finder = DefaultSynonymFinder(**cfg.synonym_service)
 
-    annotator = AnnotateSapbert(normalizer=normalizer, synonym_finder=synonym_finder)
+    annotator = AnnotateSapbert(normalizer=normalizer, synonym_finder=synonym_finder, **cfg.annotator_args["sapbert"])
     input_text = "Have you ever had a heart attack?"
 
     # Fetch Classifiers
