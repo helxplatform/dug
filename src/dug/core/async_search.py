@@ -50,12 +50,12 @@ class Search:
                 cafile=self._cfg.elastic_ca_path
             )
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     http_auth=(self._cfg.elastic_username,
+                                     basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password),
                                                 ssl_context=ssl_context)
         else:
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     http_auth=(self._cfg.elastic_username,
+                                     basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password))
 
     async def dump_concepts(self, index, query={}, size=None,
@@ -651,6 +651,7 @@ class Search:
                 new_results = new_results[data_type]
             else:
                 new_results = {}
+        new_results.update({'total_items': total_items['count']})
         return new_results
 
     async def search_kg(self, unique_id, query, offset=0, size=None,

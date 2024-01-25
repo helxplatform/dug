@@ -57,13 +57,13 @@ dug crawl tests/integration/data/test_variables_v1.0.csv -p "TOPMedTag"
 
 After crawling, you can search:
 ```shell
-dug search -q "heart attack" -t "concepts"
-dug search -q "heart attack" -t "variables" -k "concept=MONDO:0005068"
+dug search -q "vein" -t "concepts"
+dug search -q "vein" -t "variables" -k "concept=UBERON:0001638"
 ```
 
 You can also query Dug's REST API:
 ```shell
-query="`echo '{"index" : "concepts_index", "query" : "heart attack"}'`"
+query="`echo '{"index" : "concepts_index", "query" : "vein"}'`"
 
 curl --data "$query" \
      --header "Content-Type: application/json" \
@@ -290,3 +290,8 @@ TOPMed phenotypic concept data is [here](https://github.com/helxplatform/dug/tre
 ## Release
 
 To release, commit the change and select feature.
+
+#### Fail on Vulnerability Detection
+
+During PR's several vulnerability scanners are run. If there are vulnerabilities detected, the pr checks will fail and a report will be sent to Github Security Dashboard for viewing. Please ensure the vulnerability is mitigated prior to continuing the merge to protected branches.
+

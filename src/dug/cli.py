@@ -52,6 +52,13 @@ def get_argparser():
     )
 
     crawl_parser.add_argument(
+        '-a', '--annotator',
+        help='Annotator used to annotate identifiers in crawl file',
+        dest="annotator_type",
+        default="monarch"
+    )
+
+    crawl_parser.add_argument(
         '-e', '--element-type',
         help='[Optional] Coerce all elements to a certain data type (e.g. DbGaP Variable).\n'
              'Determines what tab elements will appear under in Dug front-end',
@@ -108,7 +115,7 @@ def crawl(args):
         config.node_to_element_queries = {}
     factory = DugFactory(config)
     dug = Dug(factory)
-    dug.crawl(args.target, args.parser_type, args.element_type)
+    dug.crawl(args.target, args.parser_type, args.annotator_type, args.element_type)
 
 
 def search(args):

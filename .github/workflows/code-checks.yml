@@ -1,11 +1,9 @@
 # Workflow responsible for core acceptance testing.
 # Tests Currently Run:
 #     - flake8-linter
-#     - image-build-test
-#    
-# This workflow only validates images can build
-# but does not push images to any repository.
-#
+#     - PYTest
+#     - Bandit
+# For PR Vulnerability Scanning a separate workflow will run.
 # The build-push-dev-image and build-push-release workflows 
 # handle the develop and release image storage respectively.
 #
@@ -13,11 +11,17 @@
 
 name: Code-Checks
 on:
-  push:
-    branches-ignore:
-      - master
-      - main
+  # push:
+  #   branches-ignore:
+  #     - master
+  #     - main
+  #     - develop
+  pull_request:
+    branches:
       - develop
+      - master
+      - main 
+    types: [ opened, synchronize ]
     paths-ignore:
       - README.md
       - .old_cicd/*
@@ -27,13 +31,6 @@ on:
       - .gitignore
       - .dockerignore
       - .githooks
-  pull_request:
-    branches:
-      - develop
-      - master
-      - main 
-    types: [ opened, synchronize ]
-
 
 jobs:
 ############################## flake8-linter ##############################
@@ -45,7 +42,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     # Currently actions/setup-python supports caching
     # but the cache is not as robust as cache action.
@@ -69,35 +66,6 @@ jobs:
       # flake8 --ignore=E,W --exit-zero . 
       continue-on-error: true
 
-############################## test-image-build ##############################
-  test-image-build:
-    # needs: flake8-linter
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        driver-opts: |
-          network=host
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-        logout: true
-
-    # Notes on Cache: 
-    # https://docs.docker.com/build/ci/github-actions/examples/#inline-cache
-    - name: Build Container
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        push: false
-        cache-from: type=registry,ref=${{ github.repository }}:buildcache
-        cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
 ################################### PYTEST ###################################
   pytest:
     runs-on: ubuntu-latest
@@ -106,7 +74,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: Install Requirements
       run: |
@@ -116,8 +84,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest --doctest-modules src
-        coverage run -m pytest tests/unit
+        make test
 
 ############################ Bandit ################################
   bandit:
@@ -127,7 +94,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.12'
 
     - name: Install Requirements
       run: |
@@ -139,3 +106,47 @@ jobs:
     - name: Test with Bandit
       run: |
         bandit -r src -n3 -lll
+
+############################## test-image-build ##############################
+  test-image-build:
+    runs-on: ubuntu-latest
+    # if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        echo "short_sha=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_OUTPUT
+    # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
+
+    - name: Confirm git commit SHA output
+      run: echo ${{ steps.vars.outputs.short_sha }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        logout: true
+
+    - name: Parse Github Reference Name
+      id: branch
+      run: |
+        REF=${{ github.ref_name }}
+        echo "GHR=${REF%/*}" >> $GITHUB_OUTPUT
+        
+    # Notes on Cache: 
+    # https://docs.docker.com/build/ci/github-actions/examples/#inline-cache
+    - name: Build Container
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ github.repository }}:test_${{ steps.branch.outputs.GHR }}
+        cache-from: type=registry,ref=${{ github.repository }}:buildcache
+        cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
