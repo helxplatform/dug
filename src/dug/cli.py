@@ -55,7 +55,7 @@ def get_argparser():
         '-a', '--annotator',
         help='Annotator used to annotate identifiers in crawl file',
         dest="annotator_type",
-        default="annotator-monarch"
+        default="monarch"
     )
 
     crawl_parser.add_argument(

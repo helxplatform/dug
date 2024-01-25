@@ -6,24 +6,25 @@ from unittest.mock import patch, Mock
 import pytest
 pytest.skip("skipping as dug.api is no longer present", allow_module_level=True)
 from pytest import mark
+import pytest_asyncio
 
 from dug.api import app, main, DugResource
 
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def dug_api_test_client():
     with app.test_client() as client:
         yield client
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def mock_g_object():
     with patch('dug.api.dug') as g:
         yield g
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def mock_search_concepts(mock_g_object):
     mock_g_object().search_concepts.return_value = {'hits': {'hits': [
         {'_type': '_doc',
@@ -38,21 +39,21 @@ def mock_search_concepts(mock_g_object):
     }}
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def mock_search_kg(mock_g_object):
     mock_g_object().search_kg.return_value = {'hits': {'hits': [
         {'_type': '_doc', '_id': 'MEDDRA:10047249'}
     ]}}
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def mock_search_variables(mock_g_object):
     mock_g_object().search_variables.return_value = {'hits': {'hits': [
         {'_type': '_doc', '_id': 'MEDDRA:10047249'}
     ]}}
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def mock_agg_data_types(mock_g_object):
     mock_g_object().agg_data_type.return_value = ["DBGaP"]
 

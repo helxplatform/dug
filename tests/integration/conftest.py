@@ -5,7 +5,7 @@ import urllib.parse
 from dataclasses import dataclass
 from typing import Dict
 
-import pytest
+import pytest_asyncio
 
 TEST_DATA_DIR = Path(__file__).parent.resolve() / "data"
 
@@ -45,7 +45,7 @@ class MockApiService:
         return MockResponse(text, status_code=status_code)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def monarch_annotator_api():
     base_url = "http://annotator.api/?content={query}"
 
@@ -94,7 +94,7 @@ def monarch_annotator_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def token_classifier_api():
     return MockApiService(
         urls={
@@ -118,11 +118,11 @@ def token_classifier_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def sapbert_annotator_api():
     return MockApiService(
         urls={
-            "https://babel-sapbert.apps.renci.org/annotate/": [
+            "https://med-nemo.apps.renci.org/annotate/": [
                 json.dumps(
                     [
                         {
@@ -145,7 +145,7 @@ def sapbert_annotator_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def normalizer_api():
     base_url = "http://normalizer.api/?curie={curie}"
 
@@ -188,7 +188,7 @@ def normalizer_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def null_normalizer_api():
     base_url = "http://normalizer.api/?curie={curie}"
 
@@ -211,7 +211,7 @@ def null_normalizer_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def synonym_api():
     return MockApiService(
         urls={
@@ -234,7 +234,7 @@ def synonym_api():
     )
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 def null_synonym_api():
     return MockApiService(
         urls={"http://synonyms.api": [json.dumps({"XAO:0000336": {"names":[]}}), 200]}

@@ -22,9 +22,14 @@ class AnnotateSapbert:
         normalizer,
         synonym_finder,
         ontology_greenlist=[],
+        **kwargs
     ):
-        self.classificationUrl = "https://med-nemo.apps.renci.org/annotate/"
-        self.annotatorUrl = "https://babel-sapbert.apps.renci.org/annotate/"
+        self.classificationUrl = kwargs.get('classification_url')
+        self.annotatorUrl = kwargs.get('annotator_url')
+        if not self.classificationUrl:
+            raise TypeError('Classification url needs to be defined for sapbert annotator')
+        if not self.annotatorUrl:
+            raise TypeError('Annotator url needs to be defined for sapbert annotator')
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist

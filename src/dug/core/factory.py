@@ -4,12 +4,6 @@ import redis
 from requests_cache import CachedSession
 
 import dug.core.tranql as tql
-# from dug.core.annotate import (DugAnnotator, 
-#                             #    Annotator, 
-#                                Normalizer, 
-#                                Preprocessor, 
-#                                SynonymFinder,
-#                                ConceptExpander)
 from dug.core.concept_expander import ConceptExpander
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
@@ -52,22 +46,6 @@ class DugFactory:
         )
 
         return crawler
-
-    # def build_annotator(self) -> Annotator:
-
-    #     preprocessor = Preprocessor(**self.config.preprocessor)
-    #     annotator = Annotate(**self.config.annotator)
-    #     normalizer = Normalizer(**self.config.normalizer)
-    #     synonym_finder = SynonymFinder(**self.config.synonym_service)
-
-    #     annotator = Annotator(
-    #         preprocessor=preprocessor,
-    #         annotator=annotator,
-    #         normalizer=normalizer,
-    #         synonym_finder=synonym_finder
-    #     )
-
-    #     return annotator
 
     def build_tranqlizer(self) -> ConceptExpander:
         return ConceptExpander(**self.config.concept_expander)

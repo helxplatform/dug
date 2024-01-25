@@ -50,12 +50,12 @@ class Search:
                 cafile=self._cfg.elastic_ca_path
             )
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     http_auth=(self._cfg.elastic_username,
+                                     basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password),
                                                 ssl_context=ssl_context)
         else:
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     http_auth=(self._cfg.elastic_username,
+                                     basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password))
 
     async def dump_concepts(self, index, query={}, size=None,

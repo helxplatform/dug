@@ -13,9 +13,19 @@ class MockConfig:
     })
 
     # Annotator config that will be passed to annotate.Annotator constructor
-    annotator: dict = field(default_factory=lambda: {
-        "url": "http://annotator.api/?content="
-    })
+    annotator_type: str = "monarch"
+
+    annotator_args: dict = field(
+        default_factory=lambda: {
+            "monarch": {
+                "url": "http://annotator.api/?content="
+            },
+            "sapbert": {
+                "classification_url": "http://classifier.api/annotate/",
+                "annotator_url": "http://entity-link.api/annotate/",
+            },
+        }
+    )
 
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(default_factory=lambda: {
