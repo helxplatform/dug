@@ -4,7 +4,7 @@ from typing import List
 from xml.etree import ElementTree as ET
 
 from dug import utils as utils
-from ._base import DugElement, FileParser, Indexable, InputFile
+from dug.core.parsers._base import DugElement, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 
@@ -37,15 +37,19 @@ class CTNParser(FileParser):
             raise IOError(err_msg)
 
         elements = []
+        counter = 0
         for variable in root.iter('variable'):
+            if not variable.text:
+                continue
             description = variable.find('description').text.lower() if variable.find('description') else ""
+
             elem = DugElement(elem_id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               desc=description,
                               elem_type=self.get_study_type(),
                               collection_id=f"{study_id}",
                               collection_name=study_name)
-
+            counter+=1
             # what is a good ctn link
             elem.collection_action = utils.get_ctn_link(study_id=study_id)
             # Add to set of variables
