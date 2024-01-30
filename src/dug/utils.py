@@ -45,6 +45,10 @@ def get_heal_platform_link(study_id):
     accession = study_id.split(':')[1]
     return f'{base_url}/{accession}'
 
+def get_ctn_link(study_id):
+    base_url = "https://placeholder"
+    accession = study_id.split(':')[1]
+    return f'{base_url}/{accession}'
 
 def biolink_snake_case(arg):
     """Convert such SnakeCase to snake_case.
