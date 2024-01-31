@@ -46,7 +46,7 @@ def get_heal_platform_link(study_id):
     return f'{base_url}/{accession}'
 
 def get_ctn_link(study_id):
-    base_url = "https://placeholder"
+    base_url = "https://ctnlibrary.org/protocol"
     accession = study_id.split(':')[1]
     return f'{base_url}/{accession}'
 

@@ -39,22 +39,29 @@ class CTNParser(FileParser):
         elements = []
         counter = 0
         for variable in root.iter('variable'):
+
             if not variable.text:
                 continue
-            description = variable.find('description').text.lower() if variable.find('description') else ""
+            description = variable.find('description').text.lower() if variable.find('description') is not None else ""
 
             elem = DugElement(elem_id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               desc=description,
                               elem_type=self.get_study_type(),
                               collection_id=f"{study_id}",
-                              collection_name=study_name)
+                              collection_name=study_name,
+                              collection_action=utils.get_ctn_link(study_id=study_id))
+            if elem.id=="BSNAUSE":
+                print(elem.collection_action)
             counter+=1
-            # what is a good ctn link
-            elem.collection_action = utils.get_ctn_link(study_id=study_id)
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
 
         # You don't actually create any concepts
         return elements
+
+
+
+
+
