@@ -13,7 +13,7 @@ logger = logging.getLogger (__name__)
 
 APP = FastAPI(
     title="Dug Search API",
-    root_path=os.environ.get("ROOT_PATH", "/"),
+    # root_path=os.environ.get("ROOT_PATH", "/"),
 )
 
 APP.add_middleware(
