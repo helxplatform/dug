@@ -690,3 +690,32 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+    async def search_study(self, unique_id, query="", offset=0, size=None):
+        """
+        In knowledge graph search the concept MUST match the unique ID
+        The query MUST match search_targets.  The updated query allows for
+        fuzzy matching and for the default OR behavior for the query.
+        """
+        query = {
+            "bool": {
+                "must": [
+                    {"term": {
+                        "collection_id.keyword": unique_id
+                    }
+                    }
+                ]
+            }
+        }
+        body = {'query': query}
+        total_items = await self.es.count(body=body, index="variables_index")
+        search_results = await self.es.search(
+            index="variables_index",
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                         'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results

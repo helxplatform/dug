@@ -49,6 +49,12 @@ class SearchKgQuery(BaseModel):
     index: str = "kg_index"
     size:int = 100
 
+class SearchStudyQuery(BaseModel):
+    #query: str
+    unique_id: str
+    #index: str = "variables_index"
+    size:int = 100
+
 search = Search(Config.from_env())
 
 @APP.on_event("shutdown")
@@ -105,6 +111,18 @@ async def search_var(search_query: SearchVariablesQuery):
         "result": await search.search_variables(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
+
+@APP.get('/search_study')
+async def search_study(unique_id: str):
+    return {
+        "message": "Search result",
+        # Although index in provided by the query we will keep it around for backward compatibility, but
+        # search concepts should always search against "variables_index"
+        "result": await search.search_study(unique_id=unique_id),
+        "status": "success"
+    }
+
+
 
 
 if __name__ == '__main__':
