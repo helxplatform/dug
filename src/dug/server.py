@@ -115,15 +115,7 @@ async def search_var(search_query: SearchVariablesQuery):
         "status": "success"
     }
 
-'''@APP.get('/search_study')
-async def search_study(unique_id: str):
-    return {
-        "message": "Search result",
-        # Although index in provided by the query we will keep it around for backward compatibility, but
-        # search concepts should always search against "variables_index"
-        "result": await search.search_study(unique_id=unique_id),
-        "status": "success"
-    }'''
+
 
 @APP.get('/search_study')
 async def search_study(study_id: Optional[str] = None, study_name: Optional[str] = None):
