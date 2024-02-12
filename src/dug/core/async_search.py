@@ -691,29 +691,36 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    async def search_study(self, unique_id, query="", offset=0, size=None):
+    async def search_study(self, study_id=None, study_name=None, offset=0, size=None):
         """
-        In knowledge graph search the concept MUST match the unique ID
-        The query MUST match search_targets.  The updated query allows for
-        fuzzy matching and for the default OR behavior for the query.
+        Search for studies by unique_id (ID or name) and/or study_name.
         """
-        query = {
+        # Define the base query
+         # Define the base query
+        query_body = {
             "bool": {
-                "must": [
-                    {"term": {
-                        "collection_id.keyword": unique_id
-                    }
-                    }
-                ]
+                "must": []
             }
         }
-        body = {'query': query}
+        
+        # Add conditions based on user input
+        if study_id:
+            query_body["bool"]["must"].append({
+                "match": {"collection_id": study_id}
+            })
+        
+        if study_name:
+            query_body["bool"]["must"].append({
+                "match": {"collection_name": study_name}
+            })
+
+        print("query_body",query_body)
+        body = {'query': query_body}
         total_items = await self.es.count(body=body, index="variables_index")
         search_results = await self.es.search(
             index="variables_index",
             body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source'],
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
         )

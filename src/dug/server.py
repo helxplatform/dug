@@ -8,6 +8,7 @@ from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
 import asyncio
+from typing import Optional
 
 logger = logging.getLogger (__name__)
 
@@ -51,9 +52,11 @@ class SearchKgQuery(BaseModel):
 
 class SearchStudyQuery(BaseModel):
     #query: str
-    unique_id: str
+    study_id: Optional[str] = None
+    study_name: Optional[str] = None
     #index: str = "variables_index"
     size:int = 100
+   
 
 search = Search(Config.from_env())
 
@@ -112,7 +115,7 @@ async def search_var(search_query: SearchVariablesQuery):
         "status": "success"
     }
 
-@APP.get('/search_study')
+'''@APP.get('/search_study')
 async def search_study(unique_id: str):
     return {
         "message": "Search result",
@@ -120,8 +123,21 @@ async def search_study(unique_id: str):
         # search concepts should always search against "variables_index"
         "result": await search.search_study(unique_id=unique_id),
         "status": "success"
-    }
+    }'''
 
+@APP.get('/search_study')
+async def search_study(study_id: Optional[str] = None, study_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_study(study_id=study_id, study_name=study_name)
+    return {
+        "message": "Search result",
+        # Although index in provided by the query we will keep it around for backward compatibility, but
+        # search concepts should always search against "variables_index"
+        "result": result,
+        "status": "success"
+    }
 
 
 
