@@ -297,59 +297,7 @@ class Search:
             size=size
         )
 
-        # Reformat Results
-        new_results = {}
-        if not search_results:
-            # we don't want to error on a search not found
-            new_results.update({'total_items': total_items['count']})
-            return new_results
-
-        for elem in search_results['hits']['hits']:
-            elem_s = elem['_source']
-            elem_type = elem_s['data_type']
-            if elem_type not in new_results:
-                new_results[elem_type] = {}
-
-            elem_id = elem_s['element_id']
-            coll_id = elem_s['collection_id']
-            elem_info = {
-                "description": elem_s['element_desc'],
-                "e_link": elem_s['element_action'],
-                "id": elem_id,
-                "name": elem_s['element_name'],
-                "score": round(elem['_score'], 6)
-            }
-
-            # Case: collection not in dictionary for given data_type
-            if coll_id not in new_results[elem_type]:
-                # initialize document
-                doc = {
-                    'c_id': coll_id,
-                    'c_link': elem_s['collection_action'],
-                    'c_name': elem_s['collection_name'],
-                    'elements': [elem_info]
-                }
-                # save document
-                new_results[elem_type][coll_id] = doc
-
-            # Case: collection already in dictionary for given
-            # element_type; append elem_info.  Assumes no duplicate
-            # elements
-            else:
-                new_results[elem_type][coll_id]['elements'].append(elem_info)
-
-        # Flatten dicts to list
-        for i in new_results:
-            new_results[i] = list(new_results[i].values())
-
-        # Return results
-        if bool(data_type):
-            if data_type in new_results:
-                new_results = new_results[data_type]
-            else:
-                new_results = {}
-        return new_results
-
+        return self._make_result(data_type, search_results['hits']['hits'], total_items, True)
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
@@ -371,16 +319,18 @@ class Search:
         body = {'query': query}
         total_items = await self.es.count(body=body, index="variables_index")
         search_results = []
-        async for r in async_scan(self.es,
-                                  query=body):
+        async for r in async_scan(self.es, query=body):
             search_results.append(r)
+
+        return self._make_result(data_type, search_results, total_items, False)
+
+    def _make_result(self, data_type, search_results, total_items, scored: bool):
         # Reformat Results
         new_results = {}
         if not search_results:
             # we don't want to error on a search not found
             new_results.update({'total_items': total_items['count']})
             return new_results
-
         for elem in search_results:
             elem_s = elem['_source']
             elem_type = elem_s['data_type']
@@ -396,17 +346,18 @@ class Search:
                 "name": elem_s['element_name']
             }
 
+            if scored:
+                elem_info["score"]: round(elem['_score'], 6)
+
             # Case: collection not in dictionary for given data_type
             if coll_id not in new_results[elem_type]:
                 # initialize document
-                doc = {}
-
-                # add information
-                doc['c_id'] = coll_id
-                doc['c_link'] = elem_s['collection_action']
-                doc['c_name'] = elem_s['collection_name']
-                doc['elements'] = [elem_info]
-
+                doc = {
+                    'c_id': coll_id,
+                    'c_link': elem_s['collection_action'],
+                    'c_name': elem_s['collection_name'],
+                    'elements': [elem_info]
+                }
                 # save document
                 new_results[elem_type][coll_id] = doc
 
@@ -415,17 +366,16 @@ class Search:
             # elements
             else:
                 new_results[elem_type][coll_id]['elements'].append(elem_info)
-
         # Flatten dicts to list
         for i in new_results:
             new_results[i] = list(new_results[i].values())
-
         # Return results
         if bool(data_type):
             if data_type in new_results:
                 new_results = new_results[data_type]
             else:
                 new_results = {}
+
         new_results.update({'total_items': total_items['count']})
         return new_results
 
