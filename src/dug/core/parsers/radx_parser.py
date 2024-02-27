@@ -20,6 +20,7 @@ class RADxParser(FileParser):
         elements = []
         for variable in root.iter('variable'):
             desc = variable.find('description').text if variable.find('description') is not None else ''
+            desc = desc or ''
             elem = DugElement(elem_id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               desc=desc,
