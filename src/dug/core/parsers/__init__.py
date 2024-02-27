@@ -13,6 +13,7 @@ from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
 from .heal_dp_parser import HEALDPParser
 from .ctn_parser import CTNParser
+from .radx_parser import RADxParser
 
 
 logger = logging.getLogger('dug')
@@ -35,6 +36,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
     parser_dict["heal-research"] = HEALDPParser(study_type="HEAL Research Programs")
     parser_dict["ctn"] = CTNParser()
+    parser_dict["radx"] = RADxParser()
 
     
 
