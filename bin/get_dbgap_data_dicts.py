@@ -179,7 +179,13 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
             # Try to download to output folder if the study hasn't already been downloaded
             if not os.path.exists(dbgap_dir):
                 logging.info(f"Downloading {dbgap_id} to {dbgap_dir}")
-                count_downloaded += download_dbgap_study(dbgap_id, dbgap_dir)
+                try:
+                    count_downloaded += download_dbgap_study(dbgap_id, dbgap_dir)
+                except Exception as ex:
+                    logging.error(f"Exception occurred while downloading {dbgap_id} to {dbgap_dir}: {ex}")
+                    shutil.rmtree(dbgap_dir)
+                    logging.error(f"Deleted {dbgap_dir} as it is probably incomplete.")
+                    logging.error("Re-run this script to ensure that all variables are downloaded.")
 
     logging.info(f"Downloaded {count_downloaded} studies from {count_rows} in input files.")
 
