@@ -60,6 +60,8 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         return 0
 
     ftp_filelist = ftp.nlst(".")
+    ftp.quit()
+
     for ftp_filename in ftp_filelist:
         if 'data_dict' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
@@ -78,7 +80,6 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
             count_downloaded_vars += 1
 
     # Sometimes we've timed out on the FTP server by this point. So let's disconnect and reconnect.
-    ftp.quit()
     ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
     ftp.login()
     ftp.sendcmd('PASV')
