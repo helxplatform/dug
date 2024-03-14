@@ -16,6 +16,10 @@ from urllib.parse import urljoin
 # Default to logging at the INFO level.
 logging.basicConfig(level=logging.INFO)
 
+# FTP timeout in seconds
+FTP_TIMEOUT = 100
+
+
 # Helper function
 def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     """
@@ -28,7 +32,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
 
     count_downloaded_vars = 0
 
-    ftp = FTP('ftp.ncbi.nlm.nih.gov')
+    ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
     ftp.login()
     ftp.sendcmd('PASV')
     study_variable = dbgap_accession_id.split('.')[0]
@@ -72,6 +76,12 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
                 data_dict_file.write(response.content)
                 logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename} in {response.elapsed.microseconds} microseconds.")
             count_downloaded_vars += 1
+
+    # Sometimes we've timed out on the FTP server by this point. So let's disconnect and reconnect.
+    ftp.quit()
+    ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
+    ftp.login()
+    ftp.sendcmd('PASV')
 
     # Step 2: Check to see if there's a GapExchange file in the parent folder
     #         and if there is, get it.
