@@ -89,8 +89,10 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     try:
         ftp.cwd(study_id_path)
     except error_temp as e:
-        logging.error("Ftp session timed out... Reconnecting")
+        logging.error("FTP session timed out. Reconnecting.")
+        ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
         ftp.login()
+        ftp.sendcmd('PASV')
         resp = ftp.cwd(study_id_path)
         if resp[:1] == '2':
             logging.info("command success")
