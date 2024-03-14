@@ -193,7 +193,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
                     count_downloaded += download_dbgap_study(dbgap_id, dbgap_dir)
                 except Exception as ex:
                     logging.error(f"Exception occurred while downloading {dbgap_id} to {dbgap_dir}: {ex}")
-                    shutil.rmtree(dbgap_dir)
+                    shutil.rmtree(dbgap_dir, ignore_errors=True)
                     logging.error(f"Deleted {dbgap_dir} as it is probably incomplete.")
                     logging.error("Re-run this script to ensure that all variables are downloaded.")
 
