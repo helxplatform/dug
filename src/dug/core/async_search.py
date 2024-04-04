@@ -223,7 +223,7 @@ class Search:
         if "*" in query or "\"" in query or "+" in query or "-" in query:
             search_body = self.get_simple_search_query(query)
         else:
-            search_body = {"query": self._build_concepts_query(query, **kwargs)}
+            search_body = self._build_concepts_query(query, **kwargs)
         # Get aggregated counts of biolink types
         search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
         if isinstance(types, list):
