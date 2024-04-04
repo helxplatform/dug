@@ -1,5 +1,4 @@
 """Implements search methods using async interfaces"""
-
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
@@ -221,9 +220,11 @@ class Search:
         """
         Changed to a long boolean match query to optimize search results
         """
-        query_dict = self._build_concepts_query(query, **kwargs)
+        if "*" in query or "\"" in query or "+" in query or "-" in query:
+            search_body = self.get_simple_search_query(query)
+        else:
+            search_body = {"query": self._build_concepts_query(query, **kwargs)}
         # Get aggregated counts of biolink types
-        search_body = {"query": query_dict}
         search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
         if isinstance(types, list):
             search_body['post_filter'] = {
@@ -418,110 +419,112 @@ class Search:
 
     def get_query(self, concept, fuzziness, prefix_length, query):
         query = {
-            'bool': {
-                'should': {
-                    "match": {
-                        "identifiers": concept
-                    }
-                },
-                'should': [
-                    {
-                        "match_phrase": {
-                            "element_name": {
-                                "query": query,
-                                "boost": 10
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "element_desc": {
-                                "query": query,
-                                "boost": 6
-                            }
-                        }
-                    },
-                    {
-                        "match_phrase": {
-                            "search_terms": {
-                                "query": query,
-                                "boost": 8
-                            }
-                        }
-                    },
-                    {
+            "query": {
+                'bool': {
+                    'should': {
                         "match": {
-                            "element_name": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 4
-                            }
+                            "identifiers": concept
                         }
                     },
-                    {
-                        "match": {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 5
+                    'should': [
+                        {
+                            "match_phrase": {
+                                "element_name": {
+                                    "query": query,
+                                    "boost": 10
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase": {
+                                "element_desc": {
+                                    "query": query,
+                                    "boost": 6
+                                }
+                            }
+                        },
+                        {
+                            "match_phrase": {
+                                "search_terms": {
+                                    "query": query,
+                                    "boost": 8
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "element_name": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "operator": "and",
+                                    "boost": 4
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "search_terms": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "operator": "and",
+                                    "boost": 5
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "element_desc": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "operator": "and",
+                                    "boost": 3
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "element_desc": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "element_name": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "boost": 2
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "search_terms": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length,
+                                    "boost": 1
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "optional_terms": {
+                                    "query": query,
+                                    "fuzziness": fuzziness,
+                                    "prefix_length": prefix_length
+                                }
                             }
                         }
-                    },
-                    {
-                        "match": {
-                            "element_desc": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "operator": "and",
-                                "boost": 3
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "element_desc": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "boost": 2
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "element_name": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "boost": 2
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "search_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length,
-                                "boost": 1
-                            }
-                        }
-                    },
-                    {
-                        "match": {
-                            "optional_terms": {
-                                "query": query,
-                                "fuzziness": fuzziness,
-                                "prefix_length": prefix_length
-                            }
-                        }
-                    }
-                ]
+                    ]
+                }
             }
         }
         if concept:
@@ -531,3 +534,16 @@ class Search:
                 }
             }
         return query
+
+    def get_simple_search_query(self, query):
+        search_query = {
+            "query": {
+                "simple_query_string": {
+                    "query": query,
+                    "fields": ["name", "description", "search_terms"],
+                    "default_operator": "and",
+                    "flags": "OR|AND|NOT|PHRASE|PREFIX"
+                }
+            }
+        }
+        return search_query
