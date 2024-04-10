@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<data_table study_id="CTN:ctn0037" study_name="Stimulant Reduction Intervention using Dosed Exercise (STRIDE)" date_created="2024-01-23T09:56:26.529938">
+	<variable id="PROT" module="Adverse Events">
+		<name>PROT</name>
+		<description>PROT</description>
+		<type>Character</type>
+	</variable>
+	<variable id="PATID" module="Adverse Events">
+		<name>PATID</name>
+		<description>PATID</description>
+		<type>Numeric</type>
+	</variable>
+	<variable id="SITE" module="Adverse Events">
+		<name>SITE</name>
+		<description>SITE</description>
+		<type>Numeric</type>
+	</variable>
+	<variable id="RANDDT" module="Adverse Events">
+		<name>RANDDT</name>
+		<type>Numeric</type>
+	</variable>
+	<variable id="AEDATE" module="Adverse Events">
+		<name>AEDATE</name>
+		<description>Adverse Event Onset Date</description>
+		<type>Numeric</type>
+	</variable>
+</data_table>
+
