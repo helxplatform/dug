@@ -56,7 +56,12 @@ class SearchStudyQuery(BaseModel):
     study_name: Optional[str] = None
     #index: str = "variables_index"
     size:int = 100
-   
+class SearchProgramQuery(BaseModel):
+    #query: str
+    program_id: Optional[str] = None
+    program_name: Optional[str] = None
+    #index: str = "variables_index"
+    size:int = 100   
 
 search = Search(Config.from_env())
 
@@ -131,6 +136,20 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
         "status": "success"
     }
 
+
+@APP.get('/search_program')
+async def search_program( program_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_program(program_name=program_name)
+    return {
+        "message": "Search result",
+        # Although index in provided by the query we will keep it around for backward compatibility, but
+        # search concepts should always search against "variables_index"
+        "result": result,
+        "status": "success"
+    }
 
 
 if __name__ == '__main__':
