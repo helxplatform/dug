@@ -40,11 +40,9 @@ services:
       REDIS_PASSWORD: "$REDIS_PASSWORD"
       FLASK_ENV: "development"
       PYTHONUNBUFFERED: "TRUE"
-    entrypoint: [ "gunicorn",
-                     "--workers=$API_WORKERS", "--name=dug",
-                     "--bind=0.0.0.0:$API_PORT", "--timeout=$API_TIMEOUT",
-                     "--log-level=DEBUG", "--enable-stdio-inheritance",
-                     "-k", "uvicorn.workers.UvicornWorker", "--reload", "dug.server:APP" ]
+    entrypoint: [ "uvicorn",
+                     "--host", "0.0.0.0" , "--port" , "$API_PORT",
+                     "--log-level=debug",  "--reload-dir", "/home/dug/dug/",  "--reload", "dug.server:APP" ]
     volumes:
       - ./src:/home/dug/dug/
     ports:

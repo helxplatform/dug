@@ -690,3 +690,93 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+    async def search_study(self, study_id=None, study_name=None, offset=0, size=None):
+        """
+        Search for studies by unique_id (ID or name) and/or study_name.
+        """
+        # Define the base query
+         # Define the base query
+        query_body = {
+            "bool": {
+                "must": []
+            }
+        }
+        
+        # Add conditions based on user input
+        if study_id:
+            query_body["bool"]["must"].append({
+                "match": {"collection_id": study_id}
+            })
+        
+        if study_name:
+            query_body["bool"]["must"].append({
+                "match": {"collection_name": study_name}
+            })
+
+        print("query_body",query_body)
+        body = {'query': query_body}
+        total_items = await self.es.count(body=body, index="variables_index")
+        search_results = await self.es.search(
+            index="variables_index",
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_results.update({'total_items': total_items['count']})
+        return search_results
+
+
+    async def search_program(self, program_name=None, offset=0, size=None):
+        """
+        Search for studies by unique_id (ID or name) and/or study_name.
+        """
+    
+        query_body = {
+            "query": {
+                "bool": {
+                    "must": []
+                }
+            },
+            "aggs": {
+                "unique_collection_ids": {
+                    "terms": {
+                        "field": "collection_id.keyword"
+                    }
+                }
+            }
+        }
+
+        # specify the fields to be returned
+        query_body["_source"] = ["collection_id", "collection_name", "collection_action"]
+
+        # search for program_name based on uses input
+        if program_name:
+            query_body["query"]["bool"]["must"].append({
+                "match": {"data_type": program_name}
+            })
+
+        print("query_body", query_body)
+
+        # Prepare the query body for execution
+        body = query_body
+        #print(body)
+
+        # Execute the search query
+        search_results = await self.es.search(
+            index="variables_index",
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'aggregations.unique_collection_ids.buckets'],
+            from_=offset,
+            size=size
+        )
+
+        # The unique collection_ids will be in the 'aggregations' field of the response
+        unique_collection_ids = search_results['aggregations']['unique_collection_ids']['buckets']
+
+        #print("Unique collection_ids:", unique_collection_ids)
+
+
+        #print(search_results)
+        return search_results

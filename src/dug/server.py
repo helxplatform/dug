@@ -8,12 +8,13 @@ from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
 import asyncio
+from typing import Optional
 
 logger = logging.getLogger (__name__)
 
 APP = FastAPI(
     title="Dug Search API",
-    root_path=os.environ.get("ROOT_PATH", "/"),
+    # root_path=os.environ.get("ROOT_PATH", "/"),
 )
 
 APP.add_middleware(
@@ -48,6 +49,19 @@ class SearchKgQuery(BaseModel):
     unique_id: str
     index: str = "kg_index"
     size:int = 100
+
+class SearchStudyQuery(BaseModel):
+    #query: str
+    study_id: Optional[str] = None
+    study_name: Optional[str] = None
+    #index: str = "variables_index"
+    size:int = 100
+class SearchProgramQuery(BaseModel):
+    #query: str
+    program_id: Optional[str] = None
+    program_name: Optional[str] = None
+    #index: str = "variables_index"
+    size:int = 100   
 
 search = Search(Config.from_env())
 
@@ -103,6 +117,37 @@ async def search_var(search_query: SearchVariablesQuery):
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "variables_index"
         "result": await search.search_variables(**search_query.dict(exclude={"index"})),
+        "status": "success"
+    }
+
+
+
+@APP.get('/search_study')
+async def search_study(study_id: Optional[str] = None, study_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_study(study_id=study_id, study_name=study_name)
+    return {
+        "message": "Search result",
+        # Although index in provided by the query we will keep it around for backward compatibility, but
+        # search concepts should always search against "variables_index"
+        "result": result,
+        "status": "success"
+    }
+
+
+@APP.get('/search_program')
+async def search_program( program_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_program(program_name=program_name)
+    return {
+        "message": "Search result",
+        # Although index in provided by the query we will keep it around for backward compatibility, but
+        # search concepts should always search against "variables_index"
+        "result": result,
         "status": "success"
     }
 
