@@ -8,7 +8,8 @@ FROM python:3.12.1-alpine3.19
 
 # Install required packages
 RUN apk update && \
-    apk add g++ make
+    apk add g++ make libexpat=2.6.2-r0 libssl3=3.1.4-r6
+
 
 #upgrade openssl \
 
