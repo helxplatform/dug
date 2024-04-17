@@ -110,7 +110,7 @@ class Search:
         return data_type_list
 
     @staticmethod
-    def _build_concepts_query(query, fuzziness=1, prefix_length=3):
+    def _get_concepts_query(query, fuzziness=1, prefix_length=3):
         "Static data structure populator, pulled for easier testing"
         query_object = {
             "query" : {
@@ -225,7 +225,7 @@ class Search:
         if "*" in query or "\"" in query or "+" in query or "-" in query:
             search_body = self.get_simple_search_query(query)
         else:
-            search_body = self._build_concepts_query(query, **kwargs)
+            search_body = self._get_concepts_query(query, **kwargs)
         # Get aggregated counts of biolink types
         search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
         if isinstance(types, list):
@@ -286,7 +286,7 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        query = self.get_query(concept, fuzziness, prefix_length, query)
+        query = self._get_var_query(concept, fuzziness, prefix_length, query)
         if index is None:
             index = "variables_index"
         body = {'query': query}
@@ -317,7 +317,7 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        query = self.get_query(concept, fuzziness, prefix_length, query)
+        query = self._get_var_query(concept, fuzziness, prefix_length, query)
 
         body = {'query': query}
         total_items = await self.es.count(body=body, index="variables_index")
@@ -419,7 +419,8 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    def get_query(self, concept, fuzziness, prefix_length, query):
+    def _get_var_query(self, concept, fuzziness, prefix_length, query):
+        """Returns ES query for variable search"""
         query = {
             "query": {
                 'bool': {
@@ -538,6 +539,8 @@ class Search:
         return query
 
     def get_simple_search_query(self, query):
+        """Returns ES query that allows to use basic operators like AND, OR, NOT...
+        More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         search_query = {
             "query": {
                 "simple_query_string": {
