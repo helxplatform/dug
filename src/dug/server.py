@@ -130,8 +130,6 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
     result = await search.search_study(study_id=study_id, study_name=study_name)
     return {
         "message": "Search result",
-        # Although index in provided by the query we will keep it around for backward compatibility, but
-        # search concepts should always search against "variables_index"
         "result": result,
         "status": "success"
     }
@@ -145,8 +143,6 @@ async def search_program( program_name: Optional[str] = None):
     result = await search.search_program(program_name=program_name)
     return {
         "message": "Search result",
-        # Although index in provided by the query we will keep it around for backward compatibility, but
-        # search concepts should always search against "variables_index"
         "result": result,
         "status": "success"
     }
