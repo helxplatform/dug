@@ -300,7 +300,12 @@ class Search:
             size=size
         )
 
-        return self._make_result(data_type, search_results['hits']['hits'], total_items, True)
+        search_result_hits = []
+
+        if "hits" in search_results:
+            search_result_hits = search_results['hits']['hits']
+
+        return self._make_result(data_type, search_result_hits , total_items, True)
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
