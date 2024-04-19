@@ -286,21 +286,26 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        query = self._get_var_query(concept, fuzziness, prefix_length, query)
+        es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
         if index is None:
             index = "variables_index"
-        body = {'query': query}
-        total_items = await self.es.count(body=body, index=index)
+
+        total_items = await self.es.count(body=es_query, index=index)
         search_results = await self.es.search(
             index="variables_index",
-            body=body,
+            body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
             from_=offset,
             size=size
         )
 
-        return self._make_result(data_type, search_results['hits']['hits'], total_items, True)
+        search_result_hits = []
+
+        if "hits" in search_results:
+            search_result_hits = search_results['hits']['hits']
+
+        return self._make_result(data_type, search_result_hits , total_items, True)
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
@@ -317,12 +322,10 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        query = self._get_var_query(concept, fuzziness, prefix_length, query)
-
-        body = {'query': query}
-        total_items = await self.es.count(body=body, index="variables_index")
+        es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+        total_items = await self.es.count(body=es_query, index="variables_index")
         search_results = []
-        async for r in async_scan(self.es, query=body):
+        async for r in async_scan(self.es, query=es_query):
             search_results.append(r)
 
         return self._make_result(data_type, search_results, total_items, False)
@@ -510,14 +513,9 @@ class Search:
 
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
         """Returns ES query for variable search"""
-        query = {
+        es_query = {
             "query": {
                 'bool': {
-                    'should': {
-                        "match": {
-                            "identifiers": concept
-                        }
-                    },
                     'should': [
                         {
                             "match_phrase": {
@@ -620,12 +618,12 @@ class Search:
             }
         }
         if concept:
-            query['bool']['must'] = {
+            es_query["query"]["bool"]["must"] = {
                 "match": {
                     "identifiers": concept
                 }
             }
-        return query
+        return es_query
 
     def get_simple_search_query(self, query):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
