@@ -491,7 +491,7 @@ class Search:
                 "match": {"data_type": program_name}
             })
 
-        print("query_body", query_body)
+        #print("query_body", query_body)
 
         # Prepare the query body for execution
         body = query_body
@@ -514,7 +514,40 @@ class Search:
 
         #print(search_results)
         return search_results
+    
+    async def search_program_list(self):
 
+        query_body = {
+            "size": 0,  # We don't need the documents themselves, so set the size to 0
+            "aggs": {
+                "unique_program_names": {
+                    "terms": {
+                        "field": "data_type.keyword"
+                    },
+                    "aggs": {
+                        "No_of_studies": {
+                            "cardinality": {
+                                "field": "collection_id.keyword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        # Execute the search query
+        search_results = await self.es.search(
+            index="variables_index",
+            body=query_body
+        )
+
+        # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
+        unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
+
+        # Testing the output so print the unique data_types and their counts of unique collection_ids
+        #for bucket in unique_data_types:
+        #    print(f"data_type: {bucket['key']}, count of unique collection_ids: {bucket['No_of_studies']['value']}")
+
+        return unique_data_types
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
         """Returns ES query for variable search"""
         es_query = {
