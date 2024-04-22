@@ -18,8 +18,8 @@ class Config:
     elastic_host: str = "elasticsearch"
     elastic_port: int = 9200
     elastic_username: str = "elastic"
-    elastic_scheme: str = "http"
-    elastic_ca_path: str = ""
+    elastic_scheme: str = "https"
+    elastic_ca_path: str = "/Users/ykale/Documents/GitHub/dug/ca_elastic.crt"
 
     redis_host: str = "redis"
     redis_port: int = 6379
