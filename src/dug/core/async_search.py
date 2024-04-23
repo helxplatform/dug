@@ -353,7 +353,7 @@ class Search:
             }
 
             if scored:
-                elem_info["score"]: round(elem['_score'], 6)
+                elem_info["score"] = round(elem['_score'], 6)
 
             # Case: collection not in dictionary for given data_type
             if coll_id not in new_results[elem_type]:
