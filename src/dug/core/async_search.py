@@ -382,7 +382,11 @@ class Search:
             else:
                 new_results = {}
 
-        new_results.update({'total_items': total_items['count']})
+        # better to update UI to accept optional "total_items" so it does not fail while fetching data for studies tab
+        # and remove this if
+        if not scored:
+            new_results.update({'total_items': total_items['count']})
+
         return new_results
 
     async def search_kg(self, unique_id, query, offset=0, size=None,
