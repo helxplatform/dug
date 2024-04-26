@@ -147,6 +147,16 @@ async def search_program( program_name: Optional[str] = None):
         "status": "success"
     }
 
-
+@APP.get('/program_list')
+async def get_program_list():
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_program_list()
+    return {
+  
+        "result": result,
+        "status": "success"
+    }
 if __name__ == '__main__':
     uvicorn.run(APP)

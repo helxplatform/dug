@@ -466,7 +466,7 @@ class Search:
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """
-    
+ # Initialize the query_body with the outer structure
         query_body = {
             "query": {
                 "bool": {
@@ -476,17 +476,25 @@ class Search:
             "aggs": {
                 "unique_collection_ids": {
                     "terms": {
-                        "field": "collection_id.keyword"
+                        "field": "collection_id.keyword",
+                        "size":1000
+                    },
+                    "aggs": {
+                        "collection_details": {
+                            "top_hits": {
+                                "_source": ["collection_id", "collection_name", "collection_action"],
+                                "size": 1
+                            }
+                        }
                     }
                 }
             }
         }
 
-        # specify the fields to be returned
-        query_body["_source"] = ["collection_id", "collection_name", "collection_action"]
-
-        # search for program_name based on uses input
+        # Add conditions based on user input
         if program_name:
+            # Lowercase the program_name before adding it to the query
+            program_name = program_name.lower()
             query_body["query"]["bool"]["must"].append({
                 "match": {"data_type": program_name}
             })
@@ -495,25 +503,59 @@ class Search:
 
         # Prepare the query body for execution
         body = query_body
-        #print(body)
-
+    
         # Execute the search query
         search_results = await self.es.search(
             index="variables_index",
             body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source', 'aggregations.unique_collection_ids.buckets'],
             from_=offset,
             size=size
         )
 
-        # The unique collection_ids will be in the 'aggregations' field of the response
+        # The unique collection_ids and their details will be in the 'aggregations' field of the response
         unique_collection_ids = search_results['aggregations']['unique_collection_ids']['buckets']
 
-        #print("Unique collection_ids:", unique_collection_ids)
+        # Prepare a list to hold the collection details
+        collection_details_list = []
+
+        for bucket in unique_collection_ids:
+            collection_details = bucket['collection_details']['hits']['hits'][0]['_source']
+            # Append the details to the list in the desired format
+            collection_details_list.append(collection_details)
+
+        return collection_details_list
+    
 
 
-        #print(search_results)
-        return search_results
+    async def search_program_list(self):
+
+        query_body = {
+            "size": 0,  # We don't need the documents themselves, so set the size to 0
+            "aggs": {
+                "unique_program_names": {
+                    "terms": {
+                        "field": "data_type.keyword"
+                    },
+                    "aggs": {
+                        "No_of_studies": {
+                            "cardinality": {
+                                "field": "collection_id.keyword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        # Execute the search query
+        search_results = await self.es.search(
+            index="variables_index",
+            body=query_body
+        )
+        # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
+        unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
+
+        return unique_data_types
+
 
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
         """Returns ES query for variable search"""
