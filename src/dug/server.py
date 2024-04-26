@@ -147,7 +147,7 @@ async def search_program( program_name: Optional[str] = None):
         "status": "success"
     }
 
-@APP.post('/program_list')
+@APP.get('/program_list')
 async def get_program_list():
     """
     Search for studies by unique_id (ID or name) and/or study_name.
