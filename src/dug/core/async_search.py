@@ -466,7 +466,6 @@ class Search:
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """
-    
  # Initialize the query_body with the outer structure
         query_body = {
             "query": {
@@ -504,10 +503,7 @@ class Search:
 
         # Prepare the query body for execution
         body = query_body
-        print(body)
-
-        # Execute the search query
-
+    
         # Execute the search query
         search_results = await self.es.search(
             index="variables_index",
@@ -526,10 +522,6 @@ class Search:
             collection_details = bucket['collection_details']['hits']['hits'][0]['_source']
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
-
-        # Print the list of collection details in JSON format
-        import json
-        #print(json.dumps(collection_details_list, indent=4))
 
         return collection_details_list
     
@@ -559,15 +551,12 @@ class Search:
             index="variables_index",
             body=query_body
         )
-
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
 
-        # Testing the output so print the unique data_types and their counts of unique collection_ids
-        #for bucket in unique_data_types:
-        #    print(f"data_type: {bucket['key']}, count of unique collection_ids: {bucket['No_of_studies']['value']}")
-
         return unique_data_types
+
+
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
         """Returns ES query for variable search"""
         es_query = {
