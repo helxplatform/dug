@@ -173,7 +173,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
         # If multiple group-by fields are specified, we use them in order.
         output_dir_for_row = output_dir
         for group_name in list(group_by):
-            if group_name in row:
+            if group_name in row and row[group_name].strip() != '':
                 if '|' in row[group_name]:
                     raise RuntimeError(
                         f"Pipe-separated multiple values in group-by field {group_name} not supported:" +
