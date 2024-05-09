@@ -141,11 +141,22 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
                 study_name = '(no name)'
 
             # Program name.
-            if 'tags' in gen3_discovery:
-                for tag in gen3_discovery['tags']:
-                    category = tag.get('category', '')
-                    if category.lower() == 'program':
-                        program_names.append(tag.get('name', '').strip())
+            if 'authz' in gen3_discovery:
+                # authz is in the format /programs/topmed/projects/ECLIPSE_DS-COPD-MDS-RD
+                match = re.fullmatch(r'^/programs/(.*)/projects/(.*)$', gen3_discovery['authz'])
+                if match:
+                    program_names.append(match.group(1))
+                    # study_short_name = match.group(2)
+
+            # Tags don't seem as fine-grained as authz and are often slightly different from the authz values
+            # (e.g. `COVID 19` instead of `COVID-19`, `Parent` instead of `parent`), so for now we only use the authz
+            # values.
+            #
+            # if 'tags' in gen3_discovery:
+            #     for tag in gen3_discovery['tags']:
+            #         category = tag.get('category', '')
+            #         if category.lower() == 'program':
+            #             program_names.append(tag.get('name', '').strip())
 
             # Description.
             description = gen3_discovery.get('study_description', '')
@@ -165,14 +176,14 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
             consent = ''
 
         # Remove any blank program names.
-        program_names = sorted(filter(lambda n: n != '', program_names))
+        program_names = filter(lambda n: n != '', program_names)
 
         csv_writer.writerow({
             'Accession': accession,
             'Consent': consent,
             'Study Name': study_name,
             'Description': description,
-            'Program': '|'.join(program_names),
+            'Program': '|'.join(sorted(set(program_names))),
             'Last modified': last_modified,
             'Notes': notes.strip()
         })
