@@ -174,6 +174,11 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
         output_dir_for_row = output_dir
         for group_name in list(group_by):
             if group_name in row:
+                if '|' in row[group_name]:
+                    raise RuntimeError(
+                        f"Pipe-separated multiple values in group-by field {group_name} not supported:" +
+                        f"{row[group_name]} (line {line_num})"
+                    )
                 output_dir_for_row = os.path.join(output_dir_for_row, row[group_name])
             else:
                 output_dir_for_row = os.path.join(output_dir_for_row, '__missing__')
