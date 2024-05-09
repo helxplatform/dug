@@ -205,7 +205,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
                     logging.error(f"Deleted {dbgap_dir} as it is probably incomplete.")
                     logging.error("Re-run this script to ensure that all variables are downloaded.")
 
-    logging.info(f"Downloaded {count_downloaded} data dictionaries from {count_rows} in input files.")
+    logging.info(f"Downloaded {count_downloaded} data dictionaries from {count_rows} rows in input files.")
 
 
 if __name__ == "__main__":
