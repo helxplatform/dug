@@ -173,7 +173,12 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
         # If multiple group-by fields are specified, we use them in order.
         output_dir_for_row = output_dir
         for group_name in list(group_by):
-            if group_name in row:
+            if group_name in row and row[group_name].strip() != '':
+                if '|' in row[group_name]:
+                    raise RuntimeError(
+                        f"Pipe-separated multiple values in group-by field {group_name} not supported:" +
+                        f"{row[group_name]} (line {line_num})"
+                    )
                 output_dir_for_row = os.path.join(output_dir_for_row, row[group_name])
             else:
                 output_dir_for_row = os.path.join(output_dir_for_row, '__missing__')
@@ -200,7 +205,7 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
                     logging.error(f"Deleted {dbgap_dir} as it is probably incomplete.")
                     logging.error("Re-run this script to ensure that all variables are downloaded.")
 
-    logging.info(f"Downloaded {count_downloaded} data dictionaries from {count_rows} in input files.")
+    logging.info(f"Downloaded {count_downloaded} data dictionaries from {count_rows} rows in input files.")
 
 
 if __name__ == "__main__":
