@@ -43,7 +43,7 @@ class Config:
             },
             "sapbert": {
                 "classification_url": "https://med-nemo.apps.renci.org/annotate/",
-                "annotator_url": "https://babel-sapbert.apps.renci.org/annotate/",
+                "annotator_url": "https://sap-qdrant.apps.renci.org/annotate/",
             },
         }
     )

@@ -26,6 +26,7 @@ class AnnotateSapbert:
     ):
         self.classificationUrl = kwargs.get('classification_url')
         self.annotatorUrl = kwargs.get('annotator_url')
+
         if not self.classificationUrl:
             raise TypeError('Classification url needs to be defined for sapbert annotator')
         if not self.annotatorUrl:
@@ -35,6 +36,10 @@ class AnnotateSapbert:
         self.ontology_greenlist = ontology_greenlist
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
+        # threshold marking cutoff point
+        self.score_threshold = kwargs.get("score_threshold", 0.8)
+        # indicate if we want values above or below the threshold.
+        self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
     def __call__(self, text, http_session) -> List[DugIdentifier]:
         # Fetch identifiers
@@ -132,7 +137,7 @@ class AnnotateSapbert:
             text = denotation.get("text", None)
             bl_type = denotation.get("obj", None)
             classifiers.append(
-                {"text": text, "bl_type": bl_type.replace("biolink:", "")}
+                {"text": text, "bl_type": bl_type}
             )
         return classifiers
 
@@ -184,7 +189,7 @@ class AnnotateSapbert:
         payload = {
             "text": term_dict["text"],
             "model_name": "sapbert",
-            "count": 1000,
+            "count": 10,
             "args": {"bl_type": term_dict["bl_type"]},
         }
         # This could be moved to a config file
@@ -213,11 +218,16 @@ class AnnotateSapbert:
                 continue
 
             biolink_type = identifier.get('category')
-            score = identifier.get("score", None)
+            score = identifier.get("score", 0)
             label = identifier.get("name")
-            identifiers.append(
-                DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
-            )
+            if score >= self.score_threshold and self.score_direction_up:
+                identifiers.append(
+                    DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
+                )
+            elif score <= self.score_threshold and not self.score_direction_up:
+                identifiers.append(
+                    DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
+                )
         return identifiers
 
 ## Testing Purposes
