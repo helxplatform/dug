@@ -1,8 +1,7 @@
 import logging
 from typing import List
 from requests import Session
-import json
-
+from retrying import retry
 from dug.core.annotators._base import DugIdentifier, Input
 from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
 
@@ -41,6 +40,7 @@ class AnnotateSapbert:
         # indicate if we want values above or below the threshold.
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
+    @retry(max_attempts=3)
     def __call__(self, text, http_session) -> List[DugIdentifier]:
         # Fetch identifiers
         classifiers: List = self.text_classification(text, http_session)
@@ -229,30 +229,3 @@ class AnnotateSapbert:
                     DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
                 )
         return identifiers
-
-## Testing Purposes
-# if __name__ == "__main__":
-#     from dug.config import Config
-#     import json
-#     import redis
-#     from requests_cache import CachedSession
-#     from dug.core.annotators._base import DefaultNormalizer, DefaultSynonymFinder
-
-#     config = Config.from_env()
-#     annotator = AnnotateSapbert(
-#         normalizer=DefaultNormalizer(**config.normalizer),
-#         synonym_finder=DefaultSynonymFinder(**config.synonym_service),
-#     )
-
-#     redis_config = {
-#         "host": "localhost",
-#         "port": config.redis_port,
-#         "password": config.redis_password,
-#     }
-
-#     http_sesh = CachedSession(
-#         cache_name="annotator",
-#         backend="redis",
-#         connection=redis.StrictRedis(**redis_config),
-#     )
-#     annotator(text="Have you ever had a heart attack?", http_session=http_sesh)
