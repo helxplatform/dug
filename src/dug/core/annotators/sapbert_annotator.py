@@ -40,7 +40,7 @@ class AnnotateSapbert:
         # indicate if we want values above or below the threshold.
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
-    @retry(max_attempts=3)
+    @retry(stop_max_attempt_number=3)
     def __call__(self, text, http_session) -> List[DugIdentifier]:
         # Fetch identifiers
         classifiers: List = self.text_classification(text, http_session)
