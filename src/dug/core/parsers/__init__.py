@@ -44,6 +44,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["pcgc"] = PCGCDbGaPParser()
     parser_dict["recover"] = RECOVERDBGaPParser()
     parser_dict["topmeddbgap"] = TopmedDBGaPParser()
+    parser_dict["curesc"] = CureSC()
 
     
 
