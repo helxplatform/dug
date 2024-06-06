@@ -31,7 +31,7 @@ class ConceptExpander:
             with open(kg_filename, 'r') as stream:
                 response = json.load(stream)
         else:
-            query = query_factory._get_var_query(identifier)
+            query = query_factory.get_query(identifier)
             logger.debug(query)
             response = requests.post(
                 url=self.url,
