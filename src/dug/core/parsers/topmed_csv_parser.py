@@ -34,7 +34,7 @@ class TOPMedCSVParser(FileParser):
                 elem = DugElement(elem_id=row['variable_full_accession'],
                                   name=row['variable_name'],
                                   desc=row['variable_desc'],
-                                  elem_type="dbGaP",
+                                  elem_type="TOPMed",
                                   collection_id=row['study_full_accession'],
                                   collection_name=row['study_name'])
 

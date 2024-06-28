@@ -7,6 +7,7 @@ from typing import Union, Callable, Any, Iterable, TypeVar, Generic, List, Optio
 from dug import utils as utils
 from requests import Session
 import bmt
+from retrying import retry
 
 logger = logging.getLogger("dug")
 
@@ -198,6 +199,7 @@ class DefaultSynonymFinder():
         result = self.handle_response(curie, response)
         return result
 
+    @retry(stop_max_attempt_number=3)
     def make_request(self, curie: str, http_session: Session):
         # Get response from namelookup reverse lookup op
         # example (https://name-resolution-sri.renci.org/docs#/lookup/lookup_names_reverse_lookup_post)

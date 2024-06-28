@@ -59,7 +59,7 @@ class TOPMedTagParser(FileParser):
                     elem_id=row['variable_full_accession'],
                     name=row['variable_name'] if 'variable_name' in row else row['variable_full_accession'],
                     desc=row['variable_description'] if 'variable_description' in row else row['variable_full_accession'],
-                    elem_type="dbGaP",
+                    elem_type="TOPMed",
                     collection_id=row['study_full_accession'],
                     collection_name=row['study_name']
                 )
