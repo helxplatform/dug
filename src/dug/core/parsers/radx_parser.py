@@ -13,8 +13,7 @@ class RADxParser(FileParser):
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         tree = ET.parse(input_file, ET.XMLParser(encoding='utf-8'))
         root = tree.getroot()
-        study_id = root.attrib['id']
-        # Parse study name from GapExchange file, and if that fails try from file handle
+        study_id = root.attrib['id']        
         # If still None, raise an error message
         study_name = root.attrib['study_name']
         elements = []
