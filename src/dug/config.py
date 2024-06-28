@@ -27,6 +27,10 @@ class Config:
     nboost_host: str = "nboost"
     nboost_port: int = 8000
 
+    program_sort_list: str = ""
+    program_name_mappings: dict=field(
+        default_factory=lambda:{})
+
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
         default_factory=lambda: {
@@ -137,6 +141,8 @@ class Config:
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
+            "program_sort_list": "PROGRAM_SORT_LIST",
+            "program_name_mappings" : "PROGRAM_NAME_MAPPINGS"
         }
 
         kwargs = {}

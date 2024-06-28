@@ -2,7 +2,7 @@
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
-import ssl
+import ssl,os,json
 
 from dug.config import Config
 
@@ -553,7 +553,15 @@ class Search:
         )
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
-
+        data=unique_data_types
+        program_keys =self._cfg.program_sort_list.split(',')
+        #key_mapping = self._cfg.program_name_mappings
+        #key_mapping = json.loads(key_mapping)
+        key_index_map = {key: index for index, key in enumerate(program_keys)}
+        unique_data_types = sorted(data, key=lambda x: key_index_map.get(x['key'], len(program_keys)))
+        #for item in unique_data_types:
+        #    if item['key'] in key_mapping:
+        #        item['key'] = key_mapping[item['key']]
         return unique_data_types
 
 

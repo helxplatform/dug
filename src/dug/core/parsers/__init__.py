@@ -13,6 +13,7 @@ from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
 from .heal_dp_parser import HEALDPParser
 from .ctn_parser import CTNParser
+from .radx_parser import RADxParser
 
 
 logger = logging.getLogger('dug')
@@ -45,6 +46,8 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["recover"] = RECOVERDBGaPParser()
     parser_dict["topmeddbgap"] = TopmedDBGaPParser()
     parser_dict["curesc"] = CureSC()
+    parser_dict["radx"] = RADxParser()
+
 
     
 
