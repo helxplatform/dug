@@ -1,14 +1,65 @@
 import logging
-from typing import List
+from typing import List, Dict
 from requests import Session
 from retrying import retry
 from dug.core.annotators._base import DugIdentifier, Input
 from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
+from functools import reduce
 
 logger = logging.getLogger("dug")
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+
+class BagelWrapper:
+    def __init__(self, prompt_name, llm_args, url):
+        self.llm_args = llm_args
+        self.url = url
+        self.prompt_name = prompt_name
+
+    def __call__(self, description_text, entity, ids: List[DugIdentifier], http_session: Session):
+        response = self.make_request(description_text=description_text, entity=entity, ids=ids, http_session=http_session)
+        result = self.handle_response(ids, response)
+        return result
+
+    def make_request(self, description_text, entity, ids: List[DugIdentifier], http_session: Session):
+        url = self.url
+        if ids:
+            payload = {
+                "prompt_name": self.prompt_name,
+                "context": {
+                    "text": description_text,
+                    "entity": entity,
+                    "synonyms": [{
+                        "label": i.label,
+                        "identifier": i.id,
+                        "description": i.description,
+                        "entity_type": i.types.split(':')[-1]
+                    } for i in ids]
+                },
+                "config": self.llm_args
+            }
+            return http_session.post(self.url, json=payload)
+
+        return []
+
+    def handle_response(self, ids: List[DugIdentifier], bagel_response: dict):
+        bagel_json_result = bagel_response.json()
+        bags = {}
+        for i in ids:
+            for bagel in bagel_json_result:
+                bags[bagel['synonym_type']] = bags.get(bagel['synonym_type'], [])
+                if bagel['synonym'].replace(f'({bagel["vocabulary_class"]})', "").strip(" ") == i.label:
+                    bags[bagel['synonym_type']].append(i)
+        bag_counts = {}
+        for r in bagel_json_result:
+            bag_counts[r['synonym_type']] = bag_counts.get(r['synonym_type'], 0)
+            bag_counts[r['synonym_type']] += 1
+        for b in bags:
+            if len(bags[b]) != bag_counts[b]:
+                logger.warning(f"{b} count doesn't match as expected({bag_counts[b]}): currently {bags[b]} out of {bagel_json_result}")
+        return reduce(lambda x, y: x + bags[y], bags, [])
 
 
 class AnnotateSapbert:
@@ -40,45 +91,63 @@ class AnnotateSapbert:
         # indicate if we want values above or below the threshold.
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
+        self.bagel_args = kwargs.get("bagel")
+        self.bagel_enabled = self.bagel_args['enabled']
+        self.bagel = BagelWrapper(
+            prompt_name=self.bagel_args["prompt"],
+            llm_args= self.bagel_args["llm_args"],
+            url=self.bagel_args["url"]
+        )
+
     @retry(stop_max_attempt_number=3)
     def __call__(self, text, http_session) -> List[DugIdentifier]:
         # Fetch identifiers
         classifiers: List = self.text_classification(text, http_session)
 
-        raw_identifiers: List[DugIdentifier] = self.annotate_classifiers(
+        raw_identifiers_dict: Dict[str, DugIdentifier] = self.annotate_classifiers(
             classifiers, http_session
         )
 
         # Write out to file if text fails to annotate
-        if not raw_identifiers:
+        if not raw_identifiers_dict:
             with open(self.anno_fails_file, "a") as fh:
                 fh.write(f"{text}\n")
 
-        processed_identifiers = []
-        for identifier in raw_identifiers:
-            # Normalize identifier using normalization service
-            norm_id = self.normalizer(identifier, http_session)
+        processed_identifiers = {}
+        for entity, raw_identifiers in raw_identifiers_dict.items():
+            # normalize all ids
+            for identifier in raw_identifiers:
+                # Normalize identifier using normalization service
+                norm_id = self.normalizer(identifier, http_session)
 
-            # Skip adding id if it doesn't normalize
-            if norm_id is None:
-                # Write out to file if identifier doesn't normalize
-                with open(self.norm_fails_file, "a") as fh:
-                    fh.write(f"{identifier.id}\n")
+                # Skip adding id if it doesn't normalize
+                if norm_id is None:
+                    # Write out to file if identifier doesn't normalize
+                    with open(self.norm_fails_file, "a") as fh:
+                        fh.write(f"{identifier.id}\n")
 
-                # Discard non-normalized ident if not in greenlist
-                if identifier.id_type not in self.ontology_greenlist:
-                    continue
+                    # Discard non-normalized ident if not in greenlist
+                    if identifier.id_type not in self.ontology_greenlist:
+                        continue
 
-                # If it is in greenlist just keep moving forward
-                norm_id = identifier
+                    # If it is in greenlist just keep moving forward
+                    norm_id = identifier
 
-            # Add synonyms to identifier
-            norm_id.synonyms = self.synonym_finder(norm_id.id, http_session)
+                # Add synonyms to identifier
+                norm_id.synonyms = self.synonym_finder(norm_id.id, http_session)
 
-            # Get pURL for ontology identifer for more info
-            norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
-            processed_identifiers.append(norm_id)
+                # Get pURL for ontology identifer for more info
+                norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
+                processed_identifiers[entity] = processed_identifiers.get(entity, [])
+                processed_identifiers[entity].append(norm_id)
 
+
+            # filter using bagel
+            if self.bagel_enabled:
+                processed_identifiers[entity] = self.bagel(description_text=text,
+                                                           entity=entity,
+                                                           ids=processed_identifiers[entity],
+                                                           http_session=http_session)
         return processed_identifiers
 
     def text_classification(self, text, http_session) -> List:
@@ -143,7 +212,7 @@ class AnnotateSapbert:
 
     def annotate_classifiers(
         self, classifiers: List, http_session
-    ) -> List[DugIdentifier]:
+    ) -> Dict[str, DugIdentifier]:
         """
         Send Classified Terms to Sapbert API
 
@@ -175,12 +244,12 @@ class AnnotateSapbert:
           TBD: Organize the results by highest score
           Return: List of DugIdentifiers with a Curie ID
         """
-        identifiers = []
+        identifiers = {}
         for term_dict in classifiers:
             logger.debug(f"Annotating: {term_dict['text']}")
 
             response = self.make_annotation_request(term_dict, http_session)
-            identifiers += self.handle_annotation_response(term_dict, response)
+            identifiers[term_dict['text']] =  self.handle_annotation_response(term_dict, response)
 
         return identifiers
 
@@ -229,3 +298,33 @@ class AnnotateSapbert:
                     DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
                 )
         return identifiers
+
+
+## Testing Purposes
+if __name__ == "__main__":
+    from dug.config import Config
+    import json
+    import redis
+    from requests_cache import CachedSession
+    from dug.core.annotators._base import DefaultNormalizer, DefaultSynonymFinder
+
+    config = Config.from_env()
+    annotator = AnnotateSapbert(
+        normalizer=DefaultNormalizer(**config.normalizer),
+        synonym_finder=DefaultSynonymFinder(**config.synonym_service),
+        **config.annotator_args['sapbert']
+    )
+
+    redis_config = {
+        "host": "localhost",
+        "port": config.redis_port,
+        "password": "1234",
+    }
+
+    http_sesh = CachedSession(
+        cache_name="annotator",
+        backend="redis",
+        connection=redis.StrictRedis(**redis_config),
+    )
+    result = annotator(text="Have you ever had a heart attack?", http_session=http_sesh)
+    print(result)
