@@ -18,6 +18,7 @@ class BagelWrapper:
         self.url = url
         self.prompt_name = prompt_name
 
+    @retry(stop_max_attempt_number=3)
     def __call__(self, description_text, entity, ids: List[DugIdentifier], http_session: Session):
         response = self.make_request(description_text=description_text, entity=entity, ids=ids, http_session=http_session)
         result = self.handle_response(ids, response)
@@ -35,31 +36,19 @@ class BagelWrapper:
                         "label": i.label,
                         "identifier": i.id,
                         "description": i.description,
-                        "entity_type": i.types.split(':')[-1]
+                        "entity_type": i.types.split(':')[-1],
+                        "color-code": "red"
                     } for i in ids]
                 },
                 "config": self.llm_args
             }
-            return http_session.post(self.url, json=payload)
+            return http_session.post(self.url, json=payload).json()
 
         return []
 
-    def handle_response(self, ids: List[DugIdentifier], bagel_response: dict):
-        bagel_json_result = bagel_response.json()
-        bags = {}
-        for i in ids:
-            for bagel in bagel_json_result:
-                bags[bagel['synonym_type']] = bags.get(bagel['synonym_type'], [])
-                if bagel['synonym'].replace(f'({bagel["vocabulary_class"]})', "").strip(" ") == i.label:
-                    bags[bagel['synonym_type']].append(i)
-        bag_counts = {}
-        for r in bagel_json_result:
-            bag_counts[r['synonym_type']] = bag_counts.get(r['synonym_type'], 0)
-            bag_counts[r['synonym_type']] += 1
-        for b in bags:
-            if len(bags[b]) != bag_counts[b]:
-                logger.warning(f"{b} count doesn't match as expected({bag_counts[b]}): currently {bags[b]} out of {bagel_json_result}")
-        return reduce(lambda x, y: x + bags[y], bags, [])
+    def handle_response(self, ids: List[DugIdentifier], bagel_json_result: dict):
+        selected_ids = [x['identifier'] for x in bagel_json_result]
+        return list(filter(lambda x: x.id in selected_ids, ids))
 
 
 class AnnotateSapbert:
@@ -146,9 +135,9 @@ class AnnotateSapbert:
             if self.bagel_enabled:
                 processed_identifiers[entity] = self.bagel(description_text=text,
                                                            entity=entity,
-                                                           ids=processed_identifiers[entity],
+                                                           ids=processed_identifiers.get(entity, []),
                                                            http_session=http_session)
-        return processed_identifiers
+        return reduce(lambda bucket, key: bucket + processed_identifiers[key], processed_identifiers, [])
 
     def text_classification(self, text, http_session) -> List:
         """
