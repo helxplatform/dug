@@ -2,9 +2,9 @@
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
-import ssl,os,json
-
+import ssl,json
 from dug.config import Config
+
 
 logger = logging.getLogger('dug')
 
@@ -528,7 +528,6 @@ class Search:
 
 
     async def search_program_list(self):
-
         query_body = {
             "size": 0,  # We don't need the documents themselves, so set the size to 0
             "aggs": {
@@ -554,15 +553,18 @@ class Search:
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
         data=unique_data_types
-        program_keys =self._cfg.program_sort_list.split(',')
-        #key_mapping = self._cfg.program_name_mappings
-        #key_mapping = json.loads(key_mapping)
-        key_index_map = {key: index for index, key in enumerate(program_keys)}
-        unique_data_types = sorted(data, key=lambda x: key_index_map.get(x['key'], len(program_keys)))
-        #for item in unique_data_types:
-        #    if item['key'] in key_mapping:
-        #        item['key'] = key_mapping[item['key']]
-        return unique_data_types
+        print(data)
+        # Sorting the data alphabetically based on 'key'
+        sorted_data = sorted(data, key=lambda x: x['key'])
+
+        #Add description as another field in exisiting data based on the program name
+        descriptions_json = self._cfg.program_description
+        descriptions = json.loads(descriptions_json)
+        description_dict = {item['key']: item['description'] for item in descriptions}
+        for item in sorted_data:
+            item['description'] = description_dict.get(item['key'], '')
+
+        return sorted_data
 
 
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
