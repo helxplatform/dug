@@ -560,9 +560,13 @@ class Search:
         #Add description as another field in exisiting data based on the program name
         descriptions_json = self._cfg.program_description
         descriptions = json.loads(descriptions_json)
-        description_dict = {item['key']: item['description'] for item in descriptions}
+        description_dict = {item['key']: {'description': item['description'], 'parent_program': item['parent_program']} for item in descriptions}
+
+        # Add descriptions and parent programs to the sorted data
         for item in sorted_data:
-            item['description'] = description_dict.get(item['key'], '')
+            desc_info = description_dict.get(item['key'], {'description': '', 'parent_program': []})
+            item['description'] = desc_info['description']
+            item['parent_program'] = desc_info['parent_program']
 
         return sorted_data
 
