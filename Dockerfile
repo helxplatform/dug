@@ -3,17 +3,12 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12.1-alpine3.19
+FROM python:alpine3.20
 
 
 # Install required packages
 RUN apk update && \
-    apk add g++ make libexpat=2.6.2-r0 libssl3=3.1.4-r6 libcrypto3=3.1.4-r6
-
-
-#upgrade openssl \
-
-#RUN apk  add openssl=3.1.4-r5
+    apk add g++ make 
 
 
 RUN pip install --upgrade pip
