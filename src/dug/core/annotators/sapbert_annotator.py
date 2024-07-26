@@ -315,5 +315,5 @@ if __name__ == "__main__":
         backend="redis",
         connection=redis.StrictRedis(**redis_config),
     )
-    result = annotator(text="Have you ever had a heart attack?", http_session=http_sesh)
+    result = annotator(text="examiner's opinion: signs of rheumatoid arthritis, exam 7", http_session=http_sesh)
     print(result)
