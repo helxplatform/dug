@@ -533,7 +533,8 @@ class Search:
             "aggs": {
                 "unique_program_names": {
                     "terms": {
-                        "field": "data_type.keyword"
+                        "field": "data_type.keyword",
+                        "size": 10000
                     },
                     "aggs": {
                         "No_of_studies": {
