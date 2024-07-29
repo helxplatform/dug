@@ -48,7 +48,6 @@ class Search:
             ssl_context = ssl.create_default_context(
                 cafile=self._cfg.elastic_ca_path
             )
-            ssl_context.check_hostname = False
             self.es = AsyncElasticsearch(hosts=self.hosts,
                                      basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password),
