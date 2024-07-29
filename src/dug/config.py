@@ -30,6 +30,8 @@ class Config:
     program_sort_list: str = ""
     program_description: dict=field(
         default_factory=lambda:{})
+    consent_id: dict=field(
+        default_factory=lambda:{})
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -142,6 +144,7 @@ class Config:
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
             "program_description": "PROGRAM_DESCRIPTION",
+            "consent_id": "CONSENT_ID"
         }
 
         kwargs = {}

@@ -48,6 +48,7 @@ class Search:
             ssl_context = ssl.create_default_context(
                 cafile=self._cfg.elastic_ca_path
             )
+            ssl_context.check_hostname = False
             self.es = AsyncElasticsearch(hosts=self.hosts,
                                      basic_auth=(self._cfg.elastic_username,
                                                 self._cfg.elastic_password),
@@ -499,7 +500,7 @@ class Search:
                 "match": {"data_type": program_name}
             })
 
-        print("query_body", query_body)
+        #print("query_body", query_body)
 
         # Prepare the query body for execution
         body = query_body
@@ -523,7 +524,24 @@ class Search:
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
 
-        return collection_details_list
+
+        # Add consent_id to the study
+        updated_studies = []
+        consent_id_mappings = json.loads(self._cfg.consent_id)
+        for study in collection_details_list:
+            collection_id = study["collection_id"]
+            if collection_id in consent_id_mappings:
+                consent_ids = consent_id_mappings[collection_id]
+                for consent_id in consent_ids:
+                    updated_study = study.copy()
+                    updated_study["collection_id"] = f"{collection_id}.{consent_id}"
+                    updated_study["collection_action"] = f"{study['collection_action']}"
+                    updated_studies.append(updated_study)
+            else:
+                updated_studies.append(study)
+        return updated_studies
+
+
     
 
 
