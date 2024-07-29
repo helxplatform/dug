@@ -28,10 +28,9 @@ class Config:
     nboost_port: int = 8000
 
     program_sort_list: str = ""
-    program_description: dict=field(
-        default_factory=lambda:{})
-    consent_id: dict=field(
-        default_factory=lambda:{})
+    program_description: dict=field(default_factory=lambda:{})
+    consent_id_path: str= ""
+    
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -144,7 +143,7 @@ class Config:
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
             "program_description": "PROGRAM_DESCRIPTION",
-            "consent_id": "CONSENT_ID"
+            "consent_id_path": "CONSENT_ID_PATH"
         }
 
         kwargs = {}

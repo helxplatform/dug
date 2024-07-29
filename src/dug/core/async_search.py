@@ -523,10 +523,11 @@ class Search:
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
 
-
+        
+        with open(self._cfg.consent_id_path, 'r') as file:
+            consent_id_mappings = json.load(file)
         # Add consent_id to the study
         updated_studies = []
-        consent_id_mappings = json.loads(self._cfg.consent_id)
         for study in collection_details_list:
             collection_id = study["collection_id"]
             if collection_id in consent_id_mappings:
@@ -538,6 +539,7 @@ class Search:
                     updated_studies.append(updated_study)
             else:
                 updated_studies.append(study)
+
         return updated_studies
 
 
