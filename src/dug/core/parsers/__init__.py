@@ -47,6 +47,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["topmeddbgap"] = TopmedDBGaPParser()
     parser_dict["curesc"] = CureSC()
     parser_dict["radx"] = RADxParser()
+    parser_dict["newstudy"] = NewStudyParser()
 
 
     
