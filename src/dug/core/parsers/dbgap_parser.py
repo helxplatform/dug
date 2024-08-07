@@ -146,3 +146,7 @@ class TopmedDBGaPParser(DbGaPParser):
 class CureSC(DbGaPParser):
     def _get_element_type(self):
         return "CureSC"
+
+class NewStudyParser(DbGaPParser):
+    def _get_element_type(self):
+        return "NewStudy"
