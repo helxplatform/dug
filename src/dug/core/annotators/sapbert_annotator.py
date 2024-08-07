@@ -76,7 +76,7 @@ class AnnotateSapbert:
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
         # threshold marking cutoff point
-        self.score_threshold = kwargs.get("score_threshold", 0.8)
+        self.score_threshold = float(kwargs.get("score_threshold", 0.8))
         # indicate if we want values above or below the threshold.
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
@@ -279,7 +279,7 @@ class AnnotateSapbert:
                 continue
 
             biolink_type = identifier.get('category')
-            score = identifier.get("score", 0)
+            score = float(identifier.get("score", 0))
             label = identifier.get("name")
             if score >= self.score_threshold and self.score_direction_up:
                 identifiers.append(
