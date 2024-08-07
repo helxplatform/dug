@@ -251,7 +251,7 @@ class AnnotateSapbert:
             "text": term_dict["text"],
             "model_name": "sapbert",
             "count": 10,
-            "args": {"bl_type": term_dict["bl_type"]},
+            # "args": {"bl_type": term_dict["bl_type"]},
         }
         # This could be moved to a config file
         NUM_TRIES = 5
