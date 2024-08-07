@@ -289,31 +289,3 @@ class AnnotateSapbert:
         return identifiers
 
 
-## Testing Purposes
-if __name__ == "__main__":
-    from dug.config import Config
-    import json
-    import redis
-    from requests_cache import CachedSession
-    from dug.core.annotators._base import DefaultNormalizer, DefaultSynonymFinder
-
-    config = Config.from_env()
-    annotator = AnnotateSapbert(
-        normalizer=DefaultNormalizer(**config.normalizer),
-        synonym_finder=DefaultSynonymFinder(**config.synonym_service),
-        **config.annotator_args['sapbert']
-    )
-
-    redis_config = {
-        "host": "localhost",
-        "port": config.redis_port,
-        "password": "1234",
-    }
-
-    http_sesh = CachedSession(
-        cache_name="annotator",
-        backend="redis",
-        connection=redis.StrictRedis(**redis_config),
-    )
-    result = annotator(text="examiner's opinion: signs of rheumatoid arthritis, exam 7", http_session=http_sesh)
-    print(result)
