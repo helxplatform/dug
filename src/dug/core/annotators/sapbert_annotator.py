@@ -1,14 +1,54 @@
 import logging
-from typing import List
+from typing import List, Dict
 from requests import Session
 from retrying import retry
 from dug.core.annotators._base import DugIdentifier, Input
 from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
+from functools import reduce
 
 logger = logging.getLogger("dug")
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+
+class BagelWrapper:
+    def __init__(self, prompt_name, llm_args, url):
+        self.llm_args = llm_args
+        self.url = url
+        self.prompt_name = prompt_name
+
+    @retry(stop_max_attempt_number=3)
+    def __call__(self, description_text, entity, ids: List[DugIdentifier], http_session: Session):
+        response = self.make_request(description_text=description_text, entity=entity, ids=ids, http_session=http_session)
+        result = self.handle_response(ids, response)
+        return result
+
+    def make_request(self, description_text, entity, ids: List[DugIdentifier], http_session: Session):
+        url = self.url
+        if ids:
+            payload = {
+                "prompt_name": self.prompt_name,
+                "context": {
+                    "text": description_text,
+                    "entity": entity,
+                    "synonyms": [{
+                        "label": i.label,
+                        "identifier": i.id,
+                        "description": i.description,
+                        "entity_type": i.types.split(':')[-1],
+                        "color-code": "red"
+                    } for i in ids]
+                },
+                "config": self.llm_args
+            }
+            return http_session.post(self.url, json=payload).json()
+
+        return []
+
+    def handle_response(self, ids: List[DugIdentifier], bagel_json_result: dict):
+        selected_ids = [x['identifier'] for x in bagel_json_result]
+        return list(filter(lambda x: x.id in selected_ids, ids))
 
 
 class AnnotateSapbert:
@@ -36,50 +76,71 @@ class AnnotateSapbert:
         self.norm_fails_file = "norm_fails.txt"
         self.anno_fails_file = "anno_fails.txt"
         # threshold marking cutoff point
-        self.score_threshold = kwargs.get("score_threshold", 0.8)
+        self.score_threshold = float(kwargs.get("score_threshold", 0.8))
         # indicate if we want values above or below the threshold.
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
+
+        self.bagel_args = kwargs.get("bagel")
+        if self.bagel_args:
+            self.bagel_enabled = self.bagel_args['enabled']
+            self.bagel = BagelWrapper(
+                prompt_name=self.bagel_args["prompt"],
+                llm_args= self.bagel_args["llm_args"],
+                url=self.bagel_args["url"]
+            )
+        else:
+            self.bagel_enabled = False
 
     @retry(stop_max_attempt_number=3)
     def __call__(self, text, http_session) -> List[DugIdentifier]:
         # Fetch identifiers
         classifiers: List = self.text_classification(text, http_session)
 
-        raw_identifiers: List[DugIdentifier] = self.annotate_classifiers(
+        raw_identifiers_dict: Dict[str, DugIdentifier] = self.annotate_classifiers(
             classifiers, http_session
         )
 
         # Write out to file if text fails to annotate
-        if not raw_identifiers:
+        if not raw_identifiers_dict:
             with open(self.anno_fails_file, "a") as fh:
                 fh.write(f"{text}\n")
 
-        processed_identifiers = []
-        for identifier in raw_identifiers:
-            # Normalize identifier using normalization service
-            norm_id = self.normalizer(identifier, http_session)
+        processed_identifiers = {}
+        for entity, raw_identifiers in raw_identifiers_dict.items():
+            # normalize all ids
+            for identifier in raw_identifiers:
+                # Normalize identifier using normalization service
+                norm_id = self.normalizer(identifier, http_session)
 
-            # Skip adding id if it doesn't normalize
-            if norm_id is None:
-                # Write out to file if identifier doesn't normalize
-                with open(self.norm_fails_file, "a") as fh:
-                    fh.write(f"{identifier.id}\n")
+                # Skip adding id if it doesn't normalize
+                if norm_id is None:
+                    # Write out to file if identifier doesn't normalize
+                    with open(self.norm_fails_file, "a") as fh:
+                        fh.write(f"{identifier.id}\n")
 
-                # Discard non-normalized ident if not in greenlist
-                if identifier.id_type not in self.ontology_greenlist:
-                    continue
+                    # Discard non-normalized ident if not in greenlist
+                    if identifier.id_type not in self.ontology_greenlist:
+                        continue
 
-                # If it is in greenlist just keep moving forward
-                norm_id = identifier
+                    # If it is in greenlist just keep moving forward
+                    norm_id = identifier
 
-            # Add synonyms to identifier
-            norm_id.synonyms = self.synonym_finder(norm_id.id, http_session)
+                # Add synonyms to identifier
+                norm_id.synonyms = self.synonym_finder(norm_id.id, http_session)
 
-            # Get pURL for ontology identifer for more info
-            norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
-            processed_identifiers.append(norm_id)
+                # Get pURL for ontology identifer for more info
+                norm_id.purl = BioLinkPURLerizer.get_curie_purl(norm_id.id)
+                processed_identifiers[entity] = processed_identifiers.get(entity, [])
+                processed_identifiers[entity].append(norm_id)
 
-        return processed_identifiers
+
+            # filter using bagel
+            if self.bagel_enabled:
+                processed_identifiers[entity] = self.bagel(description_text=text,
+                                                           entity=entity,
+                                                           ids=processed_identifiers.get(entity, []),
+                                                           http_session=http_session)
+        return reduce(lambda bucket, key: bucket + processed_identifiers[key], processed_identifiers, [])
 
     def text_classification(self, text, http_session) -> List:
         """
@@ -143,7 +204,7 @@ class AnnotateSapbert:
 
     def annotate_classifiers(
         self, classifiers: List, http_session
-    ) -> List[DugIdentifier]:
+    ) -> Dict[str, DugIdentifier]:
         """
         Send Classified Terms to Sapbert API
 
@@ -175,12 +236,12 @@ class AnnotateSapbert:
           TBD: Organize the results by highest score
           Return: List of DugIdentifiers with a Curie ID
         """
-        identifiers = []
+        identifiers = {}
         for term_dict in classifiers:
             logger.debug(f"Annotating: {term_dict['text']}")
 
             response = self.make_annotation_request(term_dict, http_session)
-            identifiers += self.handle_annotation_response(term_dict, response)
+            identifiers[term_dict['text']] =  self.handle_annotation_response(term_dict, response)
 
         return identifiers
 
@@ -218,7 +279,7 @@ class AnnotateSapbert:
                 continue
 
             biolink_type = identifier.get('category')
-            score = identifier.get("score", 0)
+            score = float(identifier.get("score", 0))
             label = identifier.get("name")
             if score >= self.score_threshold and self.score_direction_up:
                 identifiers.append(

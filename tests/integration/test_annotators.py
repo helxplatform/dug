@@ -106,43 +106,44 @@ def test_sapbert_annotation_full(
         classifiers, sapbert_annotator_api
     )
     processed_identifiers: List[DugIdentifier] = []
-    for identifier in raw_identifiers:
-        if identifier.id == "UBERON:0007100":
-            # Perform normal normalization
-            output = annotator.normalizer(identifier, normalizer_api)
-            print(output)
+    for entity, identifiers in raw_identifiers.items():
+        for identifier in identifiers:
+            if identifier.id == "UBERON:0007100":
+                # Perform normal normalization
+                output = annotator.normalizer(identifier, normalizer_api)
+                print(output)
 
-            assert isinstance(output, DugIdentifier)
-            assert output.id == "UBERON:0007100"
-            assert output.label == "primary circulatory organ"
-            assert output.equivalent_identifiers == ["UBERON:0007100"]
-            assert output.types == "anatomical entity"
-        else:
-            # act as if this is null
-            output = annotator.normalizer(identifier, null_normalizer_api)
+                assert isinstance(output, DugIdentifier)
+                assert output.id == "UBERON:0007100"
+                assert output.label == "primary circulatory organ"
+                assert output.equivalent_identifiers == ["UBERON:0007100"]
+                assert output.types == "anatomical entity"
+            else:
+                # act as if this is null
+                output = annotator.normalizer(identifier, null_normalizer_api)
 
-        # Should be returning normalized identifier for each identifier passed in
-        if output is None:
-            output = identifier
-            # Test normalizer when null
-            assert output.id == "XAO:0000336"
-            assert output.label == "Angina attack"
+            # Should be returning normalized identifier for each identifier passed in
+            if output is None:
+                output = identifier
+                # Test normalizer when null
+                assert output.id == "XAO:0000336"
+                assert output.label == "Angina attack"
 
-        # Add synonyms to identifier
-        if identifier.id == "UBERON:0007100":
-            output.synonyms = annotator.synonym_finder(output.id, synonym_api)
-            assert output.synonyms == [
-                "primary circulatory organ",
-                "dorsal tube",
-                "adult heart",
-                "heart",
-            ]
-        else:
-            output.synonyms = annotator.synonym_finder(output.id, null_synonym_api)
-            assert output.synonyms == []
-        # Get pURL for ontology identifer for more info
-        output.purl = BioLinkPURLerizer.get_curie_purl(output.id)
-        processed_identifiers.append(output)
+            # Add synonyms to identifier
+            if identifier.id == "UBERON:0007100":
+                output.synonyms = annotator.synonym_finder(output.id, synonym_api)
+                assert output.synonyms == [
+                    "primary circulatory organ",
+                    "dorsal tube",
+                    "adult heart",
+                    "heart",
+                ]
+            else:
+                output.synonyms = annotator.synonym_finder(output.id, null_synonym_api)
+                assert output.synonyms == []
+            # Get pURL for ontology identifer for more info
+            output.purl = BioLinkPURLerizer.get_curie_purl(output.id)
+            processed_identifiers.append(output)
 
     assert isinstance(processed_identifiers, List)
     assert len(processed_identifiers) == 2
