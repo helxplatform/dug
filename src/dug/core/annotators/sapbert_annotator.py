@@ -81,12 +81,15 @@ class AnnotateSapbert:
         self.score_direction_up = True if kwargs.get("score_direction", "up") == "up" else False
 
         self.bagel_args = kwargs.get("bagel")
-        self.bagel_enabled = self.bagel_args['enabled']
-        self.bagel = BagelWrapper(
-            prompt_name=self.bagel_args["prompt"],
-            llm_args= self.bagel_args["llm_args"],
-            url=self.bagel_args["url"]
-        )
+        if self.bagel_args:
+            self.bagel_enabled = self.bagel_args['enabled']
+            self.bagel = BagelWrapper(
+                prompt_name=self.bagel_args["prompt"],
+                llm_args= self.bagel_args["llm_args"],
+                url=self.bagel_args["url"]
+            )
+        else:
+            self.bagel_enabled = False
 
     @retry(stop_max_attempt_number=3)
     def __call__(self, text, http_session) -> List[DugIdentifier]:
@@ -287,5 +290,3 @@ class AnnotateSapbert:
                     DugIdentifier(id=curie, label=label, types=[biolink_type], search_text=search_text)
                 )
         return identifiers
-
-
