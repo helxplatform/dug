@@ -129,13 +129,13 @@ def sapbert_annotator_api():
                             "name": "attack; cardiovascular",
                             "curie": "UBERON:0007100",
                             "category": "biolink:Disease",
-                            "score": "0.85857231617",
+                            "score": 0.85857231617
                         },
                         {
                             "name": "Angina attack",
                             "curie": "XAO:0000336",
                             "category": "biolink:Disease",
-                            "score": "0.806502258778",
+                            "score": 0.806502258778
                         },
                     ]
                 ),

@@ -2,9 +2,9 @@
 import logging
 from elasticsearch import AsyncElasticsearch
 from elasticsearch.helpers import async_scan
-import ssl,os,json
-
+import ssl,json
 from dug.config import Config
+
 
 logger = logging.getLogger('dug')
 
@@ -499,7 +499,7 @@ class Search:
                 "match": {"data_type": program_name}
             })
 
-        print("query_body", query_body)
+        #print("query_body", query_body)
 
         # Prepare the query body for execution
         body = query_body
@@ -523,18 +523,37 @@ class Search:
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
 
-        return collection_details_list
+        
+        with open(self._cfg.consent_id_path, 'r') as file:
+            consent_id_mappings = json.load(file)
+        # Add consent_id to the study
+        updated_studies = []
+        for study in collection_details_list:
+            collection_id = study["collection_id"]
+            if collection_id in consent_id_mappings:
+                consent_ids = consent_id_mappings[collection_id]
+                for consent_id in consent_ids:
+                    updated_study = study.copy()
+                    updated_study["collection_id"] = f"{collection_id}.{consent_id}"
+                    updated_study["collection_action"] = f"{study['collection_action']}"
+                    updated_studies.append(updated_study)
+            else:
+                updated_studies.append(study)
+
+        return updated_studies
+
+
     
 
 
     async def search_program_list(self):
-
         query_body = {
             "size": 0,  # We don't need the documents themselves, so set the size to 0
             "aggs": {
                 "unique_program_names": {
                     "terms": {
-                        "field": "data_type.keyword"
+                        "field": "data_type.keyword",
+                        "size": 10000
                     },
                     "aggs": {
                         "No_of_studies": {
@@ -554,15 +573,22 @@ class Search:
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
         data=unique_data_types
-        program_keys =self._cfg.program_sort_list.split(',')
-        #key_mapping = self._cfg.program_name_mappings
-        #key_mapping = json.loads(key_mapping)
-        key_index_map = {key: index for index, key in enumerate(program_keys)}
-        unique_data_types = sorted(data, key=lambda x: key_index_map.get(x['key'], len(program_keys)))
-        #for item in unique_data_types:
-        #    if item['key'] in key_mapping:
-        #        item['key'] = key_mapping[item['key']]
-        return unique_data_types
+        print(data)
+        # Sorting the data alphabetically based on 'key'
+        sorted_data = sorted(data, key=lambda x: x['key'])
+
+        #Add description as another field in exisiting data based on the program name
+        descriptions_json = self._cfg.program_description
+        descriptions = json.loads(descriptions_json)
+        description_dict = {item['key']: {'description': item['description'], 'parent_program': item['parent_program']} for item in descriptions}
+
+        # Add descriptions and parent programs to the sorted data
+        for item in sorted_data:
+            desc_info = description_dict.get(item['key'], {'description': '', 'parent_program': []})
+            item['description'] = desc_info['description']
+            item['parent_program'] = desc_info['parent_program']
+
+        return sorted_data
 
 
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
