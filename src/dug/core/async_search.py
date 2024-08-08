@@ -550,12 +550,9 @@ class Search:
         with open(self._cfg.missing_studies_path, 'r') as file:
             missing_studies = json.load(file)
         for program in missing_studies:
-            print(program_name)
-            print("\n\n",program)
             if program_name.lower() == program['program_name'].lower():
-                print("\n\n it matches")
                 updated_studies.append(program['collections'])
-                print(program['collections'])
+
                 
         return updated_studies
 
