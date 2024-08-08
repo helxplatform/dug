@@ -523,7 +523,7 @@ class Search:
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
 
-        
+    
         with open(self._cfg.consent_id_path, 'r') as file:
             consent_id_mappings = json.load(file)
         # Add consent_id to the study
@@ -540,8 +540,9 @@ class Search:
             else:
                 updated_studies.append(study)
 
-        return updated_studies
 
+        #Adding missing studies
+                
 
     
 
@@ -573,7 +574,16 @@ class Search:
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
         data=unique_data_types
-        print(data)
+
+        #Remove Parent program and add Training program
+        
+        data = [item for item in data if item['key'] != 'Parent']
+
+        with open(self._cfg.missing_program_path, 'r') as file:
+            missing_programs = json.load(file)
+        data.append(missing_programs)
+ 
+
         # Sorting the data alphabetically based on 'key'
         sorted_data = sorted(data, key=lambda x: x['key'])
 

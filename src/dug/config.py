@@ -143,7 +143,9 @@ class Config:
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
             "program_description": "PROGRAM_DESCRIPTION",
-            "consent_id_path": "CONSENT_ID_PATH"
+            "consent_id_path": "CONSENT_ID_PATH",
+            "missing_studies_path": "MISSING_STUDIES_PATH",
+            "missing_program_path": "MISSING_PROGRAM_PATH"
         }
 
         kwargs = {}
