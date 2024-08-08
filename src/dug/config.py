@@ -30,6 +30,8 @@ class Config:
     program_sort_list: str = ""
     program_description: dict=field(default_factory=lambda:{})
     consent_id_path: str= ""
+    missing_studies_path: str=""
+    missing_program_path: str=""
     
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor

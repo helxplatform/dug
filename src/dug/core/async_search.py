@@ -524,6 +524,9 @@ class Search:
             collection_details_list.append(collection_details)
 
     
+            
+
+       #Adding consent to the studies 
         with open(self._cfg.consent_id_path, 'r') as file:
             consent_id_mappings = json.load(file)
         # Add consent_id to the study
@@ -539,12 +542,22 @@ class Search:
                     updated_studies.append(updated_study)
             else:
                 updated_studies.append(study)
+        
 
 
         #Adding missing studies
                 
-
-    
+        with open(self._cfg.missing_studies_path, 'r') as file:
+            missing_studies = json.load(file)
+        for program in missing_studies:
+            print(program_name)
+            print("\n\n",program)
+            if program_name.lower() == program['program_name'].lower():
+                print("\n\n it matches")
+                updated_studies.append(program['collections'])
+                print(program['collections'])
+                
+        return updated_studies
 
 
     async def search_program_list(self):
@@ -581,11 +594,11 @@ class Search:
 
         with open(self._cfg.missing_program_path, 'r') as file:
             missing_programs = json.load(file)
-        data.append(missing_programs)
- 
+        data.extend(missing_programs)
+
 
         # Sorting the data alphabetically based on 'key'
-        sorted_data = sorted(data, key=lambda x: x['key'])
+        sorted_data = sorted(data, key=lambda x: (x['key'].casefold(), x['key'][1:]))
 
         #Add description as another field in exisiting data based on the program name
         descriptions_json = self._cfg.program_description
