@@ -551,7 +551,7 @@ class Search:
             missing_studies = json.load(file)
         for program in missing_studies:
             if program_name.lower() == program['program_name'].lower():
-                updated_studies.append(program['collections'])
+                updated_studies.extend(program['collections'])
 
                 
         return updated_studies
