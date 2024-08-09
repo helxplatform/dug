@@ -523,7 +523,10 @@ class Search:
             # Append the details to the list in the desired format
             collection_details_list.append(collection_details)
 
-        
+    
+            
+
+       #Adding consent to the studies 
         with open(self._cfg.consent_id_path, 'r') as file:
             consent_id_mappings = json.load(file)
         # Add consent_id to the study
@@ -539,11 +542,19 @@ class Search:
                     updated_studies.append(updated_study)
             else:
                 updated_studies.append(study)
+        
 
+
+        #Adding missing studies
+                
+        with open(self._cfg.missing_studies_path, 'r') as file:
+            missing_studies = json.load(file)
+        for program in missing_studies:
+            if program_name.lower() == program['program_name'].lower():
+                updated_studies.append(program['collections'])
+
+                
         return updated_studies
-
-
-    
 
 
     async def search_program_list(self):
@@ -573,9 +584,18 @@ class Search:
         # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
         unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
         data=unique_data_types
-        print(data)
+
+        #Remove Parent program and add Training program
+        
+        data = [item for item in data if item['key'] != 'Parent']
+
+        with open(self._cfg.missing_program_path, 'r') as file:
+            missing_programs = json.load(file)
+        data.extend(missing_programs)
+
+
         # Sorting the data alphabetically based on 'key'
-        sorted_data = sorted(data, key=lambda x: x['key'])
+        sorted_data = sorted(data, key=lambda x: (x['key'].casefold(), x['key'][1:]))
 
         #Add description as another field in exisiting data based on the program name
         descriptions_json = self._cfg.program_description
