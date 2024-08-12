@@ -494,10 +494,10 @@ class Search:
         # Add conditions based on user input
         if program_name:
             # Lowercase the program_name before adding it to the query
-            program_name = program_name.lower()
-            query_body["query"]["bool"]["must"].append({
-                "match": {"data_type": program_name}
-            })
+            # program_name = program_name.lower()
+            query_body["query"]["bool"]["must"].append(
+                {"term": {"data_type.keyword": program_name}}
+            )
 
         #print("query_body", query_body)
 
