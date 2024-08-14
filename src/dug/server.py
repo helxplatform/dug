@@ -8,6 +8,7 @@ from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
 import asyncio
+from typing import Optional
 
 logger = logging.getLogger (__name__)
 
@@ -48,6 +49,19 @@ class SearchKgQuery(BaseModel):
     unique_id: str
     index: str = "kg_index"
     size:int = 100
+
+class SearchStudyQuery(BaseModel):
+    #query: str
+    study_id: Optional[str] = None
+    study_name: Optional[str] = None
+    #index: str = "variables_index"
+    size:int = 100
+class SearchProgramQuery(BaseModel):
+    #query: str
+    program_id: Optional[str] = None
+    program_name: Optional[str] = None
+    #index: str = "variables_index"
+    size:int = 100   
 
 search = Search(Config.from_env())
 
@@ -107,5 +121,42 @@ async def search_var(search_query: SearchVariablesQuery):
     }
 
 
+
+@APP.get('/search_study')
+async def search_study(study_id: Optional[str] = None, study_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_study(study_id=study_id, study_name=study_name)
+    return {
+        "message": "Search result",
+        "result": result,
+        "status": "success"
+    }
+
+
+@APP.get('/search_program')
+async def search_program( program_name: Optional[str] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result = await search.search_program(program_name=program_name)
+    return {
+        "message": "Search result",
+        "result": result,
+        "status": "success"
+    }
+
+@APP.get('/program_list')
+async def get_program_list():
+    """
+    Search for program by program name.
+    """
+    result = await search.search_program_list()
+    return {
+  
+        "result": result,
+        "status": "success"
+    }
 if __name__ == '__main__':
-    uvicorn.run(APP)
+    uvicorn.run(APP,port=8181)

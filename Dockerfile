@@ -3,15 +3,13 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12.1-alpine3.19
+FROM python:alpine3.20
 
 
 # Install required packages
 RUN apk update && \
-    apk add g++ make
+    apk add g++ make 
 
-#upgrade openssl \
-#RUN apk  add openssl=3.1.4-r4
 
 RUN pip install --upgrade pip
 # Create a non-root user.

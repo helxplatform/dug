@@ -4,7 +4,7 @@ from typing import Dict
 import pluggy
 
 from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
-from .dbgap_parser import DbGaPParser, AnvilDbGaPParser, KFDRCDbGaPParser, CRDCDbGaPParser
+from .dbgap_parser import *
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
 from .topmed_tag_parser import TOPMedTagParser
@@ -13,6 +13,7 @@ from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
 from .heal_dp_parser import HEALDPParser
 from .ctn_parser import CTNParser
+from .radx_parser import RADxParser
 
 
 logger = logging.getLogger('dug')
@@ -35,6 +36,18 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
     parser_dict["heal-research"] = HEALDPParser(study_type="HEAL Research Programs")
     parser_dict["ctn"] = CTNParser()
+    parser_dict["biolincc"] = BioLINCCDbGaPParser()
+    parser_dict["covid19"] = Covid19DbGaPParser()
+    parser_dict["dir"] = DIRDbGaPParser()
+    parser_dict["lungmap"] = LungMAPDbGaPParser()
+    parser_dict["nsrr"] = NSRRDbGaPParser()
+    parser_dict["parent"] = ParentDBGaPParser()
+    parser_dict["pcgc"] = PCGCDbGaPParser()
+    parser_dict["recover"] = RECOVERDBGaPParser()
+    parser_dict["topmeddbgap"] = TopmedDBGaPParser()
+    parser_dict["curesc"] = CureSC()
+    parser_dict["radx"] = RADxParser()
+
 
     
 

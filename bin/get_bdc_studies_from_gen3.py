@@ -105,11 +105,12 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
     sorted_study_ids = sorted(discovery_list)
 
     # Step 2. For every study ID, write out an entry into the CSV output file.
-    csv_writer = csv.DictWriter(output, fieldnames=['Accession', 'Consent', 'Study Name', 'Last modified', 'Notes', 'Description'])
+    csv_writer = csv.DictWriter(output, fieldnames=['Accession', 'Consent', 'Study Name', 'Program', 'Last modified', 'Notes', 'Description'])
     csv_writer.writeheader()
     for study_id in sorted_study_ids:
         # Reset the variables we need.
         study_name = ''
+        program_names = []
         description = ''
         notes = ''
 
@@ -139,6 +140,24 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
             else:
                 study_name = '(no name)'
 
+            # Program name.
+            if 'authz' in gen3_discovery:
+                # authz is in the format /programs/topmed/projects/ECLIPSE_DS-COPD-MDS-RD
+                match = re.fullmatch(r'^/programs/(.*)/projects/(.*)$', gen3_discovery['authz'])
+                if match:
+                    program_names.append(match.group(1))
+                    # study_short_name = match.group(2)
+
+            # Tags don't seem as fine-grained as authz and are often slightly different from the authz values
+            # (e.g. `COVID 19` instead of `COVID-19`, `Parent` instead of `parent`), so for now we only use the authz
+            # values.
+            #
+            # if 'tags' in gen3_discovery:
+            #     for tag in gen3_discovery['tags']:
+            #         category = tag.get('category', '')
+            #         if category.lower() == 'program':
+            #             program_names.append(tag.get('name', '').strip())
+
             # Description.
             description = gen3_discovery.get('study_description', '')
 
@@ -156,11 +175,15 @@ def get_bdc_studies_from_gen3(output, bdc_gen3_base_url):
             accession = study_id
             consent = ''
 
+        # Remove any blank program names.
+        program_names = filter(lambda n: n != '', program_names)
+
         csv_writer.writerow({
             'Accession': accession,
             'Consent': consent,
             'Study Name': study_name,
             'Description': description,
+            'Program': '|'.join(sorted(set(program_names))),
             'Last modified': last_modified,
             'Notes': notes.strip()
         })

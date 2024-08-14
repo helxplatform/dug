@@ -16,6 +16,10 @@ from urllib.parse import urljoin
 # Default to logging at the INFO level.
 logging.basicConfig(level=logging.INFO)
 
+# FTP timeout in seconds
+FTP_TIMEOUT = 100
+
+
 # Helper function
 def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
     """
@@ -28,7 +32,7 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
 
     count_downloaded_vars = 0
 
-    ftp = FTP('ftp.ncbi.nlm.nih.gov')
+    ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
     ftp.login()
     ftp.sendcmd('PASV')
     study_variable = dbgap_accession_id.split('.')[0]
@@ -56,6 +60,8 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
         return 0
 
     ftp_filelist = ftp.nlst(".")
+    ftp.quit()
+
     for ftp_filename in ftp_filelist:
         if 'data_dict' in ftp_filename:
             with open(f"{local_path}/{ftp_filename}", "wb") as data_dict_file:
@@ -73,13 +79,20 @@ def download_dbgap_study(dbgap_accession_id, dbgap_output_dir):
                 logging.info(f"Downloaded {ftp_filename} to {local_path}/{ftp_filename} in {response.elapsed.microseconds} microseconds.")
             count_downloaded_vars += 1
 
+    # Sometimes we've timed out on the FTP server by this point. So let's disconnect and reconnect.
+    ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
+    ftp.login()
+    ftp.sendcmd('PASV')
+
     # Step 2: Check to see if there's a GapExchange file in the parent folder
     #         and if there is, get it.
     try:
         ftp.cwd(study_id_path)
     except error_temp as e:
-        logging.error("Ftp session timed out... Reconnecting")
+        logging.error("FTP session timed out. Reconnecting.")
+        ftp = FTP('ftp.ncbi.nlm.nih.gov', timeout=FTP_TIMEOUT)
         ftp.login()
+        ftp.sendcmd('PASV')
         resp = ftp.cwd(study_id_path)
         if resp[:1] == '2':
             logging.info("command success")
@@ -160,7 +173,12 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
         # If multiple group-by fields are specified, we use them in order.
         output_dir_for_row = output_dir
         for group_name in list(group_by):
-            if group_name in row:
+            if group_name in row and row[group_name].strip() != '':
+                if '|' in row[group_name]:
+                    raise RuntimeError(
+                        f"Pipe-separated multiple values in group-by field {group_name} not supported:" +
+                        f"{row[group_name]} (line {line_num})"
+                    )
                 output_dir_for_row = os.path.join(output_dir_for_row, row[group_name])
             else:
                 output_dir_for_row = os.path.join(output_dir_for_row, '__missing__')
@@ -179,9 +197,15 @@ def get_dbgap_data_dicts(input_file, format, field, outdir, group_by, skip):
             # Try to download to output folder if the study hasn't already been downloaded
             if not os.path.exists(dbgap_dir):
                 logging.info(f"Downloading {dbgap_id} to {dbgap_dir}")
-                count_downloaded += download_dbgap_study(dbgap_id, dbgap_dir)
+                try:
+                    count_downloaded += download_dbgap_study(dbgap_id, dbgap_dir)
+                except Exception as ex:
+                    logging.error(f"Exception occurred while downloading {dbgap_id} to {dbgap_dir}: {ex}")
+                    shutil.rmtree(dbgap_dir, ignore_errors=True)
+                    logging.error(f"Deleted {dbgap_dir} as it is probably incomplete.")
+                    logging.error("Re-run this script to ensure that all variables are downloaded.")
 
-    logging.info(f"Downloaded {count_downloaded} studies from {count_rows} in input files.")
+    logging.info(f"Downloaded {count_downloaded} data dictionaries from {count_rows} rows in input files.")
 
 
 if __name__ == "__main__":
