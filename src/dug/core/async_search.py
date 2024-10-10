@@ -735,6 +735,42 @@ class Search:
                     "fields": ["name", "description", "search_terms"],
                     "default_operator": "and",
                     "flags": "OR|AND|NOT|PHRASE|PREFIX"
+                },
+            }
+        }
+        simple_query_string_search = {
+            "query": query,
+            "default_operator": "and",
+            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+        }
+        search_query = {
+            "query": {
+                "function_score": {
+                    "query": {
+                        "bool": {
+                            "should": [
+                                {
+                                    "simple_query_string": {
+                                        **simple_query_string_search,
+                                        "fields": ["name"]
+                                    }
+                                },
+                                {
+                                    "simple_query_string": {
+                                        **simple_query_string_search,
+                                        "fields": ["description"]
+                                    }
+                                },
+                                {
+                                    "simple_query_string": {
+                                        **simple_query_string_search,
+                                        "fields": ["search_terms"]
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "score_mode": "sum"
                 }
             }
         }
