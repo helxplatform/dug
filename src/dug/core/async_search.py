@@ -728,16 +728,6 @@ class Search:
     def get_simple_search_query(self, query):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
-        search_query = {
-            "query": {
-                "simple_query_string": {
-                    "query": query,
-                    "fields": ["name", "description", "search_terms"],
-                    "default_operator": "and",
-                    "flags": "OR|AND|NOT|PHRASE|PREFIX"
-                },
-            }
-        }
         simple_query_string_search = {
             "query": query,
             "default_operator": "and",
