@@ -188,7 +188,7 @@ class AnnotateSapbert:
         if response.status_code == 403:
             raise RuntimeError(f"You are not authorized to use this API -- {url}")
         if response.status_code == 500:
-            log.error(f"Classification API is temporarily returned 500 for result : {payload}")
+            logger.error(f"Classification API is temporarily returned 500 for result : {payload}")
             return {
                   "text": "pdtscor",
                   "denotations": []
