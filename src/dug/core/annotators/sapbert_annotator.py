@@ -188,7 +188,11 @@ class AnnotateSapbert:
         if response.status_code == 403:
             raise RuntimeError(f"You are not authorized to use this API -- {url}")
         if response.status_code == 500:
-            raise RuntimeError(f"Classification API is temporarily down -- vist docs here: {url.replace('annotate', 'docs')}")
+            log.error(f"Classification API is temporarily returned 500 for result : {payload}")
+            return {
+                  "text": "pdtscor",
+                  "denotations": []
+            }
         return response.json()
 
     def handle_classification_response(self, response: dict) -> List:
