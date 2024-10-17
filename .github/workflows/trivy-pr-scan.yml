@@ -62,7 +62,7 @@ jobs:
     # We still fail the job if results are found, so below will always run
     # unless manually canceled.
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       if: '!cancelled()'
       with:
         sarif_file: 'trivy-results.sarif'
