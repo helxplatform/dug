@@ -735,32 +735,44 @@ class Search:
         }
         search_query = {
             "query": {
-                "function_score": {
-                    "query": {
+                "bool": {
+                    "filter": {
                         "bool": {
-                            "should": [
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["name"]
-                                    }
-                                },
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["description"]
-                                    }
-                                },
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["search_terms"]
-                                    }
-                                }
+                            "must": [
+                                {"wildcard": {"description": "?*"}},
+                                {"wildcard": {"name": "?*"}}
                             ]
                         }
                     },
-                    "score_mode": "sum"
+                    "must": {
+                        "function_score": {
+                            "query": {
+                                "bool": {
+                                    "should": [
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["name"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["description"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["search_terms"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "score_mode": "sum"
+                        }
+                    }
                 }
             }
         }
