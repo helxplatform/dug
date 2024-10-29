@@ -216,14 +216,17 @@ class Search:
             }
         }
         return query_object
+    
+    def is_simple_search_query(self, query):
+        return "*" in query or "\"" in query or "+" in query or "-" in query
 
     async def search_concepts(self, query, offset=0, size=None, types=None,
                               **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
-        if "*" in query or "\"" in query or "+" in query or "-" in query:
-            search_body = self.get_simple_search_query(query)
+        if self.is_simple_search_query(query):
+            search_body = self.get_simple_concept_search_query(query)
         else:
             search_body = self._get_concepts_query(query, **kwargs)
         # Get aggregated counts of biolink types
@@ -286,7 +289,11 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+        if self.is_simple_search_query(query):
+            es_query = self.get_simple_variable_search_query(concept, query)
+        else:
+            es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+        
         if index is None:
             index = "variables_index"
 
@@ -725,7 +732,7 @@ class Search:
             }
         return es_query
 
-    def get_simple_search_query(self, query):
+    def get_simple_concept_search_query(self, query):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -735,33 +742,97 @@ class Search:
         }
         search_query = {
             "query": {
-                "function_score": {
-                    "query": {
+                "bool": {
+                    "filter": {
                         "bool": {
-                            "should": [
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["name"]
-                                    }
-                                },
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["description"]
-                                    }
-                                },
-                                {
-                                    "simple_query_string": {
-                                        **simple_query_string_search,
-                                        "fields": ["search_terms"]
-                                    }
-                                }
+                            "must": [
+                                {"wildcard": {"description": "?*"}},
+                                {"wildcard": {"name": "?*"}}
                             ]
                         }
                     },
-                    "score_mode": "sum"
+                    "must": {
+                        "function_score": {
+                            "query": {
+                                "bool": {
+                                    "should": [
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["name"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["description"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["search_terms"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "score_mode": "sum"
+                        }
+                    }
                 }
             }
         }
+        return search_query
+
+    def get_simple_variable_search_query(self, concept, query):
+        """Returns ES query that allows to use basic operators like AND, OR, NOT...
+        More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
+        simple_query_string_search = {
+            "query": query,
+            "default_operator": "and",
+            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+        }
+        search_query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"function_score": {
+                            "query": {
+                                "bool": {
+                                    "should": [
+                                        
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["element_name"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["element_desc"]
+                                            }
+                                        },
+                                        {
+                                            "simple_query_string": {
+                                                **simple_query_string_search,
+                                                "fields": ["search_terms"]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "score_mode": "sum"
+                        }}
+                    ]
+                }
+            }
+        }
+        if concept:
+            search_query["query"]["bool"]["must"].append({
+                "match": {
+                    "identifiers": concept
+                }
+            })
         return search_query
