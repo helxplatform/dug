@@ -147,7 +147,7 @@ class Index:
                     "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
                     "data_type": {"type": "text", "analyzer": "std_with_stopwords",
                                   "fields": {"keyword": {"type": "keyword"}}},
-                    "met=data": {
+                    "metadata": {
                         "type": "object",
                         "dynamic": True
                     }
