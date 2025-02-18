@@ -1,7 +1,8 @@
 import logging
 from typing import List, Dict
-from requests import Session
+from requests import Session, RequestException
 from retrying import retry
+import time
 from dug.core.annotators._base import DugIdentifier, Input
 from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
 from functools import reduce
@@ -170,25 +171,55 @@ class AnnotateSapbert:
 
     def make_classification_request(self, text: Input, http_session: Session):
         url = self.classificationUrl
-        logger.debug(f"response from {text}")
+        logger.debug(f"Requesting classification for text: {text}")
         payload = {
             "text": text,
             "model_name": "token_classification",
         }
-        # This could be moved to a config file
+
         NUM_TRIES = 5
-        for _ in range(NUM_TRIES):
-            response = http_session.post(url, json=payload)
-            if response is not None:
-                # looks like it worked
-                break
-        # if the reponse is still None here, throw an error
+        initial_delay = 1  # seconds
+        backoff_factor = 2
+        max_delay = 10  # seconds
+        retryable_status_codes = {500, 502, 503, 504, 429}
+
+        last_exception = None
+        response = None
+        delay = initial_delay
+
+        for attempt in range(NUM_TRIES):
+            if attempt > 0:
+                logger.debug(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+                delay = min(delay * backoff_factor, max_delay)
+
+            try:
+                response = http_session.post(url, json=payload)
+            except RequestException as e:
+                logger.warning(f"Attempt {attempt + 1} failed with error: {str(e)}")
+                last_exception = e
+                continue
+
+            if response.status_code // 100 == 2:
+                break  # Successful response
+            elif response.status_code in retryable_status_codes:
+                logger.warning(f"Retryable status {response.status_code} on attempt {attempt + 1}")
+                continue
+            else:
+                if response.status_code == 403:
+                    raise RuntimeError(f"Authorization error accessing {url}")
+                else:
+                    raise RuntimeError(f"API error {response.status_code}: {response.text}")
+
         if response is None:
-            raise RuntimeError(f"no response from {url}")
-        if response.status_code == 403:
-            raise RuntimeError(f"You are not authorized to use this API -- {url}")
+            raise RuntimeError(f"Failed after {NUM_TRIES} attempts. Last error: {last_exception}")
+
         if response.status_code == 500:
-            raise RuntimeError(f"Classification API is temporarily down -- vist docs here: {url.replace('annotate', 'docs')}")
+            docs_url = url.replace('annotate', 'docs')
+            raise RuntimeError(f"Classification API unavailable after retries. Documentation: {docs_url}")
+        if response.status_code // 100 != 2:
+            raise RuntimeError(f"Unexpected API response: {response.status_code}")
+
         return response.json()
 
     def handle_classification_response(self, response: dict) -> List:
