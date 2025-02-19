@@ -212,13 +212,12 @@ class AnnotateSapbert:
                     raise RuntimeError(f"API error {response.status_code}: {response.text}")
 
         if response is None:
-            raise RuntimeError(f"Failed after {NUM_TRIES} attempts. Last error: {last_exception}")
+            logger.warning(f"No response after {attempt} -- returning empty annotations....")
+            return {
+                "text": text,
+                "denotations": []
+            }
 
-        if response.status_code == 500:
-            docs_url = url.replace('annotate', 'docs')
-            raise RuntimeError(f"Classification API unavailable after retries. Documentation: {docs_url}")
-        if response.status_code // 100 != 2:
-            raise RuntimeError(f"Unexpected API response: {response.status_code}")
 
         return response.json()
 
