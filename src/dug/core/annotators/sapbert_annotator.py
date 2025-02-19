@@ -186,6 +186,7 @@ class AnnotateSapbert:
         last_exception = None
         response = None
         delay = initial_delay
+        success = False
 
         for attempt in range(NUM_TRIES):
             if attempt > 0:
@@ -201,6 +202,7 @@ class AnnotateSapbert:
                 continue
 
             if response.status_code // 100 == 2:
+                success = True
                 break  # Successful response
             elif response.status_code in retryable_status_codes:
                 logger.warning(f"Retryable status {response.status_code} on attempt {attempt + 1}")
@@ -211,7 +213,7 @@ class AnnotateSapbert:
                 else:
                     raise RuntimeError(f"API error {response.status_code}: {response.text}")
 
-        if response is None:
+        if not success:
             logger.warning(f"No response after {attempt} -- returning empty annotations....")
             return {
                 "text": text,
