@@ -24,11 +24,15 @@ class DugElement:
         self.ml_ready_desc = desc
         self.search_terms = []
         self.optional_terms = []
+        self.metadata = {}
+
+
 
     def add_concept(self, concept):
         self.concepts[concept.id] = concept
 
     def jsonable(self):
+        """Output a pickleable object"""
         return self.__dict__
 
     def get_searchable_dict(self):
@@ -45,9 +49,16 @@ class DugElement:
             'element_action': self.action,
             'collection_action': self.collection_action,
             'data_type': self.type,
+            'metadata': self.metadata,
             'identifiers': list(self.concepts.keys())
         }
         return es_elem
+
+    def add_metadata(self, metadata):
+        self.metadata = metadata
+
+    def get_id(self):
+        return f'{self.id}-{self.collection_id}'
 
     def set_search_terms(self):
         search_terms = []
@@ -55,7 +66,7 @@ class DugElement:
             concept.set_search_terms()
             search_terms.extend(concept.search_terms)
             search_terms.append(concept.name)
-        search_terms = list(set(search_terms))
+        search_terms = sorted(list(set(search_terms)))
         self.search_terms = search_terms
 
     def set_optional_terms(self):
@@ -63,7 +74,7 @@ class DugElement:
         for concept_id, concept in self.concepts.items():
             concept.set_optional_terms()
             optional_terms.extend(concept.optional_terms)
-        optional_terms = list(set(optional_terms))
+        optional_terms = sorted(list(set(optional_terms)))
         self.optional_terms = optional_terms
 
     def __str__(self):
@@ -99,15 +110,15 @@ class DugConcept:
             self.kg_answers[answer_id] = answer
 
     def clean(self):
-        self.search_terms = list(set(self.search_terms))
-        self.optional_terms = list(set(self.optional_terms))
+        self.search_terms = sorted(list(set(self.search_terms)))
+        self.optional_terms = sorted(list(set(self.optional_terms)))
 
     def set_search_terms(self):
         # Traverse set of identifiers to determine set of search terms
         search_terms = self.search_terms
         for ident_id, ident in self.identifiers.items():
             search_terms.extend(ident.search_text + ident.synonyms)
-        self.search_terms = list(set(search_terms))
+        self.search_terms = sorted(list(set(search_terms)))
 
     def set_optional_terms(self):
         # Traverse set of knowledge graph answers to determine set of optional search terms
@@ -115,7 +126,7 @@ class DugConcept:
         for kg_id, kg_answer in self.kg_answers.items():
             optional_terms += kg_answer.get_node_names()
             optional_terms += kg_answer.get_node_synonyms()
-        self.optional_terms = list(set(optional_terms))
+        self.optional_terms = sorted(list(set(optional_terms)))
 
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
@@ -132,6 +143,7 @@ class DugConcept:
         return es_conc
 
     def jsonable(self):
+        """Output a pickleable object"""
         return self.__dict__
 
     def __str__(self):

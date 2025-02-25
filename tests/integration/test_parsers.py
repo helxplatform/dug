@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
@@ -125,3 +125,15 @@ def test_bacpac_parser():
         assert element.type == "BACPAC"
     element_names = [e.name for e in elements]
     assert "record_id.demographic_and_baseline_characteristic_core_data_elements" in element_names
+
+
+def test_ctn_parser():
+    parser = CTNParser()
+    parse_file = str(TEST_DATA_DIR / "ctn_test.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 5
+    for element in elements:
+        assert element.type == "ctn"
+    element_names = [e.name for e in elements]
+
+    assert "RANDDT" in element_names

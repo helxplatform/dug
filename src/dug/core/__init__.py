@@ -12,8 +12,10 @@ from dug.core.loaders.network_loader import load_from_network
 
 from dug import hookspecs
 from dug.core import parsers
+from dug.core import annotators
 from dug.core.factory import DugFactory
 from dug.core.parsers import DugConcept, Parser, get_parser
+from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')
 stdout_log_handler = logging.StreamHandler(sys.stdout)
@@ -29,6 +31,7 @@ def get_plugin_manager() -> pluggy.PluginManager:
     pm.add_hookspecs(hookspecs)
     pm.load_setuptools_entrypoints("dug")
     pm.register(parsers)
+    pm.register(annotators)
     return pm
 
 
@@ -56,19 +59,20 @@ class Dug:
             ]
         )
 
-    def crawl(self, target_name: str, parser_type: str, element_type: str = None):
+    def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
 
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
+        annotator = get_annotator(pm.hook, annotator_type, self._factory.config)
         targets = get_targets(target_name)
 
         for target in targets:
-            self._crawl(target, parser, element_type)
+            self._crawl(target, parser, annotator, element_type)
 
-    def _crawl(self, target: Path, parser: Parser, element_type):
+    def _crawl(self, target: Path, parser: Parser, annotator: Annotator, element_type):
 
         # Initialize crawler
-        crawler = self._factory.build_crawler(target, parser, element_type)
+        crawler = self._factory.build_crawler(target, parser, annotator, element_type)
         # Read elements, annotate, and expand using tranql queries
         crawler.crawl()
 
@@ -93,11 +97,11 @@ class Dug:
         event_loop = asyncio.get_event_loop()
         targets = {
             'concepts': partial(
-                self._search.search_concepts, index=kwargs.get('index', self.concepts_index)),
+                self._search.search_concepts),
             'variables': partial(
-                self._search.search_variables, index=kwargs.get('index', self.variables_index), concept=kwargs.pop('concept', None)),
+                self._search.search_variables, concept=kwargs.pop('concept', None)),
             'kg': partial(
-                self._search.search_kg, index=kwargs.get('index', self.kg_index), unique_id=kwargs.pop('unique_id', None))
+                self._search.search_kg, unique_id=kwargs.pop('unique_id', None))
         }
         kwargs.pop('index', None)
         func = targets.get(target)

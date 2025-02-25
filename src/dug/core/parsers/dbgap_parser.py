@@ -92,7 +92,57 @@ class CRDCDbGaPParser(DbGaPParser):
     def _get_element_type(self):
         return "Cancer Data Commons"
 
+
 class KFDRCDbGaPParser(DbGaPParser):
     def _get_element_type(self):
         return "Kids First"
 
+
+class BioLINCCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "BioLINCC"
+
+
+class Covid19DbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "COVID19"
+
+
+class DIRDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "DIR"
+
+
+class LungMAPDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "LungMAP"
+
+
+class NSRRDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "NSRR"
+
+
+class ParentDBGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "Parent"
+
+
+class PCGCDbGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "PCGC"
+
+
+class RECOVERDBGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "RECOVER"
+
+
+class TopmedDBGaPParser(DbGaPParser):
+    def _get_element_type(self):
+        return "TOPMed"
+
+
+class CureSC(DbGaPParser):
+    def _get_element_type(self):
+        return "CureSC"

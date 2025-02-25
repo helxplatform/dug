@@ -31,7 +31,7 @@ def test_annotate_element(crawler):
         "collection-desc"
     )
     crawler.annotate_element(element)
-    AnnotatorMock.annotate.assert_called_with(**{
+    AnnotatorMock.assert_called_with(**{
         "text": element.ml_ready_desc,
         "http_session": HTTPSessionMock
     })

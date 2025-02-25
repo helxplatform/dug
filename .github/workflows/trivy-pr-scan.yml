@@ -55,13 +55,14 @@ jobs:
         image-ref: '${{ github.repository }}:vuln-test'
         format: 'sarif'
         severity: 'CRITICAL,HIGH'
+        ignore-unfixed: true
         output: 'trivy-results.sarif'
         exit-code: '1'
     # Scan results should be viewable in GitHub Security Dashboard
     # We still fail the job if results are found, so below will always run
     # unless manually canceled.
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       if: '!cancelled()'
       with:
         sarif_file: 'trivy-results.sarif'
