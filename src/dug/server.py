@@ -125,6 +125,12 @@ async def search_var(search_query: SearchVariablesQuery):
 async def search_var_grouped(search_query: SearchVariablesQuery):
     results = await search.search_variables(**search_query.dict(exclude={"index"}))
     all_elements = []
+    if len(results.keys()) == 1:
+        return {
+            "variables": [],
+            "agg_counts": {}
+        }
+
     for program_name in results:
         studies = results[program_name]
         for s in studies:
@@ -146,6 +152,7 @@ async def search_var_grouped(search_query: SearchVariablesQuery):
         'c_id', 'c_link', 'c_name', 'program_name'
     ]
     final_variables = []
+    count_keys = set()
     for var_id in by_id:
         var_studies = by_id[var_id]
         for s in var_studies:
@@ -154,13 +161,27 @@ async def search_var_grouped(search_query: SearchVariablesQuery):
                     k: v for k, v in s.items() if k not in study_info_keys
                 }
                 var_info.update(var_info['metadata'])
+                for k in var_info['metadata']:
+                    if isinstance(var_info['metadata'][k], str):
+                        count_keys.add(k)
                 var_info.pop('metadata')
                 var_info['studies'] = []
             study_data = {k: v for k, v in s.items() if k in study_info_keys}
             var_info['studies'].append(study_data)
         final_variables.append(var_info)
         var_info = None
-    return final_variables
+    agg_counts = {}
+    for var in final_variables:
+        for key in count_keys:
+            if key in var:
+                val = var[key]
+                agg_counts[key] = agg_counts.get(key , {})
+                agg_counts[key][val] = agg_counts[key].get(val, 0)
+                agg_counts[key][val] += 1
+    return {
+        "variables": final_variables,
+        "agg_counts": agg_counts
+    }
 
 
 @APP.get('/search_study')
