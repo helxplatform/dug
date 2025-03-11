@@ -74,8 +74,6 @@ class AnnotateSapbert:
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist
-        self.norm_fails_file = "norm_fails.txt"
-        self.anno_fails_file = "anno_fails.txt"
         # threshold marking cutoff point
         self.score_threshold = float(kwargs.get("score_threshold", 0.8))
         # indicate if we want values above or below the threshold.
@@ -103,8 +101,7 @@ class AnnotateSapbert:
 
         # Write out to file if text fails to annotate
         if not raw_identifiers_dict:
-            with open(self.anno_fails_file, "a") as fh:
-                fh.write(f"{text}\n")
+            logger.warning(f"Failed to annotate: {text}\n")
 
         processed_identifiers = {}
         for entity, raw_identifiers in raw_identifiers_dict.items():
@@ -116,8 +113,7 @@ class AnnotateSapbert:
                 # Skip adding id if it doesn't normalize
                 if norm_id is None:
                     # Write out to file if identifier doesn't normalize
-                    with open(self.norm_fails_file, "a") as fh:
-                        fh.write(f"{identifier.id}\n")
+                    logger.warning(f"Failed to normalize: {identifier.id}\n")
 
                     # Discard non-normalized ident if not in greenlist
                     if identifier.id_type not in self.ontology_greenlist:
