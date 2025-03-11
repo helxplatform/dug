@@ -123,15 +123,15 @@ async def search_var(search_query: SearchVariablesQuery):
 
 @APP.post('/search_var_grouped')
 async def search_var_grouped(search_query: SearchVariablesQuery):
-    results = await search.search_variables(**search_query.dict(exclude={"index"}))
-    all_elements = []
-    if len(results.keys()) == 1:
-        return {
-            "variables": [],
-            "agg_counts": {}
-        }
+    if search_query.query == "":
+        results = await search.dump_concepts(search_query.index, size=search_query.size )
+        search_result_hits = results['result']['hits']['hits']
+        results = search._make_result(None, search_result_hits, {"count": search_query}, False)
 
-    for program_name in results:
+    else:
+        results = await search.search_variables(**search_query.dict(exclude={"index"}))
+    all_elements = []
+    for program_name in filter(lambda x: x != 'total_items', results.keys()):
         studies = results[program_name]
         for s in studies:
             elements = s['elements']
