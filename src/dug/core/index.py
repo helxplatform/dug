@@ -219,7 +219,7 @@ class Index:
             identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
             doc = {"doc": {}}
             doc['doc']['identifiers'] = list(set(identifiers))
-            self.update_doc(index=index, doc=doc, doc_id=elem.id)
+            self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
 

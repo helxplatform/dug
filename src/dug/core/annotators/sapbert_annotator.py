@@ -1,7 +1,8 @@
 import logging
 from typing import List, Dict
-from requests import Session
+from requests import Session, RequestException
 from retrying import retry
+import time
 from dug.core.annotators._base import DugIdentifier, Input
 from dug.core.annotators.utils.biolink_purl_util import BioLinkPURLerizer
 from functools import reduce
@@ -73,8 +74,6 @@ class AnnotateSapbert:
         self.normalizer = normalizer
         self.synonym_finder = synonym_finder
         self.ontology_greenlist = ontology_greenlist
-        self.norm_fails_file = "norm_fails.txt"
-        self.anno_fails_file = "anno_fails.txt"
         # threshold marking cutoff point
         self.score_threshold = float(kwargs.get("score_threshold", 0.8))
         # indicate if we want values above or below the threshold.
@@ -102,8 +101,7 @@ class AnnotateSapbert:
 
         # Write out to file if text fails to annotate
         if not raw_identifiers_dict:
-            with open(self.anno_fails_file, "a") as fh:
-                fh.write(f"{text}\n")
+            logger.warning(f"Failed to annotate: {text}\n")
 
         processed_identifiers = {}
         for entity, raw_identifiers in raw_identifiers_dict.items():
@@ -115,8 +113,7 @@ class AnnotateSapbert:
                 # Skip adding id if it doesn't normalize
                 if norm_id is None:
                     # Write out to file if identifier doesn't normalize
-                    with open(self.norm_fails_file, "a") as fh:
-                        fh.write(f"{identifier.id}\n")
+                    logger.warning(f"Failed to normalize: {identifier.id}\n")
 
                     # Discard non-normalized ident if not in greenlist
                     if identifier.id_type not in self.ontology_greenlist:
@@ -170,25 +167,56 @@ class AnnotateSapbert:
 
     def make_classification_request(self, text: Input, http_session: Session):
         url = self.classificationUrl
-        logger.debug(f"response from {text}")
+        logger.debug(f"Requesting classification for text: {text}")
         payload = {
             "text": text,
             "model_name": "token_classification",
         }
-        # This could be moved to a config file
+
         NUM_TRIES = 5
-        for _ in range(NUM_TRIES):
-            response = http_session.post(url, json=payload)
-            if response is not None:
-                # looks like it worked
-                break
-        # if the reponse is still None here, throw an error
-        if response is None:
-            raise RuntimeError(f"no response from {url}")
-        if response.status_code == 403:
-            raise RuntimeError(f"You are not authorized to use this API -- {url}")
-        if response.status_code == 500:
-            raise RuntimeError(f"Classification API is temporarily down -- vist docs here: {url.replace('annotate', 'docs')}")
+        initial_delay = 1  # seconds
+        backoff_factor = 2
+        max_delay = 10  # seconds
+        retryable_status_codes = {500, 502, 503, 504, 429}
+
+        last_exception = None
+        response = None
+        delay = initial_delay
+        success = False
+
+        for attempt in range(NUM_TRIES):
+            if attempt > 0:
+                logger.debug(f"Retrying in {delay} seconds...")
+                time.sleep(delay)
+                delay = min(delay * backoff_factor, max_delay)
+
+            try:
+                response = http_session.post(url, json=payload)
+            except RequestException as e:
+                logger.warning(f"Attempt {attempt + 1} failed with error: {str(e)}")
+                last_exception = e
+                continue
+
+            if response.status_code // 100 == 2:
+                success = True
+                break  # Successful response
+            elif response.status_code in retryable_status_codes:
+                logger.warning(f"Retryable status {response.status_code} on attempt {attempt + 1}")
+                continue
+            else:
+                if response.status_code == 403:
+                    raise RuntimeError(f"Authorization error accessing {url}")
+                else:
+                    raise RuntimeError(f"API error {response.status_code}: {response.text}")
+
+        if not success:
+            logger.warning(f"No response after {attempt} -- returning empty annotations....")
+            return {
+                "text": text,
+                "denotations": []
+            }
+
+
         return response.json()
 
     def handle_classification_response(self, response: dict) -> List:
