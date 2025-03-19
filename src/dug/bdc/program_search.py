@@ -47,7 +47,7 @@ def load_data():
         program_summary.append({
             "key": program_name,
             "doc_count": len(studies),
-            "No_of_studies": {"value": 1},
+            "No_of_studies": {"value": len(studies)},
             "description": program_descriptions.get(program_name, ""),
             "parent_program": [""]
         })
