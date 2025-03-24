@@ -187,7 +187,7 @@ class BDCDataProcessor:
                     csv_writer.writerow({
                         'Accession': study_id,
                         'Study Name': study_name,
-                        'Description': "",
+                        'Description': "",  # Leave description empty, will be filled from BDC data
                         'Program': '|'.join(sorted(set(filter(None, program_names)))),
                     })
                     
@@ -274,13 +274,13 @@ class BDCDataProcessor:
                     old_data[base_accession] = (program, description, full_accession)
                     old_accessions.add(base_accession)
         
-        updated_rows = []
+        existing_records = []
+        new_only_records = []
         new_accessions = set()
         
         with open(new_csv_path, 'r', newline='', encoding='utf-8') as csvfile:
             reader = csv.reader(csvfile)
             header = next(reader)
-            updated_rows.append(header)
             
             new_accession_index = header.index('Accession')
             new_program_index = header.index('Program')
@@ -299,16 +299,32 @@ class BDCDataProcessor:
                     
                 new_accessions.add(base_accession)
                 
+                # Check if record exists in old data
                 if base_accession in old_data:
+                    # Update with information from old data
                     row[new_program_index] = old_data[base_accession][0]
                     row[new_description_index] = old_data[base_accession][1]
-                
-                updated_rows.append(row)
+                    existing_records.append(row)
+                else:
+                    # This is a new record, add it to new-only records list
+                    new_only_records.append(row)
         
+        # Combine the records with existing records first, then new-only records at the bottom
+        all_rows = [header] + existing_records + new_only_records
+        
+        # Write the combined data to the output CSV
         with open(output_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerows(updated_rows)
+            writer.writerows(all_rows)
         
+        # Log information about new records
+        if new_only_records:
+            self.logger.info(f"Found {len(new_only_records)} new studies in Gen3 that were not in BDC.")
+            self.logger.info(f"New records appended at the bottom of the output CSV.")
+        else:
+            self.logger.info("No new studies found in Gen3 that weren't in BDC.")
+        
+        # Create log file for missing studies
         missing_studies = old_accessions - new_accessions
         if missing_studies:
             with open(self.missing_studies_log, 'w', encoding='utf-8') as logfile:
@@ -316,14 +332,17 @@ class BDCDataProcessor:
                 for base_accession in sorted(missing_studies):
                     program, description, full_accession = old_data[base_accession]
                     logfile.write(f"Base Accession: {base_accession}, Full Accession: {full_accession}, Program: {program}, Description: {description}\n")
+            self.logger.info(f"Found {len(missing_studies)} studies in BDC that are not in Gen3.")
+            self.logger.info(f"Missing studies logged to: {self.missing_studies_log}")
+        else:
+            self.logger.info("All studies from BDC are present in Gen3.")
         
         return output_csv_path
     
     def run_full_pipeline(self):
-        self.process_bdc_data()  #get the currrent data from the bdc portal
-        self.process_gen3_data() #get the current data from gen3 and filter that has required information
-        self.merge_csv_files()   #the output csv will have the decriptions and program names from the bdc portal 
-                                 #for all studies that are in csv from gen3 and bdc. The new studies will have 
+        self.process_bdc_data()
+        self.process_gen3_data()
+        self.merge_csv_files()
         return self.gen3_filtered_csv
 
 
