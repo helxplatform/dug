@@ -3,12 +3,12 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.14.0a6-alpine3.21
+FROM python:3.12-alpine3.20
 
 
 # Install required packages
 RUN apk update && \
-    apk add g++ make 
+    apk add g++ make cargo rust
 
 RUN apk upgrade -Ua
 
