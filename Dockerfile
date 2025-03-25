@@ -3,7 +3,7 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12-alpine
+FROM python:3.14.0a6-alpine3.21
 
 
 # Install required packages
