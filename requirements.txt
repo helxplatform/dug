@@ -27,6 +27,5 @@ retrying
 # We use Click 7.0 because that's what one of the pinned packages above use.
 click
 httpx
-linkml-runtime==1.6.0
-bmt==1.1.0
+bmt==1.4.4
 urllib3
