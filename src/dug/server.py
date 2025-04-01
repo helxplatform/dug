@@ -198,11 +198,11 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
 
 
 @APP.get('/search_program')
-async def search_program( program_name: Optional[str] = None):
+async def search_program(program_name: Optional[str] = None, use_elasticsearch: bool = False):
     """
     Search for studies by unique_id (ID or name) and/or study_name.
     """
-    result = await search.search_program(program_name=program_name)
+    result = await search.search_program(program_name=program_name, use_elasticsearch=use_elasticsearch)
     return {
         "message": "Search result",
         "result": result,
@@ -210,13 +210,13 @@ async def search_program( program_name: Optional[str] = None):
     }
 
 @APP.get('/program_list')
-async def get_program_list():
+async def get_program_list(use_elasticsearch: bool = False):
     """
     Search for program by program name.
+    By default, uses JSON file. Set use_elasticsearch=true to use Elasticsearch.
     """
-    result = await search.search_program_list()
+    result = await search.search_program_list(use_elasticsearch=use_elasticsearch)
     return {
-  
         "result": result,
         "status": "success"
     }
