@@ -27,11 +27,8 @@ class Config:
     nboost_host: str = "nboost"
     nboost_port: int = 8000
 
-    program_sort_list: str = ""
-    program_description: dict=field(default_factory=lambda:{})
-    consent_id_path: str= ""
-    missing_studies_path: str=""
-    missing_program_path: str=""
+    studies_path: str=""
+
     
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
@@ -159,10 +156,7 @@ class Config:
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
-            "program_description": "PROGRAM_DESCRIPTION",
-            "consent_id_path": "CONSENT_ID_PATH",
-            "missing_studies_path": "MISSING_STUDIES_PATH",
-            "missing_program_path": "MISSING_PROGRAM_PATH"
+            "studies_path": "STUDIES_PATH"
         }
 
         kwargs = {}
