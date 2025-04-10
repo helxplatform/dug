@@ -470,155 +470,157 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    async def search_program(self, program_name=None, offset=0, size=None):
+    async def search_program(self, program_name=None, offset=0, size=None, use_elasticsearch=False):
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """
- # Initialize the query_body with the outer structure
-        query_body = {
-            "query": {
-                "bool": {
-                    "must": []
-                }
-            },
-            "aggs": {
-                "unique_collection_ids": {
-                    "terms": {
-                        "field": "collection_id.keyword",
-                        "size":1000
-                    },
-                    "aggs": {
-                        "collection_details": {
-                            "top_hits": {
-                                "_source": ["collection_id", "collection_name", "collection_action"],
-                                "size": 1
+        if use_elasticsearch:
+            query_body = {
+                "query": {
+                    "bool": {
+                        "must": []
+                    }
+                },
+                "aggs": {
+                    "unique_collection_ids": {
+                        "terms": {
+                            "field": "collection_id.keyword",
+                            "size":1000
+                        },
+                        "aggs": {
+                            "collection_details": {
+                                "top_hits": {
+                                    "_source": ["collection_id", "collection_name", "collection_action"],
+                                    "size": 1
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        # Add conditions based on user input
-        if program_name:
-            # Lowercase the program_name before adding it to the query
-            # program_name = program_name.lower()
-            query_body["query"]["bool"]["must"].append(
-                {"term": {"data_type.keyword": program_name}}
+            if program_name:
+                query_body["query"]["bool"]["must"].append({
+                    "match": {
+                        "data_type": {
+                            "query": program_name,
+                            "analyzer": "standard"  # for lowercase terms comparision
+                        }
+                    }
+                })
+            body = query_body
+        
+            search_results = await self.es.search(
+                index="variables_index",
+                body=body,
+                from_=offset,
+                size=size
             )
 
-        #print("query_body", query_body)
+            # The unique collection_ids and their details will be in the 'aggregations' field of the response
+            unique_collection_ids = search_results['aggregations']['unique_collection_ids']['buckets']
 
-        # Prepare the query body for execution
-        body = query_body
-    
-        # Execute the search query
-        search_results = await self.es.search(
-            index="variables_index",
-            body=body,
-            from_=offset,
-            size=size
-        )
+            # Prepare a list to hold the collection details
+            collection_details_list = []
 
-        # The unique collection_ids and their details will be in the 'aggregations' field of the response
-        unique_collection_ids = search_results['aggregations']['unique_collection_ids']['buckets']
+            for bucket in unique_collection_ids:
+                collection_details = bucket['collection_details']['hits']['hits'][0]['_source']
+                # Append the details to the list in the desired format
+                collection_details_list.append(collection_details)
 
-        # Prepare a list to hold the collection details
-        collection_details_list = []
+            collection_details_list.sort(key=lambda x: x["collection_id"])
 
-        for bucket in unique_collection_ids:
-            collection_details = bucket['collection_details']['hits']['hits'][0]['_source']
-            # Append the details to the list in the desired format
-            collection_details_list.append(collection_details)
-
-    
-            
-
-       #Adding consent to the studies 
-        with open(self._cfg.consent_id_path, 'r') as file:
-            consent_id_mappings = json.load(file)
-        # Add consent_id to the study
-        updated_studies = []
-        for study in collection_details_list:
-            collection_id = study["collection_id"]
-            if collection_id in consent_id_mappings:
-                consent_ids = consent_id_mappings[collection_id]
-                for consent_id in consent_ids:
-                    updated_study = study.copy()
-                    updated_study["collection_id"] = f"{collection_id}.{consent_id}"
-                    updated_study["collection_action"] = f"{study['collection_action']}"
-                    updated_studies.append(updated_study)
-            else:
-                updated_studies.append(study)
-        
-
-
-        #Adding missing studies
+            return collection_details_list
+        else:
+            with open(self._cfg.studies_path, 'r') as file:
+                missing_programs = json.load(file)
                 
-        with open(self._cfg.missing_studies_path, 'r') as file:
-            missing_studies = json.load(file)
-        for program in missing_studies:
-            if program_name.lower() == program['program_name'].lower():
-                updated_studies.extend(program['collections'])
+            collection_details_list = []
+            program_name_lower = program_name.lower() if program_name else None
 
+            for row in missing_programs:
+                program = row.get('Program', '')
+                study_name = row.get('Study Name', '')
+                collection_id = row.get('Accession', '')
+                description = row.get('Description', '')
                 
-        return updated_studies
+                if not program or not collection_id:
+                    continue
 
+                if program_name_lower and program.lower() != program_name_lower:
+                    continue
+                    
+                # Extract base accession for URL to dbgap
+                accession_base = collection_id.split('.c')[0] if '.c' in collection_id else collection_id
+                collection_action = f"https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={accession_base}"
+                
+                # Add to collection details list
+                collection_details_list.append({
+                    "collection_id": collection_id,
+                    "collection_action": collection_action,
+                    "collection_name": study_name
+                })
 
-    async def search_program_list(self):
-        query_body = {
-            "size": 0,  # We don't need the documents themselves, so set the size to 0
-            "aggs": {
-                "unique_program_names": {
-                    "terms": {
-                        "field": "data_type.keyword",
-                        "size": 10000
-                    },
-                    "aggs": {
-                        "No_of_studies": {
-                            "cardinality": {
-                                "field": "collection_id.keyword"
+            collection_details_list.sort(key=lambda x: x["collection_id"])
+                
+            return collection_details_list
+
+    async def search_program_list(self,use_elasticsearch=False):
+        if use_elasticsearch:
+            query_body = {
+                "size": 0,  # We don't need the documents themselves, so set the size to 0
+                "aggs": {
+                    "unique_program_names": {
+                        "terms": {
+                            "field": "data_type.keyword",
+                            "size": 10000
+                        },
+                        "aggs": {
+                            "No_of_studies": {
+                                "cardinality": {
+                                    "field": "collection_id.keyword"
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        # Execute the search query
-        search_results = await self.es.search(
-            index="variables_index",
-            body=query_body
-        )
-        # The unique data_types and their counts of unique collection_ids will be in the 'aggregations' field of the response
-        unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
-        data=unique_data_types
+            search_results = await self.es.search(
+                index="variables_index",
+                body=query_body
+            )
+            unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
+            data=unique_data_types
+            return data
+        else:
+            with open(self._cfg.studies_path, 'r') as file:
+                missing_programs = json.load(file)
 
-        #Remove Parent program and add Training program
-        
-        data = [item for item in data if item['key'] != 'Parent']
+            program_studies = {}
+            program_descriptions = {}
+            
+            for study in missing_programs:
+                program = study.get("Program", "")
+                description = study.get("Description", "")
+                
+                if program not in program_studies:
+                    program_studies[program] = []
+                    program_descriptions[program] = description
+                program_studies[program].append(study)
 
-        with open(self._cfg.missing_program_path, 'r') as file:
-            missing_programs = json.load(file)
-        data.extend(missing_programs)
-
-
-        # Sorting the data alphabetically based on 'key'
-        sorted_data = sorted(data, key=lambda x: (x['key'].casefold(), x['key'][1:]))
-
-        #Add description as another field in exisiting data based on the program name
-        descriptions_json = self._cfg.program_description
-        descriptions = json.loads(descriptions_json)
-        description_dict = {item['key']: {'description': item['description'], 'parent_program': item['parent_program']} for item in descriptions}
-
-        # Add descriptions and parent programs to the sorted data
-        for item in sorted_data:
-            desc_info = description_dict.get(item['key'], {'description': '', 'parent_program': []})
-            item['description'] = desc_info['description']
-            item['parent_program'] = desc_info['parent_program']
-
-        return sorted_data
-
-
+            program_summary = []
+            for program_name, studies in program_studies.items():
+                program_summary.append({
+                    "key": program_name,
+                    "doc_count": len(studies),
+                    "No_of_studies": {"value": len(studies)},
+                    "description": program_descriptions[program_name],
+                    "parent_program": [""]
+                })
+            # Sort by program name
+            program_summary.sort(key=lambda x: x["key"])
+            return program_summary
+    
     def _get_var_query(self, concept, fuzziness, prefix_length, query):
         """Returns ES query for variable search"""
         es_query = {

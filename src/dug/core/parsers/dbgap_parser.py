@@ -146,3 +146,15 @@ class TopmedDBGaPParser(DbGaPParser):
 class CureSC(DbGaPParser):
     def _get_element_type(self):
         return "CureSC"
+
+class HeartFailure(DbGaPParser):
+    def _get_element_type(self):
+        return "HeartFailure"
+    
+class Imaging(DbGaPParser):
+    def _get_element_type(self):
+        return "Imaging"
+    
+class Reds(DbGaPParser):
+    def _get_element_type(self):
+        return "Reds"
