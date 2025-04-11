@@ -7,8 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
+from typing import List
 import asyncio
-from typing import Optional
+from typing import Optional, Any
 
 logger = logging.getLogger (__name__)
 
@@ -43,6 +44,12 @@ class SearchVariablesQuery(BaseModel):
     concept: str = ""
     offset: int = 0
     size: int = 1000
+
+class FilterGrouped(BaseModel):
+    key: str
+    value: List[Any]
+class SearchVariablesQueryFiltered(SearchVariablesQuery):
+    filter: List[FilterGrouped] = []
 
 class SearchKgQuery(BaseModel):
     query: str
@@ -122,14 +129,14 @@ async def search_var(search_query: SearchVariablesQuery):
 
 
 @APP.post('/search_var_grouped')
-async def search_var_grouped(search_query: SearchVariablesQuery):
+async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
     if search_query.query == "":
         results = await search.dump_concepts(search_query.index, size=search_query.size )
         search_result_hits = results['result']['hits']['hits']
         results = search._make_result(None, search_result_hits, {"count": search_query}, False)
 
     else:
-        results = await search.search_variables(**search_query.dict(exclude={"index"}))
+        results = await search.search_variables(**search_query.dict(exclude={"index", "filter"}))
     all_elements = []
     for program_name in filter(lambda x: x != 'total_items', results.keys()):
         studies = results[program_name]
@@ -170,17 +177,64 @@ async def search_var_grouped(search_query: SearchVariablesQuery):
             var_info['studies'].append(study_data)
         final_variables.append(var_info)
         var_info = None
+
+    def sort_inner_dicts(data):
+        sorted_data = {}
+        for outer_key, inner_dict in data.items():
+            if outer_key == "Study Name":
+                sorted_inner = dict(sorted(inner_dict.items(), key=lambda item: item[0]))
+            else:
+                sorted_inner = dict(sorted(inner_dict.items(), key=lambda item: (-item[1], item[0])))
+            sorted_data[outer_key] = sorted_inner
+        return sorted_data
+
+    def filter_variables(final_variables, filters: List[FilterGrouped]):
+        filtered_variables = final_variables
+        for filter in filters:
+            to_keep = []
+            for var in filtered_variables:
+                if filter.key.lower() == "study name":
+                    # collect all studies per variable
+                    study_to_var_id_map = {}
+                    studies = var['studies']
+                    # create a lookup table for looking up variables by study name
+                    for study_name in [x['c_name'].lower() for x in studies]:
+                        study_to_var_id_map[study_name] = study_to_var_id_map.get(study_name, set())
+                        study_to_var_id_map[study_name].add(var['id'])
+                    # do lookup
+                    for filter_study_name in filter.value:
+                        filter_study_name = filter_study_name.lower()
+                        if var['id'] in study_to_var_id_map.get(filter_study_name, []):
+                            to_keep.append(var)
+                else:
+                    var_keys_lower_map = {key.lower(): key for key in var}
+                    if filter.key.lower() in var_keys_lower_map.keys() and (
+                            str(var[var_keys_lower_map[filter.key.lower()]]).lower()
+                            in [str(x).lower() for x in filter.value]):
+                        to_keep.append(var)
+            filtered_variables = to_keep
+        return filtered_variables
+
+    final_variables = filter_variables(final_variables, filters=search_query.filter)
     agg_counts = {}
+    study_aggs = {}
     for var in final_variables:
+        # study agg
+        studies = var['studies']
+        for s in studies:
+            study_aggs[s['c_name']] = study_aggs.get(s['c_name'], 0) + 1
         for key in count_keys:
             if key in var:
                 val = var[key]
-                agg_counts[key] = agg_counts.get(key , {})
-                agg_counts[key][val] = agg_counts[key].get(val, 0)
-                agg_counts[key][val] += 1
+                val = val.title()
+                display_key = key.title()
+                agg_counts[display_key] = agg_counts.get(display_key, {})
+                agg_counts[display_key][val] = agg_counts[display_key].get(val, 0) + 1
+
+    agg_counts['Study Name'] = study_aggs
     return {
         "variables": final_variables,
-        "agg_counts": agg_counts
+        "agg_counts": sort_inner_dicts(agg_counts)
     }
 
 
