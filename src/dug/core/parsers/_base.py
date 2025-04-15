@@ -1,64 +1,70 @@
+from __future__ import annotations
 import json
-from typing import Union, Callable, Any, Iterable
+from typing import Union, Callable, Any, Iterable, Dict, List
 
 from dug.core.loaders import InputFile
 
 from dug import utils as utils
+from pydantic import BaseModel, Field
 
 
-class DugElement:
+class DugElement(BaseModel):
     # Basic class for holding information for an object you want to make searchable via Dug
+    # This is supposed to be the base class and hold very basic information for anything that is searchabe via Dug.
+    
     # Could be a DbGaP variable, DICOM image, App, or really anything
     # Optionally can hold information pertaining to a containing collection (e.g. dbgap study or dicom image series)
-    def __init__(self, elem_id, name, desc, elem_type, collection_id="", collection_name="", collection_desc="", action="", collection_action=""):
-        self.id = elem_id
-        self.name = name
-        self.description = desc
-        self.type = elem_type
-        self.collection_id = collection_id
-        self.collection_name = collection_name
-        self.collection_desc = collection_desc
-        self.action = action
-        self.collection_action = collection_action
-        self.concepts = {}
-        self.ml_ready_desc = desc
-        self.search_terms = []
-        self.optional_terms = []
-        self.metadata = {}
+    id: str
+    name: str # ELement name (for example variable name)
+    description: str # Description for the element
+    type: str = None # Type of the element: Must be one of concept/study/variable
+    program_name_list: List[str] = Field(default_factory=list) # List of programs that this element may belong to.
+    action: str = "" # URL to the action
+    parents: List[str] = Field(default_factory=list) # List of parents
+    concepts: Dict[str, DugConcept] = Field(default_factory=dict)    
+    ml_ready_desc: str = None
+    search_terms: List[str] = Field(default_factory=list)
+    optional_terms: List[str] = Field(default_factory=list)
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    
+    class Config:
+        arbitrary_types_allowed = True
 
-
-
-    def add_concept(self, concept):
+    def add_concept(self, concept: DugConcept):
         self.concepts[concept.id] = concept
+    
+    def add_metadata(self, metadata: Dict[str, Any]):
+        self.metadata = metadata
+    
+    def add_parent(self, parent_element):
+        self.parents.append(parent_element)
+
+    def add_program_name(self, program_name):
+        self.program_name_list.append(program_name)
 
     def jsonable(self):
         """Output a pickleable object"""
-        return self.__dict__
+        return self.model_dump()
 
     def get_searchable_dict(self):
         # Translate DugElement to ES-style dict
         es_elem = {
-            'element_id': self.id,
-            'element_name': self.name,
-            'element_desc': self.description,
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
             'search_terms': self.search_terms,
             'optional_terms': self.optional_terms,
-            'collection_id': self.collection_id,
-            'collection_name': self.collection_name,
-            'collection_desc': self.collection_desc,
-            'element_action': self.action,
-            'collection_action': self.collection_action,
-            'data_type': self.type,
+            'action': self.action,
+            'type': self.type,
             'metadata': self.metadata,
-            'identifiers': list(self.concepts.keys())
+            'parents': self.parents,
+            'programs': self.program_name_list,
+            'identifiers': list(self.concepts.keys()),
         }
         return es_elem
 
-    def add_metadata(self, metadata):
-        self.metadata = metadata
-
-    def get_id(self):
-        return f'{self.id}-{self.collection_id}'
+    def get_id(self) -> str:
+        return f'{self.id}'
 
     def set_search_terms(self):
         search_terms = []
@@ -77,25 +83,20 @@ class DugElement:
         optional_terms = sorted(list(set(optional_terms)))
         self.optional_terms = optional_terms
 
+    def clean(self):
+        self.search_terms = sorted(list(set(self.search_terms)))
+        self.optional_terms = sorted(list(set(self.optional_terms)))
+
     def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
+        return json.dumps(self.jsonable(), indent=2, default=utils.complex_handler)
 
-
-class DugConcept:
+class DugConcept(DugElement):
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    def __init__(self, concept_id, name, desc, concept_type):
-        self.id = concept_id
-        self.name = name
-        self.description = desc
-        self.type = concept_type
-        self.concept_action = ""
-        self.identifiers = {}
-        self.kg_answers = {}
-        self.search_terms = []
-        self.optional_terms = []
-        self.ml_ready_desc = desc
-
+    type: str='concept'
+    identifiers: Dict[str, Any] = Field(default_factory=dict)    
+    kg_answers: Dict[str, Any] = Field(default_factory=dict)
+    
     def add_identifier(self, ident):
         if ident.id in self.identifiers:
             for search_text in ident.search_text:
@@ -108,10 +109,6 @@ class DugConcept:
         answer_id = f'{"_".join(answer_node_ids)}_{query_name}'
         if answer_id not in self.kg_answers:
             self.kg_answers[answer_id] = answer
-
-    def clean(self):
-        self.search_terms = sorted(list(set(self.search_terms)))
-        self.optional_terms = sorted(list(set(self.optional_terms)))
 
     def set_search_terms(self):
         # Traverse set of identifiers to determine set of search terms
@@ -130,28 +127,30 @@ class DugConcept:
 
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
-        es_conc = {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
-            'type': self.type,
-            'search_terms': self.search_terms,
-            'optional_terms': self.optional_terms,
-            'concept_action': self.concept_action,
-            'identifiers': [ident.get_searchable_dict() for ident_id, ident in self.identifiers.items()]
-        }
+        es_elem = super().get_searchable_dict()
+        es_conc = {**es_elem, 
+                    'identifiers': [ident.get_searchable_dict() for ident_id, ident in self.identifiers.items()]
+                   }
         return es_conc
 
-    def jsonable(self):
-        """Output a pickleable object"""
-        return self.__dict__
+class DugVariable(DugElement):
+    type:str='variable'
+    data_type:str='text'
+    is_standardized:bool=False
 
-    def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
-
+    def get_searchable_dict(self):
+        # Translate DugConcept into Elastic-Compatible Concept
+        es_elem = super().get_searchable_dict()
+        es_var = {**es_elem, 
+                    'data_type': self.data_type,
+                    'is_cde': self.is_standardized
+                   }
+        return es_var
 
 Indexable = Union[DugElement, DugConcept]
 Parser = Callable[[Any], Iterable[Indexable]]
 
-
 FileParser = Callable[[InputFile], Iterable[Indexable]]
+
+DugElement.update_forward_refs()
+DugConcept.update_forward_refs()
