@@ -189,7 +189,7 @@ async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
         return sorted_data
 
     def filter_variables(final_variables, filters: List[FilterGrouped]):
-        filtered_variables = final_variables
+        filtered_variables = final_variables.copy()
         for filter in filters:
             to_keep = []
             for var in filtered_variables:
@@ -215,7 +215,7 @@ async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
             filtered_variables = to_keep
         return filtered_variables
 
-    final_variables = filter_variables(final_variables, filters=search_query.filter)
+    filtered_variables = filter_variables(final_variables, filters=search_query.filter)
     agg_counts = {}
     study_aggs = {}
     for var in final_variables:
@@ -233,7 +233,7 @@ async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
 
     agg_counts['Study Name'] = study_aggs
     return {
-        "variables": final_variables,
+        "variables": filtered_variables,
         "agg_counts": sort_inner_dicts(agg_counts)
     }
 
