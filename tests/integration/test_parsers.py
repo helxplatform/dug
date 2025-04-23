@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
@@ -137,3 +137,14 @@ def test_ctn_parser():
     element_names = [e.name for e in elements]
 
     assert "RANDDT" in element_names
+
+def test_heal_parser():
+    parser = HEALDPParser()
+    parse_file = str(TEST_DATA_DIR / "HEAL_DD.dbgap.xml")
+    elements = parser(parse_file)
+    assert len(elements) == 8
+    for element in elements:
+        assert element.type == "variable"
+    element_names = [e.name for e in elements]
+
+    assert "hcs01_lam05" in element_names
