@@ -28,14 +28,16 @@ def test_dug_concept_searchable_dict():
         id=concept_id,
         name=concept_name,
         description=concept_description,
-        type=concept_type,
+        type='concept',
+        concept_type=concept_type
     )
 
     assert concept.get_searchable_dict() == {
         'id': concept_id,
         'name': concept_name,
         'description': concept_description,
-        'type': concept_type,
+        'type': 'concept',
+        'concept_type': concept_type,
         'search_terms': [],
         'optional_terms': [],
         'action': "",
@@ -147,4 +149,3 @@ def test_dug_variable_searchable_dict():
         'data_type': data_type,
         'is_cde': False
     }
-

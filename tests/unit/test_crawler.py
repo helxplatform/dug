@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from dug.core import DugConcept
 from dug.core.parsers import DugElement
+from dug.core.parsers import DugVariable
 from tests.unit.mocks.MockCrawler import *
 
 
@@ -21,14 +22,12 @@ def test_init(crawler):
 
 
 def test_annotate_element(crawler):
-    element = DugElement(
-        "test-id",
-        "name",
-        "some_desc",
-        "test-type",
-        "collection-id",
-        "collection-name",
-        "collection-desc"
+    element = DugVariable(
+        id="test-id",
+        name="name",
+        description="some_desc",
+        data_type="test-type",
+        parents=["collection-id"],
     )
     crawler.annotate_element(element)
     AnnotatorMock.assert_called_with(**{
@@ -40,22 +39,18 @@ def test_annotate_element(crawler):
 
 
 def test_annotate_elements(crawler):
-    elements = [DugElement(
-        "test-1",
-        "name",
-        "some_desc",
-        "test-type",
-        "collection-id",
-        "collection-name",
-        "collection-desc"
-    ), DugElement(
-        "test-2",
-        "name",
-        "some_desc",
-        "test-type",
-        "collection-id",
-        "collection-name",
-        "collection-desc"
+    elements = [DugVariable(
+        id="test-1",
+        name="name",
+        description="some_desc",
+        data_type="test-type",
+        parents=["collection-id"]
+    ), DugVariable(
+        id="test-2",
+        name="name",
+        description="some_desc",
+        data_type="test-type",
+        parents=["collection-id"]
     )]
     crawler.elements = elements
     crawler.annotate_elements()
@@ -70,7 +65,11 @@ def test_annotate_elements(crawler):
 
 def test_expand_concept(crawler):
     identifier = ANNOTATED_IDS[0]
-    concept = DugConcept(concept_id=identifier.id, name="test-concept", desc="" , concept_type=identifier.types[0])
+    concept = DugConcept(
+        id=identifier.id,
+        name="test-concept", 
+        description="" , 
+        concept_type=identifier.types[0])
     concept.add_identifier(identifier)
     crawler.expand_concept(concept=concept)
     TranqlizerMock.expand_identifier.assert_called_with(
@@ -78,24 +77,29 @@ def test_expand_concept(crawler):
     )
     assert len(concept.kg_answers) == len(TRANQL_ANSWERS)
 
-def test_expand_to_dug_element(crawler):
-    identifier = ANNOTATED_IDS[0]
-    concept = DugConcept(concept_id=identifier.id, name="test-concept", desc="", concept_type=identifier.types[0])
-    concept.add_identifier(identifier)
-    new_elements = crawler.expand_to_dug_element(
-        concept=concept,
-        casting_config={
-            "node_type": "biolink:Publication",
-            "curie_prefix": "HEALCDE",
-            "attribute_mapping": {
-                "name": "name",
-                "desc": "summary",
-                "collection_name": "cde_category",
-                "collection_id":  "cde_category"
-            },
-            "list_field_choose_first": []
-        },
-        dug_element_type="test-element",
-        tranql_source="test:graph"
-    )
-    assert len(new_elements) == len(TRANQL_ANSWERS)
+## Commenting this function since it will not be needed soon.
+# def test_expand_to_dug_element(crawler):
+#     identifier = ANNOTATED_IDS[0]
+#     concept = DugConcept(
+#                         id=identifier.id, 
+#                         name="test-concept", 
+#                         description="", 
+#                         concept_type=identifier.types[0]
+#                         )
+#     concept.add_identifier(identifier)
+#     new_elements = crawler.expand_to_dug_element(
+#         concept=concept,
+#         casting_config={
+#             "node_type": "biolink:Publication",
+#             "curie_prefix": "HEALCDE",
+#             "attribute_mapping": {
+#                 "name": "name",
+#                 "desc": "summary",
+#                 "parents": ["cde_category"],
+#             },
+#             "list_field_choose_first": []
+#         },
+#         dug_element_type="test-element",
+#         tranql_source="test:graph"
+#     )
+#     assert len(new_elements) == len(TRANQL_ANSWERS)

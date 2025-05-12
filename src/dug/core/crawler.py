@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug.core.parsers import Parser, DugElement, DugConcept
+from dug.core.parsers import Parser, DugVariable, DugConcept, DugElement
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
@@ -23,7 +23,7 @@ class Crawler:
 
         self.crawl_file = crawl_file
         self.parser: Parser = parser
-        self.element_type = element_type
+        self.element_type = element_type ## What is element_type here?
         self.annotator: Annotator = annotator
         self.tranqlizer = tranqlizer
         self.tranql_queries = tranql_queries
@@ -50,10 +50,11 @@ class Crawler:
         # Read in elements from parser
         self.elements = self.parser(self.crawl_file)
 
-        # Optionally coerce all elements to be a specific type
+        #TODO HS Optionally coerce all elements to belong to a particular program
         for element in self.elements:
             if isinstance(element, DugElement) and self.element_type is not None:
-                element.type = self.element_type
+                #element.type = self.element_type
+                element.add_program_name(self.element_type)
 
         # Annotate elements
         self.annotate_elements()
@@ -118,8 +119,8 @@ class Crawler:
             # Annotate element with normalized ontology identifiers
             logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}'")
             self.annotate_element(element)
-            if isinstance(element, DugElement):
-                element.set_search_terms()
+            if not isinstance(element, DugConcept): ##TODO: Add DugStudy and DugForm here as well. 
+                element.set_search_terms() ##Q: Does this not set search terms for concepts?
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
@@ -155,10 +156,10 @@ class Crawler:
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
-                concept = DugConcept(concept_id=identifier.id,
-                                                       name=identifier.label,
-                                                       desc=identifier.description,
-                                                       concept_type=identifier.types)
+                concept = DugConcept(id=identifier.id,
+                                    name=identifier.label,
+                                    description=identifier.description)
+                concept.add_program_name(identifier.types)
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
@@ -167,7 +168,7 @@ class Crawler:
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, DugElement):
+            if isinstance(element, DugVariable):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept
@@ -200,6 +201,7 @@ class Crawler:
                 for answer in answers:
                     concept.add_kg_answer(answer, query_name=query_name)
 
+    # TODO; This function will be deprecated once CDEs are implemented.
     def expand_to_dug_element(self,
                               concept,
                               casting_config,
@@ -261,9 +263,9 @@ class Crawler:
                             ]
                         if target_node_type_snake_case in snake_case_category:
                             if node['id'].startswith(curie_filter):
-                                element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
+                                element_attribute_args = {"id": node_id, "type": dug_element_type} ## This does not seem to be correct. OR, this will need to supply if it's a Variable/Concept or Study here.
                                 for key in attribute_mapping:
-                                    mapped_value = node.get(attribute_mapping[key], "")
+                                    mapped_value = node.get(attribute_mapping[key], None)
                                     # treat all attributes as strings 
                                     if attribute_mapping[key] in array_to_string and isinstance(mapped_value, list) and len(mapped_value) > 0:
                                         mapped_value = mapped_value[0]

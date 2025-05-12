@@ -96,6 +96,7 @@ class DugConcept(DugElement):
     type: str='concept'
     identifiers: Dict[str, Any] = Field(default_factory=dict)    
     kg_answers: Dict[str, Any] = Field(default_factory=dict)
+    concept_type: str=''
     
     def add_identifier(self, ident):
         if ident.id in self.identifiers:

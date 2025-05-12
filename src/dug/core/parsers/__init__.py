@@ -3,7 +3,7 @@ from typing import Dict
 
 import pluggy
 
-from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
+from ._base import DugElement, DugVariable, DugConcept, Indexable, Parser, FileParser
 from .dbgap_parser import *
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
