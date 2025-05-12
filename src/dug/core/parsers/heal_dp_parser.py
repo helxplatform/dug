@@ -4,7 +4,7 @@ from typing import List
 from xml.etree import ElementTree as ET
 
 from dug import utils as utils
-from ._base import DugElement, FileParser, Indexable, InputFile
+from ._base import DugVariable, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 
@@ -15,7 +15,6 @@ class HEALDPParser(FileParser):
     def __init__(self, study_type="HEAL Studies"):
         super()
         self.study_type = study_type
-
 
     def get_study_type(self):
         return self.study_type
@@ -37,17 +36,21 @@ class HEALDPParser(FileParser):
             logger.error(err_msg)
             raise IOError(err_msg)
 
+        ## Get study information from whatever sources and create a DugStudy element
+        ## elem.collection_action = utils.get_heal_platform_link(study_id=study_id)
+
         elements = []
         for variable in root.iter('variable'):
-            elem = DugElement(elem_id=f"{variable.attrib['id']}",
+            logger.info(variable)
+            elem = DugVariable(id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
-                              desc=variable.find('description').text.lower(),
-                              elem_type=self.get_study_type(),
-                              collection_id=f"{study_id}",
-                              collection_name=study_name)
+                              description=variable.find('description').text.lower(),
+                              program_name_list=[self.get_study_type()],
+                              parents=[study_name],
+                              data_type=variable.find('type').text,
+                              is_standardized=False) ## This would be changed to study id
+            #if elem.data_type == 'encoded value':
 
-            # Create NIDA links as study/variable actions
-            elem.collection_action = utils.get_heal_platform_link(study_id=study_id)
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
