@@ -130,7 +130,8 @@ class DugConcept(DugElement):
         # Translate DugConcept into Elastic-Compatible Concept
         es_elem = super().get_searchable_dict()
         es_conc = {**es_elem, 
-                    'identifiers': [ident.get_searchable_dict() for ident_id, ident in self.identifiers.items()]
+                    'identifiers': [ident.get_searchable_dict() for ident_id, ident in self.identifiers.items()],
+                    'concept_type': self.concept_type
                    }
         return es_conc
 
@@ -148,6 +149,22 @@ class DugVariable(DugElement):
                    }
         return es_var
 
+class DugStudy(DugElement):
+    type:str='study'
+    publications:List[str] = Field(default_factory=list)
+    variable_list:List[str] = Field(default_factory=list)
+    abstract:str=''
+
+    def get_searchable_dict(self):
+        # Translate DugConcept into Elastic-Compatible Concept
+        es_elem = super().get_searchable_dict()
+        es_study = {**es_elem, 
+                    'publications': self.publications,
+                    'variable_list': self.variable_list,
+                    'abstract': self.abstract
+                   }
+        return es_study
+ 
 Indexable = Union[DugElement, DugConcept]
 Parser = Callable[[Any], Iterable[Indexable]]
 

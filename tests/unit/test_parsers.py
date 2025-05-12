@@ -1,4 +1,4 @@
-from dug.core.parsers._base import DugElement, DugConcept, DugVariable
+from dug.core.parsers._base import DugElement, DugConcept, DugVariable, DugStudy
 from dug.core.annotators import DugIdentifier, AnnotateMonarch
 # from dug.core.annotators.monarch_annotator import AnnotateMonarch
 
@@ -28,7 +28,6 @@ def test_dug_concept_searchable_dict():
         id=concept_id,
         name=concept_name,
         description=concept_description,
-        type='concept',
         concept_type=concept_type
     )
 
@@ -91,7 +90,7 @@ def test_dug_element_searchable_dict():
         'identifiers': [],
         'metadata': {},
         'parents': [],
-        'programs': []
+        'programs': [],
     }
 
 
@@ -148,4 +147,56 @@ def test_dug_variable_searchable_dict():
         'programs': [],
         'data_type': data_type,
         'is_cde': False
+    }
+
+def test_dug_study():
+    study_id = "study1"
+    study_name = "Study-1"
+    study_desc = "Short Description of the study"
+    study_abstract = "THis is an abstract"
+
+    study = DugStudy(
+        id=study_id,
+        name=study_name,
+        description=study_desc,
+        abstract=study_abstract
+    )
+
+    assert len(study.concepts) == 0
+    study.add_concept(DugConcept(id="concept-1", name='Concept-1', description='The first concept'))
+    assert len(study.concepts) == 1
+    study.add_concept(DugConcept(id="concept-1", name='Concept-1', description='The first concept'))
+    assert len(study.concepts) == 1
+    assert study.type == 'study'
+
+
+def test_dug_variable_searchable_dict():
+    study_id = "study1"
+    study_name = "Study-1"
+    study_desc = "Short Description of the study"
+    study_abstract = "THis is an abstract"
+
+    study = DugStudy(
+        id=study_id,
+        name=study_name,
+        description=study_desc,
+        abstract=study_abstract
+    )
+
+    searchable = study.get_searchable_dict()
+    assert searchable == {
+        'id': study_id,
+        'name': study_name,
+        'description': study_desc,
+        'type': 'study',
+        'search_terms': [],
+        'optional_terms': [],
+        'action': "",
+        'identifiers': [],
+        'metadata': {},
+        'parents': [],
+        'programs': [],
+        'publications': [],
+        'variable_list': [],
+        'abstract': study_abstract
     }
