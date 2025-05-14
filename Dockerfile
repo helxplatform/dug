@@ -11,6 +11,7 @@ RUN apk update && \
     apk add g++ make cargo rust
 
 RUN apk upgrade -Ua
+RUN apk add "libxml2=2.13.4-r6"
 
 RUN pip install --upgrade pip
 # Create a non-root user.
