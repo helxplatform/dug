@@ -98,7 +98,7 @@ class Index:
                            "fields": {"keyword": {"type": "keyword"}}},
                     "name": {"type": "text", "analyzer": "std_with_stopwords"},
                     "description": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "type": {"type": "keyword"},
+                    "concept_type": {"type": "keyword"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {
                         "properties": {
@@ -111,7 +111,7 @@ class Index:
                         }
                     },
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "concept_action": {"type": "text", "analyzer": "std_with_stopwords"}
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"}
                 }
             }
         }
@@ -132,19 +132,20 @@ class Index:
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "element_id": {"type": "text", "analyzer": "std_with_stopwords",
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
                                    "fields": {"keyword": {"type": "keyword"}}},
-                    "element_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {"type": "keyword"},
-                    "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
-                                      "fields": {"keyword": {"type": "keyword"}}},
-                    "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    # "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
+                    #                   "fields": {"keyword": {"type": "keyword"}}},
+                    # "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    # "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    # "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "is_cde": {"type": "boolean"},
                     "data_type": {"type": "text", "analyzer": "std_with_stopwords",
                                   "fields": {"keyword": {"type": "keyword"}}},
                     "metadata": {
