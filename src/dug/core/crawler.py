@@ -31,6 +31,7 @@ class Crawler:
         self.exclude_identifiers = exclude_identifiers
         self.element_extraction = element_extraction
         self.elements = []
+        self.study = None
         self.concepts = {}
         self.crawlspace = "crawl"
 
@@ -52,12 +53,16 @@ class Crawler:
 
         #TODO HS Optionally coerce all elements to belong to a particular program
         for element in self.elements:
-            if isinstance(element, DugElement) and self.element_type is not None:
+            # Program names can be added to studies and sections as well?
+            if isinstance(element, DugVariable) and self.element_type is not None:
                 #element.type = self.element_type
                 element.add_program_name(self.element_type)
 
         # Annotate elements
         self.annotate_elements()
+        # TODO: Add study annotation here?
+        # TODO: Add CDE annotations here?
+        # Alternativelyl, parser can return an array of elements, and these could be studies/CDEs/etc
 
         # if elements are extracted from the graph this array will contain the new dug elements
         dug_elements_from_graph = []
@@ -99,7 +104,7 @@ class Crawler:
         # Open variable file for writing
         variable_file = open(f"{self.crawlspace}/element_file.json", "w")
         for element in self.elements:
-            if isinstance(element, DugElement):
+            if isinstance(element, DugVariable):
                 element.set_optional_terms()
                 variable_file.write(f"{element.get_searchable_dict()}\n")
 

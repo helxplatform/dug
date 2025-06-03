@@ -4,7 +4,7 @@ from typing import List
 from xml.etree import ElementTree as ET
 
 from dug import utils as utils
-from ._base import DugVariable, FileParser, Indexable, InputFile
+from ._base import DugVariable, DugStudy, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 
@@ -37,6 +37,12 @@ class HEALDPParser(FileParser):
             raise IOError(err_msg)
 
         ## Get study information from whatever sources and create a DugStudy element
+        study = DugStudy(id=study_id,
+                     name=study_name,
+                     description="THIS DESCRIPTION WILL COME LATER",
+                     program_name_list=[self.get_study_type()],
+                     parents=[]
+                     )
         ## elem.collection_action = utils.get_heal_platform_link(study_id=study_id)
 
         elements = []
@@ -46,7 +52,7 @@ class HEALDPParser(FileParser):
                               name=variable.find('name').text,
                               description=variable.find('description').text.lower(),
                               program_name_list=[self.get_study_type()],
-                              parents=[study_name],
+                              parents=[study_id],
                               data_type=variable.find('type').text,
                               is_standardized=False) ## This would be changed to study id
             #if elem.data_type == 'encoded value':
@@ -56,4 +62,4 @@ class HEALDPParser(FileParser):
             elements.append(elem)
 
         # You don't actually create any concepts
-        return elements
+        return elements, study

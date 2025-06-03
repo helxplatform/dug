@@ -141,10 +141,14 @@ from pathlib import Path
 def test_heal_parser():
     parser = HEALDPParser()
     parse_file = str(TEST_DATA_DIR / "HEAL_DD.dbgap.xml")
-    elements = parser(parse_file)
+    elements, study = parser(parse_file)
+
+    assert(study.id, "HEALDATAPLATFORM:HDP00360")
+    assert(study.name, "Dummy HEAL Data Dictionary")
+
     assert len(elements) == 8
     for element in elements:
         assert element.type == "variable"
     element_names = [e.name for e in elements]
-
+    
     assert "hcs01_lam05" in element_names

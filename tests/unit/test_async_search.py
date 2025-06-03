@@ -104,7 +104,6 @@ brain_result_json = """{
             "executive function measurement",
             "syntactic complexity measurement"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0005560",
@@ -164,7 +163,6 @@ brain_result_json = """{
             "blood vasculature",
             "brain infarction"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0005394",
@@ -207,7 +205,6 @@ brain_result_json = """{
             "encephalon"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0000955",
@@ -253,7 +250,6 @@ brain_result_json = """{
             "PLAN"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0017998",
@@ -323,7 +319,6 @@ brain_result_json = """{
             "Abnormal cardiovascular system physiology",
             "Abnormality of cardiovascular system morphology"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0002679",
@@ -388,7 +383,6 @@ brain_result_json = """{
             "CRG"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:6110636",
@@ -440,7 +434,6 @@ brain_result_json = """{
             "Reduced consciousness/confusion",
             "Phenotypic abnormality"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0045057",
@@ -506,7 +499,6 @@ brain_result_json = """{
             "lamina medullaris accessoria"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0002298",
@@ -560,7 +552,6 @@ brain_result_json = """{
             "died."
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0001894",
@@ -642,7 +633,6 @@ brain_result_json = """{
             "Abnormality of blood circulation",
             "hemorrhage, intracerebral, susceptibility to"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0013792",
