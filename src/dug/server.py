@@ -295,8 +295,10 @@ async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
     # --- 9. Return Final Response ---
     # Return the *fully filtered* variables and the *faceted* aggregation counts
     return {
-        "variables": filtered_variables_for_response, # Variables filtered by ALL criteria
-        "agg_counts": sorted_agg_counts           # Aggregations calculated facet-style
+        "variables": filtered_variables_for_response if search_query.size > 0 else [],  # Variables filtered by ALL criteria
+        "agg_counts": {k: [{"key": i, "doc_count": v}
+                           for i, v in sorted_agg_counts[k].items()] for k in sorted_agg_counts},  # Aggregations calculated facet-style
+        "total": len(filtered_variables_for_response)
     }
 
 
