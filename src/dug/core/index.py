@@ -110,8 +110,15 @@ class Index:
                             "synonyms": {"type": "text", "analyzer": "std_with_stopwords"}
                         }
                     },
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "text", "analyzer": "std_with_stopwords"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "action": {"type": "text", "analyzer": "std_with_stopwords"}
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    }
                 }
             }
         }
@@ -135,11 +142,14 @@ class Index:
                     "id": {"type": "text", "analyzer": "std_with_stopwords",
                                    "fields": {"keyword": {"type": "keyword"}}},
                     "name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
                     "action": {"type": "text", "analyzer": "std_with_stopwords"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords"},
                     # "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
                     #                   "fields": {"keyword": {"type": "keyword"}}},
                     # "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},

@@ -31,6 +31,7 @@ class HEALDPParser(FileParser):
         # Parse study name from file handle
         study_name = root.get('study_name')
 
+        print("******* IN HEALDPPARSER *****")
         if study_name is None:
             err_msg = f"Unable to parse study name from data dictionary: {input_file}!"
             logger.error(err_msg)
@@ -61,5 +62,7 @@ class HEALDPParser(FileParser):
             logger.debug(elem)
             elements.append(elem)
 
+        #elements.append(study)
+        print(len(elements))
         # You don't actually create any concepts
-        return elements, study
+        return elements

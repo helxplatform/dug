@@ -28,6 +28,7 @@ class Search:
 
     def __init__(self, cfg: Config, indices=None):
 
+        # TODO: Add a study_index, and then a cde_index
         if indices is None:
             indices = ['concepts_index', 'variables_index', 'kg_index']
 

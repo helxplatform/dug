@@ -5,7 +5,7 @@ from typing import Union, Callable, Any, Iterable, Dict, List
 from dug.core.loaders import InputFile
 
 from dug import utils as utils
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class DugElement(BaseModel):
@@ -17,16 +17,23 @@ class DugElement(BaseModel):
     id: str
     name: str # ELement name (for example variable name)
     description: str # Description for the element
-    type: str = None # Type of the element: Must be one of concept/study/variable
+    type: str = "" # Type of the element: Must be one of concept/study/variable
     program_name_list: List[str] = Field(default_factory=list) # List of programs that this element may belong to.
     action: str = "" # URL to the action
     parents: List[str] = Field(default_factory=list) # List of parents
+    parent_type:str = "" # Every element can have one type of parent. i.e. variable can either belong to study or crf, and then crf can belong to a study and so on. 
+    # parent_type variable will indicate which parent type the parents list is made of.
+    # This is to keep simplicity, and 
     concepts: Dict[str, DugConcept] = Field(default_factory=dict)    
-    ml_ready_desc: str = None
     search_terms: List[str] = Field(default_factory=list)
     optional_terms: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
     
+    @computed_field
+    @property
+    def ml_ready_desc(self) -> str:
+        return self.description
+
     class Config:
         arbitrary_types_allowed = True
 
@@ -55,7 +62,7 @@ class DugElement(BaseModel):
             'search_terms': self.search_terms,
             'optional_terms': self.optional_terms,
             'action': self.action,
-            'type': self.type,
+            'element_type': self.type,
             'metadata': self.metadata,
             'parents': self.parents,
             'programs': self.program_name_list,
