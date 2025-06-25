@@ -115,6 +115,7 @@ def crawl(args):
         config.node_to_element_queries = {}
     factory = DugFactory(config)
     dug = Dug(factory)
+    print(f"Target is: {args.target}")
     dug.crawl(args.target, args.parser_type, args.annotator_type, args.element_type)
 
 

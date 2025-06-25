@@ -123,7 +123,7 @@ class Crawler:
 
             # Annotate element with normalized ontology identifiers
             logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}'")
-            logger.info(element)
+            # logger.info(element)
             self.annotate_element(element)
             if not isinstance(element, DugConcept): ##TODO: Add DugStudy and DugForm here as well. 
                 element.set_search_terms() ##Q: Does this not set search terms for concepts?

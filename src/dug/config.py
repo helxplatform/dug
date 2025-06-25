@@ -47,7 +47,7 @@ class Config:
             },
             "sapbert": {
                 "classification_url": "https://med-nemo.apps.renci.org/annotate/",
-                "annotator_url": "https://sap-qdrant.apps.renci.org/annotate/",
+                "annotator_url": "http://localhost:8080/annotate/",
                 "score_threshold": 0.8,
                 "bagel": {
                     "enabled": False,

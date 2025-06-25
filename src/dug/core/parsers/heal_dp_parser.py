@@ -48,13 +48,13 @@ class HEALDPParser(FileParser):
 
         elements = []
         for variable in root.iter('variable'):
-            logger.info(variable)
+            # logger.info(variable)
             elem = DugVariable(id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               description=variable.find('description').text.lower(),
                               program_name_list=[self.get_study_type()],
                               parents=[study_id],
-                              data_type=variable.find('type').text,
+                              data_type=variable.find('type').text if variable.find('type') is not None else 'string',
                               is_standardized=False) ## This would be changed to study id
             #if elem.data_type == 'encoded value':
 

@@ -36,9 +36,11 @@ def get_plugin_manager() -> pluggy.PluginManager:
 
 
 def get_targets(target_name) -> Iterable[Path]:
+    print("In get targets")
     if target_name.startswith("http://") or target_name.startswith("https://"):
         loader = partial(load_from_network, os.getenv("DUG_DATA_DIR", "data"))
     else:
+        print("Should have gotten the loader here")
         loader = load_from_filesystem
     return loader(target_name)
 
@@ -64,9 +66,11 @@ class Dug:
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
         annotator = get_annotator(pm.hook, annotator_type, self._factory.config)
+        print("Getting targets")
         targets = get_targets(target_name)
 
         for target in targets:
+            print(f"TARGET: {target}")
             self._crawl(target, parser, annotator, element_type)
 
     def _crawl(self, target: Path, parser: Parser, annotator: Annotator, element_type):
