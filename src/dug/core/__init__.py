@@ -46,20 +46,17 @@ def get_targets(target_name) -> Iterable[Path]:
 
 
 class Dug:
-    concepts_index = "concepts_index"
-    variables_index = "variables_index"
-    kg_index = "kg_index"
+    # concepts_index = "concepts_index"
+    # variables_index = "variables_index"
+    # kg_index = "kg_index"
 
     def __init__(self, factory: DugFactory):
         self._factory = factory
-        self._search = self._factory.build_search_obj(indices=[
-            self.concepts_index, self.variables_index, self.kg_index
-        ])
-        self._index = self._factory.build_indexer_obj(
-            indices=[
-                self.concepts_index, self.variables_index, self.kg_index
-            ]
-        )
+        self._search = self._factory.build_search_obj()
+        self._index = self._factory.build_indexer_obj()
+        self.concepts_index = self._factory.config.concepts_index_name
+        self.variables_index = self._factory.config.variables_index_name
+        self.kg_index = self._factory.config.kg_index_name
 
     def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
 

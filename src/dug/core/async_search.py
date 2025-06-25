@@ -30,7 +30,9 @@ class Search:
 
         # TODO: Add a study_index, and then a cde_index
         if indices is None:
-            indices = ['concepts_index', 'variables_index', 'kg_index']
+            indices = {'concepts_index':'concepts_index',
+                       'variables_index':'variables_index',
+                       'kg_index':'kg_index'}
 
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: "

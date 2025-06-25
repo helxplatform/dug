@@ -29,7 +29,9 @@ class Config:
 
     studies_path: str=""
 
-    
+    kg_index_name: str="kg_index"
+    concepts_index_name: str="concepts_index"
+    variables_index_name: str='variables_index'
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -156,15 +158,21 @@ class Config:
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
-            "studies_path": "STUDIES_PATH"
+            "studies_path": "STUDIES_PATH",
+            "kg_index_name": "ELASTIC_KG_INDEX_NAME",
+            "concepts_index_name": "ELASTIC_CONCEPTS_INDEX_NAME",
+            "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME"
         }
+        print(env_vars)
 
         kwargs = {}
 
         for kwarg, env_var in env_vars.items():
             env_value = os.environ.get(env_var)
+            print(env_var, env_value)
             if env_value:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:
                     kwargs[kwarg] = int(env_value)
+        print(kwargs)
         return cls(**kwargs)

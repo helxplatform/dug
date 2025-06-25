@@ -60,10 +60,16 @@ class DugFactory:
             in self.config.tranql_queries
         }
 
-    def build_search_obj(self, indices) -> Search:
+    def build_search_obj(self) -> Search:
+        indices = {'concepts_index':self.config.concepts_index_name, 
+                   'variables_index': self.config.variables_index_name,
+                   'kg_index': self.config.kg_index_name}
         return Search(self.config, indices=indices)
 
-    def build_indexer_obj(self, indices) -> Index:
+    def build_indexer_obj(self) -> Index:
+        indices = {'concepts_index':self.config.concepts_index_name, 
+                   'variables_index': self.config.variables_index_name,
+                   'kg_index': self.config.kg_index_name}
         return Index(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):

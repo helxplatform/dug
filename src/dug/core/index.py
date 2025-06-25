@@ -15,7 +15,7 @@ class Index:
     def __init__(self, cfg: Config, indices=None):
 
         if indices is None:
-            indices = ['concepts_index', 'variables_index', 'kg_index']
+            indices = {'concepts_index':'concepts_index', 'variables_index':'variables_index', 'kg_index':'kg_index'}
 
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
@@ -175,7 +175,8 @@ class Index:
 
         logger.info(f"creating indices")
         logger.debug(self.indices)
-        for index in self.indices:
+        for index_type in self.indices: ## This is a dict.
+            index = self.indices[index_type]
             try:
                 if self.es.indices.exists(index=index):
                     # if index exists check if replication is good 
@@ -187,7 +188,7 @@ class Index:
                 else:
                     result = self.es.indices.create(
                         index=index,
-                        body=settings[index],
+                        body=settings[index_type],
                         ignore=400)
                     logger.info(f"result created index {index}: {result}")
             except Exception as e:

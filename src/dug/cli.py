@@ -110,6 +110,10 @@ def get_argparser():
 
 def crawl(args):
     config = Config.from_env()
+    print("**** IN CRAWL")
+    print(config.kg_index_name)
+    print(config.concepts_index_name)
+    print(config.variables_index_name)
     if not args.extract_dug_elements:
         # disable extraction
         config.node_to_element_queries = {}
