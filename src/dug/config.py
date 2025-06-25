@@ -165,13 +165,10 @@ class Config:
             "concepts_index_name": "ELASTIC_CONCEPTS_INDEX_NAME",
             "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME"
         }
-        print(env_vars)
-
         kwargs = {}
 
         for kwarg, env_var in env_vars.items():
             env_value = os.environ.get(env_var)
-            print(env_var, env_value)
             if env_value:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:

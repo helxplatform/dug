@@ -31,7 +31,6 @@ class HEALDPParser(FileParser):
         # Parse study name from file handle
         study_name = root.get('study_name')
 
-        print("******* IN HEALDPPARSER *****")
         if study_name is None:
             err_msg = f"Unable to parse study name from data dictionary: {input_file}!"
             logger.error(err_msg)

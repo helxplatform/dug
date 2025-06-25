@@ -110,16 +110,11 @@ def get_argparser():
 
 def crawl(args):
     config = Config.from_env()
-    print("**** IN CRAWL")
-    print(config.kg_index_name)
-    print(config.concepts_index_name)
-    print(config.variables_index_name)
     if not args.extract_dug_elements:
         # disable extraction
         config.node_to_element_queries = {}
     factory = DugFactory(config)
     dug = Dug(factory)
-    print(f"Target is: {args.target}")
     dug.crawl(args.target, args.parser_type, args.annotator_type, args.element_type)
 
 
@@ -131,7 +126,6 @@ def search(args):
     response = dug.search(args.target, args.query, **args.kwargs)
     # Using json.dumps raises 'TypeError: Object of type ObjectApiResponse is not JSON serializable'
     #jsonResponse = json.dumps(response, indent = 2)
-    print(response)
 
 def datatypes(args):
     config = Config.from_env()
@@ -142,7 +136,7 @@ def datatypes(args):
 
 
 def status(args):
-    print("Status check is not implemented yet!")
+    logger.warning("Status check is not implemented yet!")
 
 
 def main(args=None):
