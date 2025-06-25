@@ -219,7 +219,7 @@ class Search:
             }
         }
         return query_object
-    
+
     def is_simple_search_query(self, query):
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
@@ -296,7 +296,7 @@ class Search:
             es_query = self.get_simple_variable_search_query(concept, query)
         else:
             es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
-        
+
         if index is None:
             index = "variables_index"
 
@@ -307,7 +307,7 @@ class Search:
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
             from_=offset,
-            size=size
+            size=size or total_items['count']
         )
 
         search_result_hits = []
