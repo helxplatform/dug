@@ -111,7 +111,7 @@ class Search:
 
         body = {'aggs': aggs}
         results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=body
         )
         data_type_list = [data_type['key'] for data_type in
@@ -251,7 +251,7 @@ class Search:
                 }
             }
         search_results = await self.es.search(
-            index="concepts_index",
+            index=self.indices["concepts_index"],
             body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score',
@@ -270,7 +270,7 @@ class Search:
             del search_body["post_filter"]
         total_items = await self.es.count(
             body=search_body,
-            index="concepts_index"
+            index=self.indices["concepts_index"]
         )
 
         # Simplify the data structure we get from aggregations to put into the
@@ -305,11 +305,11 @@ class Search:
             es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
 
         if index is None:
-            index = "variables_index"
+            index = self.indices["variables_index"]
 
         total_items = await self.es.count(body=es_query, index=index)
         search_results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
@@ -340,7 +340,7 @@ class Search:
         the passed-in data type.
         """
         es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
-        total_items = await self.es.count(body=es_query, index="variables_index")
+        total_items = await self.es.count(body=es_query, index=self.indices["variables_index"])
         search_results = []
         async for r in async_scan(self.es, query=es_query):
             search_results.append(r)
@@ -432,9 +432,9 @@ class Search:
             }
         }
         body = {'query': query}
-        total_items = await self.es.count(body=body, index="kg_index")
+        total_items = await self.es.count(body=body, index=self.indices["kg_index"])
         search_results = await self.es.search(
-            index="kg_index",
+            index=self.indices["kg_index"],
             body=body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source'],
@@ -469,9 +469,9 @@ class Search:
 
         print("query_body",query_body)
         body = {'query': query_body}
-        total_items = await self.es.count(body=body, index="variables_index")
+        total_items = await self.es.count(body=body, index=self.indices["variables_index"])
         search_results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=body,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
@@ -521,7 +521,7 @@ class Search:
             body = query_body
         
             search_results = await self.es.search(
-                index="variables_index",
+                index=self.indices["variables_index"],
                 body=body,
                 from_=offset,
                 size=size
@@ -596,7 +596,7 @@ class Search:
                 }
             }
             search_results = await self.es.search(
-                index="variables_index",
+                index=self.indices["variables_index"],
                 body=query_body
             )
             unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
