@@ -25,13 +25,20 @@ class Index:
 
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
         if self._cfg.elastic_scheme == "https":
-            ssl_context = ssl.create_default_context(
-                cafile=self._cfg.elastic_ca_path
-            )
-            self.es = Elasticsearch(
-                hosts=self.hosts,
-                basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
-                ssl_context=ssl_context)
+            if self._cfg.elastic_ca_verify:
+
+                ssl_context = ssl.create_default_context(
+                    cafile=self._cfg.elastic_ca_path
+                )
+                self.es = Elasticsearch(
+                    hosts=self.hosts,
+                    basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                    ssl_context=ssl_context)
+            else:
+                self.es = Elasticsearch(
+                    hosts=self.hosts,
+                    basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                    verify_certs=self._cfg.elastic_ca_verify)
         else:
             self.es = Elasticsearch(
                 hosts=self.hosts,

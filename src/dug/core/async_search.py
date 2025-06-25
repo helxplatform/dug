@@ -45,13 +45,20 @@ class Search:
                      f"{self._cfg.elastic_username} "
                      f"to host:{self.hosts}")
         if self._cfg.elastic_scheme == "https":
-            ssl_context = ssl.create_default_context(
-                cafile=self._cfg.elastic_ca_path
-            )
-            self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     basic_auth=(self._cfg.elastic_username,
-                                                self._cfg.elastic_password),
-                                                ssl_context=ssl_context)
+            # Verify ssl connects disable for dev mode
+            if self._cfg.elastic_ca_verify:
+                ssl_context = ssl.create_default_context(
+                    cafile=self._cfg.elastic_ca_path
+                )
+                self.es = AsyncElasticsearch(hosts=self.hosts,
+                                         basic_auth=(self._cfg.elastic_username,
+                                                    self._cfg.elastic_password),
+                                                    ssl_context=ssl_context)
+            else:
+                self.es = AsyncElasticsearch(hosts=self.hosts,
+                                         basic_auth=(self._cfg.elastic_username,
+                                                    self._cfg.elastic_password),
+                                                    verify_certs=False)
         else:
             self.es = AsyncElasticsearch(hosts=self.hosts,
                                      basic_auth=(self._cfg.elastic_username,
