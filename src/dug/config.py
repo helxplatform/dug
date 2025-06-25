@@ -20,6 +20,7 @@ class Config:
     elastic_username: str = "elastic"
     elastic_scheme: str = "https"
     elastic_ca_path: str = ""
+    elastic_ca_verify: bool = True
 
     redis_host: str = "redis"
     redis_port: int = 6379
@@ -153,10 +154,11 @@ class Config:
             "elastic_ca_path": "ELASTIC_CA_PATH",
             "elastic_username": "ELASTIC_USERNAME",
             "elastic_password": "ELASTIC_PASSWORD",
+            "elastic_ca_verify": "ELASTIC_CA_VERIFY",
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
-            "studies_path": "STUDIES_PATH"
+            "studies_path": "STUDIES_PATH",
         }
 
         kwargs = {}
@@ -167,4 +169,7 @@ class Config:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:
                     kwargs[kwarg] = int(env_value)
+                # default elastic verify cert to true
+                if kwarg == "elastic_ca_verify":
+                    kwargs[kwarg] = False if (env_value and env_value.lower() == "false") else True
         return cls(**kwargs)
