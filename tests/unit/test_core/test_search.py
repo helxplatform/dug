@@ -8,7 +8,9 @@ import pytest_asyncio
 from dug.core.index import Index, SearchException
 from dug.config import Config
 
-default_indices = ["concepts_index", "variables_index", "kg_index"]
+default_indices = {"concepts_index":"concepts_index", 
+                   "variables_index":"variables_index", 
+                   "kg_index":"kg_index"}
 
 host = "localhost"
 port = 9200
