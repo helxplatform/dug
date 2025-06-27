@@ -12,6 +12,7 @@ from .topmed_csv_parser import TOPMedCSVParser
 from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
 from .heal_dp_parser import HEALDPParser
+from .heal_studies_parser import HEALStudiesParser
 from .ctn_parser import CTNParser
 from .radx_parser import RADxParser
 
@@ -35,6 +36,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     # parser_dict["bacpac"] = BACPACParser()
     parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
     parser_dict["heal-research"] = HEALDPParser(study_type="HEAL Research Programs")
+    parser_dict["heal-mds-studies"] = HEALStudiesParser(study_type="HEAL Studies")
     # parser_dict["ctn"] = CTNParser()
     # parser_dict["biolincc"] = BioLINCCDbGaPParser()
     # parser_dict["covid19"] = Covid19DbGaPParser()

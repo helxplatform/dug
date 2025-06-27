@@ -21,7 +21,7 @@ class DugElement(BaseModel):
     program_name_list: List[str] = Field(default_factory=list) # List of programs that this element may belong to.
     action: str = "" # URL to the action
     parents: List[str] = Field(default_factory=list) # List of parents
-    parent_type:str = "" # Every element can have one type of parent. i.e. variable can either belong to study or crf, and then crf can belong to a study and so on. 
+    parent_type: str = "" # Every element can have one type of parent. i.e. variable can either belong to study or crf, and then crf can belong to a study and so on. 
     # parent_type variable will indicate which parent type the parents list is made of.
     # This is to keep simplicity, and 
     concepts: Dict[str, DugConcept] = Field(default_factory=dict)    

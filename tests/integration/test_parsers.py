@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser, HEALStudiesParser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
@@ -141,14 +141,22 @@ from pathlib import Path
 def test_heal_parser():
     parser = HEALDPParser()
     parse_file = str(TEST_DATA_DIR / "HEAL_DD.dbgap.xml")
-    elements, study = parser(parse_file)
+    elements = parser(parse_file)
 
-    assert(study.id, "HEALDATAPLATFORM:HDP00360")
-    assert(study.name, "Dummy HEAL Data Dictionary")
+    study = [k for k in elements if k.type == 'study']
+    assert len(study) == 1
+    study = study[0]
+    assert study.id == "HEALDATAPLATFORM:HDP00360"
+    assert study.name =="HEALing Communities Study Data Coordinating Center"
 
-    assert len(elements) == 8
-    for element in elements:
-        assert element.type == "variable"
-    element_names = [e.name for e in elements]
+    variables = [k for k in elements if k.type == 'variable']    
+    assert len(variables) == 8
+    variable_names = [e.name for e in variables]
+    assert "hcs01_lam05" in variable_names
+
+def test_heal_study_parser():
+    parser = HEALStudiesParser()
+    studies = parser()
+
+    assert(len(studies) > 1)
     
-    assert "hcs01_lam05" in element_names
