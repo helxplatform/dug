@@ -14,7 +14,7 @@ from dug import hookspecs
 from dug.core import parsers
 from dug.core import annotators
 from dug.core.factory import DugFactory
-from dug.core.parsers import DugConcept, Parser, get_parser
+from dug.core.parsers import DugConcept, DugStudy, DugVariable, Parser, get_parser
 from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')
@@ -54,6 +54,7 @@ class Dug:
         self._index = self._factory.build_indexer_obj()
         self.concepts_index = self._factory.config.concepts_index_name
         self.variables_index = self._factory.config.variables_index_name
+        self.studies_index = self._factory.config.studies_index_name
         self.kg_index = self._factory.config.kg_index_name
 
     def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
@@ -76,8 +77,10 @@ class Dug:
         # Index Annotated Elements
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
-            if not isinstance(element, DugConcept):
+            if isinstance(element, DugVariable):
                 self._index.index_element(element, index=self.variables_index)
+            if isinstance(element, DugStudy):
+                self._index.index_element(element, index=self.studies_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
         for concept_id, concept in crawler.concepts.items():
@@ -93,6 +96,7 @@ class Dug:
     def search(self, target, query, **kwargs):
         event_loop = asyncio.get_event_loop()
         targets = {
+            #TODO: Add Studies here
             'concepts': partial(
                 self._search.search_concepts),
             'variables': partial(

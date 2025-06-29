@@ -9,7 +9,8 @@ from dug.core.index import Index, SearchException
 from dug.config import Config
 
 default_indices = {"concepts_index":"concepts_index", 
-                   "variables_index":"variables_index", 
+                   "variables_index":"variables_index",
+                   "study_index":"study_index",
                    "kg_index":"kg_index"}
 
 host = "localhost"
@@ -66,6 +67,7 @@ class MockIndices:
             "kg_index": index_schema,
             "concepts_index": index_schema,
             "variables_index": index_schema,
+            "studies_index": index_schema,
         }
         return settings
 

@@ -3,7 +3,7 @@ from typing import Dict
 
 import pluggy
 
-from ._base import DugElement, DugVariable, DugConcept, Indexable, Parser, FileParser
+from ._base import DugElement, DugVariable, DugStudy, DugConcept, Indexable, Parser, FileParser
 from .dbgap_parser import *
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
@@ -52,11 +52,6 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     # parser_dict["heartfailure"] = HeartFailure()
     # parser_dict["imaging"] = Imaging()
     # parser_dict["reds"] = Reds()
-
-
-    
-
-
 
 class ParserNotFoundException(Exception):
     ...

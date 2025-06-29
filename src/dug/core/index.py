@@ -15,10 +15,14 @@ class Index:
     def __init__(self, cfg: Config, indices=None):
 
         if indices is None:
-            indices = {'concepts_index':'concepts_index', 'variables_index':'variables_index', 'kg_index':'kg_index'}
-
+            indices = {'concepts_index':'concepts_index', 
+                       'variables_index':'variables_index', 
+                       'studies_index':'studies_index',
+                       'kg_index':'kg_index'}
+        
         self._cfg = cfg
-        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
+        print(self._cfg)
+        logger.debug(f"******** Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
@@ -26,7 +30,6 @@ class Index:
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
         if self._cfg.elastic_scheme == "https":
             if self._cfg.elastic_ca_verify:
-
                 ssl_context = ssl.create_default_context(
                     cafile=self._cfg.elastic_ca_path
                 )
@@ -43,6 +46,10 @@ class Index:
             self.es = Elasticsearch(
                 hosts=self.hosts,
                 basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+        
+        print(self.es)
+        print(self.es.ping())
+
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
@@ -173,11 +180,50 @@ class Index:
                 }
             }
         }
-
+        studies_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords"},
+                    'publications': {"type": "text", "analyzer": "std_with_stopwords"},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords"},
+                    'abstract': {"type": "text", "analyzer": "std_with_stopwords"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
         settings = {
             'kg_index': kg_index,
             'concepts_index': concepts_index,
             'variables_index': variables_index,
+            'studies_index': studies_index,
         }
 
         logger.info(f"creating indices")

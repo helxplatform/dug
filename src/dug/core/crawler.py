@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug.core.parsers import Parser, DugVariable, DugConcept, DugElement
+from dug.core.parsers import Parser, DugVariable, DugConcept, DugStudy, DugElement
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
@@ -48,22 +48,19 @@ class Crawler:
         # Create directory for storing temporary results
         self.make_crawlspace()
 
-        # Read in elements from parser
+        # Read in elements from parser. The elements can be a combination of studies, variables and CRFs.
         self.elements = self.parser(self.crawl_file)
-
-        #TODO HS Optionally coerce all elements to belong to a particular program
+        
+        #TODO HS Optionally coerce all elements to belong to a particular program??
         for element in self.elements:
             # Program names can be added to studies and sections as well?
-            if isinstance(element, DugVariable) and self.element_type is not None:
+            if not isinstance(element, DugConcept) and self.element_type is not None:
                 #element.type = self.element_type
-                element.add_program_name(self.element_type)
+                element.add_program_name(self.element_type) ## Why?
 
-        # Annotate elements
+        # Annotate elements (Study/Forms will be automatically annotated)
         self.annotate_elements()
-        # TODO: Add study annotation here?
-        # TODO: Add CDE annotations here?
-        # Alternativelyl, parser can return an array of elements, and these could be studies/CDEs/etc
-
+       
         # if elements are extracted from the graph this array will contain the new dug elements
         dug_elements_from_graph = []
 
@@ -102,27 +99,29 @@ class Crawler:
 
         # Set element optional terms now that concepts have been expanded
         # Open variable file for writing
-        variable_file = open(f"{self.crawlspace}/element_file.json", "w")
+        element_file = open(f"{self.crawlspace}/element_file.json", "w")
         for element in self.elements:
-            if isinstance(element, DugVariable):
+            if not isinstance(element, DugConcept):
                 element.set_optional_terms()
-                variable_file.write(f"{element.get_searchable_dict()}\n")
+                element_file.write(f"{element.get_searchable_dict()}\n")
 
         # Close concept, element files
         concept_file.close()
-        variable_file.close()
+        element_file.close()
 
     def annotate_elements(self):
 
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         logger.info(f"annotate {len(self.elements)} elements")
         for n, element in enumerate(self.elements):
+            if n>10 and n<len(self.elements)-1:
+                break
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
             if isinstance(element, DugConcept):
                 self.concepts[element.id] = element
 
             # Annotate element with normalized ontology identifiers
-            logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}'")
+            logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}' '{element.type}")
             # logger.info(element)
             self.annotate_element(element)
             if not isinstance(element, DugConcept): ##TODO: Add DugStudy and DugForm here as well. 
@@ -173,7 +172,7 @@ class Crawler:
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, DugVariable):
+            if not isinstance(element, DugConcept):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept

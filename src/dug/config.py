@@ -33,6 +33,7 @@ class Config:
     kg_index_name: str="kg_index"
     concepts_index_name: str="concepts_index"
     variables_index_name: str='variables_index'
+    studies_index_name: str='studies_index_name'
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -163,12 +164,15 @@ class Config:
             "studies_path": "STUDIES_PATH",
             "kg_index_name": "ELASTIC_KG_INDEX_NAME",
             "concepts_index_name": "ELASTIC_CONCEPTS_INDEX_NAME",
-            "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME"
+            "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME",
+            "studies_index_name": "ELASTIC_STUDIES_INDEX_NAME",
         }
+        print("*** ENV VARS ****")
+        print(env_vars)
         kwargs = {}
-
         for kwarg, env_var in env_vars.items():
             env_value = os.environ.get(env_var)
+            print(kwarg, env_var, env_value)
             if env_value:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:

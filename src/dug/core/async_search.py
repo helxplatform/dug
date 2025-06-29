@@ -32,6 +32,7 @@ class Search:
         if indices is None:
             indices = {'concepts_index':'concepts_index',
                        'variables_index':'variables_index',
+                       'studies_index':'studies_index',
                        'kg_index':'kg_index'}
 
         self._cfg = cfg
@@ -445,6 +446,7 @@ class Search:
         return search_results
 
     async def search_study(self, study_id=None, study_name=None, offset=0, size=None):
+        # TODO: Point this to study
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """

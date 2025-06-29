@@ -4,6 +4,7 @@ from unittest.mock import patch
 from dug.core import DugConcept
 from dug.core.parsers import DugElement
 from dug.core.parsers import DugVariable
+from dug.core.parsers import DugStudy
 from tests.unit.mocks.MockCrawler import *
 
 
@@ -51,6 +52,13 @@ def test_annotate_elements(crawler):
         description="some_desc",
         data_type="test-type",
         parents=["collection-id"]
+    ), DugStudy(
+        id="Study-id-1",
+        name="Some title for study",
+        description="This study is supposed to act as a placeholder for chronic pain",
+        parents=[],
+        publications=[],
+        abstract="This is an abstract"
     )]
     crawler.elements = elements
     crawler.annotate_elements()

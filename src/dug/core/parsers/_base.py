@@ -7,6 +7,9 @@ from dug.core.loaders import InputFile
 from dug import utils as utils
 from pydantic import BaseModel, Field, computed_field
 
+VARIABLE_TYPE = 'variable'
+STUDY_TYPE = 'study'
+CONCEPT_TYPE = 'concept'
 
 class DugElement(BaseModel):
     # Basic class for holding information for an object you want to make searchable via Dug
@@ -100,7 +103,7 @@ class DugElement(BaseModel):
 class DugConcept(DugElement):
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    type: str='concept'
+    type: str=CONCEPT_TYPE
     identifiers: Dict[str, Any] = Field(default_factory=dict)    
     kg_answers: Dict[str, Any] = Field(default_factory=dict)
     concept_type: str=''
@@ -143,7 +146,7 @@ class DugConcept(DugElement):
         return es_conc
 
 class DugVariable(DugElement):
-    type:str='variable'
+    type:str=VARIABLE_TYPE
     data_type:str='text'
     is_standardized:bool=False
 
@@ -157,7 +160,7 @@ class DugVariable(DugElement):
         return es_var
 
 class DugStudy(DugElement):
-    type:str='study'
+    type:str=STUDY_TYPE
     publications:List[str] = Field(default_factory=list)
     variable_list:List[str] = Field(default_factory=list)
     abstract:str=''
