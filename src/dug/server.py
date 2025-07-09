@@ -7,15 +7,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
 from pydantic import BaseModel
-from typing import List, Dict, Set, Any
+from typing import List, Dict, Set
 import asyncio
 from typing import Optional, Any
+from contextlib import asynccontextmanager
 
 logger = logging.getLogger (__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    yield
+    shutdown_event()
 
 APP = FastAPI(
     title="Dug Search API",
     root_path=os.environ.get("ROOT_PATH", ""),
+    lifespan=lifespan,
 )
 
 APP.add_middleware(
@@ -72,7 +80,6 @@ class SearchProgramQuery(BaseModel):
 
 search = Search(Config.from_env())
 
-@APP.on_event("shutdown")
 def shutdown_event():
     asyncio.run(search.es.close())
 
@@ -101,9 +108,30 @@ async def search_concepts(search_query: SearchConceptQuery):
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "concepts_index"
-        "result": await search.search_concepts(**search_query.dict(exclude={"index"})),
+        "result": await search.search_concepts(concepts_index="concepts_index", **search_query.model_dump(exclude={"index"})),
         "status": "success"
     }
+
+@APP.post('/concepts')
+async def get_concepts(search_query: SearchConceptQuery):
+    concepts, total_count, concept_types = await search.search_concepts(concepts_index="concepts_index_1", **search_query.model_dump(exclude={"index"}))
+    res_concepts = []
+    for concept in concepts["hits"]["hits"]:
+        item = concept["_source"]
+        item["_score"] = concept["_score"]
+        item["_explanation"] = concept["_explanation"]
+        res_concepts.append(item)
+
+    res = {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "concepts": res_concepts,
+        "content_types": concept_types
+    }
+    return res
 
 
 @APP.post('/search_kg')
@@ -127,6 +155,30 @@ async def search_var(search_query: SearchVariablesQuery):
         "status": "success"
     }
 
+@APP.post('/variables')
+async def get_variables(search_query: SearchVariablesQuery):
+    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}), index="variables_index_1")
+
+    res_variables = []
+
+    for variable in variables:
+        item = {
+            "id": variable["_id"],
+            "name": variable["_source"]["name"],
+            "url": variable["_source"]["action"],
+            "description": variable["_source"]["description"],
+            "standardized": variable["_source"]["is_cde"], # double check
+            "_score": variable["_score"],
+            "metadata": variable["_source"]["metadata"],
+
+        }
+        item["metadata"]["data_type"] = variable["_source"]["data_type"]
+        res_variables.append(item)
+
+    res = {
+        "variables": res_variables,
+    }
+    return res
 
 @APP.post('/search_var_grouped')
 async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
