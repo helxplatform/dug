@@ -1,4 +1,4 @@
-from dug.core.parsers._base import DugElement, DugConcept, DugVariable, DugStudy
+from dug.core.parsers._base import DugElement, DugConcept, DugVariable, DugStudy, DugSection
 from dug.core.annotators import DugIdentifier, AnnotateMonarch
 # from dug.core.annotators.monarch_annotator import AnnotateMonarch
 
@@ -170,7 +170,7 @@ def test_dug_study():
     assert study.type == 'study'
 
 
-def test_dug_variable_searchable_dict():
+def test_dug_study_searchable_dict():
     study_id = "study1"
     study_name = "Study-1"
     study_desc = "Short Description of the study"
@@ -199,4 +199,55 @@ def test_dug_variable_searchable_dict():
         'publications': [],
         'variable_list': [],
         'abstract': study_abstract
+    }
+
+def test_dug_section():
+    section_id = "section1"
+    section_name = "Pain Index"
+    section_desc = "Pain section"
+    is_crf = True
+
+    section = DugSection(
+        id=section_id,
+        name=section_name,
+        description=section_desc,
+        is_standardized=is_crf
+    )
+
+    assert len(section.concepts) == 0
+    section.add_concept(DugConcept(id="concept-1", name='Concept-1', description='The first concept'))
+    assert len(section.concepts) == 1
+    section.add_concept(DugConcept(id="concept-1", name='Concept-1', description='The first concept'))
+    assert len(section.concepts) == 1
+    assert section.type == 'section'
+
+
+def test_dug_section_searchable_dict():
+    section_id = "section1"
+    section_name = "Pain Index"
+    section_desc = "Pain section"
+    is_crf = True
+
+    section = DugSection(
+        id=section_id,
+        name=section_name,
+        description=section_desc,
+        is_standardized=is_crf
+    )
+
+    searchable = section.get_searchable_dict()
+    assert searchable == {
+        'id': section_id,
+        'name': section_name,
+        'description': section_desc,
+        'element_type': 'section',
+        'search_terms': [],
+        'optional_terms': [],
+        'action': "",
+        'identifiers': [],
+        'metadata': {},
+        'parents': [],
+        'programs': [],
+        'variable_list': [],
+        'is_crf': is_crf
     }

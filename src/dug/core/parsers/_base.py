@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field, computed_field
 VARIABLE_TYPE = 'variable'
 STUDY_TYPE = 'study'
 CONCEPT_TYPE = 'concept'
+SECTION_TYPE= 'section'
 
 class DugElement(BaseModel):
     # Basic class for holding information for an object you want to make searchable via Dug
@@ -174,6 +175,19 @@ class DugStudy(DugElement):
                     'abstract': self.abstract
                    }
         return es_study
+
+class DugSection(DugElement):
+    type:str=SECTION_TYPE
+    is_standardized:bool=False
+    variable_list:List[str] = Field(default_factory=list)
+
+    def get_searchable_dict(self):
+        es_elem =  super().get_searchable_dict()
+        es_section = {**es_elem,
+                      'variable_list': self.variable_list,
+                      'is_crf': self.is_standardized
+                    }
+        return es_section
  
 Indexable = Union[DugElement, DugConcept]
 Parser = Callable[[Any], Iterable[Indexable]]
