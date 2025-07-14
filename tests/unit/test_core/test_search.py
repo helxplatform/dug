@@ -68,6 +68,7 @@ class MockIndices:
             "concepts_index": index_schema,
             "variables_index": index_schema,
             "studies_index": index_schema,
+            "sections_index": index_schema,
         }
         return settings
 

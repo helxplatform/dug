@@ -5,6 +5,7 @@ from dug.core import DugConcept
 from dug.core.parsers import DugElement
 from dug.core.parsers import DugVariable
 from dug.core.parsers import DugStudy
+from dug.core.parsers import DugSection
 from tests.unit.mocks.MockCrawler import *
 
 
@@ -59,7 +60,14 @@ def test_annotate_elements(crawler):
         parents=[],
         publications=[],
         abstract="This is an abstract"
-    )]
+    ), DugSection(
+        id = "CRF-1",
+        name = "Test CRF",
+        description = "Question for this Test CRF",
+        parents=[],
+        is_crf = False,
+    )
+    ]
     crawler.elements = elements
     crawler.annotate_elements()
     # annotate elements mutates the original elements

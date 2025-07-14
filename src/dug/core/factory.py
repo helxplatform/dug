@@ -64,6 +64,7 @@ class DugFactory:
         indices = {'concepts_index':self.config.concepts_index_name, 
                    'variables_index': self.config.variables_index_name,
                    'studies_index': self.config.studies_index_name,
+                   'sections_index': self.config.sections_index_name,
                    'kg_index': self.config.kg_index_name}
         return Search(self.config, indices=indices)
 
@@ -71,6 +72,7 @@ class DugFactory:
         indices = {'concepts_index':self.config.concepts_index_name, 
                    'variables_index': self.config.variables_index_name,
                    'studies_index': self.config.studies_index_name,
+                   'sections_index': self.config.sections_index_name,
                    'kg_index': self.config.kg_index_name}
         print("In BUILD INDEXER")
         print(self.config)

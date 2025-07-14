@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug.core.parsers import Parser, DugVariable, DugConcept, DugStudy, DugElement
+from dug.core.parsers import Parser, DugConcept
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
@@ -124,7 +124,7 @@ class Crawler:
             logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}' '{element.type}")
             # logger.info(element)
             self.annotate_element(element)
-            if not isinstance(element, DugConcept): ##TODO: Add DugStudy and DugForm here as well. 
+            if not isinstance(element, DugConcept):
                 element.set_search_terms() ##Q: Does this not set search terms for concepts?
 
         # Now that we have our concepts and elements fully annotated, we need to

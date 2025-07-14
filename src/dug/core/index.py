@@ -18,6 +18,7 @@ class Index:
             indices = {'concepts_index':'concepts_index', 
                        'variables_index':'variables_index', 
                        'studies_index':'studies_index',
+                       'sections_index':'sections_index',
                        'kg_index':'kg_index'}
         
         self._cfg = cfg
@@ -219,11 +220,50 @@ class Index:
                 }
             }
         }
+        sections_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords"},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords"},
+                    "is_crf": {"type": "boolean"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
         settings = {
             'kg_index': kg_index,
             'concepts_index': concepts_index,
             'variables_index': variables_index,
             'studies_index': studies_index,
+            'sections_index': sections_index,
         }
 
         logger.info(f"creating indices")

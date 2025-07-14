@@ -14,7 +14,7 @@ from dug import hookspecs
 from dug.core import parsers
 from dug.core import annotators
 from dug.core.factory import DugFactory
-from dug.core.parsers import DugConcept, DugStudy, DugVariable, Parser, get_parser
+from dug.core.parsers import DugConcept, DugStudy, DugVariable, DugSection, Parser, get_parser
 from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')
@@ -44,10 +44,6 @@ def get_targets(target_name) -> Iterable[Path]:
 
 
 class Dug:
-    # concepts_index = "concepts_index"
-    # variables_index = "variables_index"
-    # kg_index = "kg_index"
-
     def __init__(self, factory: DugFactory):
         self._factory = factory
         self._search = self._factory.build_search_obj()
@@ -55,6 +51,7 @@ class Dug:
         self.concepts_index = self._factory.config.concepts_index_name
         self.variables_index = self._factory.config.variables_index_name
         self.studies_index = self._factory.config.studies_index_name
+        self.sections_index = self._factory.config.sections_index_name
         self.kg_index = self._factory.config.kg_index_name
 
     def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
@@ -81,6 +78,8 @@ class Dug:
                 self._index.index_element(element, index=self.variables_index)
             if isinstance(element, DugStudy):
                 self._index.index_element(element, index=self.studies_index)
+            if isinstance(element, DugSection):
+                self._index.index_element(element, index=self.sections_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
         for concept_id, concept in crawler.concepts.items():

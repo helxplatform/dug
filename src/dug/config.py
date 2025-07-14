@@ -34,6 +34,7 @@ class Config:
     concepts_index_name: str="concepts_index"
     variables_index_name: str='variables_index'
     studies_index_name: str='studies_index_name'
+    sections_index_name: str='sections_index_name'
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -166,6 +167,7 @@ class Config:
             "concepts_index_name": "ELASTIC_CONCEPTS_INDEX_NAME",
             "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME",
             "studies_index_name": "ELASTIC_STUDIES_INDEX_NAME",
+            "sections_index_name": "ELASTIC_SECTIONS_INDEX_NAME",
         }
         print("*** ENV VARS ****")
         print(env_vars)

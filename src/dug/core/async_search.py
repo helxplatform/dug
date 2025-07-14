@@ -35,6 +35,7 @@ class Search:
                        'variables_index':'variables_index',
                        'variables_index_1': 'variables_index_1',
                        'studies_index':'studies_index',
+                       'sections_index':'sections_index',
                        'kg_index':'kg_index'}
 
         self._cfg = cfg
