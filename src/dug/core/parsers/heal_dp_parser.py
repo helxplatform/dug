@@ -4,7 +4,7 @@ from typing import List
 from xml.etree import ElementTree as ET
 
 from dug import utils as utils
-from ._base import DugVariable, DugStudy, FileParser, Indexable, InputFile
+from ._base import DugVariable, DugStudy, DugSection, FileParser, Indexable, InputFile
 from .heal_studies_parser import get_study_info_from_mds, HDP_ID_PREFIX
 
 logger = logging.getLogger('dug')
@@ -68,6 +68,7 @@ class HEALDPParser(FileParser):
                             )
 
         elements = []
+        sections =  {}
         for variable in root.iter('variable'):
             # logger.info(variable)
             elem = DugVariable(id=f"{variable.attrib['id']}",
@@ -78,7 +79,25 @@ class HEALDPParser(FileParser):
                               data_type=variable.find('type').text if variable.find('type') is not None else 'string',
                               is_standardized=False) ## This would be changed to study id
             #if elem.data_type == 'encoded value':
+            section_attrib_names = ['section', 'module', 'form name']
+            is_section_attrib = [k in variable.attrib for k in section_attrib_names]
+            if any(is_section_attrib):
+                attrib_name = section_attrib_names[is_section_attrib.index(True)]
+                section_name = variable.attrib[attrib_name]
+                print("Found section_name!!")
+                print(section_name)
 
+                if section_name not in sections:
+                    sections[section_name] = DugSection(
+                            id = section_name,
+                            name = section_name,
+                            description = section_name, 
+                            program_name_list=[self.get_study_type()],
+                            parents = [study_id],
+                            is_standardized = False, ### How do I look for this?
+                        )
+                sections[section_name].variable_list.append(elem.id)
+                
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
@@ -86,5 +105,5 @@ class HEALDPParser(FileParser):
         study.variable_list = [elem.id for elem in elements]
 
         elements.append(study)
-        # You don't actually create any concepts
+        elements.extend(list(sections.values()))
         return elements

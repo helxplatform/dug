@@ -154,6 +154,11 @@ def test_heal_parser():
     variable_names = [e.name for e in variables]
     assert "hcs01_lam05" in variable_names
 
+    sections = [k for k in elements if k.type == 'section']
+    assert len(sections) == 4
+    section_names = [e.name for e in sections]
+    assert "toxicology_survey_consent" in section_names
+
 def test_heal_study_parser():
     parser = HEALStudiesParser()
     studies = parser()
