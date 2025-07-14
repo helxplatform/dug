@@ -31,7 +31,9 @@ class Search:
         # TODO: Add a study_index, and then a cde_index
         if indices is None:
             indices = {'concepts_index':'concepts_index',
+                       'concepts_index_1': 'concepts_index_1',
                        'variables_index':'variables_index',
+                       'variables_index_1': 'variables_index_1',
                        'studies_index':'studies_index',
                        'kg_index':'kg_index'}
 
@@ -231,8 +233,7 @@ class Search:
     def is_simple_search_query(self, query):
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, types=None,
-                              **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, types=None, concepts_index=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -252,11 +253,11 @@ class Search:
                 }
             }
         search_results = await self.es.search(
-            index=self.indices["concepts_index"],
+            index=self.indices[concepts_index],
             body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source', 'hits.hits._score',
-                         'hits.hits._explanation', 'aggregations'],
+                          'hits.hits._source', 'hits.hits._score',
+                          'hits.hits._explanation', 'aggregations'],
             from_=offset,
             size=size,
             explain=True
@@ -271,7 +272,7 @@ class Search:
             del search_body["post_filter"]
         total_items = await self.es.count(
             body=search_body,
-            index=self.indices["concepts_index"]
+            index=self.indices[concepts_index]
         )
 
         # Simplify the data structure we get from aggregations to put into the
@@ -282,9 +283,8 @@ class Search:
             bucket['key']: bucket['doc_count'] for bucket in
             aggregations['type-count']['buckets']
         }
-        search_results.update({'total_items': total_items['count']})
-        search_results.update({'concept_types': concept_types})
-        return search_results
+
+        return search_results, total_items['count'], concept_types
 
     async def search_variables(self, concept="", query="", size=None,
                                data_type=None, offset=0, fuzziness=1,
@@ -324,6 +324,33 @@ class Search:
             search_result_hits = search_results['hits']['hits']
 
         return self._make_result(data_type, search_result_hits , total_items, True)
+
+    async def search_variables_new(self, concept="", query="", size=None,
+                               data_type=None, offset=0, fuzziness=1,
+                               prefix_length=3, index="variables_index_1"):
+
+        if self.is_simple_search_query(query):
+            es_query = self.get_simple_variable_search_query(concept, query)
+        else:
+            es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+
+        total_items = (await self.es.count(body=es_query, index=index))['count']
+        search_results = await self.es.search(
+            index=index,
+            body=es_query,
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                         'hits.hits._source', 'hits.hits._score'],
+            from_=offset,
+            size=size or total_items
+        )
+
+        search_result_hits = []
+
+        if "hits" in search_results:
+            search_result_hits = search_results['hits']['hits']
+
+        return search_result_hits, total_items
+
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
