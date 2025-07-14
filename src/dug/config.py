@@ -169,12 +169,9 @@ class Config:
             "studies_index_name": "ELASTIC_STUDIES_INDEX_NAME",
             "sections_index_name": "ELASTIC_SECTIONS_INDEX_NAME",
         }
-        print("*** ENV VARS ****")
-        print(env_vars)
         kwargs = {}
         for kwarg, env_var in env_vars.items():
             env_value = os.environ.get(env_var)
-            print(kwarg, env_var, env_value)
             if env_value:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:

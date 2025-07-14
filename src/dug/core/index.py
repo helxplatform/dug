@@ -22,7 +22,6 @@ class Index:
                        'kg_index':'kg_index'}
         
         self._cfg = cfg
-        print(self._cfg)
         logger.debug(f"******** Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         self.indices = indices

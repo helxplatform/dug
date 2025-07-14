@@ -84,9 +84,7 @@ class HEALDPParser(FileParser):
             if any(is_section_attrib):
                 attrib_name = section_attrib_names[is_section_attrib.index(True)]
                 section_name = variable.attrib[attrib_name]
-                print("Found section_name!!")
-                print(section_name)
-
+                
                 if section_name not in sections:
                     sections[section_name] = DugSection(
                             id = section_name,

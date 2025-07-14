@@ -74,8 +74,6 @@ class DugFactory:
                    'studies_index': self.config.studies_index_name,
                    'sections_index': self.config.sections_index_name,
                    'kg_index': self.config.kg_index_name}
-        print("In BUILD INDEXER")
-        print(self.config)
         return Index(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):
