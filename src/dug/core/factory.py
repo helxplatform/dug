@@ -18,6 +18,15 @@ class DugFactory:
     def __init__(self, config: DugConfig):
         self.config = config
 
+    def get_index_names(self):
+        return {
+                'concepts_index':self.config.concepts_index_name, 
+                'variables_index': self.config.variables_index_name,
+                'studies_index': self.config.studies_index_name,
+                'sections_index': self.config.sections_index_name,
+                'kg_index': self.config.kg_index_name
+                }
+
     def build_http_session(self) -> CachedSession:
 
         redis_config = {
@@ -61,19 +70,11 @@ class DugFactory:
         }
 
     def build_search_obj(self) -> Search:
-        indices = {'concepts_index':self.config.concepts_index_name, 
-                   'variables_index': self.config.variables_index_name,
-                   'studies_index': self.config.studies_index_name,
-                   'sections_index': self.config.sections_index_name,
-                   'kg_index': self.config.kg_index_name}
+        indices = self.get_index_names()
         return Search(self.config, indices=indices)
 
     def build_indexer_obj(self) -> Index:
-        indices = {'concepts_index':self.config.concepts_index_name, 
-                   'variables_index': self.config.variables_index_name,
-                   'studies_index': self.config.studies_index_name,
-                   'sections_index': self.config.sections_index_name,
-                   'kg_index': self.config.kg_index_name}
+        indices = self.get_index_names()
         return Index(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):

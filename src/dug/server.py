@@ -78,7 +78,15 @@ class SearchProgramQuery(BaseModel):
     #index: str = "variables_index"
     size:int = 100   
 
-search = Search(Config.from_env())
+config = Config.from_env()
+indices = {
+            'concepts_index': config.concepts_index_name, 
+            'variables_index': config.variables_index_name,
+            'studies_index': config.studies_index_name,
+            'sections_index': config.sections_index_name,
+            'kg_index': config.kg_index_name
+        }
+search = Search(config)
 
 def shutdown_event():
     asyncio.run(search.es.close())
@@ -108,13 +116,13 @@ async def search_concepts(search_query: SearchConceptQuery):
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "concepts_index"
-        "result": await search.search_concepts(concepts_index="concepts_index", **search_query.model_dump(exclude={"index"})),
+        "result": await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"})),
         "status": "success"
     }
 
 @APP.post('/concepts')
 async def get_concepts(search_query: SearchConceptQuery):
-    concepts, total_count, concept_types = await search.search_concepts(concepts_index="concepts_index_1", **search_query.model_dump(exclude={"index"}))
+    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"}))
     res_concepts = []
     for concept in concepts["hits"]["hits"]:
         item = concept["_source"]
@@ -157,7 +165,7 @@ async def search_var(search_query: SearchVariablesQuery):
 
 @APP.post('/variables')
 async def get_variables(search_query: SearchVariablesQuery):
-    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}), index="variables_index_1")
+    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}), index=indices['variables_index'])
 
     res_variables = []
 

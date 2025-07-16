@@ -33,8 +33,8 @@ class Config:
     kg_index_name: str="kg_index"
     concepts_index_name: str="concepts_index"
     variables_index_name: str='variables_index'
-    studies_index_name: str='studies_index_name'
-    sections_index_name: str='sections_index_name'
+    studies_index_name: str='studies_index'
+    sections_index_name: str='sections_index'
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(

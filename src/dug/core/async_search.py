@@ -30,10 +30,9 @@ class Search:
 
         # TODO: Add a study_index, and then a cde_index
         if indices is None:
+            # Dictionary for index names should be updated from config.
             indices = {'concepts_index':'concepts_index',
-                       'concepts_index_1': 'concepts_index_1',
                        'variables_index':'variables_index',
-                       'variables_index_1': 'variables_index_1',
                        'studies_index':'studies_index',
                        'sections_index':'sections_index',
                        'kg_index':'kg_index'}
@@ -328,7 +327,7 @@ class Search:
 
     async def search_variables_new(self, concept="", query="", size=None,
                                data_type=None, offset=0, fuzziness=1,
-                               prefix_length=3, index="variables_index_1"):
+                               prefix_length=3, index="variables_index"):
 
         if self.is_simple_search_query(query):
             es_query = self.get_simple_variable_search_query(concept, query)
