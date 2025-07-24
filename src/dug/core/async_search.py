@@ -318,25 +318,23 @@ class Search:
             size=size or total_items['count']
         )
 
-        search_result_hits = []
-
-        if "hits" in search_results:
-            search_result_hits = search_results['hits']['hits']
+        search_result_hits = await self.remove_hits_from_results(search_results)
 
         return self._make_result(data_type, search_result_hits , total_items, True)
 
     async def search_variables_new(self, concept="", query="", size=None,
                                data_type=None, offset=0, fuzziness=1,
-                               prefix_length=3, index="variables_index"):
+                               prefix_length=3):
 
         if self.is_simple_search_query(query):
             es_query = self.get_simple_variable_search_query(concept, query)
         else:
             es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
 
-        total_items = (await self.es.count(body=es_query, index=index))['count']
+        index_name = self._cfg.variables_index_name
+        total_items = (await self.es.count(body=es_query, index=index_name))['count']
         search_results = await self.es.search(
-            index=index,
+            index=index_name,
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
@@ -344,10 +342,7 @@ class Search:
             size=size or total_items
         )
 
-        search_result_hits = []
-
-        if "hits" in search_results:
-            search_result_hits = search_results['hits']['hits']
+        search_result_hits = await self.remove_hits_from_results(search_results)
 
         return search_result_hits, total_items
 
@@ -508,6 +503,42 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+    async def search_study_new(self, study_id=None, study_name=None, offset=0, size=None):
+        """
+        Search for studies by unique_id (ID or name) and/or study_name.
+        """
+        query_body = {
+            "bool": {
+                "must": []
+            }
+        }
+
+        # Add conditions based on user input
+        if study_id:
+            query_body["bool"]["must"].append({
+                "match": {"id": study_id}
+            })
+
+        if study_name:
+            query_body["bool"]["must"].append({
+                "match": {"name": study_name}
+            })
+
+        print("query_body", query_body)
+        body = {'query': query_body}
+        studies_index = self._cfg.studies_index_name
+        total_items = await self.es.count(body=body, index=studies_index)
+        search_results = await self.es.search(
+            index=studies_index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_result_hits = await self.remove_hits_from_results(search_results)
+
+        return search_result_hits, total_items['count']
 
     async def search_program(self, program_name=None, offset=0, size=None, use_elasticsearch=False):
         """
@@ -878,3 +909,67 @@ class Search:
                 }
             })
         return search_query
+
+    async def get_variables_by_ids(self, ids: [str]):
+        """Returns variables by ids"""
+
+        if len(ids) == 0:
+            return []
+
+        body = {
+            "size": self._cfg.max_ids_limit,
+            "query": {
+                "ids": {
+                    "values": ids
+                }
+            },
+            # for scroll optimization
+            "sort": [
+                "_doc"
+            ]
+        }
+
+        res = []
+
+        if len(ids) <= self._cfg.max_ids_limit:
+            search_results = await self.es.search(
+                index=self._cfg.variables_index_name,
+                body=body,
+                filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source']
+            )
+            search_results_wo_hits = await self.remove_hits_from_results(search_results)
+            res.extend(search_results_wo_hits)
+        else:
+
+            search_results = helpers.async_scan(client=self.es, index=self._cfg.variables_index_name, query=body)
+            async for r in search_results:
+                res.append(r)
+
+        return res
+
+    async def remove_hits_from_results(self, search_results):
+        search_result_hits = []
+        if "hits" in search_results:
+            search_result_hits = search_results['hits']['hits']
+        return search_result_hits
+
+    def get_variables_for_responce(self, variables):
+        res_variables = []
+
+        for variable in variables:
+            item = {
+                "id": variable["_id"],
+                "name": variable["_source"]["name"],
+                "url": variable["_source"]["action"],
+                "description": variable["_source"]["description"],
+                "standardized": variable["_source"]["is_cde"],  # double check
+
+                "metadata": variable["_source"]["metadata"],
+
+            }
+            if "_score" in variable:
+                item["score"] = variable["_score"]
+            item["metadata"]["data_type"] = variable["_source"]["data_type"]
+            res_variables.append(item)
+
+        return res_variables

@@ -21,6 +21,7 @@ class Config:
     elastic_scheme: str = "https"
     elastic_ca_path: str = ""
     elastic_ca_verify: bool = True
+    max_ids_limit = 10000
 
     redis_host: str = "redis"
     redis_port: int = 6379

@@ -78,6 +78,9 @@ class SearchProgramQuery(BaseModel):
     #index: str = "variables_index"
     size:int = 100   
 
+class VariableIds(BaseModel):
+    ids: Optional[List[str]] = []
+
 config = Config.from_env()
 indices = {
             'concepts_index': config.concepts_index_name, 
@@ -165,23 +168,8 @@ async def search_var(search_query: SearchVariablesQuery):
 
 @APP.post('/variables')
 async def get_variables(search_query: SearchVariablesQuery):
-    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}), index=indices['variables_index'])
-
-    res_variables = []
-
-    for variable in variables:
-        item = {
-            "id": variable["_id"],
-            "name": variable["_source"]["name"],
-            "url": variable["_source"]["action"],
-            "description": variable["_source"]["description"],
-            "standardized": variable["_source"]["is_cde"], # double check
-            "_score": variable["_score"],
-            "metadata": variable["_source"]["metadata"],
-
-        }
-        item["metadata"]["data_type"] = variable["_source"]["data_type"]
-        res_variables.append(item)
+    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    res_variables = search.get_variables_for_responce(variables)
 
     res = {
         "variables": res_variables,
@@ -373,6 +361,42 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
         "result": result,
         "status": "success"
     }
+
+
+@APP.get('/studies')
+async def get_studies(study_id: Optional[str] = None,
+                      study_name: Optional[str] = None,
+                      offset: Optional[int] = 0,
+                      size: Optional[int] = None):
+    """
+    Search for studies by unique_id (ID or name) and/or study_name.
+    """
+    result, total_count = await search.search_study_new(study_id=study_id, study_name=study_name, offset=offset, size=size)
+    studies = []
+    for study in result:
+        item = study["_source"]
+        item["url"] = study["_source"]["action"]
+        studies.append(item)
+
+    return {
+        "_metadata": {
+            "total_count": total_count,
+            "offset": offset
+        },
+        "studies": studies,
+    }
+
+@APP.post('/variables_by_id')
+async def get_variables_by_id(var_ids: VariableIds):
+    variables_result = await search.get_variables_by_ids(var_ids.ids)
+    res = search.get_variables_for_responce(variables_result)
+    return {
+        "_metadata": {
+            "total_count": len(res),
+        },
+        "variables": res,
+    }
+
 
 
 @APP.get('/search_program')
