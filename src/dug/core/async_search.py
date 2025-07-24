@@ -1,6 +1,6 @@
 """Implements search methods using async interfaces"""
 import logging
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, helpers
 from elasticsearch.helpers import async_scan
 import ssl,json
 from dug.config import Config
