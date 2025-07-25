@@ -79,6 +79,9 @@ class SearchProgramQuery(BaseModel):
     size:int = 100   
 
 class VariableIds(BaseModel):
+    """
+    List of variable IDs
+    """
     ids: Optional[List[str]] = []
 
 config = Config.from_env()
@@ -125,6 +128,28 @@ async def search_concepts(search_query: SearchConceptQuery):
 
 @APP.post('/concepts')
 async def get_concepts(search_query: SearchConceptQuery):
+    """
+    Handles POST request to get concepts based on the provided search query.
+
+    Parameters:
+        search_query (SearchConceptQuery): The search query containing filters, offsets,
+        and other parameters needed for retrieving concepts.
+
+    Returns:
+        dict: contains list concepts, content_types and metadata.
+        Each concept has the following structure:
+            - "id"
+            - "name"
+            - "description"
+            - "type"
+            - "synonyms": list
+            - "_score"
+            - "_explanation"
+        Metadata contains the following:
+            - "total_count"
+            - "offset"
+            - "size"
+    """
     concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"}))
     res_concepts = []
     for concept in concepts["hits"]["hits"]:
@@ -168,6 +193,25 @@ async def search_var(search_query: SearchVariablesQuery):
 
 @APP.post('/variables')
 async def get_variables(search_query: SearchVariablesQuery):
+    """
+    Handles POST requests to retrieve variables based on a search query.
+    
+    Arguments:
+        search_query (SearchVariablesQuery): The query object containing parameters 
+        for the variable search.
+
+    Returns:
+        Dict with variables list.
+        Each variable has the following structure:
+            - "id" 
+            - "name"
+            - "url"
+            - "description"
+            - "standardized"
+            - "metadata" dictionary
+            - "score" (optional)
+        
+    """
     variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
     res_variables = search.get_variables_for_responce(variables)
 
@@ -369,7 +413,34 @@ async def get_studies(study_id: Optional[str] = None,
                       offset: Optional[int] = 0,
                       size: Optional[int] = None):
     """
-    Search for studies by unique_id (ID or name) and/or study_name.
+    Handles GET requests to retrieve a list of studies.
+
+    Parameters:
+        study_id: Optional[str]
+        study_name: Optional[str]
+        offset: Optional[int]
+        size: Optional[int]
+
+    Returns:
+        dict
+            A dictionary containing metadata about the results, including the total number
+            of matching studies and the offset used. 
+            Studies has the following structure:
+                  - "id"
+                  - "name"
+                  - "description"
+                  - "search_terms": list
+                  - "optional_terms": list
+                  - "action": url
+                  - "element_type"
+                  - "metadata": dict
+                  - "parents": list
+                  - "programs": list
+                  - "identifiers": list
+                  - "publications": list
+                  - "variable_list": list if ids
+            
+   
     """
     result, total_count = await search.search_study_new(study_id=study_id, study_name=study_name, offset=offset, size=size)
     studies = []
@@ -388,6 +459,16 @@ async def get_studies(study_id: Optional[str] = None,
 
 @APP.post('/variables_by_id')
 async def get_variables_by_id(var_ids: VariableIds):
+    """
+    Handles POST requests to retrieve variables by their IDs.
+
+    Parameters:
+        var_ids (VariableIds)
+
+    Returns:
+        dict: A dictionary containing metadata about the retrieval and the list
+        of variables.
+    """
     variables_result = await search.get_variables_by_ids(var_ids.ids)
     res = search.get_variables_for_responce(variables_result)
     return {
