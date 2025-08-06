@@ -213,7 +213,7 @@ async def get_variables(search_query: SearchVariablesQuery):
         
     """
     variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
-    res_variables = search.get_variables_for_responce(variables)
+    res_variables = search.get_variables_for_response(variables)
 
     res = {
         "variables": res_variables,
@@ -452,32 +452,90 @@ async def get_studies(study_id: Optional[str] = None,
     return {
         "_metadata": {
             "total_count": total_count,
-            "offset": offset
+            "offset": offset,
+            "size": len(studies)
         },
         "studies": studies,
     }
 
-@APP.post('/variables_by_id')
-async def get_variables_by_id(var_ids: VariableIds):
+
+@APP.get('/cdes')
+async def get_cdes(cde_id: Optional[str] = None,
+                   cde_name: Optional[str] = None,
+                   variable: Optional[str] = None,
+                   study: Optional[str] = None,
+                   offset: Optional[int] = 0,
+                   size: Optional[int] = None):
     """
-    Handles POST requests to retrieve variables by their IDs.
+    Handles GET requests to retrieve a list of sections.
 
     Parameters:
-        var_ids (VariableIds)
+        cde_id: Optional[str]
+        cde_name: Optional[str]
+        variable: Optional[str]
+        study: Optional[str]
+        offset: Optional[int]
+        size: Optional[int]
 
-    Returns:
-        dict: A dictionary containing metadata about the retrieval and the list
-        of variables.
     """
-    variables_result = await search.get_variables_by_ids(var_ids.ids)
-    res = search.get_variables_for_responce(variables_result)
+    result, total_count = await search.search_cde(cde_id=cde_id, cde_name=cde_name, variable=[variable],
+                                                  study=[study], offset=offset, size=size)
+    cdes = []
+    for r in result:
+        item = r["_source"]
+        item["url"] = r["_source"]["action"]
+        cdes.append(item)
+
     return {
         "_metadata": {
-            "total_count": len(res),
+            "total_count": total_count,
+            "offset": offset,
+            "size": len(cdes)
         },
-        "variables": res,
+        "cdes": cdes,
     }
 
+
+@APP.get('/cdes')
+async def get_cdes(cde_id: Optional[str] = None,
+                   cde_name: Optional[str] = None,
+                   variable: Optional[str] = None,
+                   study: Optional[str] = None,
+                   offset: Optional[int] = 0,
+                   size: Optional[int] = None):
+    """
+    Handles GET requests to retrieve a list of sections.
+
+    Parameters:
+        cde_id: Optional[str]
+        cde_name: Optional[str]
+        variable: Optional[str]
+        study: Optional[str]
+        offset: Optional[int]
+        size: Optional[int]
+
+    """
+    result, total_count = await search.search_cde(cde_id=cde_id, cde_name=cde_name, variable=[variable],
+                                                  study=[study], offset=offset, size=size)
+    cdes = []
+    for r in result:
+        item = r["_source"]
+        item["url"] = r["_source"]["action"]
+        cdes.append(item)
+
+    return {
+        "_metadata": {
+            "total_count": total_count,
+            "offset": offset,
+            "size": len(cdes)
+        },
+        "cdes": cdes,
+    }
+
+@APP.get('/study_sources')
+async def get_study_sources():
+    res = await search.get_study_sources()
+    return res
 
 
 @APP.get('/search_program')

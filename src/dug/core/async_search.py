@@ -540,6 +540,75 @@ class Search:
 
         return search_result_hits, total_items['count']
 
+    async def search_cde(self, cde_id=None, cde_name=None, variable=None, study=None, offset=0, size=None):
+        """
+        Search for cdes by id (ID or name) and/or name, variable, study.
+        """
+        query_body = {
+            "bool": {
+                "must": [],
+                "should": []
+            }
+        }
+
+        # Add conditions based on user input
+        if cde_id:
+            query_body["bool"]["must"].append({
+                "match": {"id": cde_id}
+            })
+
+        if cde_name:
+            query_body["bool"]["must"].append({
+                "match": {"name": cde_name}
+            })
+
+        if variable:
+            query_body["bool"]["should"].append({
+                "terms": {
+                    "variable_list": variable
+                },
+            })
+
+        if study:
+            query_body["bool"]["should"].append({
+                "terms": {
+                    "parents": study
+                },
+            })
+
+        print("query_body", query_body)
+        body = {'query': query_body}
+        section_index = self._cfg.sections_index_name
+        total_items = await self.es.count(body=body, index=section_index)
+        search_results = await self.es.search(
+            index=section_index,
+            body=body,
+            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
+            from_=offset,
+            size=size
+        )
+        search_result_hits = await self.remove_hits_from_results(search_results)
+
+        return search_result_hits, total_items['count']
+
+    async def get_study_sources(self):
+        query_body = {
+                "size": 0,
+                "aggs": {
+                    "d1": {
+                        "terms": {
+                            "field": "programs.keyword"
+                        }
+                    }
+                }
+        }
+        search_results = await self.es.search(
+            index=self._cfg.studies_index_name,
+            body=query_body
+        )
+        unique_studies = search_results['aggregations']['d1']['buckets']
+        return unique_studies
+
     async def search_program(self, program_name=None, offset=0, size=None, use_elasticsearch=False):
         """
         Search for studies by unique_id (ID or name) and/or study_name.
@@ -953,7 +1022,7 @@ class Search:
             search_result_hits = search_results['hits']['hits']
         return search_result_hits
 
-    def get_variables_for_responce(self, variables):
+    def get_variables_for_response(self, variables):
         res_variables = []
 
         for variable in variables:
