@@ -318,7 +318,7 @@ class Search:
             size=size or total_items['count']
         )
 
-        search_result_hits = await self.remove_hits_from_results(search_results)
+        search_result_hits = self.remove_hits_from_results(search_results)
 
         return self._make_result(data_type, search_result_hits , total_items, True)
 
@@ -342,7 +342,7 @@ class Search:
             size=size or total_items
         )
 
-        search_result_hits = await self.remove_hits_from_results(search_results)
+        search_result_hits = self.remove_hits_from_results(search_results)
 
         return search_result_hits, total_items
 
@@ -536,7 +536,7 @@ class Search:
             from_=offset,
             size=size
         )
-        search_result_hits = await self.remove_hits_from_results(search_results)
+        search_result_hits = self.remove_hits_from_results(search_results)
 
         return search_result_hits, total_items['count']
 
@@ -558,7 +558,7 @@ class Search:
             })
 
         if cde_name:
-            query_body["bool"]["must"].append({
+            query_body["bool"]["should"].append({
                 "match": {"name": cde_name}
             })
 
@@ -587,7 +587,7 @@ class Search:
             from_=offset,
             size=size
         )
-        search_result_hits = await self.remove_hits_from_results(search_results)
+        search_result_hits = self.remove_hits_from_results(search_results)
 
         return search_result_hits, total_items['count']
 
@@ -1006,7 +1006,7 @@ class Search:
                 body=body,
                 filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source']
             )
-            search_results_wo_hits = await self.remove_hits_from_results(search_results)
+            search_results_wo_hits = self.remove_hits_from_results(search_results)
             res.extend(search_results_wo_hits)
         else:
 
@@ -1016,7 +1016,7 @@ class Search:
 
         return res
 
-    async def remove_hits_from_results(self, search_results):
+    def remove_hits_from_results(self, search_results):
         search_result_hits = []
         if "hits" in search_results:
             search_result_hits = search_results['hits']['hits']
