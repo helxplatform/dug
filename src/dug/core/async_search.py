@@ -330,7 +330,7 @@ class Search:
                                prefix_length=3, index="variables_index"):
 
         if self.is_simple_search_query(query):
-            es_query = self.get_simple_variable_search_query(concept, query)
+            es_query = self.get_simple_variable_search_query(concept, query, True)
         else:
             es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
 
@@ -660,15 +660,22 @@ class Search:
             program_summary.sort(key=lambda x: x["key"])
             return program_summary
     
-    def _get_var_query(self, concept, fuzziness, prefix_length, query):
+    def _get_var_query(self, concept, fuzziness, prefix_length, query, new_model=False):
         """Returns ES query for variable search"""
+        element_name = "element_name"
+        element_desc = "element_desc"
+
+        if new_model:
+            element_name = "name"
+            element_desc = "description"
+
         es_query = {
             "query": {
                 'bool': {
                     'should': [
                         {
                             "match_phrase": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "boost": 10
                                 }
@@ -676,7 +683,7 @@ class Search:
                         },
                         {
                             "match_phrase": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "boost": 6
                                 }
@@ -692,7 +699,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -714,7 +721,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -725,7 +732,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -735,7 +742,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -827,7 +834,7 @@ class Search:
         }
         return search_query
 
-    def get_simple_variable_search_query(self, concept, query):
+    def get_simple_variable_search_query(self, concept, query, new_model=False):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -835,6 +842,14 @@ class Search:
             "default_operator": "and",
             "flags": "OR|AND|NOT|PHRASE|PREFIX"
         }
+
+        element_name = "element_name"
+        element_desc = "element_desc"
+
+        if new_model:
+            element_name = "name"
+            element_desc = "description"
+
         search_query = {
             "query": {
                 "bool": {
@@ -847,13 +862,13 @@ class Search:
                                         {
                                             "simple_query_string": {
                                                 **simple_query_string_search,
-                                                "fields": ["element_name"]
+                                                "fields": [element_name]
                                             }
                                         },
                                         {
                                             "simple_query_string": {
                                                 **simple_query_string_search,
-                                                "fields": ["element_desc"]
+                                                "fields": [element_desc]
                                             }
                                         },
                                         {
