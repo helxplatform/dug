@@ -6,13 +6,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
-from pydantic import BaseModel
-from typing import List, Dict, Set
+from typing import Set
 import asyncio
-from typing import Optional, Any
 from contextlib import asynccontextmanager
+from dug.api_models.response_models import *
+from dug.api_models.request_models import *
 
-logger = logging.getLogger (__name__)
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -34,63 +34,6 @@ APP.add_middleware(
     allow_headers=["*"],
 )
 
-class GetFromIndex(BaseModel):
-    index: str = "concepts_index"
-    size: int = 0
-
-
-class SearchConceptQuery(BaseModel):
-    query: str
-    index: str = "concepts_index"
-    offset: int = 0
-    size: int = 20
-    types: list = None
-
-class SearchVariablesQuery(BaseModel):
-    query: str
-    index: str = "variables_index"
-    concept: str = ""
-    offset: int = 0
-    size: int = 1000
-
-class FilterGrouped(BaseModel):
-    key: str
-    value: List[Any]
-class SearchVariablesQueryFiltered(SearchVariablesQuery):
-    filter: List[FilterGrouped] = []
-
-class SearchKgQuery(BaseModel):
-    query: str
-    unique_id: str
-    index: str = "kg_index"
-    size:int = 100
-
-class SearchStudyQuery(BaseModel):
-    #query: str
-    study_id: Optional[str] = None
-    study_name: Optional[str] = None
-    #index: str = "variables_index"
-    size:int = 100
-
-class SearchProgramQuery(BaseModel):
-    #query: str
-    program_id: Optional[str] = None
-    program_name: Optional[str] = None
-    #index: str = "variables_index"
-    size:int = 100   
-
-class SearchQuery(BaseModel):
-    id: Optional[str] = None
-    query: Optional[str] = None
-    size: Optional[int] = 100
-    offset: Optional[int] = 0
-
-class VariableIds(BaseModel):
-    """
-    List of variable IDs
-    """
-    ids: Optional[List[str]] = []
-
 config = Config.from_env()
 indices = {
             'concepts_index': config.concepts_index_name, 
@@ -100,6 +43,7 @@ indices = {
             'kg_index': config.kg_index_name
         }
 search = Search(config)
+
 
 def shutdown_event():
     asyncio.run(search.es.close())
@@ -340,7 +284,8 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
         "status": "success"
     }
 
-@APP.post('/concepts')
+
+@APP.post('/concepts', tags=['v2.0'], response_model=ConceptsAPIResponse)
 async def get_concepts(search_query: SearchConceptQuery):
     """
     Handles POST request to get concepts based on the provided search query.
@@ -364,14 +309,15 @@ async def get_concepts(search_query: SearchConceptQuery):
             - "offset"
             - "size"
     """
-    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"}))
+    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"],
+                                                                        **search_query.model_dump(exclude={"index"}))
     concepts_wo_hits = search.remove_hits_from_results(concepts)
     res_concepts = []
     if concepts_wo_hits:
         for concept in concepts_wo_hits:
             item = concept["_source"]
-            item["_score"] = concept["_score"]
-            item["_explanation"] = concept["_explanation"]
+            item["score"] = concept["_score"]
+            item["explanation"] = concept["_explanation"]
             res_concepts.append(item)
 
     res = {
@@ -380,13 +326,13 @@ async def get_concepts(search_query: SearchConceptQuery):
             "offset": search_query.offset,
             "size": search_query.size,
         },
-        "concepts": res_concepts,
-        "content_types": concept_types
+        "results": res_concepts,
+        "concept_types": concept_types
     }
     return res
 
 
-@APP.post('/variables')
+@APP.post('/variables', tags=['v2.0'], response_model=VariablesAPIResponse)
 async def get_variables(search_query: SearchVariablesQuery):
     """
     Handles POST requests to retrieve variables based on a search query.
@@ -407,16 +353,25 @@ async def get_variables(search_query: SearchVariablesQuery):
             - "score" (optional)
 
     """
-    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
-    res_variables = search.get_variables_for_response(variables)
-
+    elastic_results, total_count = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    results = []
+    for result in elastic_results:
+        item = result["_source"]
+        item["score"] = result["_score"]
+        item["explanation"] = result.get("_explanation", {})
+        results.append(item)
     res = {
-        "variables": res_variables,
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "results": results
     }
     return res
 
 
-@APP.post('/studies')
+@APP.post('/studies', tags=['v2.0'], response_model=StudyAPIResponse)
 async def get_studies(query: SearchQuery):
     """
     Handles GET requests to retrieve a list of studies.
@@ -457,42 +412,39 @@ async def get_studies(query: SearchQuery):
         studies.append(item)
 
     return {
-        "_metadata": {
+        "metadata": {
             "total_count": total_count,
             "offset": query.offset,
             "size": len(studies)
         },
-        "studies": studies,
+        "results": studies,
     }
 
 
-@APP.post('/cdes')
-async def get_cdes(query: SearchQuery):
+@APP.post('/cdes', tags=['v2.0'], response_model=VariablesAPIResponse)
+async def get_cdes(search_query: SearchVariablesQuery):
     """
-    Handles GET requests to retrieve a list of sections.
-
-    Parameters:
-        SearchQuery
-
+    Searches for CDEs
     """
-    result, total_count = await search.search_cde(cde_id=query.id, cde_name=query.query, variable=[query.query],
-                                                  study=[query.query], offset=query.offset, size=query.size)
-    cdes = []
-    for r in result:
-        item = r["_source"]
-        item["url"] = r["_source"]["action"]
-        cdes.append(item)
-
-    return {
-        "_metadata": {
+    # @TODO CDEs are variables that have is_cde=True, add support for that in this query...
+    elastic_results, total_count = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    results = []
+    for result in elastic_results:
+        item = result["_source"]
+        item["score"] = result["_score"]
+        item["explanation"] = result.get("_explanation", {})
+        results.append(item)
+    res = {
+        "metadata": {
             "total_count": total_count,
-            "offset": query.offset,
-            "size": len(cdes)
+            "offset": search_query.offset,
+            "size": search_query.size,
         },
-        "cdes": cdes,
+        "results": results
     }
+    return res
 
-@APP.post("/variables_by_ids")
+@APP.post("/variables_by_ids", tags=['v2.0'], response_model=VariablesAPIResponse)
 async def get_variables_by_ids(ids: VariableIds):
     """
     Handles a POST request to fetch variables by their IDs.
@@ -508,12 +460,12 @@ async def get_variables_by_ids(ids: VariableIds):
     res_variables = search.get_variables_for_response(result)
 
     res = {
-        "variables": res_variables,
+        "results": res_variables,
     }
     return res
 
 
-@APP.get('/study_sources')
+@APP.get('/study_sources', tags=['v2.0'])
 async def get_study_sources():
     """
     Handles a GET request to get study sources.
