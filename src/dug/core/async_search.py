@@ -762,7 +762,7 @@ class Search:
             program_summary.sort(key=lambda x: x["key"])
             return program_summary
     
-    def _get_semantic_query(self, concept, fuzziness, prefix_length, query, new_model=False):
+    def _get_var_query(self, concept, fuzziness, prefix_length, query, new_model=False):
         """Returns ES query for variable search"""
         element_name = "element_name"
         element_desc = "element_desc"
