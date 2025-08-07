@@ -71,12 +71,25 @@ class SearchStudyQuery(BaseModel):
     study_name: Optional[str] = None
     #index: str = "variables_index"
     size:int = 100
+
 class SearchProgramQuery(BaseModel):
     #query: str
     program_id: Optional[str] = None
     program_name: Optional[str] = None
     #index: str = "variables_index"
     size:int = 100   
+
+class SearchQuery(BaseModel):
+    id: Optional[str] = None
+    query: Optional[str] = None
+    size: Optional[int] = 100
+    offset: Optional[int] = 0
+
+class VariableIds(BaseModel):
+    """
+    List of variable IDs
+    """
+    ids: Optional[List[str]] = []
 
 config = Config.from_env()
 indices = {
@@ -120,28 +133,6 @@ async def search_concepts(search_query: SearchConceptQuery):
         "status": "success"
     }
 
-@APP.post('/concepts')
-async def get_concepts(search_query: SearchConceptQuery):
-    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"}))
-    res_concepts = []
-    for concept in concepts["hits"]["hits"]:
-        item = concept["_source"]
-        item["_score"] = concept["_score"]
-        item["_explanation"] = concept["_explanation"]
-        res_concepts.append(item)
-
-    res = {
-        "metadata": {
-            "total_count": total_count,
-            "offset": search_query.offset,
-            "size": search_query.size,
-        },
-        "concepts": res_concepts,
-        "content_types": concept_types
-    }
-    return res
-
-
 @APP.post('/search_kg')
 async def search_kg(search_query: SearchKgQuery):
     return {
@@ -162,31 +153,6 @@ async def search_var(search_query: SearchVariablesQuery):
         "result": await search.search_variables(**search_query.dict(exclude={"index"})),
         "status": "success"
     }
-
-@APP.post('/variables')
-async def get_variables(search_query: SearchVariablesQuery):
-    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}), index=indices['variables_index'])
-
-    res_variables = []
-
-    for variable in variables:
-        item = {
-            "id": variable["_id"],
-            "name": variable["_source"]["name"],
-            "url": variable["_source"]["action"],
-            "description": variable["_source"]["description"],
-            "standardized": variable["_source"]["is_cde"], # double check
-            "_score": variable["_score"],
-            "metadata": variable["_source"]["metadata"],
-
-        }
-        item["metadata"]["data_type"] = variable["_source"]["data_type"]
-        res_variables.append(item)
-
-    res = {
-        "variables": res_variables,
-    }
-    return res
 
 @APP.post('/search_var_grouped')
 async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
@@ -373,6 +339,190 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
         "result": result,
         "status": "success"
     }
+
+@APP.post('/concepts')
+async def get_concepts(search_query: SearchConceptQuery):
+    """
+    Handles POST request to get concepts based on the provided search query.
+
+    Parameters:
+        search_query (SearchConceptQuery): The search query containing filters, offsets,
+        and other parameters needed for retrieving concepts.
+
+    Returns:
+        dict: contains list concepts, metadata.
+        Each concept has the following structure:
+            - "id"
+            - "name"
+            - "description"
+            - "type"
+            - "synonyms": list
+            - "_score"
+            - "_explanation"
+        Metadata contains the following:
+            - "total_count"
+            - "offset"
+            - "size"
+    """
+    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"}))
+    concepts_wo_hits = search.remove_hits_from_results(concepts)
+    res_concepts = []
+    if concepts_wo_hits:
+        for concept in concepts_wo_hits:
+            item = concept["_source"]
+            item["_score"] = concept["_score"]
+            item["_explanation"] = concept["_explanation"]
+            res_concepts.append(item)
+
+    res = {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "concepts": res_concepts,
+        "content_types": concept_types
+    }
+    return res
+
+
+@APP.post('/variables')
+async def get_variables(search_query: SearchVariablesQuery):
+    """
+    Handles POST requests to retrieve variables based on a search query.
+
+    Arguments:
+        search_query (SearchVariablesQuery): The query object containing parameters
+        for the variable search.
+
+    Returns:
+        Dict with variables list.
+        Each variable has the following structure:
+            - "id"
+            - "name"
+            - "url"
+            - "description"
+            - "standardized"
+            - "metadata" dictionary
+            - "score" (optional)
+
+    """
+    variables, total = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    res_variables = search.get_variables_for_response(variables)
+
+    res = {
+        "variables": res_variables,
+    }
+    return res
+
+
+@APP.post('/studies')
+async def get_studies(query: SearchQuery):
+    """
+    Handles GET requests to retrieve a list of studies.
+
+    Parameters (SearchQuery):
+        id: Optional[str]
+        query: Optional[str]
+        offset: Optional[int]
+        size: Optional[int]
+
+    Returns:
+        dict
+            A dictionary containing metadata about the results, including the total number
+            of matching studies and the offset used. 
+            Studies has the following structure:
+                  - "id"
+                  - "name"
+                  - "description"
+                  - "search_terms": list
+                  - "optional_terms": list
+                  - "action": url
+                  - "element_type"
+                  - "metadata": dict
+                  - "parents": list
+                  - "programs": list
+                  - "identifiers": list
+                  - "publications": list
+                  - "variable_list": list if ids
+            
+   
+    """
+    result, total_count = await search.search_study_new(study_id=query.id, study_name=query.query,
+                                                        offset=query.offset, size=query.size)
+    studies = []
+    for study in result:
+        item = study["_source"]
+        item["url"] = study["_source"]["action"]
+        studies.append(item)
+
+    return {
+        "_metadata": {
+            "total_count": total_count,
+            "offset": query.offset,
+            "size": len(studies)
+        },
+        "studies": studies,
+    }
+
+
+@APP.post('/cdes')
+async def get_cdes(query: SearchQuery):
+    """
+    Handles GET requests to retrieve a list of sections.
+
+    Parameters:
+        SearchQuery
+
+    """
+    result, total_count = await search.search_cde(cde_id=query.id, cde_name=query.query, variable=[query.query],
+                                                  study=[query.query], offset=query.offset, size=query.size)
+    cdes = []
+    for r in result:
+        item = r["_source"]
+        item["url"] = r["_source"]["action"]
+        cdes.append(item)
+
+    return {
+        "_metadata": {
+            "total_count": total_count,
+            "offset": query.offset,
+            "size": len(cdes)
+        },
+        "cdes": cdes,
+    }
+
+@APP.post("/variables_by_ids")
+async def get_variables_by_ids(ids: VariableIds):
+    """
+    Handles a POST request to fetch variables by their IDs.
+
+    Parameters:
+    ids (VariableIds): An object containing a list of variable IDs to retrieve.
+
+    Returns:
+    dict: A dictionary with a key 'variables', which contains the processed variables
+          data ready for the response.
+    """
+    result = await search.get_variables_by_ids(ids=ids.ids)
+    res_variables = search.get_variables_for_response(result)
+
+    res = {
+        "variables": res_variables,
+    }
+    return res
+
+
+@APP.get('/study_sources')
+async def get_study_sources():
+    """
+    Handles a GET request to get study sources.
+
+    Returns:
+        JSON: A JSON response containing the retrieved study sources.
+    """
+    res = await search.get_study_sources()
+    return res
 
 
 @APP.get('/search_program')
