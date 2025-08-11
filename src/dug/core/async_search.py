@@ -128,6 +128,8 @@ class Search:
         query_object = {
             "query" : {
                 "bool": {
+                    # this filter ensures that concepts with both name and description are returned.
+                    # if one of these are missing the concept won't show up.
                     "filter": {
                         "bool": {
                             "must": [
@@ -233,7 +235,7 @@ class Search:
     def is_simple_search_query(self, query):
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, types=None, concepts_index=None, **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, concept_types=None, concepts_index=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -242,12 +244,12 @@ class Search:
         else:
             search_body = self._get_concepts_query(query, **kwargs)
         # Get aggregated counts of biolink types
-        search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
-        if isinstance(types, list):
+        search_body['aggs'] = {'type-count': {'terms': {'field': 'concept_type'}}}
+        if isinstance(concept_types, list):
             search_body['post_filter'] = {
                 "bool": {
                     "should": [
-                        {'term': {'type': {'value': t}}} for t in types
+                        {'term': {'concept_type': {'value': t}}} for t in concept_types
                     ],
                     "minimum_should_match": 1
                 }
@@ -1041,16 +1043,7 @@ class Search:
         res_variables = []
 
         for variable in variables:
-            item = {
-                "id": variable["_id"],
-                "name": variable["_source"]["name"],
-                "url": variable["_source"]["action"],
-                "description": variable["_source"]["description"],
-                "standardized": variable["_source"]["is_cde"],  # double check
-
-                "metadata": variable["_source"]["metadata"],
-
-            }
+            item = variable['_source']
             if "_score" in variable:
                 item["score"] = variable["_score"]
             item["metadata"]["data_type"] = variable["_source"]["data_type"]
