@@ -49,4 +49,11 @@ class StudyAPIResponse(DugAPIResponse):
     results: List[StudyResponse]
 
 
+class CdeResponse(ElasticDugElementResult, DugSection):
+    pass
+
+
+class CdeAPIResponse(DugAPIResponse):
+    results: List[CdeResponse]
+
 
