@@ -28,7 +28,6 @@ class Search:
 
     def __init__(self, cfg: Config, indices=None):
 
-        # TODO: Add a study_index, and then a cde_index
         if indices is None:
             # Dictionary for index names should be updated from config.
             indices = {'concepts_index':'concepts_index',
@@ -470,7 +469,6 @@ class Search:
         return search_results
 
     async def search_study(self, study_id=None, study_name=None, offset=0, size=None):
-        # TODO: Point this to study
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """

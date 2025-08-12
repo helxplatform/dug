@@ -426,8 +426,7 @@ async def get_cdes(search_query: SearchVariablesQuery):
     """
     Searches for CDEs
     """
-    # @TODO CDEs are variables that have is_cde=True, add support for that in this query...
-    elastic_results, total_count = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    elastic_results, total_count = await search.search_cde(**search_query.model_dump(exclude={"index"}))
     results = []
     for result in elastic_results:
         item = result["_source"]

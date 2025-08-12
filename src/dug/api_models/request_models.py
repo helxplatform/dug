@@ -55,3 +55,8 @@ class VariableIds(BaseModel):
     List of variable IDs
     """
     ids: Optional[List[str]] = []
+
+class SearchCdeQuery(BaseModel):
+    cde_id: Optional[str] = None
+    cde_name: Optional[str] = None
+    size:int = 100
