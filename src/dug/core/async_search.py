@@ -540,7 +540,7 @@ class Search:
 
         return search_result_hits, total_items['count']
 
-    async def search_cde(self, cde_id=None, cde_name=None, variable=None, study=None, offset=0, size=None):
+    async def search_cde(self, id=None, query=None, variable=None, study=None, offset=0, size=None):
         """
         Search for cdes by id (ID or name) and/or name, variable, study.
         """
@@ -552,14 +552,14 @@ class Search:
         }
 
         # Add conditions based on user input
-        if cde_id:
+        if id:
             query_body["bool"]["must"].append({
-                "match": {"id": cde_id}
+                "match": {"id": id}
             })
 
-        if cde_name:
+        if query:
             query_body["bool"]["should"].append({
-                "match": {"name": cde_name}
+                "match": {"name": query}
             })
 
         if variable:
@@ -575,8 +575,6 @@ class Search:
                     "parents": study
                 },
             })
-
-        print("query_body", query_body)
         body = {'query': query_body}
         section_index = self._cfg.sections_index_name
         total_items = await self.es.count(body=body, index=section_index)
