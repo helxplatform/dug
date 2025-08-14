@@ -422,15 +422,15 @@ async def get_studies(query: SearchQuery):
 
 
 @APP.post('/cdes', tags=['v2.0'], response_model=VariablesAPIResponse)
-async def get_cdes(search_query: SearchVariablesQuery):
+async def get_cdes(search_query: SearchQuery):
     """
     Searches for CDEs
     """
     elastic_results, total_count = await search.search_cde(**search_query.model_dump(exclude={"index"}))
     results = []
     for result in elastic_results:
-        item = result["_source"]
-        item["score"] = result["_score"]
+        item = result.get("_source")
+        item["score"] = result.get("_score", 0)
         item["explanation"] = result.get("_explanation", {})
         results.append(item)
     res = {
