@@ -508,10 +508,7 @@ class Search:
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """
-        fuzziness = 1,
-        prefix_length = 3
-
-        query_body = self._get_var_query(query=study_name, prefix_length=prefix_length, fuzziness=fuzziness, concept="", new_model=True)
+        query_body = self._get_var_query(query=study_name, prefix_length=3, fuzziness=1, concept="", new_model=True)
 
         # Add conditions based on user input
         if study_id:
@@ -521,10 +518,10 @@ class Search:
 
 
         studies_index = self._cfg.studies_index_name
-        total_items = await self.es.count(body=body, index=studies_index)
+        total_items = await self.es.count(body=query_body, index=studies_index)
         search_results = await self.es.search(
             index=studies_index,
-            body=body,
+            body=query_body,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
