@@ -5,7 +5,7 @@ from typing import Union, Callable, Any, Iterable, Dict, List
 from dug.core.loaders import InputFile
 
 from dug import utils as utils
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, TypeAdapter, computed_field
 
 VARIABLE_TYPE = 'variable'
 STUDY_TYPE = 'study'
@@ -189,10 +189,11 @@ class DugSection(DugElement):
                     }
         return es_section
  
-Indexable = Union[DugElement, DugConcept]
+Indexable = Union[DugElement, DugConcept, DugVariable, DugStudy, DugSection]
 Parser = Callable[[Any], Iterable[Indexable]]
-
 FileParser = Callable[[InputFile], Iterable[Indexable]]
+
+DugElementParsedList = TypeAdapter(List[Indexable])
 
 DugElement.update_forward_refs()
 DugConcept.update_forward_refs()
