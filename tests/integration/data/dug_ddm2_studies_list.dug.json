@@ -1,0 +1,276 @@
+[
+    {
+        "id": "HEALDATAPLATFORM:HDP00002",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Research Network"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00002",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2021-09-20T12:09:00Z",
+            "Project End Date": "2026-08-31T12:08:00Z",
+            "Institution": "RESEARCH TRIANGLE INSTITUTE",
+            "Investigator/s": [
+                "Abhik  Das"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "\"Neonatal Opioid Withdrawal Syndrome (NOWS) is a condition that occurs when newborns are exposed to opioids during pregnancy. Symptoms often include tremors, excessive crying, sleep deprivation, and swallowing difficulties. Cases are rising, with a newborn affected by NOWS approximately every 15 minutes. Currently, healthcare providers in the United States lack standard, evidence-based treatments for NOWS.\n\nThis project is part of a multi-center, randomized controlled clinical trial that directly compares NOWS treatmentsmorphine, methadone, and buprenorphineand takes into account other types of non-drug therapies, such as behavioral interventions. The goal is to generate results that can inform clinical practice guidelines and give newborns with NOWS the best start possible.\n\nThis site will serve as the Data Coordinating Center for the clinical trial to provide high-quality and impartial biostatistical expertise for all the study sites.\"",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00007",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00007",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2019-09-30T12:09:00Z",
+            "Project End Date": "2023-09-29T12:09:00Z",
+            "Institution": "DUKE UNIVERSITY",
+            "Investigator/s": [
+                "Warren M. Grill"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "This project will design and test optimized temporal patterns of stimulation to improve the efficacy of commercially available spinal cord stimulation (SCS) systems to treat chronic neuropathic pain. Researchers will build upon a validated biophysical model of the effects of SCS on sensory signal processing in neurons within the dorsal horn of the spinal cord to better understand how to improve the electrical stimulus patterns applied to the spinal cord. They will use sensitivity analyses to determine the robustness of stimulation patterns to variations in electrode positioning, selectivity of stimulation, and biophysical properties of the dorsal horn neural network. Researchers will demonstrate improvements from these new stimulus patterns by 1) measuring their effects on pain-related behavioral outcomes in a rat model of chronic neuropathic pain and by 2) quantifying the effects of optimized temporal patterns on spinal cord neuron activity. The outcome will be mechanistically derived and validated stimulus patterns that are significantly more efficacious than the phenomenologically derived standard of care patterns; these patterns could be implemented with either a software update or minor hardware modifications to existing SCS products.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00009",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00009/",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2019-09-30T12:09:00Z",
+            "Project End Date": "2023-09-30T12:09:00Z",
+            "Institution": "CARNEGIE-MELLON UNIVERSITY",
+            "Investigator/s": [
+                "BIN  HE"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "Researchers will develop a novel transcranial focused ultrasound (tFUS) device for pain treatment and establish its effectiveness for treating sickle cell disease (SCD) pain in humanized mice. The tFUS will target the specific cortical regions involved in SCD pain using a novel non-invasive electrophysiological source imaging technique. The projects goals have several aims. Aim 1: Develop tFUS devices for pain treatment. The mouse-scale system will be designed to validate the therapeutic effect of stimulating the anticipated cortical targets. This will inform development of the simpler human-scale system, which will use models of the skull to select cost-effective transducers to reach the targets. Aim 2: Evaluate tFUS effectiveness and optimize stimulation parameters in an SCD mice model. Researchers will determine effective tFUS parameters to chronically reduce SCD pain in mice and validate this using behavioral measures. Aim 3: Use electrophysiological source imaging to target and trigger closed-loop tFUS in animal models. This aim also includes performing safety studies to prepare for human trials. The project will develop a transformative, noninvasive tFUS device to effectively and safely treat pain in SCD.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00014",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00014",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2020-09-30T12:09:00Z",
+            "Project End Date": "2023-09-29T12:09:00Z",
+            "Institution": "UNIVERSITY OF UTAH",
+            "Investigator/s": [
+                "VIOLA  RIEKE"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "Neck pain is the fourth leading cause of disability and also a significant cause of cervicogenic headaches. Many of the currently available neck pain treatments are invasive with associated risks and complications, particularly because of the complex anatomy. Magnetic resonance guided focused ultrasound, a novel, completely noninvasive technique, can precisely target spinal facet joints to help ameliorate neck pain, potentially transforming the current practices. The goal of this study is to develop a cervical spine-specific device and demonstrate its safety and efficacy on targeting cervical sensory fibers and the third occipital nerve. The results of these studies will provide an understanding on how to best use this technology for chronic neck pain as well as a basis for translation into human use.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00015",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00015",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2021-09-08T12:09:00Z",
+            "Project End Date": "2023-08-31T12:08:00Z",
+            "Institution": "EYDIS BIO, INC.",
+            "Investigator/s": [
+                "TIMOTHY A HAYSTEAD",
+                "Scott  Scarneo"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "Over-the-counter medicines such as non-steroidal anti-inflammatory drugs are ineffective for treating severe chronic pain and may have serious side effects from continued use, which limits treatment options. A kinase (an enzyme whose activity targets a specific molecule) called TAK1 is involved in the chronic pain process. This research will develop a molecule previously shown to be effective in a model of inflammatory pain that also inhibits TAK1. A main goal will be to determine if this inhibitor (takinib analog HS-276) can cross the blood-brain barrier and, if successful, pursue FDA Investigative New Drug-enabling safety studies leading to a Phase I clinical trial and a potential new chronic pain treatment.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00018",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00018/",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2019-03-15T12:03:00Z",
+            "Project End Date": "2021-02-28T12:02:00Z",
+            "Institution": "LOHOCLA RESEARCH CORPORATION",
+            "Investigator/s": [
+                "Boris  Tabakoff"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "More than 100 million adults in the U.S. suffer from intermittent or constant chronic pain, and chronic pain affects at least 10 percent of the worlds population. The primary pharmaceuticals for treatment of chronic pain have been natural or synthetic opioids, and the use of opioids for pain treatment has resulted in what has been called an epidemic of opioid abuse, addiction, and lethal overdoses. Through a process of rational drug design, the research team has generated a new chemical entity (NCE) and have given it the name Kindolor, a non-opiate, non-addicting molecule that was shown to reduce or eliminate chronic pain in five animal models at doses compatible with use of Kindolor in humans. This project intends to complete the pre-clinical studies required for an IND application, which, if approved, would allow for proceeding onto the Phase 1 and 2 studies to assess safety and efficacy of the compound against osteoarthritic pain.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00023",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00023",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2021-09-30T12:09:00Z",
+            "Project End Date": "2023-08-31T12:08:00Z",
+            "Institution": "UNIVERSITY OF NEW MEXICO HEALTH SCIS CTR",
+            "Investigator/s": [
+                "Bryce C Chackerian"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "Opioids account for nearly 70 percent of overdose deaths in the United States, with fentanyl and heroin use the most common causes. The goal of this project is to create a vaccine to elicit serum antibodies that bind and sequester the drug in the blood, preventing it from crossing the blood-brain barrier where it acts on the central nervous system. Current opioid vaccine strategies require multiple boosts and months to reach peak titers, the level of antibodies in a blood sample, and have yet to show protection against lethal overdose. In this project, researchers will use a bacteriophage virus-like particle vaccine platform to engineer and test the effectiveness of a combined vaccine to elicit high titer antibodies quickly to protect against lethal overdose from fentanyl or heroin.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00027",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00027/",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2019-09-23T12:09:00Z",
+            "Project End Date": "2023-08-31T12:08:00Z",
+            "Institution": "WAYNE STATE UNIVERSITY",
+            "Investigator/s": [
+                "Mark K Greenwald",
+                "TIMOTHY A ROEHRS"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "FDA-approved medications for treating opioid use disorder are effective, but there is a significant unmet need for alternatives, especially relapse prevention. NIDA and the FDA have encouraged investigators to expand the range of therapeutic outcomes, beyond measurement of abstinence. Insomnia is a clinically significant, but understudied, correlate/predictor of relapse to substance use. Yet most medications for treating insomnia have limited efficacy and can produce side effects. The orexin (OX) system plays a key role in sleep and substance use, offering a promising avenue for study. This project will address whether OX-1/2 antagonism is a mechanism that can directly improve outpatient opioid abstinence, or whether OX antagonism corrects sleep deficiencies and indirectly improves opioid abstinence. Specific aims are to determine whether nightly treatment with the OX-1/2 antagonist suvorexant, relative to placebo, 1) increases outpatient opioid abstinence and 2) improves sleep efficiency on the residential detoxification unit. The study will also determine 3) whether improved sleep efficiency predicts greater opioid abstinence (regardless of group assignment).",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00033",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00033/",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2020-09-30T12:09:00Z",
+            "Project End Date": "2023-08-31T12:08:00Z",
+            "Institution": "CLEVELAND CLINIC LERNER COM-CWRU",
+            "Investigator/s": [
+                "JOSEPH F FOSS",
+                "Kenward B Johnson",
+                "Daniel  Rotroff"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "Taxanes are among the most effective chemotherapeutic agents and are frequently used in the treatment of early stage and metastatic breast cancer. However, they are known to produce a pain condition known as Chemotherapy-Induced Peripheral Neuropathic Pain (CIPNP). CIPNP is one of the primary reasons a patient receives a limited dose of taxane. No diagnostic tool exists to identify patients that will develop CIPNP in response to taxane therapy. Biomarker signatures associated with taxane-induced neuropathic pain will be developed to: 1) identify patients at risk for developing debilitating taxane neuropathic pain before chemotherapy is initiated; and 2) to identify patients already on treatment who are at risk of developing neuropathic pain and need dosing adjustments to prevent CIPNP symptoms. This biomarker signature will be used to detect CIPNP-susceptible patients early and personalize their taxane therapy to minimize CIPNP while optimizing the therapeutic taxane dosing.",
+        "ml_ready_desc": "No Summary Found"
+    },
+    {
+        "id": "HEALDATAPLATFORM:HDP00035",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Studies"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00035",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2019-09-15T12:09:00Z",
+            "Project End Date": "2021-08-31T12:08:00Z",
+            "Institution": "4E THERAPEUTICS INC.",
+            "Investigator/s": [
+                "James Jeffrey Sahn"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "MNK-eIF4E signaling is activated in nociceptors upon exposure to pain or peripheral nerve injury, promoting cytokines and growth factors and increasing nociceptor excitability, which leads to neuropathic pain. Genetic or pharmacological inhibition of MNK signaling blocks and reverses nociceptor hyperexcitability as well as behavioral signs of neuropathic pain. A clinical phase drug for cancer shows strong specificity as an MNK inhibitor but requires optimization because MNK inhibition in the central nervous system (CNS) may lead to depression, an unacceptable side effect for a neuropathic pain drug. The research team plans a targeted medicinal chemistry and screening campaign directed at generating a MNK-inhibitor-based neuropathic pain treatment with the goal of restricting its CNS penetration while retaining potency, specificity, and in vivo bioavailability and efficacy.",
+        "ml_ready_desc": "No Summary Found"
+    }
+]

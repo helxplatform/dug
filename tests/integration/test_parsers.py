@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser, HEALStudiesParser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser, HEALStudiesParser, HEALDDM2Parser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
@@ -165,3 +165,14 @@ def test_heal_study_parser():
 
     assert(len(studies) > 1)
     
+def test_heal_ddm2_parser():
+    parser = HEALDDM2Parser()
+    parse_file = str(TEST_DATA_DIR / "dug_ddm2_studies_list.dug.json")
+
+    elements = parser(parse_file)
+    sections = [k for k in elements if k.type == 'section']
+    assert(len(sections) == 0)
+    studies = [k for k in elements if k.type == 'study']
+    assert(len(studies) == 10)
+    variables = [k for k in elements if k.type == 'variable']
+    assert(len(variables) == 0)
