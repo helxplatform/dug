@@ -508,30 +508,20 @@ class Search:
         """
         Search for studies by unique_id (ID or name) and/or study_name.
         """
-        query_body = {
-            "bool": {
-                "must": []
-            }
-        }
+        query_body = self._get_var_query(query=study_name, prefix_length=3, fuzziness=1, concept="", new_model=True)
 
         # Add conditions based on user input
         if study_id:
-            query_body["bool"]["must"].append({
+            query_body["query"]["bool"]["must"].append({
                 "match": {"id": study_id}
             })
 
-        if study_name:
-            query_body["bool"]["must"].append({
-                "match": {"name": study_name}
-            })
 
-        print("query_body", query_body)
-        body = {'query': query_body}
         studies_index = self._cfg.studies_index_name
-        total_items = await self.es.count(body=body, index=studies_index)
+        total_items = await self.es.count(body=query_body, index=studies_index)
         search_results = await self.es.search(
             index=studies_index,
-            body=body,
+            body=query_body,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
             size=size
@@ -540,7 +530,7 @@ class Search:
 
         return search_result_hits, total_items['count']
 
-    async def search_cde(self, cde_id=None, cde_name=None, variable=None, study=None, offset=0, size=None):
+    async def search_cde(self, id=None, query=None, variable=None, study=None, offset=0, size=None):
         """
         Search for cdes by id (ID or name) and/or name, variable, study.
         """
@@ -552,14 +542,14 @@ class Search:
         }
 
         # Add conditions based on user input
-        if cde_id:
+        if id:
             query_body["bool"]["must"].append({
-                "match": {"id": cde_id}
+                "match": {"id": id}
             })
 
-        if cde_name:
+        if query:
             query_body["bool"]["should"].append({
-                "match": {"name": cde_name}
+                "match": {"name": query}
             })
 
         if variable:
@@ -575,8 +565,6 @@ class Search:
                     "parents": study
                 },
             })
-
-        print("query_body", query_body)
         body = {'query': query_body}
         section_index = self._cfg.sections_index_name
         total_items = await self.es.count(body=body, index=section_index)
@@ -759,7 +747,7 @@ class Search:
             # Sort by program name
             program_summary.sort(key=lambda x: x["key"])
             return program_summary
-    
+
     def _get_var_query(self, concept, fuzziness, prefix_length, query, new_model=False):
         """Returns ES query for variable search"""
         element_name = "element_name"
