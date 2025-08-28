@@ -31,7 +31,7 @@ def export_ddm_as_json_schema():
             'DugStudy': DugStudy.model_json_schema()
         },
         # We want to validate a list of heterogenous objects: each item in the list may be any of the Dug objects above.
-        'type': 'list',
+        'type': 'array',
         'items': {
             'oneOf': [
                 {'$ref': '#/definitions/DugSection'},
