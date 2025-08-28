@@ -3,7 +3,7 @@
 # export_ddm_as_json_schema.py - Export Dug Data Model as JSON Schema
 #
 # SYNOPSIS
-#   python bin/export_ddm_as_json_schema.py
+#   PYTHONPATH=src python bin/export_ddm_as_json_schema.py
 #
 
 import click
