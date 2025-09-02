@@ -70,9 +70,15 @@ class DugElement(BaseModel):
             'metadata': self.metadata,
             'parents': self.parents,
             'programs': self.program_name_list,
-            'identifiers': list(self.concepts.keys()),
+            'identifiers': list(self.concepts.keys()) if self.concepts else [],
         }
         return es_elem
+
+    def get_response_dict(self):
+        response = self.get_searchable_dict()
+        things_to_hide = ['search_terms', 'optional_terms',]
+        return {x: response[x] for x in response if x not in things_to_hide}
+
 
     def get_id(self) -> str:
         return f'{self.id}'
