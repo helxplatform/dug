@@ -1,5 +1,5 @@
 from dug.core.parsers._base import *
-from pydantic import BaseModel
+from pydantic import BaseModel, model_serializer
 from typing import Optional
 
 
@@ -34,7 +34,10 @@ class ConceptsAPIResponse(BaseModel):
 
 
 class VariableResponse(ElasticDugElementResult, DugVariable):
-    pass
+    @model_serializer
+    def serialize(self):
+        response = self.get_response_dict()
+        return response
 
 
 class VariablesAPIResponse(DugAPIResponse):
@@ -42,18 +45,25 @@ class VariablesAPIResponse(DugAPIResponse):
 
 
 class StudyResponse(ElasticDugElementResult, DugStudy):
-    pass
+    @model_serializer
+    def serialize(self):
+        response = self.get_response_dict()
+        response.pop('abstract')
+        return response
 
 
 class StudyAPIResponse(DugAPIResponse):
     results: List[StudyResponse]
 
 
-class CdeResponse(ElasticDugElementResult, DugSection):
-    pass
+class SectionResponse(ElasticDugElementResult, DugSection):
+    @model_serializer
+    def serialize(self):
+        response = self.get_response_dict()
+        return response
 
 
-class CdeAPIResponse(DugAPIResponse):
-    results: List[CdeResponse]
+class SectionAPIResponse(DugAPIResponse):
+    results: List[SectionResponse]
 
 

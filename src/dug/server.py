@@ -372,7 +372,7 @@ async def get_variables(search_query: SearchVariablesQuery):
 
 
 @APP.post('/studies', tags=['v2.0'], response_model=StudyAPIResponse)
-async def get_studies(query: SearchQuery):
+async def get_studies(query: SearchStudiesQuery):
     """
     Handles GET requests to retrieve a list of studies.
 
@@ -403,7 +403,7 @@ async def get_studies(query: SearchQuery):
             
    
     """
-    result, total_count = await search.search_study_new(study_id=query.id, study_name=query.query,
+    result, total_count = await search.search_study_new(study_name=query.query,
                                                         offset=query.offset, size=query.size)
     studies = []
     for study in result:
@@ -421,12 +421,13 @@ async def get_studies(query: SearchQuery):
     }
 
 
-@APP.post('/cdes', tags=['v2.0'], response_model=VariablesAPIResponse)
+@APP.post('/cdes', tags=['v2.0'], response_model=SectionAPIResponse)
 async def get_cdes(search_query: SearchQuery):
     """
     Searches for CDEs
     """
-    elastic_results, total_count = await search.search_cde(**search_query.model_dump(exclude={"index"}))
+    #@TODO use parent ID if passed down
+    elastic_results, total_count = await search.search_cde(**search_query.model_dump(exclude={"parent_id"}))
     results = []
     for result in elastic_results:
         item = result.get("_source")

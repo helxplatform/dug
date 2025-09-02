@@ -12,6 +12,12 @@ class SearchConceptQuery(BaseModel):
     size: int = 20
     concept_types: list = None
 
+
+class SearchStudiesQuery(BaseModel):
+    query: str
+    offset: int = 0
+    size: int = 1000
+
 class SearchVariablesQuery(BaseModel):
     query: str
     concept: str = ""
@@ -44,9 +50,10 @@ class SearchProgramQuery(BaseModel):
     #index: str = "variables_index"
     size:int = 100
 
+
 class SearchQuery(BaseModel):
-    id: Optional[str] = None
     query: Optional[str] = None
+    parent_id: Optional[str] = None
     size: Optional[int] = 100
     offset: Optional[int] = 0
 
