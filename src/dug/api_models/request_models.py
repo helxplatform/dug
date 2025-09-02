@@ -51,9 +51,11 @@ class SearchProgramQuery(BaseModel):
     size:int = 100
 
 
-class SearchQuery(BaseModel):
+class SearchElementQuery(BaseModel):
     query: Optional[str] = None
-    parent_id: Optional[str] = None
+    parent_ids: Optional[List] = None
+    element_ids: Optional[List] = None
+    concept: Optional[str] = None
     size: Optional[int] = 100
     offset: Optional[int] = 0
 

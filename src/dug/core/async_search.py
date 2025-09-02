@@ -2,9 +2,8 @@
 import logging
 from elasticsearch import AsyncElasticsearch, helpers
 from elasticsearch.helpers import async_scan
-import ssl,json
+import ssl, json
 from dug.config import Config
-
 
 logger = logging.getLogger('dug')
 
@@ -30,11 +29,11 @@ class Search:
 
         if indices is None:
             # Dictionary for index names should be updated from config.
-            indices = {'concepts_index':'concepts_index',
-                       'variables_index':'variables_index',
-                       'studies_index':'studies_index',
-                       'sections_index':'sections_index',
-                       'kg_index':'kg_index'}
+            indices = {'concepts_index': 'concepts_index',
+                       'variables_index': 'variables_index',
+                       'studies_index': 'studies_index',
+                       'sections_index': 'sections_index',
+                       'kg_index': 'kg_index'}
 
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: "
@@ -56,18 +55,18 @@ class Search:
                     cafile=self._cfg.elastic_ca_path
                 )
                 self.es = AsyncElasticsearch(hosts=self.hosts,
-                                         basic_auth=(self._cfg.elastic_username,
-                                                    self._cfg.elastic_password),
-                                                    ssl_context=ssl_context)
+                                             basic_auth=(self._cfg.elastic_username,
+                                                         self._cfg.elastic_password),
+                                             ssl_context=ssl_context)
             else:
                 self.es = AsyncElasticsearch(hosts=self.hosts,
-                                         basic_auth=(self._cfg.elastic_username,
-                                                    self._cfg.elastic_password),
-                                                    verify_certs=False)
+                                             basic_auth=(self._cfg.elastic_username,
+                                                         self._cfg.elastic_password),
+                                             verify_certs=False)
         else:
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     basic_auth=(self._cfg.elastic_username,
-                                                self._cfg.elastic_password))
+                                         basic_auth=(self._cfg.elastic_username,
+                                                     self._cfg.elastic_password))
 
     async def dump_concepts(self, index, query={}, size=None,
                             fuzziness=1, prefix_length=3):
@@ -125,7 +124,7 @@ class Search:
     def _get_concepts_query(query, fuzziness=1, prefix_length=3):
         "Static data structure populator, pulled for easier testing"
         query_object = {
-            "query" : {
+            "query": {
                 "bool": {
                     # this filter ensures that concepts with both name and description are returned.
                     # if one of these are missing the concept won't show up.
@@ -257,8 +256,8 @@ class Search:
             index=self.indices[concepts_index],
             body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
-                          'hits.hits._source', 'hits.hits._score',
-                          'hits.hits._explanation', 'aggregations'],
+                         'hits.hits._source', 'hits.hits._score',
+                         'hits.hits._explanation', 'aggregations'],
             from_=offset,
             size=size,
             explain=True
@@ -302,9 +301,9 @@ class Search:
         the passed-in data type.
         """
         if self.is_simple_search_query(query):
-            es_query = self.get_simple_variable_search_query(concept, query)
+            es_query = self._get_element_simple_search_query(concept, query)
         else:
-            es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+            es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
 
         if index is None:
             index = self.indices["variables_index"]
@@ -321,18 +320,35 @@ class Search:
 
         search_result_hits = self.remove_hits_from_results(search_results)
 
-        return self._make_result(data_type, search_result_hits , total_items, True)
+        return self._make_result(data_type, search_result_hits, total_items, True)
 
-    async def search_variables_new(self, concept="", query="", size=None,
-                               data_type=None, offset=0, fuzziness=1,
-                               prefix_length=3):
+    async def search_elements(self,
+                                  index_name,
+                                  concept="",
+                                  query="",
+                                  parent_ids=None,
+                                  element_ids=None,
+                                  size=None,
+                                  offset=0,
+                                  fuzziness=1,
+                                  prefix_length=3):
 
         if self.is_simple_search_query(query):
-            es_query = self.get_simple_variable_search_query(concept, query, True)
+            es_query = self._get_element_simple_search_query(concept,
+                                                             query,
+                                                             parent_ids,
+                                                             element_ids,
+                                                             True)
         else:
-            es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+            es_query = self._get_element_search_query(concept=concept,
+                                                      parent_ids=parent_ids,
+                                                      element_ids=element_ids,
+                                                      fuzziness=fuzziness,
+                                                      prefix_length=prefix_length,
+                                                      query=query,
+                                                      new_model=True
+                                                      )
 
-        index_name = self._cfg.variables_index_name
         total_items = (await self.es.count(body=es_query, index=index_name))['count']
         search_results = await self.es.search(
             index=index_name,
@@ -346,7 +362,6 @@ class Search:
         search_result_hits = self.remove_hits_from_results(search_results)
 
         return search_result_hits, total_items
-
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
@@ -473,25 +488,25 @@ class Search:
         Search for studies by unique_id (ID or name) and/or study_name.
         """
         # Define the base query
-         # Define the base query
+        # Define the base query
         query_body = {
             "bool": {
                 "must": []
             }
         }
-        
+
         # Add conditions based on user input
         if study_id:
             query_body["bool"]["must"].append({
                 "match": {"collection_id": study_id}
             })
-        
+
         if study_name:
             query_body["bool"]["must"].append({
                 "match": {"collection_name": study_name}
             })
 
-        print("query_body",query_body)
+        print("query_body", query_body)
         body = {'query': query_body}
         total_items = await self.es.count(body=body, index=self.indices["variables_index"])
         search_results = await self.es.search(
@@ -504,91 +519,19 @@ class Search:
         search_results.update({'total_items': total_items['count']})
         return search_results
 
-    async def search_study_new(self, study_id=None, study_name=None, offset=0, size=None):
-        """
-        Search for studies by unique_id (ID or name) and/or study_name.
-        """
-        query_body = self._get_var_query(query=study_name, prefix_length=3, fuzziness=1, concept="", new_model=True)
-
-        # Add conditions based on user input
-        if study_id:
-            query_body["query"]["bool"]["must"].append({
-                "match": {"id": study_id}
-            })
 
 
-        studies_index = self._cfg.studies_index_name
-        total_items = await self.es.count(body=query_body, index=studies_index)
-        search_results = await self.es.search(
-            index=studies_index,
-            body=query_body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
-            from_=offset,
-            size=size
-        )
-        search_result_hits = self.remove_hits_from_results(search_results)
-
-        return search_result_hits, total_items['count']
-
-    async def search_cde(self, id=None, query=None, variable=None, study=None, offset=0, size=None):
-        """
-        Search for cdes by id (ID or name) and/or name, variable, study.
-        """
-        query_body = {
-            "bool": {
-                "must": [],
-                "should": []
-            }
-        }
-
-        # Add conditions based on user input
-        if id:
-            query_body["bool"]["must"].append({
-                "match": {"id": id}
-            })
-
-        if query:
-            query_body["bool"]["should"].append({
-                "match": {"name": query}
-            })
-
-        if variable:
-            query_body["bool"]["should"].append({
-                "terms": {
-                    "variable_list": variable
-                },
-            })
-
-        if study:
-            query_body["bool"]["should"].append({
-                "terms": {
-                    "parents": study
-                },
-            })
-        body = {'query': query_body}
-        section_index = self._cfg.sections_index_name
-        total_items = await self.es.count(body=body, index=section_index)
-        search_results = await self.es.search(
-            index=section_index,
-            body=body,
-            filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
-            from_=offset,
-            size=size
-        )
-        search_result_hits = self.remove_hits_from_results(search_results)
-
-        return search_result_hits, total_items['count']
 
     async def get_study_sources(self):
         query_body = {
-                "size": 0,
-                "aggs": {
-                    "d1": {
-                        "terms": {
-                            "field": "programs.keyword"
-                        }
+            "size": 0,
+            "aggs": {
+                "d1": {
+                    "terms": {
+                        "field": "programs.keyword"
                     }
                 }
+            }
         }
         search_results = await self.es.search(
             index=self._cfg.studies_index_name,
@@ -612,7 +555,7 @@ class Search:
                     "unique_collection_ids": {
                         "terms": {
                             "field": "collection_id.keyword",
-                            "size":1000
+                            "size": 1000
                         },
                         "aggs": {
                             "collection_details": {
@@ -636,7 +579,7 @@ class Search:
                     }
                 })
             body = query_body
-        
+
             search_results = await self.es.search(
                 index=self.indices["variables_index"],
                 body=body,
@@ -661,7 +604,7 @@ class Search:
         else:
             with open(self._cfg.studies_path, 'r') as file:
                 missing_programs = json.load(file)
-                
+
             collection_details_list = []
             program_name_lower = program_name.lower() if program_name else None
 
@@ -670,17 +613,17 @@ class Search:
                 study_name = row.get('Study Name', '')
                 collection_id = row.get('Accession', '')
                 description = row.get('Description', '')
-                
+
                 if not program or not collection_id:
                     continue
 
                 if program_name_lower and program.lower() != program_name_lower:
                     continue
-                    
+
                 # Extract base accession for URL to dbgap
                 accession_base = collection_id.split('.c')[0] if '.c' in collection_id else collection_id
                 collection_action = f"https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={accession_base}"
-                
+
                 # Add to collection details list
                 collection_details_list.append({
                     "collection_id": collection_id,
@@ -689,10 +632,10 @@ class Search:
                 })
 
             collection_details_list.sort(key=lambda x: x["collection_id"])
-                
+
             return collection_details_list
 
-    async def search_program_list(self,use_elasticsearch=False):
+    async def search_program_list(self, use_elasticsearch=False):
         if use_elasticsearch:
             query_body = {
                 "size": 0,  # We don't need the documents themselves, so set the size to 0
@@ -717,7 +660,7 @@ class Search:
                 body=query_body
             )
             unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
-            data=unique_data_types
+            data = unique_data_types
             return data
         else:
             with open(self._cfg.studies_path, 'r') as file:
@@ -725,11 +668,11 @@ class Search:
 
             program_studies = {}
             program_descriptions = {}
-            
+
             for study in missing_programs:
                 program = study.get("Program", "")
                 description = study.get("Description", "")
-                
+
                 if program not in program_studies:
                     program_studies[program] = []
                     program_descriptions[program] = description
@@ -748,7 +691,14 @@ class Search:
             program_summary.sort(key=lambda x: x["key"])
             return program_summary
 
-    def _get_var_query(self, concept, fuzziness, prefix_length, query, new_model=False):
+    @staticmethod
+    def _get_element_search_query(concept,
+                                  fuzziness,
+                                  prefix_length,
+                                  query,
+                                  new_model=False,
+                                  element_ids=None,
+                                  parent_ids=None):
         """Returns ES query for variable search"""
         element_name = "element_name"
         element_desc = "element_desc"
@@ -867,9 +817,29 @@ class Search:
                     "identifiers": concept
                 }
             }
+        if parent_ids:
+            es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+            es_query["query"]["bool"]["filter"].append(
+                {
+                    "terms": {
+                        "parents.keyword": parent_ids
+                    }
+                }
+            )
+        if element_ids:
+            es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+            es_query["query"]["bool"]["filter"].append(
+                {
+                    "terms": {
+                        "id.keyword": element_ids
+                    }
+                }
+            )
+
         return es_query
 
-    def get_simple_concept_search_query(self, query):
+    @staticmethod
+    def get_simple_concept_search_query(query):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -922,7 +892,8 @@ class Search:
         }
         return search_query
 
-    def get_simple_variable_search_query(self, concept, query, new_model=False):
+    @staticmethod
+    def _get_element_simple_search_query(concept, query, new_model=False, parent_ids=None, element_ids=None):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -946,7 +917,7 @@ class Search:
                             "query": {
                                 "bool": {
                                     "should": [
-                                        
+
                                         {
                                             "simple_query_string": {
                                                 **simple_query_string_search,
@@ -980,9 +951,24 @@ class Search:
                     "identifiers": concept
                 }
             })
+
+        if parent_ids:
+            search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+            search_query["query"]["bool"]["filter"].append({
+                "terms": {
+                    "parents.keyword": parent_ids
+                }
+            })
+        if element_ids:
+            search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+            search_query["query"]["bool"]["filter"].append({
+                "terms": {
+                    "id.keyword": element_ids
+                }
+            })
         return search_query
 
-    async def get_variables_by_ids(self, ids: [str]):
+    async def get_elements_by_ids(self, ids: [str], index_name=""):
         """Returns variables by ids"""
 
         if len(ids) == 0:
@@ -1013,7 +999,7 @@ class Search:
             res.extend(search_results_wo_hits)
         else:
 
-            search_results = helpers.async_scan(client=self.es, index=self._cfg.variables_index_name, query=body)
+            search_results = helpers.async_scan(client=self.es, index=index_name, query=body)
             async for r in search_results:
                 res.append(r)
 
