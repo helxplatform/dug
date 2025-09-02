@@ -434,7 +434,6 @@ async def get_cdes(search_query: SearchElementQuery):
     """
     Searches for CDEs
     """
-    #@TODO use parent ID if passed down
     elastic_results, total_count = await search.search_elements(
         config.sections_index_name,
         **search_query.model_dump()
