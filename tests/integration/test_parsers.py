@@ -167,12 +167,12 @@ def test_heal_study_parser():
     
 def test_heal_ddm2_parser():
     parser = HEALDDM2Parser()
-    parse_file = str(TEST_DATA_DIR / "dug_ddm2_studies_list.dug.json")
+    parse_file = str(TEST_DATA_DIR / "6-minute-walk.dug (1).json")
 
     elements = parser(parse_file)
     sections = [k for k in elements if k.type == 'section']
-    assert(len(sections) == 0)
+    assert(len(sections) == 1)
     studies = [k for k in elements if k.type == 'study']
-    assert(len(studies) == 10)
+    assert(len(studies) == 0)
     variables = [k for k in elements if k.type == 'variable']
-    assert(len(variables) == 0)
+    assert(len(variables) > 0)

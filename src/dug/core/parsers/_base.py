@@ -1,6 +1,6 @@
 from __future__ import annotations
 import json
-from typing import Union, Callable, Any, Iterable, Dict, List
+from typing import Union, Callable, Any, Iterable, Dict, List, Annotated, Literal
 
 from dug.core.loaders import InputFile
 
@@ -104,7 +104,7 @@ class DugElement(BaseModel):
 class DugConcept(DugElement):
     # Basic class for holding information about concepts that are used to organize elements
     # All Concepts map to at least one element
-    type: str=CONCEPT_TYPE
+    type: Literal["concept"]=CONCEPT_TYPE
     identifiers: Dict[str, Any] = Field(default_factory=dict)    
     kg_answers: Dict[str, Any] = Field(default_factory=dict)
     concept_type: str=''
@@ -147,7 +147,7 @@ class DugConcept(DugElement):
         return es_conc
 
 class DugVariable(DugElement):
-    type:str=VARIABLE_TYPE
+    type:Literal["variable"]=VARIABLE_TYPE
     data_type:str='text'
     is_standardized:bool=False
 
@@ -161,7 +161,7 @@ class DugVariable(DugElement):
         return es_var
 
 class DugStudy(DugElement):
-    type:str=STUDY_TYPE
+    type:Literal["study"]=STUDY_TYPE
     publications:List[str] = Field(default_factory=list)
     variable_list:List[str] = Field(default_factory=list)
     abstract:str=''
@@ -177,7 +177,7 @@ class DugStudy(DugElement):
         return es_study
 
 class DugSection(DugElement):
-    type:str=SECTION_TYPE
+    type:Literal["section"]=SECTION_TYPE
     is_standardized:bool=False
     variable_list:List[str] = Field(default_factory=list)
 
@@ -189,11 +189,12 @@ class DugSection(DugElement):
                     }
         return es_section
  
-Indexable = Union[DugElement, DugConcept, DugVariable, DugStudy, DugSection]
+Indexable = Union[DugConcept, DugVariable, DugStudy, DugSection]
 Parser = Callable[[Any], Iterable[Indexable]]
 FileParser = Callable[[InputFile], Iterable[Indexable]]
 
-DugElementParsedList = TypeAdapter(List[Indexable])
+DiscriminatedIndexable = Annotated[Indexable, Field(discriminator="type")]
+DugElementParsedList = TypeAdapter(List[DiscriminatedIndexable])
 
 DugElement.update_forward_refs()
 DugConcept.update_forward_refs()
