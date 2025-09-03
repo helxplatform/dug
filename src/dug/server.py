@@ -333,7 +333,7 @@ async def get_concepts(search_query: SearchConceptQuery):
 
 
 @APP.post('/variables', tags=['v2.0'], response_model=VariablesAPIResponse)
-async def get_variables(search_query: SearchVariablesQuery):
+async def get_variables(search_query: SearchElementQuery):
     """
     Handles POST requests to retrieve variables based on a search query.
 
@@ -353,7 +353,11 @@ async def get_variables(search_query: SearchVariablesQuery):
             - "score" (optional)
 
     """
-    elastic_results, total_count = await search.search_variables_new(**search_query.model_dump(exclude={"index"}))
+    elastic_results, total_count = await search.search_elements(
+        config.variables_index_name,
+        **search_query.dict()
+    )
+
     results = []
     for result in elastic_results:
         item = result["_source"]
@@ -372,7 +376,7 @@ async def get_variables(search_query: SearchVariablesQuery):
 
 
 @APP.post('/studies', tags=['v2.0'], response_model=StudyAPIResponse)
-async def get_studies(query: SearchStudiesQuery):
+async def get_studies(search_query: SearchElementQuery):
     """
     Handles GET requests to retrieve a list of studies.
 
@@ -403,8 +407,12 @@ async def get_studies(query: SearchStudiesQuery):
             
    
     """
-    result, total_count = await search.search_study_new(study_name=query.query,
-                                                        offset=query.offset, size=query.size)
+    result, total_count = await search.search_elements(
+        config.studies_index_name,
+        **search_query.model_dump()
+    )
+
+
     studies = []
     for study in result:
         item = study["_source"]
@@ -414,7 +422,7 @@ async def get_studies(query: SearchStudiesQuery):
     return {
         "metadata": {
             "total_count": total_count,
-            "offset": query.offset,
+            "offset": search_query.offset,
             "size": len(studies)
         },
         "results": studies,
@@ -422,12 +430,14 @@ async def get_studies(query: SearchStudiesQuery):
 
 
 @APP.post('/cdes', tags=['v2.0'], response_model=SectionAPIResponse)
-async def get_cdes(search_query: SearchQuery):
+async def get_cdes(search_query: SearchElementQuery):
     """
     Searches for CDEs
     """
-    #@TODO use parent ID if passed down
-    elastic_results, total_count = await search.search_cde(**search_query.model_dump(exclude={"parent_id"}))
+    elastic_results, total_count = await search.search_elements(
+        config.sections_index_name,
+        **search_query.model_dump()
+    )
     results = []
     for result in elastic_results:
         item = result.get("_source")
