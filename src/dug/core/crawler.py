@@ -15,7 +15,7 @@ logger = logging.getLogger('dug')
 class Crawler:
     def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
                  tranqlizer, tranql_queries,
-                 http_session, exclude_identifiers=None, element_type=None,
+                 http_session, exclude_identifiers=None, program_name=None,
                  element_extraction=None):
 
         if exclude_identifiers is None:
@@ -23,7 +23,7 @@ class Crawler:
 
         self.crawl_file = crawl_file
         self.parser: Parser = parser
-        self.element_type = element_type ## What is element_type here?
+        self.program_name = program_name
         self.annotator: Annotator = annotator
         self.tranqlizer = tranqlizer
         self.tranql_queries = tranql_queries
@@ -51,12 +51,10 @@ class Crawler:
         # Read in elements from parser. The elements can be a combination of studies, variables and CRFs.
         self.elements = self.parser(self.crawl_file)
         
-        #TODO HS Optionally coerce all elements to belong to a particular program??
         for element in self.elements:
             # Program names can be added to studies and sections as well?
-            if not isinstance(element, DugConcept) and self.element_type is not None:
-                #element.type = self.element_type
-                element.add_program_name(self.element_type) ## Why?
+            if not isinstance(element, DugConcept) and self.program_name is not None:
+                element.add_program_name(self.program_name) ## Why?
 
         # Annotate elements (Study/Forms will be automatically annotated)
         self.annotate_elements()
@@ -114,8 +112,9 @@ class Crawler:
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         logger.info(f"annotate {len(self.elements)} elements")
         for n, element in enumerate(self.elements):
-            if n>10 and n<len(self.elements)-1:
-                break
+            
+            # if n>20 and n<len(self.elements)-1:
+            #     break
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
             if isinstance(element, DugConcept):
                 self.concepts[element.id] = element

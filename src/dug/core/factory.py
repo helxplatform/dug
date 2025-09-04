@@ -41,7 +41,7 @@ class DugFactory:
             connection=redis.StrictRedis(**redis_config)
         )
 
-    def build_crawler(self, target, parser: Parser, annotator: Annotator, element_type: str, tranql_source=None) -> Crawler:
+    def build_crawler(self, target, parser: Parser, annotator: Annotator, program_name: str, tranql_source=None) -> Crawler:
         crawler = Crawler(
             crawl_file=str(target),
             parser=parser,
@@ -50,7 +50,7 @@ class DugFactory:
             tranql_queries=self.build_tranql_queries(tranql_source),
             http_session=self.build_http_session(),
             exclude_identifiers=self.config.tranql_exclude_identifiers,
-            element_type=element_type,
+            program_name=program_name,
             element_extraction=self.build_element_extraction_parameters(),
         )
 
