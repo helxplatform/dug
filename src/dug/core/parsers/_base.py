@@ -32,7 +32,6 @@ class DugElement(BaseModel):
     search_terms: List[str] = Field(default_factory=list)
     optional_terms: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
-    identifiers: List[str] = Field(default_factory=list)
     
     @computed_field
     @property
@@ -71,7 +70,7 @@ class DugElement(BaseModel):
             'metadata': self.metadata,
             'parents': self.parents,
             'programs': self.program_name_list,
-            'identifiers': self.identifiers + (list(self.concepts.keys()) if self.concepts else []),
+            'identifiers': (list(self.concepts.keys()) if self.concepts else []),
         }
         return es_elem
 
