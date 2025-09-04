@@ -54,7 +54,7 @@ class Dug:
         self.sections_index = self._factory.config.sections_index_name
         self.kg_index = self._factory.config.kg_index_name
 
-    def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
+    def crawl(self, target_name: str, parser_type: str, annotator_type: str, program_name: str = None):
 
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
@@ -62,12 +62,12 @@ class Dug:
         targets = get_targets(target_name)
 
         for target in targets:
-            self._crawl(target, parser, annotator, element_type)
+            self._crawl(target, parser, annotator, program_name)
 
-    def _crawl(self, target: Path, parser: Parser, annotator: Annotator, element_type):
+    def _crawl(self, target: Path, parser: Parser, annotator: Annotator, program_name):
 
         # Initialize crawler
-        crawler = self._factory.build_crawler(target, parser, annotator, element_type)
+        crawler = self._factory.build_crawler(target, parser, annotator, program_name)
         # Read elements, annotate, and expand using tranql queries
         crawler.crawl()
 

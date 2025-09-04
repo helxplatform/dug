@@ -178,7 +178,8 @@ class Index:
                                   "fields": {"keyword": {"type": "keyword"}}},
                     "metadata": {
                         "type": "object",
-                        "dynamic": True
+                        "dynamic": True,
+                        "numeric_detection": False
                     }
                     # typed as keyword for bucket aggs
                 }
@@ -261,7 +262,8 @@ class Index:
                     "is_crf": {"type": "boolean"},
                     "metadata": {
                         "type": "object",
-                        "dynamic": True
+                        "dynamic": True,
+                        "numeric_detection": False
                     }
                     # typed as keyword for bucket aggs
                 }

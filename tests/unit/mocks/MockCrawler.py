@@ -58,6 +58,6 @@ def crawler_init_args_no_graph_extraction():
         "tranql_queries": TranqlQueriesMock,
         "http_session": HTTPSessionMock,
         "exclude_identifiers": ExcludedIDs,
-        "element_type": "TestElement",
+        "program_name": "TestProgram",
         "element_extraction": None
     }
