@@ -334,11 +334,11 @@ class Search:
                                   prefix_length=3):
 
         if self.is_simple_search_query(query):
-            es_query = self._get_element_simple_search_query(concept,
-                                                             query,
-                                                             parent_ids,
-                                                             element_ids,
-                                                             True)
+            es_query = self._get_element_simple_search_query(concept=concept,
+                                                             query=query,
+                                                             parent_ids=parent_ids,
+                                                             element_ids=element_ids,
+                                                             new_model=True)
         else:
             es_query = self._get_element_search_query(concept=concept,
                                                       parent_ids=parent_ids,
@@ -710,6 +710,7 @@ class Search:
         es_query = {
             "query": {
                 'bool': {
+                    "minimum_should_match": 1,
                     'should': [
                         {
                             "match_phrase": {
@@ -916,6 +917,7 @@ class Search:
                         {"function_score": {
                             "query": {
                                 "bool": {
+                                    "minimum_should_match": 1,
                                     "should": [
 
                                         {
