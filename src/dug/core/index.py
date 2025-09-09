@@ -262,8 +262,7 @@ class Index:
                     "is_crf": {"type": "boolean"},
                     "metadata": {
                         "type": "object",
-                        "dynamic": True,
-                        "numeric_detection": False
+                        "dynamic": True
                     }
                     # typed as keyword for bucket aggs
                 }

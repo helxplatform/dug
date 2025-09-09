@@ -33,7 +33,8 @@ class Crawler:
         self.elements = []
         self.study = None
         self.concepts = {}
-        self.crawlspace = "crawl"
+        # @TODO make this configurable
+        self.crawlspace = "/data/crawl/"
 
     def make_crawlspace(self):
         if not os.path.exists(self.crawlspace):

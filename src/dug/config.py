@@ -9,7 +9,7 @@ TRANQL_SOURCE: str = "redis:test"
 @dataclass
 class Config:
     """
-    TODO: Populate description
+    TODO: Make all URLs available as enviroment variables.
     """
 
     elastic_password: str = "changeme"
@@ -52,8 +52,8 @@ class Config:
                 "url": "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
             },
             "sapbert": {
-                "classification_url": "https://med-nemo.apps.renci.org/annotate/",
-                "annotator_url": "http://localhost:8080/annotate/",
+                "classification_url": "http://med-nemo-serve-nemo-web-server.ner/annotate/",
+                "annotator_url": "http://qdrant-sapbert-nemo-web-server.ner/annotate/",
                 "score_threshold": 0.8,
                 "bagel": {
                     "enabled": False,
@@ -76,14 +76,14 @@ class Config:
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(
         default_factory=lambda: {
-            "url": "https://nodenormalization-dev.apps.renci.org/get_normalized_nodes?conflate=false&description=true&curie="
+            "url": "http://nn-web-node-normalization-web-service-root.translator-dev:8080/get_normalized_nodes?conflate=false&description=true&curie="
         }
     )
 
     # Synonym service config that will be passed to annotate.SynonymHelper constructor
     synonym_service: dict = field(
         default_factory=lambda: {
-            "url": "https://name-resolution-sri.renci.org/reverse_lookup"
+            "url": "http://name-resolution-name-lookup-web-svc.translator-dev:2433/synonyms"
         }
     )
 
@@ -132,7 +132,7 @@ class Config:
 
     concept_expander: dict = field(
         default_factory=lambda: {
-            "url": "https://tranql-dev.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
+            "url": "http://search-tranql:8081/tranql/tranql/query?dynamic_id_resolution=true&asynchronous=false",
             "min_tranql_score": 0.0,
         }
     )
