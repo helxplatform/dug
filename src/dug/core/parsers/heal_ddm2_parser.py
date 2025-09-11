@@ -28,8 +28,8 @@ class HEALDDM2Parser(FileParser):
         with open(input_file, "r") as f:
             json_obj = json.load(f)
             elements = DugElementParsedList.validate_python(json_obj)
-
-        print("************")
-        print(elements)
-        print("******************")
-        return elements
+        final_elements = [k for k in elements if k.get_id()!='']
+        # print("************")
+        # print(elements)
+        # print("******************")
+        return final_elements
