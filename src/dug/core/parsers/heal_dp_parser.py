@@ -77,7 +77,7 @@ class HEALDPParser(FileParser):
                               program_name_list=[self.get_study_type()],
                               parents=[study_id],
                               data_type=variable.find('type').text if variable.find('type') is not None else 'string',
-                              is_standardized=False) ## This would be changed to study id
+                              is_cde=False) ## This would be changed to study id
             #if elem.data_type == 'encoded value':
             section_attrib_names = ['section', 'module', 'form name']
             is_section_attrib = [k in variable.attrib for k in section_attrib_names]
@@ -92,7 +92,7 @@ class HEALDPParser(FileParser):
                             description = section_name, 
                             program_name_list=[self.get_study_type()],
                             parents = [study_id],
-                            is_standardized = False, ### How do I look for this?
+                            is_crf = False, ### How do I look for this?
                         )
                 sections[section_name].variable_list.append(elem.id)
                 
