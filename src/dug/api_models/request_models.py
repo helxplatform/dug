@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import List, Optional, Any
 
 class GetFromIndex(BaseModel):
@@ -58,6 +58,13 @@ class SearchElementQuery(BaseModel):
     concept: Optional[str] = None
     size: Optional[int] = 100
     offset: Optional[int] = 0
+
+    @field_validator("parent_ids", "element_ids", mode="before")
+    @classmethod
+    def drop_empty_strings(cls, v):
+        if v is None:
+            return v
+        return [item for item in v if item not in ("", None)]
 
 class VariableIds(BaseModel):
     """
