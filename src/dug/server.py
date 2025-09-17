@@ -288,26 +288,31 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
 @APP.post('/concepts', tags=['v2.0'], response_model=ConceptsAPIResponse)
 async def get_concepts(search_query: SearchConceptQuery):
     """
-    Handles POST request to get concepts based on the provided search query.
+    Search for concepts that are related to the search query passed in `query`
 
     Parameters:
-        search_query (SearchConceptQuery): The search query containing filters, offsets,
-        and other parameters needed for retrieving concepts.
+    - **query**: Text to get related concepts for. To use a full string in search, encloset text in \"\".
+    - **concept_types**: Optional list of concept types to return. Acceptable values can be `disease`, `phenotypic feature`, `drug`, `biological process`, `anatomical entity` etc.
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
 
     Returns:
-        dict: contains list concepts, metadata.
-        Each concept has the following structure:
-            - "id"
-            - "name"
-            - "description"
-            - "type"
-            - "synonyms": list
-            - "_score"
-            - "_explanation"
-        Metadata contains the following:
-            - "total_count"
-            - "offset"
-            - "size"
+    
+    dict with list of `results`, `concept_types`, and `metadata`.
+        
+    Each concept in the result list has the following structure:
+    - **id**
+    - **name**
+    - **description**
+    - **type**
+    - **synonyms**: list
+    - **_score**
+    - **_explanation**
+    
+    Metadata contains the following:
+    - **total_count**
+    - **offset**
+    - **size**
     """
     concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"],
                                                                         **search_query.model_dump(exclude={"index"}))
@@ -335,22 +340,33 @@ async def get_concepts(search_query: SearchConceptQuery):
 @APP.post('/variables', tags=['v2.0'], response_model=VariablesAPIResponse)
 async def get_variables(search_query: SearchElementQuery):
     """
-    Handles POST requests to retrieve variables based on a search query.
+    Search for variables/standardized measures (CDEs) related to search text in `query`
+    when provided. If `query` is empty, all variables/cdes either belonging to `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, only variables/cdes that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
 
-    Arguments:
-        search_query (SearchVariablesQuery): The query object containing parameters
-        for the variable search.
+
+    Parameters:
+    - **query**(required): Text to get related variables/cdes for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of ids (ex. Study IDs, CDE IDs, CRF IDs) to get variables from.
+    - **element_ids**: List of ids for variables/cdes to be fetched. If `query` is not empty, only related variables will be returned.
+    - **concept**: 
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
 
     Returns:
-        Dict with variables list.
-        Each variable has the following structure:
-            - "id"
-            - "name"
-            - "url"
-            - "description"
-            - "standardized"
-            - "metadata" dictionary
-            - "score" (optional)
+    
+    Dict with variables list.
+    Each variable has the following structure:
+    - **id**
+    - **name**
+    - **action**: URL (if available) for the variable
+    - **description**
+    - **is_cde**: Set to true when measure is standardized (CDE)
+    - **data_tye**: Type of the variable
+    - **parents**: List of IDs for Studies or CDEs/CRFs which contains this variable/measure
+    - **metadata**: dictionary with variable information like permissible values, min-max, pattern, etc.
 
     """
     elastic_results, total_count = await search.search_elements(
@@ -378,34 +394,37 @@ async def get_variables(search_query: SearchElementQuery):
 @APP.post('/studies', tags=['v2.0'], response_model=StudyAPIResponse)
 async def get_studies(search_query: SearchElementQuery):
     """
-    Handles GET requests to retrieve a list of studies.
+    Search for studies related to search text in `query`
+    when provided. If `query` is empty, all studies in either `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, only studies that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
 
-    Parameters (SearchQuery):
-        id: Optional[str]
-        query: Optional[str]
-        offset: Optional[int]
-        size: Optional[int]
+    Parameters:
+    - **query**(required): Text to get related studies for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of ids to get studies from. (** Parents are empty for studies for now)
+    - **element_ids**: List of study ids be fetched. If `query` is not empty, only related studies to the query string will be returned.
+    - **concept**: 
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
 
     Returns:
-        dict
-            A dictionary containing metadata about the results, including the total number
-            of matching studies and the offset used. 
-            Studies has the following structure:
-                  - "id"
-                  - "name"
-                  - "description"
-                  - "search_terms": list
-                  - "optional_terms": list
-                  - "action": url
-                  - "element_type"
-                  - "metadata": dict
-                  - "parents": list
-                  - "programs": list
-                  - "identifiers": list
-                  - "publications": list
-                  - "variable_list": list if ids
-            
-   
+    
+    Dict with study list.
+    Each study has the following structure:
+    - **id**
+    - **name**: Study title
+    - **action**: URL (if available) for the study
+    - **description**: Abstract for the study
+    - **parents**: List of parent IDs (to be used in future)
+    - **publications**: List of publications
+    - **variable_list**: List of varible IDs belonging to the study.
+    - **metadata**: dictionary with study information. 
+        * **Project Start Date**
+        * **Project End Date**
+        * **Institution**
+        * **Investigator/s**: List of PIs for the study.
+
     """
     result, total_count = await search.search_elements(
         config.studies_index_name,
@@ -432,7 +451,34 @@ async def get_studies(search_query: SearchElementQuery):
 @APP.post('/cdes', tags=['v2.0'], response_model=SectionAPIResponse)
 async def get_cdes(search_query: SearchElementQuery):
     """
-    Searches for CDEs
+    Search for Common Data Element groups (CDEs) or CRFs (Case Report Forms) related to search text in `query`
+    when provided. If `query` is empty, all CDEs in either ids specified in `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, CDE sets/CRFs that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
+
+    Parameters:
+    - **query**(required): Text to get related studies for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of study IDs which use this CDE/CRF.
+    - **element_ids**: List of study ids be fetched. If `query` is not empty, only related CDEs to the query string will be returned.
+    - **concept**: 
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
+
+    Returns:
+    
+    Dict with study list.
+    Each study has the following structure:
+    - **id**
+    - **name**: CDE title
+    - **action**: URL (if available) for the CDE set.
+    - **description**: Description for the CDE set.
+    - **parents**: List of Study IDs that use this CDE set/CRF.
+    - **variable_list**: List of varible IDs/CDE(measurement) IDs belonging to the CDE set.
+    - **is_crf**: Is set to true when this CDE set/CRF is standardized.
+    - **metadata**: dictionary with study information. 
+        * **URLs**: List of URLs pointing to downloadable CRF forms.
+
     """
     elastic_results, total_count = await search.search_elements(
         config.sections_index_name,

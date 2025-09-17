@@ -5,13 +5,11 @@ class GetFromIndex(BaseModel):
     index: str = "concepts_index"
     size: int = 0
 
-
 class SearchConceptQuery(BaseModel):
     query: str
     offset: int = 0
     size: int = 20
     concept_types: list = None
-
 
 class SearchStudiesQuery(BaseModel):
     query: str
@@ -52,7 +50,7 @@ class SearchProgramQuery(BaseModel):
 
 
 class SearchElementQuery(BaseModel):
-    query: Optional[str] = None
+    query: str = None
     parent_ids: Optional[List] = None
     element_ids: Optional[List] = None
     concept: Optional[str] = None
