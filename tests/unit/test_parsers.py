@@ -114,7 +114,7 @@ def test_dug_variable():
     assert len(variable.concepts) == 1
     variable.add_concept(DugConcept(id="concept-1", name='Concept-1', description='The first concept'))
     assert len(variable.concepts) == 1
-    assert variable.is_standardized == False
+    assert variable.is_cde == False
     assert variable.type == 'variable'
 
 
@@ -211,7 +211,7 @@ def test_dug_section():
         id=section_id,
         name=section_name,
         description=section_desc,
-        is_standardized=is_crf
+        is_crf=is_crf
     )
 
     assert len(section.concepts) == 0
@@ -232,7 +232,7 @@ def test_dug_section_searchable_dict():
         id=section_id,
         name=section_name,
         description=section_desc,
-        is_standardized=is_crf
+        is_crf=is_crf
     )
 
     searchable = section.get_searchable_dict()

@@ -27,7 +27,6 @@ class DugElement(BaseModel):
     parents: List[str] = Field(default_factory=list) # List of parents
     parent_type: str = "" # Every element can have one type of parent. i.e. variable can either belong to study or crf, and then crf can belong to a study and so on. 
     # parent_type variable will indicate which parent type the parents list is made of.
-    # This is to keep simplicity, and 
     concepts: Dict[str, DugConcept] = Field(default_factory=dict)    
     search_terms: List[str] = Field(default_factory=list)
     optional_terms: List[str] = Field(default_factory=list)
@@ -155,14 +154,14 @@ class DugConcept(DugElement):
 class DugVariable(DugElement):
     type:Literal["variable"]=VARIABLE_TYPE
     data_type:str='text'
-    is_standardized:bool=False
+    is_cde:bool=False
 
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
         es_elem = super().get_searchable_dict()
         es_var = {**es_elem, 
                     'data_type': self.data_type,
-                    'is_cde': self.is_standardized
+                    'is_cde': self.is_cde
                    }
         return es_var
 
@@ -184,14 +183,14 @@ class DugStudy(DugElement):
 
 class DugSection(DugElement):
     type:Literal["section"]=SECTION_TYPE
-    is_standardized:bool=False
+    is_crf:bool=False
     variable_list:List[str] = Field(default_factory=list)
 
     def get_searchable_dict(self):
         es_elem =  super().get_searchable_dict()
         es_section = {**es_elem,
                       'variable_list': self.variable_list,
-                      'is_crf': self.is_standardized
+                      'is_crf': self.is_crf
                     }
         return es_section
  

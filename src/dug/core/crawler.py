@@ -33,7 +33,8 @@ class Crawler:
         self.elements = []
         self.study = None
         self.concepts = {}
-        self.crawlspace = "crawl"
+        # @TODO make this configurable
+        self.crawlspace = "/data/crawl/"
 
     def make_crawlspace(self):
         if not os.path.exists(self.crawlspace):
@@ -168,6 +169,8 @@ class Crawler:
 
             # Add identifier to list of identifiers associated with concept
             self.concepts[identifier.id].add_identifier(identifier)
+            self.concepts[identifier.id].add_parent(element.get_id())
+
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)

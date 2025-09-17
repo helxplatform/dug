@@ -231,6 +231,8 @@ class Search:
         return query_object
 
     def is_simple_search_query(self, query):
+        if not query:
+            return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
     async def search_concepts(self, query, offset=0, size=None, concept_types=None, concepts_index=None, **kwargs):
@@ -334,11 +336,11 @@ class Search:
                                   prefix_length=3):
 
         if self.is_simple_search_query(query):
-            es_query = self._get_element_simple_search_query(concept,
-                                                             query,
-                                                             parent_ids,
-                                                             element_ids,
-                                                             True)
+            es_query = self._get_element_simple_search_query(concept=concept,
+                                                             query=query,
+                                                             parent_ids=parent_ids,
+                                                             element_ids=element_ids,
+                                                             new_model=True)
         else:
             es_query = self._get_element_search_query(concept=concept,
                                                       parent_ids=parent_ids,
@@ -710,6 +712,7 @@ class Search:
         es_query = {
             "query": {
                 'bool': {
+                    "minimum_should_match": 1,
                     'should': [
                         {
                             "match_phrase": {
@@ -818,23 +821,41 @@ class Search:
                 }
             }
         if parent_ids:
-            es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
-            es_query["query"]["bool"]["filter"].append(
-                {
-                    "terms": {
-                        "parents.keyword": parent_ids
+            if query:
+                es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+                es_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
                     }
-                }
-            )
+                )
+            else:
+                es_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
         if element_ids:
-            es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
-            es_query["query"]["bool"]["filter"].append(
-                {
-                    "terms": {
-                        "id.keyword": element_ids
+            if query:
+                es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+                es_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
                     }
-                }
-            )
+                )
+            else:
+                es_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
 
         return es_query
 
@@ -916,6 +937,7 @@ class Search:
                         {"function_score": {
                             "query": {
                                 "bool": {
+                                    "minimum_should_match": 1,
                                     "should": [
 
                                         {
@@ -953,19 +975,41 @@ class Search:
             })
 
         if parent_ids:
-            search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
-            search_query["query"]["bool"]["filter"].append({
-                "terms": {
-                    "parents.keyword": parent_ids
-                }
-            })
+            if query:
+                search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+                search_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
+            else:
+                search_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
         if element_ids:
-            search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
-            search_query["query"]["bool"]["filter"].append({
-                "terms": {
-                    "id.keyword": element_ids
-                }
-            })
+            if query:
+                search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+                search_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
+            else:
+                search_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
         return search_query
 
     async def get_elements_by_ids(self, ids: [str], index_name=""):
