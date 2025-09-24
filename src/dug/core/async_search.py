@@ -131,7 +131,7 @@ class Search:
                     "filter": {
                         "bool": {
                             "must": [
-                                {"wildcard": {"description": "?*"}},
+                                # {"wildcard": {"description": "?*"}},
                                 {"wildcard": {"name": "?*"}}
                             ]
                         }
