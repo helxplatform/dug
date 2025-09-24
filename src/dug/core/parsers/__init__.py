@@ -3,7 +3,7 @@ from typing import Dict
 
 import pluggy
 
-from ._base import DugElement, DugConcept, Indexable, Parser, FileParser
+from ._base import DugElement, DugVariable, DugStudy, DugSection, DugConcept, Indexable, Parser, FileParser
 from .dbgap_parser import *
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser
@@ -12,6 +12,8 @@ from .topmed_csv_parser import TOPMedCSVParser
 from .sprint_parser import SPRINTParser
 from .bacpac_parser import BACPACParser
 from .heal_dp_parser import HEALDPParser
+from .heal_ddm2_parser import HEALDDM2Parser
+from .heal_studies_parser import HEALStudiesParser
 from .ctn_parser import CTNParser
 from .radx_parser import RADxParser
 
@@ -23,38 +25,35 @@ hookimpl = pluggy.HookimplMarker("dug")
 
 @hookimpl
 def define_parsers(parser_dict: Dict[str, Parser]):
-    parser_dict["dbgap"] = DbGaPParser()
-    parser_dict["nida"] = NIDAParser()
-    parser_dict["topmedtag"] = TOPMedTagParser()
-    parser_dict["topmedcsv"] = TOPMedCSVParser()
-    parser_dict["scicrunch"] = SciCrunchParser()
-    parser_dict["anvil"] = AnvilDbGaPParser()
-    parser_dict["crdc"] = CRDCDbGaPParser()
-    parser_dict["kfdrc"] = KFDRCDbGaPParser()
-    parser_dict["sprint"] = SPRINTParser()
-    parser_dict["bacpac"] = BACPACParser()
+    # parser_dict["dbgap"] = DbGaPParser()
+    # parser_dict["nida"] = NIDAParser()
+    # parser_dict["topmedtag"] = TOPMedTagParser()
+    # parser_dict["topmedcsv"] = TOPMedCSVParser()
+    # parser_dict["scicrunch"] = SciCrunchParser()
+    # parser_dict["anvil"] = AnvilDbGaPParser()
+    # parser_dict["crdc"] = CRDCDbGaPParser()
+    # parser_dict["kfdrc"] = KFDRCDbGaPParser()
+    # parser_dict["sprint"] = SPRINTParser()
+    # parser_dict["bacpac"] = BACPACParser()
     parser_dict["heal-studies"] = HEALDPParser(study_type="HEAL Studies")
     parser_dict["heal-research"] = HEALDPParser(study_type="HEAL Research Programs")
-    parser_dict["ctn"] = CTNParser()
-    parser_dict["biolincc"] = BioLINCCDbGaPParser()
-    parser_dict["covid19"] = Covid19DbGaPParser()
-    parser_dict["dir"] = DIRDbGaPParser()
-    parser_dict["lungmap"] = LungMAPDbGaPParser()
-    parser_dict["nsrr"] = NSRRDbGaPParser()
-    parser_dict["parent"] = ParentDBGaPParser()
-    parser_dict["pcgc"] = PCGCDbGaPParser()
-    parser_dict["recover"] = RECOVERDBGaPParser()
-    parser_dict["topmeddbgap"] = TopmedDBGaPParser()
-    parser_dict["curesc"] = CureSC()
-    parser_dict["radx"] = RADxParser()
-    parser_dict["heartfailure"] = HeartFailure()
-    parser_dict["imaging"] = Imaging()
-    parser_dict["reds"] = Reds()
-
-
-    
-
-
+    parser_dict["heal-mds-studies"] = HEALStudiesParser(study_type="HEAL Studies")
+    parser_dict["heal-ddm2"] = HEALDDM2Parser(study_type="HEAL Studies")
+    # parser_dict["ctn"] = CTNParser()
+    # parser_dict["biolincc"] = BioLINCCDbGaPParser()
+    # parser_dict["covid19"] = Covid19DbGaPParser()
+    # parser_dict["dir"] = DIRDbGaPParser()
+    # parser_dict["lungmap"] = LungMAPDbGaPParser()
+    # parser_dict["nsrr"] = NSRRDbGaPParser()
+    # parser_dict["parent"] = ParentDBGaPParser()
+    # parser_dict["pcgc"] = PCGCDbGaPParser()
+    # parser_dict["recover"] = RECOVERDBGaPParser()
+    # parser_dict["topmeddbgap"] = TopmedDBGaPParser()
+    # parser_dict["curesc"] = CureSC()
+    # parser_dict["radx"] = RADxParser()
+    # parser_dict["heartfailure"] = HeartFailure()
+    # parser_dict["imaging"] = Imaging()
+    # parser_dict["reds"] = Reds()
 
 class ParserNotFoundException(Exception):
     ...

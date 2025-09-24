@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<data_table study_id="HEALDATAPLATFORM:HDP00360" appl_id="9833817" study_name="Dummy HEAL Data Dictionary" date_created="2023-08-23T12:41:51.981839">
+	<variable id="hcs_toxicrecord_id" module="contact_info">
+		<name>hcs_toxicrecord_id</name>
+		<title>Record ID</title>
+		<description>Record ID</description>
+		<type>string</type>
+	</variable>
+	<variable id="hcs01_lam10_phone_ext" module="contact_info">
+		<name>hcs01_lam10_phone_ext</name>
+		<title>Org Phone Extension</title>
+		<description>Org Phone Extension</description>
+		<type>integer</type>
+	</variable>
+	<variable id="hcs01_lam05" module="contact_info">
+		<name>hcs01_lam05</name>
+		<title>Which state's HCS study are you entering data for?</title>
+		<description>Which state's HCS study are you entering data for?</description>
+		<value code="1">Kentucky</value>
+		<value code="2">Massachusetts</value>
+		<value code="3">New York</value>
+		<value code="4">Ohio</value>
+		<type>encoded value</type>
+	</variable>
+	<variable id="hcs_toxic_consdate" module="toxicology_survey_consent">
+		<name>hcs_toxic_consdate</name>
+		<title>Date</title>
+		<description>Date</description>
+		<type>date</type>
+	</variable>
+	<variable id="hcs_toxic_tox12oth" module="toxicology_survey">
+		<name>hcs_toxic_tox12oth</name>
+		<title>Do you have the technical capability to test any other Fentanyl Analogs not listed here?</title>
+		<description>Do you have the technical capability to test for the following?: Do you have the technical capability to test any other Fentanyl Analogs not listed here?</description>
+		<value code="1">Yes, Presumptive Testing</value>
+		<value code="2">Yes, Confirmatory Testing (qualitative only)</value>
+		<value code="3">Yes, Confirmatory Testing (with quantitative values)</value>
+		<value code="0">No</value>
+		<value code="7000000">Prefer not to answer</value>
+		<type>encoded value</type>
+	</variable>
+	<variable id="hcs_toxic_tox12othsp" module="toxicology_survey">
+		<name>hcs_toxic_tox12othsp</name>
+		<title>What other Fentanyl Analog do you have the technical capability to test?</title>
+		<description>Do you have the technical capability to test for the following?: What other Fentanyl Analog do you have the technical capability to test?</description>
+		<type>string</type>
+	</variable>
+	<variable id="birthtm" module="form_01_all">
+		<name>birthtm</name>
+		<title>2. Time of birth</title>
+		<description>Section A. Demographic Information: 2. Time of birth</description>
+		<type>time</type>
+	</variable>
+	<variable id="birthcr" module="form_01_all">
+		<name>birthcr</name>
+		<title>4. Birth Head Circumference</title>
+		<description>Section A. Demographic Information: 4. Birth Head Circumference</description>
+		<type>number</type>
+	</variable>
+</data_table>
+

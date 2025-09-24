@@ -1,0 +1,61 @@
+[
+  {
+    "type": "variable",
+    "id": "30sChairStandNumber",
+    "name": "30 second Chair Stand Assessment number",
+    "data_type": "text",
+    "question_text": "Number",
+    "metadata": {
+      "permissible_values": [
+        {
+          "value": ">=0",
+          "description": "Number of times patient moved from sitting in a chair to standing >=0"
+        }
+      ]
+    },
+    "is_standardized": true,
+    "question_number": 1,
+    "definition": "Number of times patient moved from sitting in a chair to standing  as a part of the 30 second Chair Stand Assessment",
+    "short_description": "Number of times patient moved from sitting in a chair to standing  as a part of the 30 second Chair Stand Assessment",
+    "crf_name": "30 second Chair Stand Assessment ",
+    "references": "Centers for Disease Control and Prevention [CDC].(2019). Stopping Elderly Accidents Deaths and Injuries (STEADI) Tool Kit Assessment: 30-second chair stand. Available at https://www.cdc.gov/steadi/pdf/STEADI-Assessment-30Sec-508.pdf"
+  },
+  {
+    "type": "variable",
+    "id": "30sChairStandScore",
+    "name": "30 second Chair Stand Assessment score",
+    "data_type": "text",
+    "question_text": "Score",
+    "metadata": {
+      "permissible_values": [
+        {
+          "value": "0",
+          "description": "0 = Not below average"
+        },
+        {
+          "value": "1",
+          "description": "1 =  below average, at risk for falls"
+        }
+      ]
+    },
+    "is_standardized": true,
+    "question_number": 2,
+    "definition": "A score indicating below average or not below average, based on the number of times a patient moved from sitting in a chair to standing and the person's age,  as a part of the 30 second Chair Stand Assessment. A below average score indicates a risk for falls",
+    "short_description": "Chair stand score indicating whether the participant's number of times standing is below average or not.",
+    "crf_name": "30 second Chair Stand Assessment ",
+    "references": "Centers for Disease Control and Prevention [CDC].(2019). Stopping Elderly Accidents Deaths and Injuries (STEADI) Tool Kit Assessment: 30-second chair stand. Available at https://www.cdc.gov/steadi/pdf/STEADI-Assessment-30Sec-508.pdf"
+  },
+  {
+    "type": "section",
+    "id": "HEALCDE:30-second-chair-stand-assessment",
+    "crf_id": "30-second-chair-stand-assessment",
+    "name": "30 second Chair Stand Assessment ",
+    "description": "The 30 Second Chair Stand Assessment tests leg strength and endurance in older adults. Contains 2 CDEs.",
+    "action": null,
+    "is_crf": true,
+    "variable_list": [
+      "30sChairStandNumber",
+      "30sChairStandScore"
+    ]
+  }
+]

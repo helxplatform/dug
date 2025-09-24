@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug.core.parsers import Parser, DugElement, DugConcept
+from dug.core.parsers import Parser, DugConcept
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
@@ -15,7 +15,7 @@ logger = logging.getLogger('dug')
 class Crawler:
     def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
                  tranqlizer, tranql_queries,
-                 http_session, exclude_identifiers=None, element_type=None,
+                 http_session, exclude_identifiers=None, program_name=None,
                  element_extraction=None):
 
         if exclude_identifiers is None:
@@ -23,7 +23,7 @@ class Crawler:
 
         self.crawl_file = crawl_file
         self.parser: Parser = parser
-        self.element_type = element_type
+        self.program_name = program_name
         self.annotator: Annotator = annotator
         self.tranqlizer = tranqlizer
         self.tranql_queries = tranql_queries
@@ -31,8 +31,10 @@ class Crawler:
         self.exclude_identifiers = exclude_identifiers
         self.element_extraction = element_extraction
         self.elements = []
+        self.study = None
         self.concepts = {}
-        self.crawlspace = "crawl"
+        # @TODO make this configurable
+        self.crawlspace = "/data/crawl/"
 
     def make_crawlspace(self):
         if not os.path.exists(self.crawlspace):
@@ -47,17 +49,17 @@ class Crawler:
         # Create directory for storing temporary results
         self.make_crawlspace()
 
-        # Read in elements from parser
+        # Read in elements from parser. The elements can be a combination of studies, variables and CRFs.
         self.elements = self.parser(self.crawl_file)
-
-        # Optionally coerce all elements to be a specific type
+        
         for element in self.elements:
-            if isinstance(element, DugElement) and self.element_type is not None:
-                element.type = self.element_type
+            # Program names can be added to studies and sections as well?
+            if not isinstance(element, DugConcept) and self.program_name is not None:
+                element.add_program_name(self.program_name) ## Why?
 
-        # Annotate elements
+        # Annotate elements (Study/Forms will be automatically annotated)
         self.annotate_elements()
-
+       
         # if elements are extracted from the graph this array will contain the new dug elements
         dug_elements_from_graph = []
 
@@ -84,42 +86,46 @@ class Crawler:
                     casting_config = element_extraction_config['casting_config']
                     tranql_source = element_extraction_config['tranql_source']
                     dug_element_type = element_extraction_config['output_dug_type']
-                    dug_elements_from_graph += self.expand_to_dug_element(
-                        concept=concept,
-                        casting_config=casting_config,
-                        dug_element_type=dug_element_type,
-                        tranql_source=tranql_source
-                    )
+                    # dug_elements_from_graph += self.expand_to_dug_element(
+                    #     concept=concept,
+                    #     casting_config=casting_config,
+                    #     dug_element_type=dug_element_type,
+                    #     tranql_source=tranql_source
+                    # )
 
         # add new elements to parsed elements
         self.elements += dug_elements_from_graph
 
         # Set element optional terms now that concepts have been expanded
         # Open variable file for writing
-        variable_file = open(f"{self.crawlspace}/element_file.json", "w")
+        element_file = open(f"{self.crawlspace}/element_file.json", "w")
         for element in self.elements:
-            if isinstance(element, DugElement):
+            if not isinstance(element, DugConcept):
                 element.set_optional_terms()
-                variable_file.write(f"{element.get_searchable_dict()}\n")
+                element_file.write(f"{element.get_searchable_dict()}\n")
 
         # Close concept, element files
         concept_file.close()
-        variable_file.close()
+        element_file.close()
 
     def annotate_elements(self):
 
         # Annotate elements/concepts and create new concepts based on the ontology identifiers returned
         logger.info(f"annotate {len(self.elements)} elements")
         for n, element in enumerate(self.elements):
+            
+            # if n>20 and n<len(self.elements)-1:
+            #     break
             # If element is actually a pre-loaded concept (e.g. TOPMed Tag), add that to list of concepts
             if isinstance(element, DugConcept):
                 self.concepts[element.id] = element
 
             # Annotate element with normalized ontology identifiers
-            logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}'")
+            logger.info(f"annotate element #{n+1}/{len(self.elements)} '{element.id}' '{element.type}")
+            # logger.info(element)
             self.annotate_element(element)
-            if isinstance(element, DugElement):
-                element.set_search_terms()
+            if not isinstance(element, DugConcept):
+                element.set_search_terms() ##Q: Does this not set search terms for concepts?
 
         # Now that we have our concepts and elements fully annotated, we need to
         # Make sure elements inherit the identifiers from their user-defined parent concepts
@@ -149,25 +155,26 @@ class Crawler:
                                               http_session=self.http_session)
         # Future thoughts... should we be passing in the stpe DugIdentifier here instead?
 
-
         # Each identifier then becomes a concept that links elements together
         logger.info("Got %d identifiers for %s", len(identifiers) , element.ml_ready_desc)
         for identifier in identifiers:
             if identifier.id not in self.concepts:
                 # Create concept for newly seen identifier
-                concept = DugConcept(concept_id=identifier.id,
-                                                       name=identifier.label,
-                                                       desc=identifier.description,
-                                                       concept_type=identifier.types)
+                concept = DugConcept(id=identifier.id,
+                                    name=identifier.label,
+                                    description=identifier.description)
+                concept.concept_type = identifier.types
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
 
             # Add identifier to list of identifiers associated with concept
             self.concepts[identifier.id].add_identifier(identifier)
+            self.concepts[identifier.id].add_parent(element.get_id())
+
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
-            if isinstance(element, DugElement):
+            if not isinstance(element, DugConcept):
                 element.add_concept(self.concepts[identifier.id])
 
             # If element is actually a user defined concept (e.g. TOPMedTag), associate ident with concept
@@ -200,77 +207,78 @@ class Crawler:
                 for answer in answers:
                     concept.add_kg_answer(answer, query_name=query_name)
 
-    def expand_to_dug_element(self,
-                              concept,
-                              casting_config,
-                              dug_element_type,
-                              tranql_source):
-        """
-        Given a concept look up the knowledge graph to construct dug elements out of kg results
-        does concept -> target_node_type crawls and converts target_node_type to dug element of type `dug_element_type`
-        """
-        elements = []
-        # using node_type as the primary criteria for matching nodes to element type.
-        target_node_type = casting_config["node_type"]
-        curie_filter = casting_config["curie_prefix"]
-        attribute_mapping = casting_config["attribute_mapping"]
-        array_to_string = casting_config["list_field_choose_first"]
-        # converts any of the following notations 
-        # biolink:Publication , biolink.Publication  to publication 
-        target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink.", "").replace("biolink:", ""))
-        for ident_id, identifier in concept.identifiers.items():
+    # TODO; This function will be deprecated once CDEs are implemented.
+    # def expand_to_dug_element(self,
+    #                           concept,
+    #                           casting_config,
+    #                           dug_element_type,
+    #                           tranql_source):
+    #     """
+    #     Given a concept look up the knowledge graph to construct dug elements out of kg results
+    #     does concept -> target_node_type crawls and converts target_node_type to dug element of type `dug_element_type`
+    #     """
+    #     elements = []
+    #     # using node_type as the primary criteria for matching nodes to element type.
+    #     target_node_type = casting_config["node_type"]
+    #     curie_filter = casting_config["curie_prefix"]
+    #     attribute_mapping = casting_config["attribute_mapping"]
+    #     array_to_string = casting_config["list_field_choose_first"]
+    #     # converts any of the following notations 
+    #     # biolink:Publication , biolink.Publication  to publication 
+    #     target_node_type_snake_case = biolink_snake_case(target_node_type.replace("biolink.", "").replace("biolink:", ""))
+    #     for ident_id, identifier in concept.identifiers.items():
 
-            # Check to see if the concept identifier has types defined, this is used to create
-            # tranql queries below.
-            if not identifier.types:
-                continue
+    #         # Check to see if the concept identifier has types defined, this is used to create
+    #         # tranql queries below.
+    #         if not identifier.types:
+    #             continue
 
-            # convert the first type to snake case to be used in tranql query.
-            # first type is the leaf type, this is coming from Node normalization.
-            # note when using bmt it returns biolink: prefix so we need to replace biolink: and snake case it for tranql.
-            node_type = biolink_snake_case(get_formatted_biolink_name(identifier.types).replace("biolink:", ""))
-            try:
-                # Tranql query factory currently supports select node types as valid query
-                # Types missing from QueryFactory.data_types will be skipped with this try catch
-                query = tql.QueryFactory([node_type, target_node_type_snake_case], tranql_source)
-            except tql.InvalidQueryError as exception:
-                logger.debug(f"Skipping  {ident_id}, {exception}")
-                continue
+    #         # convert the first type to snake case to be used in tranql query.
+    #         # first type is the leaf type, this is coming from Node normalization.
+    #         # note when using bmt it returns biolink: prefix so we need to replace biolink: and snake case it for tranql.
+    #         node_type = biolink_snake_case(get_formatted_biolink_name(identifier.types).replace("biolink:", ""))
+    #         try:
+    #             # Tranql query factory currently supports select node types as valid query
+    #             # Types missing from QueryFactory.data_types will be skipped with this try catch
+    #             query = tql.QueryFactory([node_type, target_node_type_snake_case], tranql_source)
+    #         except tql.InvalidQueryError as exception:
+    #             logger.debug(f"Skipping  {ident_id}, {exception}")
+    #             continue
 
-            # check if tranql query object can use the curie.
-            if query.is_valid_curie(ident_id):
-                logger.info(f"Expanding {ident_id} to other dug elements")
-                # Fetch kg and answer
-                # Fetch kg and answer
-                # replace ":" with "~" to avoid windows os errors
-                kg_outfile = f"{self.crawlspace}/" + f"{ident_id}_{target_node_type}.json".replace(":", "~")
+    #         # check if tranql query object can use the curie.
+    #         if query.is_valid_curie(ident_id):
+    #             logger.info(f"Expanding {ident_id} to other dug elements")
+    #             # Fetch kg and answer
+    #             # Fetch kg and answer
+    #             # replace ":" with "~" to avoid windows os errors
+    #             kg_outfile = f"{self.crawlspace}/" + f"{ident_id}_{target_node_type}.json".replace(":", "~")
 
-                # query tranql, answers will include all node and edge attributes
-                answers = self.tranqlizer.expand_identifier(ident_id, query,
-                                                            kg_filename=kg_outfile,
-                                                            include_all_attributes=True)
-                # for each answer construct a dug element
-                for answer in answers:
-                    # here we will inspect the answers create new dug elements based on target node type
-                    # and return the variables.
-                    for node_id, node in answer.nodes.items():
-                        # support both biolink. and biolink: prefixes
-                        snake_case_category = [
-                            biolink_snake_case(cat.replace("biolink.", "").replace("biolink:", "")) 
-                            for cat in node['category']
-                            ]
-                        if target_node_type_snake_case in snake_case_category:
-                            if node['id'].startswith(curie_filter):
-                                element_attribute_args = {"elem_id": node_id, "elem_type": dug_element_type}
-                                for key in attribute_mapping:
-                                    mapped_value = node.get(attribute_mapping[key], "")
-                                    # treat all attributes as strings 
-                                    if attribute_mapping[key] in array_to_string and isinstance(mapped_value, list) and len(mapped_value) > 0:
-                                        mapped_value = mapped_value[0]
-                                    element_attribute_args.update({key: mapped_value})
-                                element = DugElement(
-                                    **element_attribute_args
-                                )
-                                element.add_concept(concept)
-                                elements.append(element)
-        return elements
+    #             # query tranql, answers will include all node and edge attributes
+    #             answers = self.tranqlizer.expand_identifier(ident_id, query,
+    #                                                         kg_filename=kg_outfile,
+    #                                                         include_all_attributes=True)
+    #             # for each answer construct a dug element
+    #             for answer in answers:
+    #                 # here we will inspect the answers create new dug elements based on target node type
+    #                 # and return the variables.
+    #                 for node_id, node in answer.nodes.items():
+    #                     # support both biolink. and biolink: prefixes
+    #                     snake_case_category = [
+    #                         biolink_snake_case(cat.replace("biolink.", "").replace("biolink:", "")) 
+    #                         for cat in node['category']
+    #                         ]
+    #                     if target_node_type_snake_case in snake_case_category:
+    #                         if node['id'].startswith(curie_filter):
+    #                             element_attribute_args = {"id": node_id, "element_type": dug_element_type} ## This does not seem to be correct. OR, this will need to supply if it's a Variable/Concept or Study here.
+    #                             for key in attribute_mapping:
+    #                                 mapped_value = node.get(attribute_mapping[key], None)
+    #                                 # treat all attributes as strings 
+    #                                 if attribute_mapping[key] in array_to_string and isinstance(mapped_value, list) and len(mapped_value) > 0:
+    #                                     mapped_value = mapped_value[0]
+    #                                 element_attribute_args.update({key: mapped_value})
+    #                             element = DugElement(
+    #                                 **element_attribute_args
+    #                             )
+    #                             element.add_concept(concept)
+    #                             elements.append(element)
+    #     return elements

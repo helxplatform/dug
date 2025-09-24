@@ -204,7 +204,7 @@ class DefaultSynonymFinder():
         # Get response from namelookup reverse lookup op
         # example (https://name-resolution-sri.renci.org/docs#/lookup/lookup_names_reverse_lookup_post)
         url = f"{self.url}"
-        payload = {"curies": [curie]}
+        payload = {"preferred_curies": [curie]}
         try:
             response = http_session.post(url, json=payload)
             if str(response.status_code).startswith("4"):

@@ -1,0 +1,29 @@
+[
+    {
+        "id": "HEALDATAPLATFORM:HDP00002",
+        "name": "",
+        "description": "No Summary Found",
+        "type": "study",
+        "program_name_list": [
+            "HEAL Research Network"
+        ],
+        "action": "https://healdata.org/portal/discovery/HDP00002",
+        "parents": [],
+        "parent_type": "",
+        "concepts": {},
+        "search_terms": [],
+        "optional_terms": [],
+        "metadata": {
+            "Project Start Date": "2021-09-20T12:09:00Z",
+            "Project End Date": "2026-08-31T12:08:00Z",
+            "Institution": "RESEARCH TRIANGLE INSTITUTE",
+            "Investigator/s": [
+                "Abhik  Das"
+            ]
+        },
+        "publications": [],
+        "variable_list": [],
+        "abstract": "\"Neonatal Opioid Withdrawal Syndrome (NOWS) is a condition that occurs when newborns are exposed to opioids during pregnancy. Symptoms often include tremors, excessive crying, sleep deprivation, and swallowing difficulties. Cases are rising, with a newborn affected by NOWS approximately every 15 minutes. Currently, healthcare providers in the United States lack standard, evidence-based treatments for NOWS.\n\nThis project is part of a multi-center, randomized controlled clinical trial that directly compares NOWS treatmentsmorphine, methadone, and buprenorphineand takes into account other types of non-drug therapies, such as behavioral interventions. The goal is to generate results that can inform clinical practice guidelines and give newborns with NOWS the best start possible.\n\nThis site will serve as the Data Coordinating Center for the clinical trial to provide high-quality and impartial biostatistical expertise for all the study sites.\"",
+        "ml_ready_desc": "No Summary Found"
+    }
+]

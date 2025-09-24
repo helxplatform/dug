@@ -1,10 +1,9 @@
 """Implements search methods using async interfaces"""
 import logging
-from elasticsearch import AsyncElasticsearch
+from elasticsearch import AsyncElasticsearch, helpers
 from elasticsearch.helpers import async_scan
-import ssl,json
+import ssl, json
 from dug.config import Config
-
 
 logger = logging.getLogger('dug')
 
@@ -29,7 +28,12 @@ class Search:
     def __init__(self, cfg: Config, indices=None):
 
         if indices is None:
-            indices = ['concepts_index', 'variables_index', 'kg_index']
+            # Dictionary for index names should be updated from config.
+            indices = {'concepts_index': 'concepts_index',
+                       'variables_index': 'variables_index',
+                       'studies_index': 'studies_index',
+                       'sections_index': 'sections_index',
+                       'kg_index': 'kg_index'}
 
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: "
@@ -51,18 +55,18 @@ class Search:
                     cafile=self._cfg.elastic_ca_path
                 )
                 self.es = AsyncElasticsearch(hosts=self.hosts,
-                                         basic_auth=(self._cfg.elastic_username,
-                                                    self._cfg.elastic_password),
-                                                    ssl_context=ssl_context)
+                                             basic_auth=(self._cfg.elastic_username,
+                                                         self._cfg.elastic_password),
+                                             ssl_context=ssl_context)
             else:
                 self.es = AsyncElasticsearch(hosts=self.hosts,
-                                         basic_auth=(self._cfg.elastic_username,
-                                                    self._cfg.elastic_password),
-                                                    verify_certs=False)
+                                             basic_auth=(self._cfg.elastic_username,
+                                                         self._cfg.elastic_password),
+                                             verify_certs=False)
         else:
             self.es = AsyncElasticsearch(hosts=self.hosts,
-                                     basic_auth=(self._cfg.elastic_username,
-                                                self._cfg.elastic_password))
+                                         basic_auth=(self._cfg.elastic_username,
+                                                     self._cfg.elastic_password))
 
     async def dump_concepts(self, index, query={}, size=None,
                             fuzziness=1, prefix_length=3):
@@ -108,7 +112,7 @@ class Search:
 
         body = {'aggs': aggs}
         results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=body
         )
         data_type_list = [data_type['key'] for data_type in
@@ -120,12 +124,14 @@ class Search:
     def _get_concepts_query(query, fuzziness=1, prefix_length=3):
         "Static data structure populator, pulled for easier testing"
         query_object = {
-            "query" : {
+            "query": {
                 "bool": {
+                    # this filter ensures that concepts with both name and description are returned.
+                    # if one of these are missing the concept won't show up.
                     "filter": {
                         "bool": {
                             "must": [
-                                {"wildcard": {"description": "?*"}},
+                                # {"wildcard": {"description": "?*"}},
                                 {"wildcard": {"name": "?*"}}
                             ]
                         }
@@ -225,10 +231,11 @@ class Search:
         return query_object
 
     def is_simple_search_query(self, query):
+        if not query:
+            return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, types=None,
-                              **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, concept_types=None, concepts_index=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -237,18 +244,18 @@ class Search:
         else:
             search_body = self._get_concepts_query(query, **kwargs)
         # Get aggregated counts of biolink types
-        search_body['aggs'] = {'type-count': {'terms': {'field': 'type'}}}
-        if isinstance(types, list):
+        search_body['aggs'] = {'type-count': {'terms': {'field': 'concept_type'}}}
+        if isinstance(concept_types, list):
             search_body['post_filter'] = {
                 "bool": {
                     "should": [
-                        {'term': {'type': {'value': t}}} for t in types
+                        {'term': {'concept_type': {'value': t}}} for t in concept_types
                     ],
                     "minimum_should_match": 1
                 }
             }
         search_results = await self.es.search(
-            index="concepts_index",
+            index=self.indices[concepts_index],
             body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score',
@@ -267,7 +274,7 @@ class Search:
             del search_body["post_filter"]
         total_items = await self.es.count(
             body=search_body,
-            index="concepts_index"
+            index=self.indices[concepts_index]
         )
 
         # Simplify the data structure we get from aggregations to put into the
@@ -278,9 +285,8 @@ class Search:
             bucket['key']: bucket['doc_count'] for bucket in
             aggregations['type-count']['buckets']
         }
-        search_results.update({'total_items': total_items['count']})
-        search_results.update({'concept_types': concept_types})
-        return search_results
+
+        return search_results, total_items['count'], concept_types
 
     async def search_variables(self, concept="", query="", size=None,
                                data_type=None, offset=0, fuzziness=1,
@@ -297,16 +303,16 @@ class Search:
         the passed-in data type.
         """
         if self.is_simple_search_query(query):
-            es_query = self.get_simple_variable_search_query(concept, query)
+            es_query = self._get_element_simple_search_query(concept, query)
         else:
-            es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+            es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
 
         if index is None:
-            index = "variables_index"
+            index = self.indices["variables_index"]
 
         total_items = await self.es.count(body=es_query, index=index)
         search_results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
@@ -314,12 +320,50 @@ class Search:
             size=size or total_items['count']
         )
 
-        search_result_hits = []
+        search_result_hits = self.remove_hits_from_results(search_results)
 
-        if "hits" in search_results:
-            search_result_hits = search_results['hits']['hits']
+        return self._make_result(data_type, search_result_hits, total_items, True)
 
-        return self._make_result(data_type, search_result_hits , total_items, True)
+    async def search_elements(self,
+                                  index_name,
+                                  concept="",
+                                  query="",
+                                  parent_ids=None,
+                                  element_ids=None,
+                                  size=None,
+                                  offset=0,
+                                  fuzziness=1,
+                                  prefix_length=3):
+
+        if self.is_simple_search_query(query):
+            es_query = self._get_element_simple_search_query(concept=concept,
+                                                             query=query,
+                                                             parent_ids=parent_ids,
+                                                             element_ids=element_ids,
+                                                             new_model=True)
+        else:
+            es_query = self._get_element_search_query(concept=concept,
+                                                      parent_ids=parent_ids,
+                                                      element_ids=element_ids,
+                                                      fuzziness=fuzziness,
+                                                      prefix_length=prefix_length,
+                                                      query=query,
+                                                      new_model=True
+                                                      )
+
+        total_items = (await self.es.count(body=es_query, index=index_name))['count']
+        search_results = await self.es.search(
+            index=index_name,
+            body=es_query,
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                         'hits.hits._source', 'hits.hits._score'],
+            from_=offset,
+            size=size or total_items
+        )
+
+        search_result_hits = self.remove_hits_from_results(search_results)
+
+        return search_result_hits, total_items
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
@@ -337,7 +381,7 @@ class Search:
         the passed-in data type.
         """
         es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
-        total_items = await self.es.count(body=es_query, index="variables_index")
+        total_items = await self.es.count(body=es_query, index=self.indices["variables_index"])
         search_results = []
         async for r in async_scan(self.es, query=es_query):
             search_results.append(r)
@@ -429,9 +473,9 @@ class Search:
             }
         }
         body = {'query': query}
-        total_items = await self.es.count(body=body, index="kg_index")
+        total_items = await self.es.count(body=body, index=self.indices["kg_index"])
         search_results = await self.es.search(
-            index="kg_index",
+            index=self.indices["kg_index"],
             body=body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source'],
@@ -446,29 +490,29 @@ class Search:
         Search for studies by unique_id (ID or name) and/or study_name.
         """
         # Define the base query
-         # Define the base query
+        # Define the base query
         query_body = {
             "bool": {
                 "must": []
             }
         }
-        
+
         # Add conditions based on user input
         if study_id:
             query_body["bool"]["must"].append({
                 "match": {"collection_id": study_id}
             })
-        
+
         if study_name:
             query_body["bool"]["must"].append({
                 "match": {"collection_name": study_name}
             })
 
-        print("query_body",query_body)
+        print("query_body", query_body)
         body = {'query': query_body}
-        total_items = await self.es.count(body=body, index="variables_index")
+        total_items = await self.es.count(body=body, index=self.indices["variables_index"])
         search_results = await self.es.search(
-            index="variables_index",
+            index=self.indices["variables_index"],
             body=body,
             filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source'],
             from_=offset,
@@ -476,6 +520,27 @@ class Search:
         )
         search_results.update({'total_items': total_items['count']})
         return search_results
+
+
+
+
+    async def get_study_sources(self):
+        query_body = {
+            "size": 0,
+            "aggs": {
+                "d1": {
+                    "terms": {
+                        "field": "programs.keyword"
+                    }
+                }
+            }
+        }
+        search_results = await self.es.search(
+            index=self._cfg.studies_index_name,
+            body=query_body
+        )
+        unique_studies = search_results['aggregations']['d1']['buckets']
+        return unique_studies
 
     async def search_program(self, program_name=None, offset=0, size=None, use_elasticsearch=False):
         """
@@ -492,7 +557,7 @@ class Search:
                     "unique_collection_ids": {
                         "terms": {
                             "field": "collection_id.keyword",
-                            "size":1000
+                            "size": 1000
                         },
                         "aggs": {
                             "collection_details": {
@@ -516,9 +581,9 @@ class Search:
                     }
                 })
             body = query_body
-        
+
             search_results = await self.es.search(
-                index="variables_index",
+                index=self.indices["variables_index"],
                 body=body,
                 from_=offset,
                 size=size
@@ -541,7 +606,7 @@ class Search:
         else:
             with open(self._cfg.studies_path, 'r') as file:
                 missing_programs = json.load(file)
-                
+
             collection_details_list = []
             program_name_lower = program_name.lower() if program_name else None
 
@@ -550,17 +615,17 @@ class Search:
                 study_name = row.get('Study Name', '')
                 collection_id = row.get('Accession', '')
                 description = row.get('Description', '')
-                
+
                 if not program or not collection_id:
                     continue
 
                 if program_name_lower and program.lower() != program_name_lower:
                     continue
-                    
+
                 # Extract base accession for URL to dbgap
                 accession_base = collection_id.split('.c')[0] if '.c' in collection_id else collection_id
                 collection_action = f"https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id={accession_base}"
-                
+
                 # Add to collection details list
                 collection_details_list.append({
                     "collection_id": collection_id,
@@ -569,10 +634,10 @@ class Search:
                 })
 
             collection_details_list.sort(key=lambda x: x["collection_id"])
-                
+
             return collection_details_list
 
-    async def search_program_list(self,use_elasticsearch=False):
+    async def search_program_list(self, use_elasticsearch=False):
         if use_elasticsearch:
             query_body = {
                 "size": 0,  # We don't need the documents themselves, so set the size to 0
@@ -593,11 +658,11 @@ class Search:
                 }
             }
             search_results = await self.es.search(
-                index="variables_index",
+                index=self.indices["variables_index"],
                 body=query_body
             )
             unique_data_types = search_results['aggregations']['unique_program_names']['buckets']
-            data=unique_data_types
+            data = unique_data_types
             return data
         else:
             with open(self._cfg.studies_path, 'r') as file:
@@ -605,11 +670,11 @@ class Search:
 
             program_studies = {}
             program_descriptions = {}
-            
+
             for study in missing_programs:
                 program = study.get("Program", "")
                 description = study.get("Description", "")
-                
+
                 if program not in program_studies:
                     program_studies[program] = []
                     program_descriptions[program] = description
@@ -627,16 +692,31 @@ class Search:
             # Sort by program name
             program_summary.sort(key=lambda x: x["key"])
             return program_summary
-    
-    def _get_var_query(self, concept, fuzziness, prefix_length, query):
+
+    @staticmethod
+    def _get_element_search_query(concept,
+                                  fuzziness,
+                                  prefix_length,
+                                  query,
+                                  new_model=False,
+                                  element_ids=None,
+                                  parent_ids=None):
         """Returns ES query for variable search"""
+        element_name = "element_name"
+        element_desc = "element_desc"
+
+        if new_model:
+            element_name = "name"
+            element_desc = "description"
+
         es_query = {
             "query": {
                 'bool': {
+                    "minimum_should_match": 1,
                     'should': [
                         {
                             "match_phrase": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "boost": 10
                                 }
@@ -644,7 +724,7 @@ class Search:
                         },
                         {
                             "match_phrase": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "boost": 6
                                 }
@@ -660,7 +740,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -682,7 +762,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -693,7 +773,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_desc": {
+                                element_desc: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -703,7 +783,7 @@ class Search:
                         },
                         {
                             "match": {
-                                "element_name": {
+                                element_name: {
                                     "query": query,
                                     "fuzziness": fuzziness,
                                     "prefix_length": prefix_length,
@@ -740,9 +820,47 @@ class Search:
                     "identifiers": concept
                 }
             }
+        if parent_ids:
+            if query:
+                es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+                es_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
+            else:
+                es_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
+        if element_ids:
+            if query:
+                es_query["query"]["bool"]['filter'] = es_query["query"]["bool"].get('filter', [])
+                es_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
+            else:
+                es_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
+
         return es_query
 
-    def get_simple_concept_search_query(self, query):
+    @staticmethod
+    def get_simple_concept_search_query(query):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -795,7 +913,8 @@ class Search:
         }
         return search_query
 
-    def get_simple_variable_search_query(self, concept, query):
+    @staticmethod
+    def _get_element_simple_search_query(concept, query, new_model=False, parent_ids=None, element_ids=None):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -803,6 +922,14 @@ class Search:
             "default_operator": "and",
             "flags": "OR|AND|NOT|PHRASE|PREFIX"
         }
+
+        element_name = "element_name"
+        element_desc = "element_desc"
+
+        if new_model:
+            element_name = "name"
+            element_desc = "description"
+
         search_query = {
             "query": {
                 "bool": {
@@ -810,18 +937,19 @@ class Search:
                         {"function_score": {
                             "query": {
                                 "bool": {
+                                    "minimum_should_match": 1,
                                     "should": [
-                                        
+
                                         {
                                             "simple_query_string": {
                                                 **simple_query_string_search,
-                                                "fields": ["element_name"]
+                                                "fields": [element_name]
                                             }
                                         },
                                         {
                                             "simple_query_string": {
                                                 **simple_query_string_search,
-                                                "fields": ["element_desc"]
+                                                "fields": [element_desc]
                                             }
                                         },
                                         {
@@ -845,4 +973,96 @@ class Search:
                     "identifiers": concept
                 }
             })
+
+        if parent_ids:
+            if query:
+                search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+                search_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
+            else:
+                search_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "parents.keyword": parent_ids
+                        }
+                    }
+                )
+        if element_ids:
+            if query:
+                search_query["query"]["bool"]['filter'] = search_query["query"]["bool"].get('filter', [])
+                search_query["query"]["bool"]["filter"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
+            else:
+                search_query["query"]["bool"]["should"].append(
+                    {
+                        "terms": {
+                            "id.keyword": element_ids
+                        }
+                    }
+                )
         return search_query
+
+    async def get_elements_by_ids(self, ids: [str], index_name=""):
+        """Returns variables by ids"""
+
+        if len(ids) == 0:
+            return []
+
+        body = {
+            "size": self._cfg.max_ids_limit,
+            "query": {
+                "ids": {
+                    "values": ids
+                }
+            },
+            # for scroll optimization
+            "sort": [
+                "_doc"
+            ]
+        }
+
+        res = []
+
+        if len(ids) <= self._cfg.max_ids_limit:
+            search_results = await self.es.search(
+                index=self._cfg.variables_index_name,
+                body=body,
+                filter_path=['hits.hits._id', 'hits.hits._type', 'hits.hits._source']
+            )
+            search_results_wo_hits = self.remove_hits_from_results(search_results)
+            res.extend(search_results_wo_hits)
+        else:
+
+            search_results = helpers.async_scan(client=self.es, index=index_name, query=body)
+            async for r in search_results:
+                res.append(r)
+
+        return res
+
+    def remove_hits_from_results(self, search_results):
+        search_result_hits = []
+        if "hits" in search_results:
+            search_result_hits = search_results['hits']['hits']
+        return search_result_hits
+
+    def get_variables_for_response(self, variables):
+        res_variables = []
+
+        for variable in variables:
+            item = variable['_source']
+            if "_score" in variable:
+                item["score"] = variable["_score"]
+            item["metadata"]["data_type"] = variable["_source"]["data_type"]
+            res_variables.append(item)
+
+        return res_variables

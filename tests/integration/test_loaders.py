@@ -18,7 +18,7 @@ def test_filesystem_loader():
         filepath=TEST_DATA_DIR,
     )
     files = list(targets)
-    assert len(files) == 16
+    assert len(files) == 17
 
     with pytest.raises(ValueError):
         targets = load_from_filesystem(

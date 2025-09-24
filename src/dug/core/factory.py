@@ -18,6 +18,15 @@ class DugFactory:
     def __init__(self, config: DugConfig):
         self.config = config
 
+    def get_index_names(self):
+        return {
+                'concepts_index':self.config.concepts_index_name, 
+                'variables_index': self.config.variables_index_name,
+                'studies_index': self.config.studies_index_name,
+                'sections_index': self.config.sections_index_name,
+                'kg_index': self.config.kg_index_name
+                }
+
     def build_http_session(self) -> CachedSession:
 
         redis_config = {
@@ -32,7 +41,7 @@ class DugFactory:
             connection=redis.StrictRedis(**redis_config)
         )
 
-    def build_crawler(self, target, parser: Parser, annotator: Annotator, element_type: str, tranql_source=None) -> Crawler:
+    def build_crawler(self, target, parser: Parser, annotator: Annotator, program_name: str, tranql_source=None) -> Crawler:
         crawler = Crawler(
             crawl_file=str(target),
             parser=parser,
@@ -41,7 +50,7 @@ class DugFactory:
             tranql_queries=self.build_tranql_queries(tranql_source),
             http_session=self.build_http_session(),
             exclude_identifiers=self.config.tranql_exclude_identifiers,
-            element_type=element_type,
+            program_name=program_name,
             element_extraction=self.build_element_extraction_parameters(),
         )
 
@@ -60,10 +69,12 @@ class DugFactory:
             in self.config.tranql_queries
         }
 
-    def build_search_obj(self, indices) -> Search:
+    def build_search_obj(self) -> Search:
+        indices = self.get_index_names()
         return Search(self.config, indices=indices)
 
-    def build_indexer_obj(self, indices) -> Index:
+    def build_indexer_obj(self) -> Index:
+        indices = self.get_index_names()
         return Index(self.config, indices=indices)
 
     def build_element_extraction_parameters(self, source=None):

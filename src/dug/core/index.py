@@ -15,10 +15,14 @@ class Index:
     def __init__(self, cfg: Config, indices=None):
 
         if indices is None:
-            indices = ['concepts_index', 'variables_index', 'kg_index']
-
+            indices = {'concepts_index':'concepts_index', 
+                       'variables_index':'variables_index', 
+                       'studies_index':'studies_index',
+                       'sections_index':'sections_index',
+                       'kg_index':'kg_index'}
+        
         self._cfg = cfg
-        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
+        logger.debug(f"******** Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
@@ -26,7 +30,6 @@ class Index:
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
         if self._cfg.elastic_scheme == "https":
             if self._cfg.elastic_ca_verify:
-
                 ssl_context = ssl.create_default_context(
                     cafile=self._cfg.elastic_ca_path
                 )
@@ -43,6 +46,10 @@ class Index:
             self.es = Elasticsearch(
                 hosts=self.hosts,
                 basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+        
+        print(self.es)
+        print(self.es.ping())
+
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
@@ -105,7 +112,7 @@ class Index:
                            "fields": {"keyword": {"type": "keyword"}}},
                     "name": {"type": "text", "analyzer": "std_with_stopwords"},
                     "description": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "type": {"type": "keyword"},
+                    "concept_type": {"type": "keyword"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {
                         "properties": {
@@ -117,8 +124,17 @@ class Index:
                             "synonyms": {"type": "text", "analyzer": "std_with_stopwords"}
                         }
                     },
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords", 
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    "element_type": {"type": "keyword"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "concept_action": {"type": "text", "analyzer": "std_with_stopwords"}
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    }
                 }
             }
         }
@@ -139,21 +155,70 @@ class Index:
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "element_id": {"type": "text", "analyzer": "std_with_stopwords",
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
                                    "fields": {"keyword": {"type": "keyword"}}},
-                    "element_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {"type": "keyword"},
-                    "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
-                                      "fields": {"keyword": {"type": "keyword"}}},
-                    "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    # "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
+                    #                   "fields": {"keyword": {"type": "keyword"}}},
+                    # "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    # "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
+                    # "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "is_cde": {"type": "boolean"},
                     "data_type": {"type": "text", "analyzer": "std_with_stopwords",
                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True,
+                        "numeric_detection": False
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
+        studies_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    'publications': {"type": "text", "analyzer": "std_with_stopwords"},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
+                    'abstract': {"type": "text", "analyzer": "std_with_stopwords"},
                     "metadata": {
                         "type": "object",
                         "dynamic": True
@@ -162,16 +227,59 @@ class Index:
                 }
             }
         }
-
+        sections_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
+                    "is_crf": {"type": "boolean"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
         settings = {
             'kg_index': kg_index,
             'concepts_index': concepts_index,
             'variables_index': variables_index,
+            'studies_index': studies_index,
+            'sections_index': sections_index,
         }
 
         logger.info(f"creating indices")
         logger.debug(self.indices)
-        for index in self.indices:
+        for index_type in self.indices: ## This is a dict.
+            index = self.indices[index_type]
             try:
                 if self.es.indices.exists(index=index):
                     # if index exists check if replication is good 
@@ -183,7 +291,7 @@ class Index:
                 else:
                     result = self.es.indices.create(
                         index=index,
-                        body=settings[index],
+                        body=settings[index_type],
                         ignore=400)
                     logger.info(f"result created index {index}: {result}")
             except Exception as e:

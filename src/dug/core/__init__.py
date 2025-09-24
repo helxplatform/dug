@@ -14,7 +14,7 @@ from dug import hookspecs
 from dug.core import parsers
 from dug.core import annotators
 from dug.core.factory import DugFactory
-from dug.core.parsers import DugConcept, Parser, get_parser
+from dug.core.parsers import DugConcept, DugStudy, DugVariable, DugSection, Parser, get_parser
 from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')
@@ -44,22 +44,17 @@ def get_targets(target_name) -> Iterable[Path]:
 
 
 class Dug:
-    concepts_index = "concepts_index"
-    variables_index = "variables_index"
-    kg_index = "kg_index"
-
     def __init__(self, factory: DugFactory):
         self._factory = factory
-        self._search = self._factory.build_search_obj(indices=[
-            self.concepts_index, self.variables_index, self.kg_index
-        ])
-        self._index = self._factory.build_indexer_obj(
-            indices=[
-                self.concepts_index, self.variables_index, self.kg_index
-            ]
-        )
+        self._search = self._factory.build_search_obj()
+        self._index = self._factory.build_indexer_obj()
+        self.concepts_index = self._factory.config.concepts_index_name
+        self.variables_index = self._factory.config.variables_index_name
+        self.studies_index = self._factory.config.studies_index_name
+        self.sections_index = self._factory.config.sections_index_name
+        self.kg_index = self._factory.config.kg_index_name
 
-    def crawl(self, target_name: str, parser_type: str, annotator_type: str, element_type: str = None):
+    def crawl(self, target_name: str, parser_type: str, annotator_type: str, program_name: str = None):
 
         pm = get_plugin_manager()
         parser = get_parser(pm.hook, parser_type)
@@ -67,20 +62,24 @@ class Dug:
         targets = get_targets(target_name)
 
         for target in targets:
-            self._crawl(target, parser, annotator, element_type)
+            self._crawl(target, parser, annotator, program_name)
 
-    def _crawl(self, target: Path, parser: Parser, annotator: Annotator, element_type):
+    def _crawl(self, target: Path, parser: Parser, annotator: Annotator, program_name):
 
         # Initialize crawler
-        crawler = self._factory.build_crawler(target, parser, annotator, element_type)
+        crawler = self._factory.build_crawler(target, parser, annotator, program_name)
         # Read elements, annotate, and expand using tranql queries
         crawler.crawl()
 
         # Index Annotated Elements
         for element in crawler.elements:
             # Only index DugElements as concepts will be indexed differently in next step
-            if not isinstance(element, DugConcept):
+            if isinstance(element, DugVariable):
                 self._index.index_element(element, index=self.variables_index)
+            if isinstance(element, DugStudy):
+                self._index.index_element(element, index=self.studies_index)
+            if isinstance(element, DugSection):
+                self._index.index_element(element, index=self.sections_index)
 
         # Index Annotated/TranQLized Concepts and associated knowledge graphs
         for concept_id, concept in crawler.concepts.items():
@@ -96,6 +95,7 @@ class Dug:
     def search(self, target, query, **kwargs):
         event_loop = asyncio.get_event_loop()
         targets = {
+            #TODO: Add Studies here
             'concepts': partial(
                 self._search.search_concepts),
             'variables': partial(
