@@ -73,8 +73,9 @@ class DbGaPParser(FileParser):
 
             # Create DBGaP links as study/variable actions
             elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
-            elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
-                                                   variable_id=elem.id.split(".")[0].split("phv")[1])
+            if "phv" in elem.id:
+                elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
+                                                       variable_id=elem.id.split(".")[0].split("phv")[1])
             # Add to set of variables
             logger.debug(elem)
             elements.append(elem)
