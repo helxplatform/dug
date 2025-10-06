@@ -3,7 +3,7 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.12-alpine3.21
+FROM python:alpine3.22
 
 
 # Install required packages
@@ -11,7 +11,6 @@ RUN apk update && \
     apk add g++ make cargo rust
 
 RUN apk upgrade -Ua
-RUN apk add "libxml2=2.13.4-r6"
 
 RUN pip install --upgrade pip
 # Create a non-root user.
