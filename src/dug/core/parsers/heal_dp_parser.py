@@ -44,7 +44,7 @@ class HEALDPParser(FileParser):
             study = DugStudy(id=study_id,
                         name=study_name,
                         description="THIS DESCRIPTION WILL COME LATER",
-                        program_name_list=[self.get_study_type()],
+                        programs=[self.get_study_type()],
                         parents=[],
                         action = utils.get_heal_platform_link(study_id=study_id),
                         )
@@ -54,7 +54,7 @@ class HEALDPParser(FileParser):
                             id=study_details['id'],
                             name=study_details['study_name'],
                             description=study_details['description'],
-                            program_name_list=[self.get_study_type()],
+                            programs=[self.get_study_type()],
                             parents=[],
                             action = study_details['action'],
                             abstract=study_details['abstract'],
@@ -74,7 +74,7 @@ class HEALDPParser(FileParser):
             elem = DugVariable(id=f"{variable.attrib['id']}",
                               name=variable.find('name').text,
                               description=variable.find('description').text.lower(),
-                              program_name_list=[self.get_study_type()],
+                              programs=[self.get_study_type()],
                               parents=[study_id],
                               data_type=variable.find('type').text if variable.find('type') is not None else 'string',
                               is_cde=False) ## This would be changed to study id
@@ -90,7 +90,7 @@ class HEALDPParser(FileParser):
                             id = section_name,
                             name = section_name,
                             description = section_name, 
-                            program_name_list=[self.get_study_type()],
+                            programs=[self.get_study_type()],
                             parents = [study_id],
                             is_crf = False, ### How do I look for this?
                         )

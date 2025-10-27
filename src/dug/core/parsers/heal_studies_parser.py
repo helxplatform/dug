@@ -120,7 +120,7 @@ class HEALStudiesParser(Parser):
                             id=study_details['id'],
                             name=study_details['study_name'],
                             description=study_details['description'],
-                            program_name_list=[self.get_study_type()],
+                            programs=[self.get_study_type()],
                             parents=[],
                             action = study_details['action'],
                             abstract=study_details['abstract'],
