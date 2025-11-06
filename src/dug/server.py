@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
-from typing import Set
+from typing import Set, Any
 import asyncio
 from contextlib import asynccontextmanager
 from dug.api_models.response_models import *

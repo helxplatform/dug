@@ -12,7 +12,7 @@ MarkupSafe
 ormar
 mistune
 pluggy
-pydantic==2.9.2
+pydantic==2.12.3
 pyrsistent
 pytest
 pytest-asyncio

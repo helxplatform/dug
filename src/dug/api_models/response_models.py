@@ -1,6 +1,6 @@
 from dug.core.parsers._base import *
 from pydantic import BaseModel, model_serializer
-from typing import Optional
+from typing import Optional, Any
 
 
 class ElasticResultMetaData(BaseModel):
@@ -23,7 +23,7 @@ class DugAPIResponse(BaseModel):
 
 
 class ConceptResponse(ElasticDugElementResult, DugConcept):
-    identifiers: List[any]
+    identifiers: List[Any]
     concepts: None = Field(default=None, exclude=True)
 
 
