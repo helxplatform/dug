@@ -162,7 +162,8 @@ class Crawler:
                 # Create concept for newly seen identifier
                 concept = DugConcept(id=identifier.id,
                                     name=identifier.label,
-                                    description=identifier.description)
+                                    description=identifier.description,
+                                    action=identifier.purl)
                 concept.concept_type = identifier.types
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
