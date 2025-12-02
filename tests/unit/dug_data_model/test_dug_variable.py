@@ -7,7 +7,9 @@ DUG_VARIABLE_EXPANSION_TEST_CASES = [
     ("variable_name", "variable name"),
     ("VariableName", "Variable Name"),
     ("AnotherVariableName", "Another Variable Name"),
+    ("JSONVariable", "JSON Variable"),
     ("yet_another_variableName", "yet another variable Name"),
+    ("variable_collection123", "variable collection 123"),
 ]
 
 @pytest.mark.parametrize("variable_name,expanded_name", DUG_VARIABLE_EXPANSION_TEST_CASES)

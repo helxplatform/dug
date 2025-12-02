@@ -175,11 +175,16 @@ class DugVariable(DugElement):
 
         # TODO: can we incorporate the permissible values somehow?
 
-        # Is this variable name in CamelCase? If so, add spaces between words.
+        # Is this variable name in CamelCase or containing numbers? If so, add spaces between words or numbers.
         cleaned_variable_name = re.sub(
-            r'(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])',
+            r'''
+            (?<=[a-z])(?=[A-Z0-9])      |  # end lowercase → start uppercase OR number
+            (?<=[A-Z])(?=[A-Z][a-z0-9]) |  # acronym → regular word/number
+            (?<=[0-9])(?=[A-Za-z])         # number → letter
+            ''',
             ' ',
-            variable_name
+            variable_name,
+            flags=re.VERBOSE
         )
 
         # Is this variable name in snake_case? If so, replace underscores with spaces.
