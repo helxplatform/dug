@@ -159,6 +159,36 @@ class DugVariable(DugElement):
     data_type:str='text'
     is_cde:bool=False
 
+    @override
+    @computed_field
+    @property
+    def ml_ready_desc(self) -> str:
+        """
+        Return a description of this variable for use in machine learning.
+
+        For a variable, we also want to incorporate the variable name, both verbatim and (possibly) as a
+
+        :return: A description of this variable for use in machine learning.
+        """
+        variable_name = self.name
+
+        # TODO: can we incorporate the permissible values somehow?
+
+        # Is this variable name in CamelCase? If so, add spaces between words.
+        cleaned_variable_name = re.sub(
+            r'(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])',
+            ' ',
+            variable_name
+        )
+
+        # Is this variable name in snake_case? If so, replace underscores with spaces.
+        cleaned_variable_name = re.sub(r'_+', ' ', cleaned_variable_name)
+
+        # Only add the cleaned variable name if it differs from the original.
+        if cleaned_variable_name != variable_name:
+            return f"{variable_name} ({cleaned_variable_name}): {self.description}"
+        return f"{variable_name}: {self.description}"
+
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
         es_elem = super().get_searchable_dict()
