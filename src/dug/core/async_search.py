@@ -6,7 +6,7 @@ import ssl, json
 from dug.config import Config
 
 logger = logging.getLogger('dug')
-
+logger.setLevel(logging.INFO)
 
 class SearchException(Exception):
     def __init__(self, message, details):

@@ -10,7 +10,7 @@ import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
 
 logger = logging.getLogger('dug')
-
+logger.setLevel(logging.INFO)
 
 class Crawler:
     def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
@@ -162,8 +162,9 @@ class Crawler:
                 # Create concept for newly seen identifier
                 concept = DugConcept(id=identifier.id,
                                     name=identifier.label,
-                                    description=identifier.description,
-                                    action=identifier.purl)
+                                    action = identifier.purl,
+                                    description=identifier.description
+                                    )
                 concept.concept_type = identifier.types
                 # Add to list of concepts
                 self.concepts[identifier.id] = concept
@@ -171,7 +172,6 @@ class Crawler:
             # Add identifier to list of identifiers associated with concept
             self.concepts[identifier.id].add_identifier(identifier)
             self.concepts[identifier.id].add_parent(element.get_id())
-
 
             # Create association between newly created concept and element
             # (unless element is actually a user-defined concept)
