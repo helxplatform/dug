@@ -70,12 +70,10 @@ class DugFactory:
         }
 
     def build_search_obj(self) -> Search:
-        indices = self.get_index_names()
-        return Search(self.config, indices=indices)
+        return Search(self.config)
 
     def build_indexer_obj(self) -> Index:
-        indices = self.get_index_names()
-        return Index(self.config, indices=indices)
+        return Index(self.config)
 
     def build_element_extraction_parameters(self, source=None):
         # Method reformats the node_to_element_queries object
