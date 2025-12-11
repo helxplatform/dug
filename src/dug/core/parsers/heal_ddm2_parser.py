@@ -24,9 +24,14 @@ class HEALDDM2Parser(FileParser):
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
+
         elements = []
         with open(input_file, "r") as f:
             json_obj = json.load(f)
             elements = DugElementParsedList.validate_python(json_obj)
         final_elements = [k for k in elements if k.get_id()!='']
+        for k in final_elements:
+            k.id = k.get_id().replace("HEALCDE:", "").replace("HEALDATAPLATFORM:", "")
+            parents = [k.replace("HEALCDE:", "").replace("HEALDATAPLATFORM:", "") for k in k.parents]
+            k.parents = parents
         return final_elements

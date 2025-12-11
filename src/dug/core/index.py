@@ -47,16 +47,12 @@ class Index:
                 hosts=self.hosts,
                 basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
         
-        print(self.es)
-        print(self.es.ping())
-
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
             logger.info('connected to elasticsearch')
             self.init_indices()
         else:
-            print(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
             logger.error(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
             raise SearchException(
                 message='failed to connect to elasticsearch',

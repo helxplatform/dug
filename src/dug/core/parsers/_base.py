@@ -74,9 +74,6 @@ class DugElement(BaseModel):
         return es_elem
 
     def get_response_dict(self):
-        print("******")
-        print(self.programs)
-        print("******")
         response = self.get_searchable_dict()
         things_to_hide = ['search_terms', 'optional_terms',]
         return {x: response[x] for x in response if x not in things_to_hide}

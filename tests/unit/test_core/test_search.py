@@ -8,10 +8,13 @@ import pytest_asyncio
 from dug.core.index import Index, SearchException
 from dug.config import Config
 
-default_indices = {"concepts_index":"concepts_index", 
-                   "variables_index":"variables_index",
-                   "study_index":"study_index",
-                   "kg_index":"kg_index"}
+default_indices={
+                'concepts_index': 'concepts_index',
+                'variables_index': 'variables_index',
+                'studies_index': 'studies_index',
+                'sections_index': 'sections_index',
+                'kg_index': 'kg_index'
+                }
 
 host = "localhost"
 port = 9200
@@ -134,11 +137,11 @@ def test_init_no_ping(elastic):
 @pytest.mark.asyncio
 async def test_init_indices(elastic):
     search = Index(Config.from_env())
-    assert elastic.indices.call_count == 3
+    assert elastic.indices.call_count == 5
 
     # Should take no action if called again
     search.init_indices()
-    assert elastic.indices.call_count == 3
+    assert elastic.indices.call_count == 5
 
 
 def test_index_doc(elastic: MockElastic):

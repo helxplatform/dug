@@ -35,19 +35,10 @@ APP.add_middleware(
 )
 
 config = Config.from_env()
-indices = {
-            'concepts_index': config.concepts_index_name, 
-            'variables_index': config.variables_index_name,
-            'studies_index': config.studies_index_name,
-            'sections_index': config.sections_index_name,
-            'kg_index': config.kg_index_name
-        }
 search = Search(config)
-
 
 def shutdown_event():
     asyncio.run(search.es.close())
-
 
 @APP.post('/dump_concepts')
 async def dump_concepts(request: GetFromIndex):
@@ -57,7 +48,6 @@ async def dump_concepts(request: GetFromIndex):
         "status": "success"
     }
 
-
 @APP.get('/agg_data_types')
 async def agg_data_types():
     return {
@@ -66,14 +56,13 @@ async def agg_data_types():
         "status": "success"
     }
 
-
 @APP.post('/search')
 async def search_concepts(search_query: SearchConceptQuery):
     return {
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "concepts_index"
-        "result": await search.search_concepts(concepts_index=indices["concepts_index"], **search_query.model_dump(exclude={"index"})),
+        "result": await search.search_concepts(**search_query.model_dump(exclude={"index"})),
         "status": "success"
     }
 
@@ -314,8 +303,7 @@ async def get_concepts(search_query: SearchConceptQuery):
     - **offset**
     - **size**
     """
-    concepts, total_count, concept_types = await search.search_concepts(concepts_index=indices["concepts_index"],
-                                                                        **search_query.model_dump(exclude={"index"}))
+    concepts, total_count, concept_types = await search.search_concepts(**search_query.model_dump(exclude={"index"}))
     concepts_wo_hits = search.remove_hits_from_results(concepts)
     res_concepts = []
     if concepts_wo_hits:

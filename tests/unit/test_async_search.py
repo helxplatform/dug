@@ -33,15 +33,12 @@ class SearchTestCase(TestCase):
 
     def test_concepts_search(self):
         "Test async_search concepts search"
-        result = asyncio.run(
+        result, total_count, concept_types = asyncio.run(
             self.search.search_concepts("brain"))
-        self.assertIn('total_items', result)
-        self.assertEqual(result['total_items'], 90)
-        self.assertIn('concept_types', result)
-        self.assertIsInstance(result['concept_types'], dict)
-        self.assertEqual(len(result['concept_types']), 9)
-        self.assertEqual(result['concept_types']['anatomical entity'], 10)
-
+        self.assertEqual(total_count, 90)
+        self.assertIsInstance(concept_types, dict)
+        self.assertEqual(len(concept_types), 9)
+        self.assertEqual(concept_types['anatomical entity'], 10)
 
 brain_result_json = """{
   "hits": {

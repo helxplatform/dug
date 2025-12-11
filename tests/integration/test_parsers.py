@@ -1,5 +1,5 @@
 from dug.core.parsers import DbGaPParser, NIDAParser, TOPMedTagParser, SciCrunchParser, AnvilDbGaPParser,\
-    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDPParser, HEALStudiesParser, HEALDDM2Parser
+    CRDCDbGaPParser, KFDRCDbGaPParser, SPRINTParser, BACPACParser, CTNParser, HEALDDM2Parser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
@@ -137,42 +137,27 @@ from pathlib import Path
 #     element_names = [e.name for e in elements]
 
 #     assert "RANDDT" in element_names
-
-def test_heal_parser():
-    parser = HEALDPParser()
-    parse_file = str(TEST_DATA_DIR / "HEAL_DD.dbgap.xml")
-    elements = parser(parse_file)
-
-    study = [k for k in elements if k.type == 'study']
-    assert len(study) == 1
-    study = study[0]
-    assert study.id == "HEALDATAPLATFORM:HDP00360"
-    assert study.name =="HEALing Communities Study Data Coordinating Center"
-
-    variables = [k for k in elements if k.type == 'variable']    
-    assert len(variables) == 8
-    variable_names = [e.name for e in variables]
-    assert "hcs01_lam05" in variable_names
-
-    sections = [k for k in elements if k.type == 'section']
-    assert len(sections) == 4
-    section_names = [e.name for e in sections]
-    assert "toxicology_survey_consent" in section_names
-
-def test_heal_study_parser():
-    parser = HEALStudiesParser()
-    studies = parser()
-
-    assert(len(studies) > 1)
-    
-def test_heal_ddm2_parser():
+  
+def test_heal_cde_ddm2_parser():
     parser = HEALDDM2Parser()
-    parse_file = str(TEST_DATA_DIR / "6-minute-walk.dug (1).json")
+    parse_file = str(TEST_DATA_DIR / "heal_cde_ddm2_gad2.dug.json")
 
     elements = parser(parse_file)
     sections = [k for k in elements if k.type == 'section']
     assert(len(sections) == 1)
     studies = [k for k in elements if k.type == 'study']
     assert(len(studies) == 0)
+    variables = [k for k in elements if k.type == 'variable']
+    assert(len(variables) > 0)
+
+def test_heal_study_ddm2_parser():
+    parser = HEALDDM2Parser()
+    parse_file = str(TEST_DATA_DIR / "heal_study_ddm2_HDP00166.dug.json")
+
+    elements = parser(parse_file)
+    sections = [k for k in elements if k.type == 'section']
+    assert(len(sections) == 0)
+    studies = [k for k in elements if k.type == 'study']
+    assert(len(studies) == 1)
     variables = [k for k in elements if k.type == 'variable']
     assert(len(variables) > 0)

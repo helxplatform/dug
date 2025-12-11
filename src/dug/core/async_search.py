@@ -6,7 +6,7 @@ import ssl, json
 from dug.config import Config
 
 logger = logging.getLogger('dug')
-
+logger.setLevel(logging.INFO)
 
 class SearchException(Exception):
     def __init__(self, message, details):
@@ -25,15 +25,15 @@ class Search:
          * disease->phenotype->study
     """
 
-    def __init__(self, cfg: Config, indices=None):
+    def __init__(self, cfg: Config):
 
-        if indices is None:
-            # Dictionary for index names should be updated from config.
-            indices = {'concepts_index': 'concepts_index',
-                       'variables_index': 'variables_index',
-                       'studies_index': 'studies_index',
-                       'sections_index': 'sections_index',
-                       'kg_index': 'kg_index'}
+        indices = {
+            'concepts_index': cfg.concepts_index_name, 
+            'variables_index': cfg.variables_index_name,
+            'studies_index': cfg.studies_index_name,
+            'sections_index': cfg.sections_index_name,
+            'kg_index': cfg.kg_index_name
+        }
 
         self._cfg = cfg
         logger.debug(f"Connecting to elasticsearch host: "
@@ -68,7 +68,7 @@ class Search:
                                          basic_auth=(self._cfg.elastic_username,
                                                      self._cfg.elastic_password))
 
-    async def dump_concepts(self, index, query={}, size=None,
+    async def dump_concepts(self, query={}, size=None,
                             fuzziness=1, prefix_length=3):
         """
         Get everything from concept index
@@ -78,13 +78,14 @@ class Search:
         }
         body = {"query": query}
         await self.es.ping()
-        total_items = await self.es.count(body=body, index=index)
+        concepts_index = self.indices["concepts_index"]
+        total_items = await self.es.count(body=body, index=concepts_index)
         counter = 0
         all_docs = []
         async for doc in async_scan(
                 client=self.es,
                 query=body,
-                index=index
+                index=concepts_index
         ):
             if counter == size and size != 0:
                 break
@@ -235,7 +236,7 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, concept_types=None, concepts_index=None, **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, concept_types=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -255,7 +256,7 @@ class Search:
                 }
             }
         search_results = await self.es.search(
-            index=self.indices[concepts_index],
+            index=self.indices["concepts_index"],
             body=search_body,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score',
@@ -274,7 +275,7 @@ class Search:
             del search_body["post_filter"]
         total_items = await self.es.count(
             body=search_body,
-            index=self.indices[concepts_index]
+            index=self.indices["concepts_index"]
         )
 
         # Simplify the data structure we get from aggregations to put into the
@@ -290,7 +291,7 @@ class Search:
 
     async def search_variables(self, concept="", query="", size=None,
                                data_type=None, offset=0, fuzziness=1,
-                               prefix_length=3, index=None):
+                               prefix_length=3):
         """
         In variable search, the concept MUST match one of the identifiers in the list
         The query can match search_terms (hence, "should") for ranking.
@@ -307,12 +308,11 @@ class Search:
         else:
             es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
 
-        if index is None:
-            index = self.indices["variables_index"]
+        index = self.indices["variables_index"]
 
         total_items = await self.es.count(body=es_query, index=index)
         search_results = await self.es.search(
-            index=self.indices["variables_index"],
+            index=index,
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
                          'hits.hits._source', 'hits.hits._score'],
@@ -1042,7 +1042,6 @@ class Search:
             search_results_wo_hits = self.remove_hits_from_results(search_results)
             res.extend(search_results_wo_hits)
         else:
-
             search_results = helpers.async_scan(client=self.es, index=index_name, query=body)
             async for r in search_results:
                 res.append(r)
