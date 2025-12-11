@@ -58,6 +58,7 @@ async def agg_data_types():
 
 @APP.post('/search')
 async def search_concepts(search_query: SearchConceptQuery):
+    logger.info("*** HITTING SEARCH CONCEPTS")
     return {
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
