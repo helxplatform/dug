@@ -20,7 +20,7 @@ def crawler(crawler_init_args_no_graph_extraction):
 
 
 def test_init(crawler):
-    assert crawler.crawlspace == "crawl"
+    assert crawler.crawlspace == "/data/crawl/"
 
 
 def test_annotate_element(crawler):
