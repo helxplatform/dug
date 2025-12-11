@@ -170,6 +170,6 @@ class BioLinkPURLerizer:
 
         # Check to see if the prefix exists in the hash
         if prefix not in BioLinkPURLerizer.biolink_lookup:
-            return None
+            return ""
 
         return f"{BioLinkPURLerizer.biolink_lookup[prefix]}{suffix}"
