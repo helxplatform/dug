@@ -330,6 +330,7 @@ class Search:
                                   query="",
                                   parent_ids=None,
                                   element_ids=None,
+                                  filters=[],
                                   size=None,
                                   offset=0,
                                   fuzziness=1,
@@ -340,11 +341,13 @@ class Search:
                                                              query=query,
                                                              parent_ids=parent_ids,
                                                              element_ids=element_ids,
+                                                             filters=filters,
                                                              new_model=True)
         else:
             es_query = self._get_element_search_query(concept=concept,
                                                       parent_ids=parent_ids,
                                                       element_ids=element_ids,
+                                                      filters=filters,
                                                       fuzziness=fuzziness,
                                                       prefix_length=prefix_length,
                                                       query=query,
@@ -694,13 +697,55 @@ class Search:
             return program_summary
 
     @staticmethod
+    def _convert_filters_to_es(filters):
+        """
+        Converts a list of FilterCriterion dicts into ElasticSearch DSL dicts.
+        """
+        if not filters:
+            return []
+            
+        es_filters = []
+        for f in filters:
+            # Support both Pydantic model and dumped dict format
+            field = getattr(f, "field", f.get("field"))
+            operator = getattr(f, "operator", f.get("operator"))
+            value = getattr(f, "value", f.get("value"))
+
+            if operator == "eq":
+                es_filters.append({"term": { field: value }})
+            elif operator == "neq":
+                es_filters.append({
+                    "bool": {
+                        "must_not": [{ "term": { field: value } }]
+                    }
+                })
+            elif operator == "in":
+                val = value if isinstance(value, list) else [value]
+                es_filters.append({"terms": { field: val }})
+            elif operator in ["gt", "gte", "lt", "lte"]:
+                es_filters.append({"range": { field: { operator: value } }})
+            elif operator == "contains":
+                es_filters.append({"wildcard": { field: f"*{value}*" }})
+            elif operator == "exists":
+                es_filters.append({"exists": { "field": field }})
+            elif operator == "missing":
+                es_filters.append({"bool": {
+                    "must_not": [
+                        {"exists": {"field": field}}
+                    ]}
+                })
+                
+        return es_filters
+
+    @staticmethod
     def _get_element_search_query(concept,
                                   fuzziness,
                                   prefix_length,
                                   query,
                                   new_model=False,
                                   element_ids=None,
-                                  parent_ids=None):
+                                  parent_ids=None,
+                                  filters=[]):
         """Returns ES query for variable search"""
         element_name = "element_name"
         element_desc = "element_desc"
@@ -810,7 +855,8 @@ class Search:
                                 }
                             }
                         }
-                    ]
+                    ],
+                    'filter': Search._convert_filters_to_es(filters) if filters else []
                 }
             }
         }
@@ -914,7 +960,14 @@ class Search:
         return search_query
 
     @staticmethod
-    def _get_element_simple_search_query(concept, query, new_model=False, parent_ids=None, element_ids=None):
+    def _get_element_simple_search_query(
+        concept,
+        query,
+        new_model=False,
+        parent_ids=None,
+        element_ids=None,
+        filters=[]
+    ):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -963,7 +1016,8 @@ class Search:
                             },
                             "score_mode": "sum"
                         }}
-                    ]
+                    ],
+                    "filter": Search._convert_filters_to_es(filters) if filters else []
                 }
             }
         }

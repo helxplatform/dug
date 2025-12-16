@@ -341,6 +341,7 @@ async def get_variables(search_query: SearchElementQuery):
     - **parent_ids**: List of ids (ex. Study IDs, CDE IDs, CRF IDs) to get variables from.
     - **element_ids**: List of ids for variables/cdes to be fetched. If `query` is not empty, only related variables will be returned.
     - **concept**: 
+    - **filters**: List of attribute filters to execute the search using.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 

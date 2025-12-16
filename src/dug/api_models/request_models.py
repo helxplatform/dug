@@ -1,5 +1,5 @@
-from pydantic import BaseModel, field_validator
-from typing import List, Optional, Any
+from pydantic import BaseModel, Field, field_validator
+from typing import List, Optional, Literal, Union, Any
 
 class GetFromIndex(BaseModel):
     size: int = 0
@@ -28,11 +28,21 @@ class SearchKgQuery(BaseModel):
     index: str = "kg_index"
     size:int = 100
 
+FilterOperator = Literal["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"]
+
+class FilterCriterion(BaseModel):
+    field: str = Field(..., description="The metadata field to filter by (e.g., 'is_cde' or 'data_type')")
+    operator: FilterOperator = Field("eq", description="Comparison operator")
+    value: Union[str, int, float, bool, List[Any]] = Field(..., description="The value to filter against")
+
 class SearchElementQuery(BaseModel):
     query: str = None
     parent_ids: Optional[List] = None
     element_ids: Optional[List] = None
     concept: Optional[str] = None
+
+    filters: Optional[List[FilterCriterion]] = Field(default_factory=list)
+
     size: Optional[int] = 100
     offset: Optional[int] = 0
 
