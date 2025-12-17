@@ -37,6 +37,7 @@ class Config:
     studies_index_name: str='studies_index'
     sections_index_name: str='sections_index'
 
+    default_page_size: int = 100
     # Limit the size of arbitrary elasticsearch aggregations (expensive)
     aggregate_size_limit: int = 200
 
@@ -172,6 +173,7 @@ class Config:
             "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME",
             "studies_index_name": "ELASTIC_STUDIES_INDEX_NAME",
             "sections_index_name": "ELASTIC_SECTIONS_INDEX_NAME",
+            "default_page_size": "DEFAULT_PAGE_SIZE",
             "aggregate_size_limit": "AGGREGATE_SIZE_LIMIT"
         }
         kwargs = {}

@@ -359,17 +359,18 @@ class Search:
                                                       new_model=True
                                                       )
 
-        total_items = (await self.es.count(body={ "query": es_query["query"] }, index=index_name))['count']
         search_results = await self.es.search(
             index=index_name,
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source', 'hits.hits._score', 'aggregations'],
+                         'hits.hits._source', 'hits.hits._score', 'hits.total', 'aggregations'],
             from_=offset,
-            size=size or total_items
+            size=size or self._cfg.default_page_size
         )
 
+        total_items = search_results["hits"]["total"]["value"]
         search_result_hits = self.remove_hits_from_results(search_results)
+        
         formatted_aggs = {}
         if "aggregations" in search_results:
             for field_name, agg_data in search_results["aggregations"].items():
