@@ -748,6 +748,21 @@ class Search:
                         {"exists": {"field": field}}
                     ]}
                 })
+            elif operator.startswith("size"):
+                op_map = {
+                    "size_eq": "==",
+                    "size_gt": ">",
+                    "size_gte": ">=",
+                    "size_lt": "<",
+                    "size_lte": "<="
+                }
+                symbol = op_map[operator]
+                es_filters.append({"script": {
+                    "script": {
+                        "source": f"doc['{ field }'].size() { symbol } params.val",
+                        "params": { "val": int(value) }
+                    }
+                }})
                 
         return es_filters
 
@@ -1159,7 +1174,7 @@ class Search:
 
     def remove_hits_from_results(self, search_results):
         search_result_hits = []
-        if "hits" in search_results:
+        if "hits" in search_results and "hits" in search_results["hits"]:
             search_result_hits = search_results['hits']['hits']
         return search_result_hits
 

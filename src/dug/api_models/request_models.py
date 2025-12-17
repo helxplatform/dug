@@ -28,7 +28,15 @@ class SearchKgQuery(BaseModel):
     index: str = "kg_index"
     size:int = 100
 
-FilterOperator = Literal["eq", "neq", "gt", "gte", "lt", "lte", "in", "contains"]
+FilterOperator = Literal[
+    "eq", "neq",
+    "gt", "gte",
+    "lt", "lte",
+    "in", "contains",
+    "size_eq",
+    "size_gt", "size_gte",
+    "size_lt", "size_lte"
+]
 
 class FilterCriterion(BaseModel):
     field: str = Field(..., description="The metadata field to filter by (e.g., 'is_cde' or 'data_type')")
