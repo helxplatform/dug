@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional, Literal, Union, Any
+from typing import List, Dict, Optional, Literal, Union, Any
 
 class GetFromIndex(BaseModel):
     size: int = 0
@@ -41,6 +41,7 @@ class SearchElementQuery(BaseModel):
     element_ids: Optional[List] = None
     concept: Optional[str] = None
 
+    aggs: Optional[Dict[str, int]] = Field(default=None, description="Specify fields to aggregate against and the bucket limit")
     filters: Optional[List[FilterCriterion]] = Field(default_factory=list)
 
     size: Optional[int] = 100

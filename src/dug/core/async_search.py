@@ -236,7 +236,7 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, concept_types=None, **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, concept_types=None, filters=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -330,7 +330,8 @@ class Search:
                                   query="",
                                   parent_ids=None,
                                   element_ids=None,
-                                  filters=[],
+                                  filters=None,
+                                  aggs=None,
                                   size=None,
                                   offset=0,
                                   fuzziness=1,
@@ -342,31 +343,43 @@ class Search:
                                                              parent_ids=parent_ids,
                                                              element_ids=element_ids,
                                                              filters=filters,
+                                                             aggs=aggs,
+                                                             aggregate_size_limit=self._cfg.aggregate_size_limit,
                                                              new_model=True)
         else:
             es_query = self._get_element_search_query(concept=concept,
                                                       parent_ids=parent_ids,
                                                       element_ids=element_ids,
                                                       filters=filters,
+                                                      aggs=aggs,
+                                                      aggregate_size_limit=self._cfg.aggregate_size_limit,
                                                       fuzziness=fuzziness,
                                                       prefix_length=prefix_length,
                                                       query=query,
                                                       new_model=True
                                                       )
 
-        total_items = (await self.es.count(body=es_query, index=index_name))['count']
+        total_items = (await self.es.count(body={ "query": es_query["query"] }, index=index_name))['count']
         search_results = await self.es.search(
             index=index_name,
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source', 'hits.hits._score'],
+                         'hits.hits._source', 'hits.hits._score', 'aggregations'],
             from_=offset,
             size=size or total_items
         )
 
         search_result_hits = self.remove_hits_from_results(search_results)
+        formatted_aggs = {}
+        if "aggregations" in search_results:
+            for field_name, agg_data in search_results["aggregations"].items():
+                buckets = agg_data.get("buckets", [])
+                formatted_aggs[field_name] = [
+                    { "key": str(bucket["key"]), "count": bucket["doc_count"] }
+                    for bucket in buckets
+                ]
 
-        return search_result_hits, total_items
+        return search_result_hits, total_items, formatted_aggs
 
     async def search_vars_unscored(self, concept="", query="",
                                    size=None, data_type=None,
@@ -745,7 +758,9 @@ class Search:
                                   new_model=False,
                                   element_ids=None,
                                   parent_ids=None,
-                                  filters=[]):
+                                  filters=None,
+                                  aggs=None,
+                                  aggregate_size_limit=None):
         """Returns ES query for variable search"""
         element_name = "element_name"
         element_desc = "element_desc"
@@ -855,8 +870,7 @@ class Search:
                                 }
                             }
                         }
-                    ],
-                    'filter': Search._convert_filters_to_es(filters) if filters else []
+                    ]
                 }
             }
         }
@@ -902,6 +916,25 @@ class Search:
                         }
                     }
                 )
+
+        if filters:
+            post_filter = es_query \
+                .setdefault("post_filter", {}) \
+                .setdefault("bool", {}) \
+                .setdefault("filter", [])
+            post_filter.extend(Search._convert_filters_to_es(filters))
+
+        if aggs:
+            es_query["aggs"] = {}
+            for field, size_limit in aggs.items():
+                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
+                es_query["aggs"][field] = {
+                    "terms": {
+                        "field": field,
+                        "size": size
+                    }
+                }
+
 
         return es_query
 
@@ -966,7 +999,9 @@ class Search:
         new_model=False,
         parent_ids=None,
         element_ids=None,
-        filters=[]
+        filters=None,
+        aggs=None,
+        aggregate_size_limit=None
     ):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
@@ -1016,8 +1051,7 @@ class Search:
                             },
                             "score_mode": "sum"
                         }}
-                    ],
-                    "filter": Search._convert_filters_to_es(filters) if filters else []
+                    ]
                 }
             }
         }
@@ -1064,6 +1098,26 @@ class Search:
                         }
                     }
                 )
+
+        if filters:
+            post_filter = search_query \
+                .setdefault("post_filter", {}) \
+                .setdefault("bool", {}) \
+                .setdefault("filter", [])
+            post_filter.extend(Search._convert_filters_to_es(filters))
+            
+        if aggs:
+            search_query["aggs"] = {}
+            for field, size_limit in aggs.items():
+                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
+                search_query["aggs"][field] = {
+                    "terms": {
+                        "field": field,
+                        "size": size
+                    }
+                }
+
+
         return search_query
 
     async def get_elements_by_ids(self, ids: [str], index_name=""):

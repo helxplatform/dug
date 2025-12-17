@@ -359,7 +359,7 @@ async def get_variables(search_query: SearchElementQuery):
     - **metadata**: dictionary with variable information like permissible values, min-max, pattern, etc.
 
     """
-    elastic_results, total_count = await search.search_elements(
+    elastic_results, total_count, aggregations = await search.search_elements(
         config.variables_index_name,
         **search_query.dict()
     )
@@ -376,7 +376,8 @@ async def get_variables(search_query: SearchElementQuery):
             "offset": search_query.offset,
             "size": search_query.size,
         },
-        "results": results
+        "results": results,
+        "aggregations": aggregations
     }
     return res
 
@@ -416,7 +417,7 @@ async def get_studies(search_query: SearchElementQuery):
         * **Investigator/s**: List of PIs for the study.
 
     """
-    result, total_count = await search.search_elements(
+    result, total_count, aggregations = await search.search_elements(
         config.studies_index_name,
         **search_query.model_dump()
     )
@@ -435,6 +436,7 @@ async def get_studies(search_query: SearchElementQuery):
             "size": len(studies)
         },
         "results": studies,
+        "aggregations": aggregations
     }
 
 
@@ -470,7 +472,7 @@ async def get_cdes(search_query: SearchElementQuery):
         * **URLs**: List of URLs pointing to downloadable CRF forms.
 
     """
-    elastic_results, total_count = await search.search_elements(
+    elastic_results, total_count, aggregations = await search.search_elements(
         config.sections_index_name,
         **search_query.model_dump()
     )
@@ -486,7 +488,8 @@ async def get_cdes(search_query: SearchElementQuery):
             "offset": search_query.offset,
             "size": search_query.size,
         },
-        "results": results
+        "results": results,
+        "aggregations": aggregations
     }
     return res
 
