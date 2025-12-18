@@ -32,7 +32,8 @@ FilterOperator = Literal[
     "eq", "neq",
     "gt", "gte",
     "lt", "lte",
-    "in", "contains",
+    "in",
+    "exists", "missing",
     "size_eq",
     "size_gt", "size_gte",
     "size_lt", "size_lte"
@@ -41,7 +42,7 @@ FilterOperator = Literal[
 class FilterCriterion(BaseModel):
     field: str = Field(..., description="The metadata field to filter by (e.g., 'is_cde' or 'data_type')")
     operator: FilterOperator = Field("eq", description="Comparison operator")
-    value: Union[str, int, float, bool, List[Any]] = Field(..., description="The value to filter against")
+    value: Optional[Union[str, int, float, bool, List[Any]]] = Field(default=None, description="The value to filter against")
 
 class SearchElementQuery(BaseModel):
     query: str = None

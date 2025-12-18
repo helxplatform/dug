@@ -32,10 +32,8 @@ class ConceptResponse(ElasticDugElementResult, DugConcept):
     concepts: None = Field(default=None, exclude=True)
 
 
-class ConceptsAPIResponse(BaseModel):
-    metadata: ElasticResultMetaData
+class ConceptsAPIResponse(DugAPIResponse):
     results: List[ConceptResponse]
-    concept_types: dict = Field(default="")
 
 
 class VariableResponse(ElasticDugElementResult, DugVariable):

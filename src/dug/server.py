@@ -276,7 +276,7 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
 
 
 @APP.post('/concepts', tags=['v2.0'], response_model=ConceptsAPIResponse)
-async def get_concepts(search_query: SearchConceptQuery):
+async def get_concepts(search_query: SearchElementQuery):
     """
     Search for concepts that are related to the search query passed in `query`
 
@@ -304,15 +304,17 @@ async def get_concepts(search_query: SearchConceptQuery):
     - **offset**
     - **size**
     """
-    concepts, total_count, concept_types = await search.search_concepts(**search_query.model_dump(exclude={"index"}))
-    concepts_wo_hits = search.remove_hits_from_results(concepts)
+    concepts, total_count, aggregations = await search.search_elements(
+        config.concepts_index_name,
+        **search_query.model_dump(),
+        explain=True
+    )
     res_concepts = []
-    if concepts_wo_hits:
-        for concept in concepts_wo_hits:
-            item = concept["_source"]
-            item["score"] = concept["_score"]
-            item["explanation"] = concept["_explanation"]
-            res_concepts.append(item)
+    for concept in concepts:
+        item = concept["_source"]
+        item["score"] = concept["_score"]
+        item["explanation"] = concept["_explanation"]
+        res_concepts.append(item)
 
     res = {
         "metadata": {
@@ -321,7 +323,7 @@ async def get_concepts(search_query: SearchConceptQuery):
             "size": search_query.size,
         },
         "results": res_concepts,
-        "concept_types": concept_types
+        "aggregations": aggregations
     }
     return res
 

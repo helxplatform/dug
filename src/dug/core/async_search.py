@@ -122,7 +122,12 @@ class Search:
         return data_type_list
 
     @staticmethod
-    def _get_concepts_query(query, fuzziness=1, prefix_length=3):
+    def _get_concepts_query(query,
+                            fuzziness=1,
+                            prefix_length=3,
+                            filters=None,
+                            aggs=None,
+                            aggregate_size_limit=None):
         "Static data structure populator, pulled for easier testing"
         query_object = {
             "query": {
@@ -229,6 +234,25 @@ class Search:
                 }
             }
         }
+
+        if filters:
+            post_filter = query_object \
+                .setdefault("post_filter", {}) \
+                .setdefault("bool", {}) \
+                .setdefault("filter", [])
+            post_filter.extend(Search._convert_filters_to_es(filters))
+
+        if aggs:
+            query_object["aggs"] = {}
+            for field, size_limit in aggs.items():
+                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
+                query_object["aggs"][field] = {
+                    "terms": {
+                        "field": field,
+                        "size": size
+                    }
+                }
+
         return query_object
 
     def is_simple_search_query(self, query):
@@ -236,7 +260,7 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, concept_types=None, filters=None, **kwargs):
+    async def search_concepts(self, query, offset=0, size=None, concept_types=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
@@ -325,45 +349,71 @@ class Search:
         return self._make_result(data_type, search_result_hits, total_items, True)
 
     async def search_elements(self,
-                                  index_name,
-                                  concept="",
-                                  query="",
-                                  parent_ids=None,
-                                  element_ids=None,
-                                  filters=None,
-                                  aggs=None,
-                                  size=None,
-                                  offset=0,
-                                  fuzziness=1,
-                                  prefix_length=3):
+                              index_name,
+                              concept="",
+                              query="",
+                              parent_ids=None,
+                              element_ids=None,
+                              filters=None,
+                              aggs=None,
+                              size=None,
+                              offset=0,
+                              fuzziness=1,
+                              prefix_length=3,
+                              explain=False):
+        is_concepts_search = index_name == self._cfg.concepts_index_name
+        is_simple_search = self.is_simple_search_query(query)
 
-        if self.is_simple_search_query(query):
-            es_query = self._get_element_simple_search_query(concept=concept,
-                                                             query=query,
-                                                             parent_ids=parent_ids,
-                                                             element_ids=element_ids,
-                                                             filters=filters,
-                                                             aggs=aggs,
-                                                             aggregate_size_limit=self._cfg.aggregate_size_limit,
-                                                             new_model=True)
+        if is_concepts_search:
+            if is_simple_search:
+                es_query = self.get_simple_concept_search_query(
+                    query=query,
+                    filters=filters,
+                    aggs=aggs,
+                    aggregate_size_limit=self._cfg.aggregate_size_limit
+                )
+            else:
+                es_query = self._get_concepts_query(
+                    query=query,
+                    fuzziness=fuzziness,
+                    prefix_length=prefix_length,
+                    filters=filters,
+                    aggs=aggs,
+                    aggregate_size_limit=self._cfg.aggregate_size_limit
+                )
         else:
-            es_query = self._get_element_search_query(concept=concept,
-                                                      parent_ids=parent_ids,
-                                                      element_ids=element_ids,
-                                                      filters=filters,
-                                                      aggs=aggs,
-                                                      aggregate_size_limit=self._cfg.aggregate_size_limit,
-                                                      fuzziness=fuzziness,
-                                                      prefix_length=prefix_length,
-                                                      query=query,
-                                                      new_model=True
-                                                      )
+            if is_simple_search:
+                es_query = self._get_element_simple_search_query(
+                    concept=concept,
+                    query=query,
+                    parent_ids=parent_ids,
+                    element_ids=element_ids,
+                    filters=filters,
+                    aggs=aggs,
+                    aggregate_size_limit=self._cfg.aggregate_size_limit,
+                    new_model=True
+                )
+            else:
+                es_query = self._get_element_search_query(
+                    concept=concept,
+                    parent_ids=parent_ids,
+                    element_ids=element_ids,
+                    filters=filters,
+                    aggs=aggs,
+                    aggregate_size_limit=self._cfg.aggregate_size_limit,
+                    fuzziness=fuzziness,
+                    prefix_length=prefix_length,
+                    query=query,
+                    new_model=True
+                )
 
         search_results = await self.es.search(
             index=index_name,
             body=es_query,
             filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source', 'hits.hits._score', 'hits.total', 'aggregations'],
+                         'hits.hits._source', 'hits.hits._score', 'hits.total',
+                         'hits.hits._explanation', 'aggregations'],
+            explain=explain,
             from_=offset,
             size=size or self._cfg.default_page_size
         )
@@ -738,8 +788,6 @@ class Search:
                 es_filters.append({"terms": { field: val }})
             elif operator in ["gt", "gte", "lt", "lte"]:
                 es_filters.append({"range": { field: { operator: value } }})
-            elif operator == "contains":
-                es_filters.append({"wildcard": { field: f"*{value}*" }})
             elif operator == "exists":
                 es_filters.append({"exists": { "field": field }})
             elif operator == "missing":
@@ -955,7 +1003,7 @@ class Search:
         return es_query
 
     @staticmethod
-    def get_simple_concept_search_query(query):
+    def get_simple_concept_search_query(query, filters=None, aggs=None, aggregate_size_limit=None):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -1006,6 +1054,25 @@ class Search:
                 }
             }
         }
+
+        if filters:
+            post_filter = search_query \
+                .setdefault("post_filter", {}) \
+                .setdefault("bool", {}) \
+                .setdefault("filter", [])
+            post_filter.extend(Search._convert_filters_to_es(filters))
+
+        if aggs:
+            search_query["aggs"] = {}
+            for field, size_limit in aggs.items():
+                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
+                search_query["aggs"][field] = {
+                    "terms": {
+                        "field": field,
+                        "size": size
+                    }
+                }
+
         return search_query
 
     @staticmethod
