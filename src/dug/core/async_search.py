@@ -409,20 +409,16 @@ class Search:
                     new_model=True
                 )
 
-        try:
-            search_results = await self.es.search(
-                index=index_name,
-                body=es_query,
-                filter_path=['hits.hits._id', 'hits.hits._type',
-                            'hits.hits._source', 'hits.hits._score', 'hits.total',
-                            'hits.hits._explanation', 'aggregations'],
-                explain=explain,
-                from_=offset,
-                size=size or self._cfg.default_page_size
-            )
-        except Exception as e:
-            print(e.body)
-            raise e
+        search_results = await self.es.search(
+            index=index_name,
+            body=es_query,
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                        'hits.hits._source', 'hits.hits._score', 'hits.total',
+                        'hits.hits._explanation', 'aggregations'],
+            explain=explain,
+            from_=offset,
+            size=size or self._cfg.default_page_size
+        )
 
         total_items = search_results["hits"]["total"]["value"]
         search_result_hits = self.remove_hits_from_results(search_results)
