@@ -240,7 +240,9 @@ class Search:
                 .setdefault("post_filter", {}) \
                 .setdefault("bool", {}) \
                 .setdefault("filter", [])
-            post_filter.extend(Search._convert_filters_to_es(filters))
+            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
+            post_filter.extend(es_filters)
+            query_object.setdefault("runtime_mappings", {}).update(es_rt_mappings)
 
         if aggs:
             query_object["aggs"] = {}
@@ -361,7 +363,7 @@ class Search:
                               fuzziness=1,
                               prefix_length=3,
                               explain=False):
-        is_concepts_search = index_name == self._cfg.concepts_index_name
+        is_concepts_search = index_name == self.indices["concepts_index"]
         is_simple_search = self.is_simple_search_query(query)
 
         if is_concepts_search:
@@ -407,16 +409,20 @@ class Search:
                     new_model=True
                 )
 
-        search_results = await self.es.search(
-            index=index_name,
-            body=es_query,
-            filter_path=['hits.hits._id', 'hits.hits._type',
-                         'hits.hits._source', 'hits.hits._score', 'hits.total',
-                         'hits.hits._explanation', 'aggregations'],
-            explain=explain,
-            from_=offset,
-            size=size or self._cfg.default_page_size
-        )
+        try:
+            search_results = await self.es.search(
+                index=index_name,
+                body=es_query,
+                filter_path=['hits.hits._id', 'hits.hits._type',
+                            'hits.hits._source', 'hits.hits._score', 'hits.total',
+                            'hits.hits._explanation', 'aggregations'],
+                explain=explain,
+                from_=offset,
+                size=size or self._cfg.default_page_size
+            )
+        except Exception as e:
+            print(e.body)
+            raise e
 
         total_items = search_results["hits"]["total"]["value"]
         search_result_hits = self.remove_hits_from_results(search_results)
@@ -766,9 +772,10 @@ class Search:
         Converts a list of FilterCriterion dicts into ElasticSearch DSL dicts.
         """
         if not filters:
-            return []
+            return [], {}
             
         es_filters = []
+        runtime_mappings = {}
         for f in filters:
             # Support both Pydantic model and dumped dict format
             field = getattr(f, "field", f.get("field"))
@@ -797,22 +804,46 @@ class Search:
                     ]}
                 })
             elif operator.startswith("size"):
-                op_map = {
-                    "size_eq": "==",
-                    "size_gt": ">",
-                    "size_gte": ">=",
-                    "size_lt": "<",
-                    "size_lte": "<="
-                }
-                symbol = op_map[operator]
-                es_filters.append({"script": {
-                    "script": {
-                        "source": f"doc['{ field }'].size() { symbol } params.val",
-                        "params": { "val": int(value) }
+                _, es_operator = operator.split("_")
+                runtime_field_name = f"{field}_calculated_size"
+                script_source = """
+                    def path = /\\./.split(params.field);
+                    def obj = params._source;
+                    for (part in path) {
+                        if (obj == null) break;
+                        obj = obj[part];
                     }
-                }})
+                    if (obj instanceof Map) {
+                        emit(obj.size());
+                    } else if (obj instanceof List) {
+                        emit(obj.size());
+                    } else {
+                        emit(0);
+                    }
+                """
+                runtime_mappings[runtime_field_name] = {
+                    "type": "long",
+                    "script": {
+                        "source": script_source,
+                        "params": {"field": field}
+                    }
+                }
+                if es_operator == "eq":
+                    es_filters.append({
+                        "term": {
+                            runtime_field_name: int(value)
+                        }
+                    })
+                else:
+                    es_filters.append({
+                        "range": {
+                            runtime_field_name: {
+                                es_operator: int(value)
+                            }
+                        }
+                    })
                 
-        return es_filters
+        return es_filters, runtime_mappings
 
     @staticmethod
     def _get_element_search_query(concept,
@@ -986,7 +1017,9 @@ class Search:
                 .setdefault("post_filter", {}) \
                 .setdefault("bool", {}) \
                 .setdefault("filter", [])
-            post_filter.extend(Search._convert_filters_to_es(filters))
+            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
+            post_filter.extend(es_filters)
+            es_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
 
         if aggs:
             es_query["aggs"] = {}
@@ -1060,7 +1093,9 @@ class Search:
                 .setdefault("post_filter", {}) \
                 .setdefault("bool", {}) \
                 .setdefault("filter", [])
-            post_filter.extend(Search._convert_filters_to_es(filters))
+            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
+            post_filter.extend(es_filters)
+            search_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
 
         if aggs:
             search_query["aggs"] = {}
@@ -1187,7 +1222,9 @@ class Search:
                 .setdefault("post_filter", {}) \
                 .setdefault("bool", {}) \
                 .setdefault("filter", [])
-            post_filter.extend(Search._convert_filters_to_es(filters))
+            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
+            post_filter.extend(es_filters)
+            search_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
             
         if aggs:
             search_query["aggs"] = {}
