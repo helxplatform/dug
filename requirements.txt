@@ -28,4 +28,4 @@ retrying
 click
 httpx
 bmt==1.4.4
-urllib3
+urllib3>=2.6.2
