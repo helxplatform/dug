@@ -1,10 +1,10 @@
 PYTHON       = $(shell which python3)
 VERSION_FILE = ./src/dug/_version.py
 VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
-DOCKER_REPO  = docker.io
-DOCKER_OWNER = rti
+DOCKER_REPO  = containers.renci.org
+DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
-DOCKER_TAG   = ${VERSION}
+DOCKER_TAG   = data-model-2.0-9-9
 DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 export PYTHONPATH = $(shell echo ${PWD})/src
 
@@ -48,7 +48,7 @@ coverage:
 #build: Build Docker image
 build:
 	echo "Building docker image: ${DOCKER_IMAGE}"
-	docker build -t ${DOCKER_IMAGE} -f Dockerfile .
+	docker build --platform=linux/amd64 -t ${DOCKER_IMAGE} -f Dockerfile .
 	echo "Successfully built: ${DOCKER_IMAGE}"
 
 #publish: Build and push docker image

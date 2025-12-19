@@ -27,11 +27,10 @@ class APISearchTestCase(TestCase):
             "index": "concepts_index",
             "query": "brain",
             "offset": 0,
-            "size":20,
-            "types": types
+            "concept_types": types
         }
         try:
-            response = client.post("/search", json=body)
+            response = client.post("/concepts", json=body)
         except ConnectionError:
             self.fail("For the integration test, a populated elasticsearch "
                       "instance must be available and configured in the "
