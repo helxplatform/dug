@@ -4,7 +4,7 @@ VERSION      = $(shell cut -d " " -f 3 ${VERSION_FILE})
 DOCKER_REPO  = containers.renci.org
 DOCKER_OWNER = helxplatform
 DOCKER_APP	 = dug
-DOCKER_TAG   = data-model-2.0-9-9
+DOCKER_TAG   = ${VERSION}
 DOCKER_IMAGE = ${DOCKER_OWNER}/${DOCKER_APP}:$(DOCKER_TAG)
 export PYTHONPATH = $(shell echo ${PWD})/src
 
