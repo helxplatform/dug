@@ -283,8 +283,9 @@ async def get_concepts(search_query: SearchElementQuery):
     Parameters:
     - **query**: Text to get related concepts for. To use a full string in search, encloset text in \"\".
     - **concept_types**: Optional list of concept types to return. Acceptable values can be `disease`, `phenotypic feature`, `drug`, `biological process`, `anatomical entity` etc.
-    - **filters**: List of attribute filters to execute the search using.
-    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -345,8 +346,9 @@ async def get_variables(search_query: SearchElementQuery):
     - **parent_ids**: List of ids (ex. Study IDs, CDE IDs, CRF IDs) to get variables from.
     - **element_ids**: List of ids for variables/cdes to be fetched. If `query` is not empty, only related variables will be returned.
     - **concept**: 
-    - **filters**: List of attribute filters to execute the search using.
-    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -401,8 +403,9 @@ async def get_studies(search_query: SearchElementQuery):
     - **parent_ids**: List of ids to get studies from. (** Parents are empty for studies for now)
     - **element_ids**: List of study ids be fetched. If `query` is not empty, only related studies to the query string will be returned.
     - **concept**: 
-    - **filters**: List of attribute filters to execute the search using.
-    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -461,8 +464,9 @@ async def get_cdes(search_query: SearchElementQuery):
     - **parent_ids**: List of study IDs which use this CDE/CRF.
     - **element_ids**: List of study ids be fetched. If `query` is not empty, only related CDEs to the query string will be returned.
     - **concept**: 
-    - **filters**: List of attribute filters to execute the search using.
-    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
