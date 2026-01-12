@@ -208,6 +208,8 @@ class Index:
                     'publications': {"type": "text", "analyzer": "std_with_stopwords"},
                     'variable_list': {"type": "text", "analyzer": "std_with_stopwords",
                                       "fields": {"keyword": {"type": "keyword"}}},
+                    'section_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
                     'abstract': {"type": "text", "analyzer": "std_with_stopwords"},
                     "metadata": {
                         "type": "object",
