@@ -1,12 +1,16 @@
 from dug.core.parsers._base import *
 from pydantic import BaseModel, model_serializer
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 
 class ElasticResultMetaData(BaseModel):
     total_count: int
     offset: int
     size: int
+
+class ElasticAggregationBucket(BaseModel):
+    key: str
+    count: int
 
 
 class ElasticDugElementResult(BaseModel):
@@ -20,6 +24,7 @@ class ElasticDugElementResult(BaseModel):
 class DugAPIResponse(BaseModel):
     results: List[ElasticDugElementResult]
     metadata: Optional[ElasticResultMetaData] = Field(default_factory=dict)
+    aggregations: Optional[Dict[str, List[ElasticAggregationBucket]]] = Field(default=None)
 
 
 class ConceptResponse(ElasticDugElementResult, DugConcept):
@@ -27,10 +32,8 @@ class ConceptResponse(ElasticDugElementResult, DugConcept):
     concepts: None = Field(default=None, exclude=True)
 
 
-class ConceptsAPIResponse(BaseModel):
-    metadata: ElasticResultMetaData
+class ConceptsAPIResponse(DugAPIResponse):
     results: List[ConceptResponse]
-    concept_types: dict = Field(default="")
 
 
 class VariableResponse(ElasticDugElementResult, DugVariable):

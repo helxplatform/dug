@@ -276,13 +276,16 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
 
 
 @APP.post('/concepts', tags=['v2.0'], response_model=ConceptsAPIResponse)
-async def get_concepts(search_query: SearchConceptQuery):
+async def get_concepts(search_query: SearchElementQuery):
     """
     Search for concepts that are related to the search query passed in `query`
 
     Parameters:
     - **query**: Text to get related concepts for. To use a full string in search, encloset text in \"\".
     - **concept_types**: Optional list of concept types to return. Acceptable values can be `disease`, `phenotypic feature`, `drug`, `biological process`, `anatomical entity` etc.
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -304,15 +307,17 @@ async def get_concepts(search_query: SearchConceptQuery):
     - **offset**
     - **size**
     """
-    concepts, total_count, concept_types = await search.search_concepts(**search_query.model_dump(exclude={"index"}))
-    concepts_wo_hits = search.remove_hits_from_results(concepts)
+    concepts, total_count, aggregations = await search.search_elements(
+        config.concepts_index_name,
+        **search_query.model_dump(),
+        explain=True
+    )
     res_concepts = []
-    if concepts_wo_hits:
-        for concept in concepts_wo_hits:
-            item = concept["_source"]
-            item["score"] = concept["_score"]
-            item["explanation"] = concept["_explanation"]
-            res_concepts.append(item)
+    for concept in concepts:
+        item = concept["_source"]
+        item["score"] = concept["_score"]
+        item["explanation"] = concept["_explanation"]
+        res_concepts.append(item)
 
     res = {
         "metadata": {
@@ -321,7 +326,7 @@ async def get_concepts(search_query: SearchConceptQuery):
             "size": search_query.size,
         },
         "results": res_concepts,
-        "concept_types": concept_types
+        "aggregations": aggregations
     }
     return res
 
@@ -341,6 +346,9 @@ async def get_variables(search_query: SearchElementQuery):
     - **parent_ids**: List of ids (ex. Study IDs, CDE IDs, CRF IDs) to get variables from.
     - **element_ids**: List of ids for variables/cdes to be fetched. If `query` is not empty, only related variables will be returned.
     - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -358,7 +366,7 @@ async def get_variables(search_query: SearchElementQuery):
     - **metadata**: dictionary with variable information like permissible values, min-max, pattern, etc.
 
     """
-    elastic_results, total_count = await search.search_elements(
+    elastic_results, total_count, aggregations = await search.search_elements(
         config.variables_index_name,
         **search_query.dict()
     )
@@ -375,7 +383,8 @@ async def get_variables(search_query: SearchElementQuery):
             "offset": search_query.offset,
             "size": search_query.size,
         },
-        "results": results
+        "results": results,
+        "aggregations": aggregations
     }
     return res
 
@@ -394,6 +403,9 @@ async def get_studies(search_query: SearchElementQuery):
     - **parent_ids**: List of ids to get studies from. (** Parents are empty for studies for now)
     - **element_ids**: List of study ids be fetched. If `query` is not empty, only related studies to the query string will be returned.
     - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -415,7 +427,7 @@ async def get_studies(search_query: SearchElementQuery):
         * **Investigator/s**: List of PIs for the study.
 
     """
-    result, total_count = await search.search_elements(
+    result, total_count, aggregations = await search.search_elements(
         config.studies_index_name,
         **search_query.model_dump()
     )
@@ -434,6 +446,7 @@ async def get_studies(search_query: SearchElementQuery):
             "size": len(studies)
         },
         "results": studies,
+        "aggregations": aggregations
     }
 
 
@@ -451,6 +464,9 @@ async def get_cdes(search_query: SearchElementQuery):
     - **parent_ids**: List of study IDs which use this CDE/CRF.
     - **element_ids**: List of study ids be fetched. If `query` is not empty, only related CDEs to the query string will be returned.
     - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -469,7 +485,7 @@ async def get_cdes(search_query: SearchElementQuery):
         * **URLs**: List of URLs pointing to downloadable CRF forms.
 
     """
-    elastic_results, total_count = await search.search_elements(
+    elastic_results, total_count, aggregations = await search.search_elements(
         config.sections_index_name,
         **search_query.model_dump()
     )
@@ -485,7 +501,8 @@ async def get_cdes(search_query: SearchElementQuery):
             "offset": search_query.offset,
             "size": search_query.size,
         },
-        "results": results
+        "results": results,
+        "aggregations": aggregations
     }
     return res
 
