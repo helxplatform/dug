@@ -420,11 +420,14 @@ async def get_studies(search_query: SearchElementQuery):
     - **parents**: List of parent IDs (to be used in future)
     - **publications**: List of publications
     - **variable_list**: List of varible IDs belonging to the study.
+    - **section_list**: List of IDs for sections/standardized questionnaires/CRFs used by this study.
     - **metadata**: dictionary with study information. 
         * **Project Start Date**
         * **Project End Date**
         * **Institution**
         * **Investigator/s**: List of PIs for the study.
+        * **Data Available**: Indicator of study data availability.
+        * **Data Package Links**: List of links to the data packages.
 
     """
     result, total_count, aggregations = await search.search_elements(

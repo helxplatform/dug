@@ -198,6 +198,7 @@ def test_dug_study_searchable_dict():
         'programs': [],
         'publications': [],
         'variable_list': [],
+        'section_list': [],
         'abstract': study_abstract
     }
 
