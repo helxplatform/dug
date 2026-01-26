@@ -1066,7 +1066,7 @@ class Search:
 
         return res_variables
 
-    async def get_like_this_elements(self, index_name: str, element_id:str, offset:int, size:int):
+    async def get_like_this_elements(self, index_name: str, element_id:str, size:int, offset:int):
 
         es_query = {
             "query": {
