@@ -1071,6 +1071,7 @@ class Search:
         es_query = {
             "query": {
                 "dis_max": {
+                    "tie_breaker": 0.1,
                     "queries": [
                         {
                             "more_like_this": {
@@ -1088,17 +1089,13 @@ class Search:
                                 ],
                                 "min_term_freq": 1,
                                 "max_query_terms": 12,
-                                "boost": 100
+                                "boost": 10
 
                             }
                         },
                         {
                             "more_like_this": {
-                                "fields": [
-
-                                    "search_terms",
-                                    "optional_search_terms"
-                                ],
+                                "fields": ["search_terms"],
                                 "like": [
                                     {
                                         "_index": index_name,
@@ -1106,7 +1103,22 @@ class Search:
                                     }
                                 ],
                                 "min_term_freq": 1,
-                                "max_query_terms": 12,
+                                "max_query_terms": 8,
+                                "boost": 3.0
+                            }
+                        },
+                        {
+                            "more_like_this": {
+                                "fields": ["optional_search_terms"],
+                                "like": [
+                                    {
+                                        "_index": index_name,
+                                        "_id": element_id,
+                                    }
+                                ],
+                                "min_term_freq": 1,
+                                "max_query_terms": 6,
+                                "boost": 1.0
                             }
                         }
                     ]
