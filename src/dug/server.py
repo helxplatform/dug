@@ -565,5 +565,47 @@ async def get_program_list(use_elasticsearch: bool = False):
         "result": result,
         "status": "success"
     }
+
+
+@APP.post('/more_like_this')
+async def get_more_like_this(query: MoreLikeThisQuery):
+    """
+    Handles the retrieval of elements similar to a specified element in a given index.
+
+    Parameters:
+        query (MoreLikeThisQuery): The query object containing the index name, element ID,
+        size, and offset.
+
+    Returns:
+        dict: A dictionary containing metadata and a list of similar elements.
+    """
+    if query.index_name not in ["studies_index", "variables_index", "sections_index"]:
+        return {"message": "Invalid index name"}
+    if not query.element_id:
+        return {"message": "Invalid element id"}
+
+    result, total_count = await search.get_like_this_elements(
+        query.index_name,
+        query.element_id,
+        query.size,
+        query.offset
+    )
+
+    items = []
+    for r in result:
+        item = r["_source"]
+        item["url"] = r["_source"]["action"]
+        items.append(item)
+
+    return {
+        "metadata": {
+            "total_count": total_count,
+            "offset": 0,
+            "size": len(items)
+        },
+        "results": items,
+    }
+
+
 if __name__ == '__main__':
     uvicorn.run(APP,port=8181)

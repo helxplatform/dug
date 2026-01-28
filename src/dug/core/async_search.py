@@ -1289,3 +1289,77 @@ class Search:
             res_variables.append(item)
 
         return res_variables
+
+    async def get_like_this_elements(self, index_name: str, element_id:str, size:int, offset:int):
+
+        es_query = {
+            "query": {
+                "dis_max": {
+                    "tie_breaker": 0.1,
+                    "queries": [
+                        {
+                            "more_like_this": {
+                                "fields": [
+                                    "name",
+                                    "description",
+                                    "search_terms",
+                                    "optional_search_terms"
+                                ],
+                                "like": [
+                                    {
+                                        "_index": index_name,
+                                        "_id": element_id,
+                                    }
+                                ],
+                                "min_term_freq": 1,
+                                "max_query_terms": 12,
+                                "boost": 10
+
+                            }
+                        },
+                        {
+                            "more_like_this": {
+                                "fields": ["search_terms"],
+                                "like": [
+                                    {
+                                        "_index": index_name,
+                                        "_id": element_id,
+                                    }
+                                ],
+                                "min_term_freq": 1,
+                                "max_query_terms": 8,
+                                "boost": 3.0
+                            }
+                        },
+                        {
+                            "more_like_this": {
+                                "fields": ["optional_search_terms"],
+                                "like": [
+                                    {
+                                        "_index": index_name,
+                                        "_id": element_id,
+                                    }
+                                ],
+                                "min_term_freq": 1,
+                                "max_query_terms": 6,
+                                "boost": 1.0
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        total_items = (await self.es.count(body=es_query, index=index_name))['count']
+        search_results = await self.es.search(
+            index=index_name,
+            body=es_query,
+            filter_path=['hits.hits._id', 'hits.hits._type',
+                         'hits.hits._source', 'hits.hits._score'],
+            from_=offset,
+            size=size or total_items
+        )
+
+        search_result_hits = self.remove_hits_from_results(search_results)
+
+        return search_result_hits, total_items

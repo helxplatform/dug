@@ -68,3 +68,11 @@ class VariableIds(BaseModel):
     List of variable IDs
     """
     ids: Optional[List[str]] = []
+
+
+class MoreLikeThisQuery(BaseModel):
+    element_id: str = None
+    index_name: str = None
+    size: Optional[int] = 100
+    offset: Optional[int] = 0
+
