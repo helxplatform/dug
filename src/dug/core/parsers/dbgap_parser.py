@@ -5,12 +5,12 @@ from xml.etree import ElementTree as ET
 
 from dug import utils as utils
 from pathlib import Path
-from ._base import DugElement, FileParser, Indexable, InputFile
+from ._base import DugVariable, DugStudy, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 
 
-class DbGaPParser(FileParser):
+class BDCParser(FileParser):
     # Class for parsers DBGaP Data dictionary into a set of Dug Elements
 
     @staticmethod
@@ -23,19 +23,37 @@ class DbGaPParser(FileParser):
         return None
     
     @staticmethod
-    def parse_study_name_from_gap_exchange_file(filepath: Path) -> str:
-        # Parse the study name from the GapExchange file adjacent to the file passed in
+    def _find_gap_exchange_file(filepath: Path):
+        # Find the GapExchange file adjacent to the file passed in
         parent_dir = filepath.parent.absolute()
         gap_exchange_filename_str = "GapExchange_" + parent_dir.name
-        gap_exchange_filepath = None
         for item in os.scandir(parent_dir):
             if item.is_file and gap_exchange_filename_str in item.name:
-                gap_exchange_filepath = item.path
+                return item.path
+        return None
+
+    @staticmethod
+    def parse_study_name_from_gap_exchange_file(filepath: Path) -> str:
+        # Parse the study name from the GapExchange file adjacent to the file passed in
+        gap_exchange_filepath = BDCParser._find_gap_exchange_file(filepath)
         if gap_exchange_filepath is None:
             return None
         tree = ET.parse(gap_exchange_filepath, ET.XMLParser(encoding='iso-8859-5'))
         tree_root = tree.getroot()
         return tree_root.find("./Studies/Study/Configuration/StudyNameEntrez").text
+
+    @staticmethod
+    def parse_study_description_from_gap_exchange_file(filepath: Path) -> str:
+        # Parse the study description from the GapExchange file adjacent to the file passed in
+        gap_exchange_filepath = BDCParser._find_gap_exchange_file(filepath)
+        if gap_exchange_filepath is None:
+            return ""
+        tree = ET.parse(gap_exchange_filepath, ET.XMLParser(encoding='iso-8859-5'))
+        tree_root = tree.getroot()
+        desc_elem = tree_root.find("./Studies/Study/Configuration/Description")
+        if desc_elem is not None and desc_elem.text:
+            return desc_elem.text.strip()
+        return ""
 
 
     def _get_element_type(self):
@@ -49,8 +67,9 @@ class DbGaPParser(FileParser):
             return []
         tree = ET.parse(input_file, ET.XMLParser(encoding='iso-8859-5'))
         root = tree.getroot()
-        study_id = root.attrib['study_id']
-        participant_set = root.get('participant_set','0')
+        raw_study_id = root.attrib['study_id']
+        participant_set = root.get('participant_set', '0')
+        study_id = f"{raw_study_id}.p{participant_set}"
 
         # Parse study name from GapExchange file, and if that fails try from file handle
         # If still None, raise an error message
@@ -62,99 +81,119 @@ class DbGaPParser(FileParser):
             logger.error(err_msg)
             raise IOError(err_msg)
 
-        elements = []
+        # Parse study description from GapExchange file if available
+        study_description = self.parse_study_description_from_gap_exchange_file(Path(input_file))
+
+        variables = []
+        variable_ids = []
         for variable in root.iter('variable'):
-            elem = DugElement(elem_id=f"{variable.attrib['id']}.p{participant_set}",
-                              name=variable.find('name').text,
-                              desc=variable.find('description').text.lower(),
-                              elem_type=self._get_element_type(),
-                              collection_id=f"{study_id}.p{participant_set}",
-                              collection_name=study_name)
+            var_id = f"{variable.attrib['id']}.p{participant_set}"
+            desc_elem = variable.find('description')
+            desc_text = desc_elem.text.lower() if desc_elem is not None and desc_elem.text else ""
+            type_elem = variable.find('type')
+            data_type = type_elem.text if type_elem is not None and type_elem.text else "text"
 
-            # Create DBGaP links as study/variable actions
-            elem.collection_action = utils.get_dbgap_study_link(study_id=elem.collection_id)
-            elem.action = utils.get_dbgap_var_link(study_id=elem.collection_id,
-                                                   variable_id=elem.id.split(".")[0].split("phv")[1])
-            # Add to set of variables
-            logger.debug(elem)
-            elements.append(elem)
+            var = DugVariable(
+                id=var_id,
+                name=variable.find('name').text,
+                description=desc_text,
+                action=utils.get_dbgap_var_link(study_id=study_id,
+                                                variable_id=var_id.split(".")[0].split("phv")[1]),
+                parents=[study_id],
+                parent_type="study",
+                programs=[self._get_element_type()],
+                data_type=data_type
+            )
 
-        # You don't actually create any concepts
-        return elements
+            logger.debug(var)
+            variables.append(var)
+            variable_ids.append(var_id)
+
+        # Create study object
+        study = DugStudy(
+            id=study_id,
+            name=study_name,
+            description=study_description,
+            action=utils.get_dbgap_study_link(study_id=study_id),
+            programs=[self._get_element_type()],
+            variable_list=variable_ids
+        )
+
+        return [study] + variables
 
 
-class AnvilDbGaPParser(DbGaPParser):
+class AnvilBDCParser(BDCParser):
     def _get_element_type(self):
         return "AnVIL"
 
 
-class CRDCDbGaPParser(DbGaPParser):
+class CRDCBDCParser(BDCParser):
     def _get_element_type(self):
         return "Cancer Data Commons"
 
 
-class KFDRCDbGaPParser(DbGaPParser):
+class KFDRCBDCParser(BDCParser):
     def _get_element_type(self):
         return "Kids First"
 
 
-class BioLINCCDbGaPParser(DbGaPParser):
+class BioLINCCBDCParser(BDCParser):
     def _get_element_type(self):
         return "BioLINCC"
 
 
-class Covid19DbGaPParser(DbGaPParser):
+class Covid19BDCParser(BDCParser):
     def _get_element_type(self):
         return "COVID19"
 
 
-class DIRDbGaPParser(DbGaPParser):
+class DIRBDCParser(BDCParser):
     def _get_element_type(self):
         return "DIR"
 
 
-class LungMAPDbGaPParser(DbGaPParser):
+class LungMAPBDCParser(BDCParser):
     def _get_element_type(self):
         return "LungMAP"
 
 
-class NSRRDbGaPParser(DbGaPParser):
+class NSRRBDCParser(BDCParser):
     def _get_element_type(self):
         return "NSRR"
 
 
-class ParentDBGaPParser(DbGaPParser):
+class ParentDBGaPParser(BDCParser):
     def _get_element_type(self):
         return "Parent"
 
 
-class PCGCDbGaPParser(DbGaPParser):
+class PCGCBDCParser(BDCParser):
     def _get_element_type(self):
         return "PCGC"
 
 
-class RECOVERDBGaPParser(DbGaPParser):
+class RECOVERDBGaPParser(BDCParser):
     def _get_element_type(self):
         return "RECOVER"
 
 
-class TopmedDBGaPParser(DbGaPParser):
+class TopmedDBGaPParser(BDCParser):
     def _get_element_type(self):
         return "TOPMed"
 
 
-class CureSC(DbGaPParser):
+class CureSC(BDCParser):
     def _get_element_type(self):
         return "CureSC"
 
-class HeartFailure(DbGaPParser):
+class HeartFailure(BDCParser):
     def _get_element_type(self):
         return "HeartFailure"
     
-class Imaging(DbGaPParser):
+class Imaging(BDCParser):
     def _get_element_type(self):
         return "Imaging"
     
-class Reds(DbGaPParser):
+class Reds(BDCParser):
     def _get_element_type(self):
         return "Reds"
