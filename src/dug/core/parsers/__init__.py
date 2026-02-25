@@ -23,7 +23,7 @@ hookimpl = pluggy.HookimplMarker("dug")
 
 @hookimpl
 def define_parsers(parser_dict: Dict[str, Parser]):
-    # parser_dict["dbgap"] = DbGaPParser()
+    parser_dict["bdc"] = BDCParser()
     # parser_dict["nida"] = NIDAParser()
     # parser_dict["topmedtag"] = TOPMedTagParser()
     # parser_dict["topmedcsv"] = TOPMedCSVParser()
