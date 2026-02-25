@@ -56,7 +56,7 @@ class BDCParser(FileParser):
         return ""
 
 
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "dbGaP"
 
     def __call__(self, input_file: InputFile) -> List[Indexable]:
@@ -101,7 +101,7 @@ class BDCParser(FileParser):
                                                 variable_id=var_id.split(".")[0].split("phv")[1]),
                 parents=[study_id],
                 parent_type="study",
-                programs=[self._get_element_type()],
+                programs=[self._get_program_name()],
                 data_type=data_type
             )
 
@@ -115,7 +115,7 @@ class BDCParser(FileParser):
             name=study_name,
             description=study_description,
             action=utils.get_dbgap_study_link(study_id=study_id),
-            programs=[self._get_element_type()],
+            programs=[self._get_program_name()],
             variable_list=variable_ids
         )
 
@@ -123,77 +123,77 @@ class BDCParser(FileParser):
 
 
 class AnvilBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "AnVIL"
 
 
 class CRDCBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "Cancer Data Commons"
 
 
 class KFDRCBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "Kids First"
 
 
 class BioLINCCBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "BioLINCC"
 
 
 class Covid19BDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "COVID19"
 
 
 class DIRBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "DIR"
 
 
 class LungMAPBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "LungMAP"
 
 
 class NSRRBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "NSRR"
 
 
 class ParentDBGaPParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "Parent"
 
 
 class PCGCBDCParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "PCGC"
 
 
 class RECOVERDBGaPParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "RECOVER"
 
 
 class TopmedDBGaPParser(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "TOPMed"
 
 
 class CureSC(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "CureSC"
 
 class HeartFailure(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "HeartFailure"
     
 class Imaging(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "Imaging"
     
 class Reds(BDCParser):
-    def _get_element_type(self):
+    def _get_program_name(self):
         return "Reds"
