@@ -31,6 +31,7 @@ class DugElement(BaseModel):
     search_terms: List[str] = Field(default_factory=list)
     optional_terms: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
+    tags: List[str] = Field(default_factory=list)
     
     @computed_field
     @property

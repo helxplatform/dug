@@ -43,7 +43,8 @@ def test_dug_concept_searchable_dict():
         'identifiers': [],
         'metadata': {},
         'parents': [],
-        'programs': []
+        'programs': [],
+        'tags': []
     }
 
 
@@ -91,6 +92,7 @@ def test_dug_element_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': []
     }
 
 
@@ -145,6 +147,7 @@ def test_dug_variable_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [],
         'data_type': data_type,
         'is_cde': False
     }
@@ -196,6 +199,7 @@ def test_dug_study_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [],
         'publications': [],
         'variable_list': [],
         'abstract': study_abstract
@@ -248,6 +252,7 @@ def test_dug_section_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [],
         'variable_list': [],
         'is_crf': is_crf
     }
