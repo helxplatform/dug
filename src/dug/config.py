@@ -23,6 +23,7 @@ class Config:
     elastic_ca_verify: bool = True
     max_ids_limit = 10000
 
+    use_redis_cache: bool = True
     redis_host: str = "redis"
     redis_port: int = 6379
 

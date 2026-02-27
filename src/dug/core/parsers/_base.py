@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
-from typing import Union, Callable, Any, Iterable, Dict, List, Annotated, Literal
+import re
+from typing import Union, Callable, Any, Iterable, Dict, List, Annotated, Literal, override
 
 from dug.core.loaders import InputFile
 
@@ -160,6 +161,41 @@ class DugVariable(DugElement):
     data_type:str='text'
     is_cde:bool=False
 
+    @override
+    @computed_field
+    @property
+    def ml_ready_desc(self) -> str:
+        """
+        Return a description of this variable for use in machine learning.
+
+        For a variable, we also want to incorporate the variable name, both verbatim and (possibly) as a
+
+        :return: A description of this variable for use in machine learning.
+        """
+        variable_name = self.name
+
+        # TODO: can we incorporate the permissible values somehow?
+
+        # Is this variable name in CamelCase or containing numbers? If so, add spaces between words or numbers.
+        cleaned_variable_name = re.sub(
+            r'''
+            (?<=[a-z])(?=[A-Z0-9])      |  # end lowercase → start uppercase OR number
+            (?<=[A-Z])(?=[A-Z][a-z0-9]) |  # acronym → regular word/number
+            (?<=[0-9])(?=[A-Za-z])         # number → letter
+            ''',
+            ' ',
+            variable_name,
+            flags=re.VERBOSE
+        )
+
+        # Is this variable name in snake_case? If so, replace underscores with spaces.
+        cleaned_variable_name = re.sub(r'_+', ' ', cleaned_variable_name)
+
+        # Only add the cleaned variable name if it differs from the original.
+        if cleaned_variable_name != variable_name:
+            return f"{variable_name} ({cleaned_variable_name}): {self.description}"
+        return f"{variable_name}: {self.description}"
+
     def get_searchable_dict(self):
         # Translate DugConcept into Elastic-Compatible Concept
         es_elem = super().get_searchable_dict()
@@ -173,6 +209,7 @@ class DugStudy(DugElement):
     type:Literal["study"]=STUDY_TYPE
     publications:List[str] = Field(default_factory=list)
     variable_list:List[str] = Field(default_factory=list)
+    section_list:List[str] = Field(default_factory=list)
     abstract:str=''
 
     def get_searchable_dict(self):
@@ -181,6 +218,7 @@ class DugStudy(DugElement):
         es_study = {**es_elem, 
                     'publications': self.publications,
                     'variable_list': self.variable_list,
+                    'section_list': self.section_list,
                     'abstract': self.abstract
                    }
         return es_study

@@ -35,11 +35,15 @@ class DugFactory:
             'password': self.config.redis_password,
         }
 
-        return CachedSession(
-            cache_name='annotator',
-            backend='redis',
-            connection=redis.StrictRedis(**redis_config)
-        )
+        if self.config.use_redis_cache:
+            return CachedSession(
+                cache_name='annotator',
+                backend='redis',
+                connection=redis.StrictRedis(**redis_config)
+            )
+        else:
+            return CachedSession(
+                cache_name='annotator')
 
     def build_crawler(self, target, parser: Parser, annotator: Annotator, program_name: str, tranql_source=None) -> Crawler:
         crawler = Crawler(

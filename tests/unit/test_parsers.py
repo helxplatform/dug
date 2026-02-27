@@ -204,6 +204,7 @@ def test_dug_study_searchable_dict():
         'tags': [],
         'publications': [],
         'variable_list': [],
+        'section_list': [],
         'abstract': study_abstract
     }
 
