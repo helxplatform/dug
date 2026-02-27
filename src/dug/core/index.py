@@ -321,10 +321,19 @@ class Index:
                 doc=elem.get_searchable_dict(),
                 doc_id=elem.get_id())
         else:
-            # Otherwise update to add any new identifiers that weren't there last time around
+            # Otherwise update to add any data that weren't there last time around
             results = self.es.get(index=index, id=elem.get_id())
-            identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
+            update_doc = elem.get_searchable_dict()
+            search_terms = results['_source']['search_terms'] + update_doc['search_terms']
+            optional_terms = results['_source']['optional_terms'] + update_doc['optional_terms']
+            parents = results['_source']['parents'] + update_doc['parents']
+            programs = results['_source']['programs'] + update_doc['programs']
+            identifiers = results['_source']['identifiers'] + update_doc['identifiers']
             doc = {"doc": {}}
+            doc['doc']['search_terms'] = list(set(search_terms))
+            doc['doc']['optional_terms'] = list(set(optional_terms))
+            doc['doc']['parents'] = list(set(parents))
+            doc['doc']['programs'] = list(set(programs))
             doc['doc']['identifiers'] = list(set(identifiers))
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
