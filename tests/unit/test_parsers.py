@@ -79,6 +79,7 @@ def test_dug_element_searchable_dict():
         description=elem_desc, 
         type=elem_type,
     )
+    element.add_tag("data type", "integer")
     searchable = element.get_searchable_dict()
     assert searchable == {
         'id': elem_id,
@@ -92,7 +93,7 @@ def test_dug_element_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
-        'tags': []
+        'tags': [{"category": "data type", "value":"integer"}]
     }
 
 
@@ -132,8 +133,9 @@ def test_dug_variable_searchable_dict():
         name=variable_name, 
         description=variable_desc, 
         type=elem_type,
-        data_type=data_type
+        data_type=data_type,
     )
+    variable.add_tag("network", "dummy_network")
     searchable = variable.get_searchable_dict()
     assert searchable == {
         'id': variable_id,
@@ -147,7 +149,7 @@ def test_dug_variable_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
-        'tags': [],
+        'tags': [{"category": "network", "value":"dummy_network"}],
         'data_type': data_type,
         'is_cde': False
     }

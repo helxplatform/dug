@@ -131,8 +131,23 @@ class Index:
                         "type": "object",
                         "dynamic": True
                     },
-                    "tags": {"type": "text", "analyzer": "std_with_stopwords",
-                                 "fields": {"keyword": {"type": "keyword"}}}
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -171,8 +186,23 @@ class Index:
                     "metadata": {
                         "type": "flattened"
                     },
-                    "tags": {"type": "text", "analyzer": "std_with_stopwords",
-                                 "fields": {"keyword": {"type": "keyword"}}}
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
                     # typed as keyword for bucket aggs
                 }
             }
@@ -215,8 +245,23 @@ class Index:
                         "type": "object",
                         "dynamic": True
                     },
-                    "tags": {"type": "text", "analyzer": "std_with_stopwords",
-                                 "fields": {"keyword": {"type": "keyword"}}}
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
                     # typed as keyword for bucket aggs
                 }
             }
@@ -258,8 +303,23 @@ class Index:
                         "type": "object",
                         "dynamic": True
                     },
-                    "tags": {"type": "text", "analyzer": "std_with_stopwords",
-                                 "fields": {"keyword": {"type": "keyword"}}}
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
                     # typed as keyword for bucket aggs
                 }
             }

@@ -1159,6 +1159,20 @@ class Search:
                                                 **simple_query_string_search,
                                                 "fields": ["search_terms"]
                                             }
+                                        },
+                                        {
+                                            "nested": {
+                                                "path": "tags",
+                                                "query": {
+                                                    "simple_query_string": {
+                                                        **simple_query_string_search,
+                                                        "fields": [
+                                                            "tags.value.text",
+                                                            "tags.category"
+                                                        ]
+                                                    }
+                                                }
+                                            }
                                         }
                                     ]
                                 }
