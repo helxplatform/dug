@@ -321,11 +321,15 @@ class Index:
                 doc=elem.get_searchable_dict(),
                 doc_id=elem.get_id())
         else:
-            # Otherwise update to add any new identifiers that weren't there last time around
+            # Otherwise update to add any new identifiers and parents that weren't there last time around
             results = self.es.get(index=index, id=elem.get_id())
-            identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
-            doc = {"doc": {}}
-            doc['doc']['identifiers'] = list(set(identifiers))
+            source = results['_source']
+            identifiers = source['identifiers'] + list(elem.concepts.keys())
+            parents = source.get('parents', []) + elem.parents
+            doc = {"doc": {
+                "identifiers": list(set(identifiers)),
+                "parents": list(set(parents)),
+            }}
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
