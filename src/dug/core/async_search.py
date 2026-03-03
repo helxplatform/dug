@@ -449,7 +449,7 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        es_query = self._get_var_query(concept, fuzziness, prefix_length, query)
+        es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
         total_items = await self.es.count(body=es_query, index=self.indices["variables_index"])
         search_results = []
         async for r in async_scan(self.es, query=es_query):
