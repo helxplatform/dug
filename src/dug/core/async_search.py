@@ -960,6 +960,35 @@ class Search:
                                     "prefix_length": prefix_length
                                 }
                             }
+                        },
+                        {
+                            "nested": {
+                                "path": "tags",
+                                "query": {
+                                    "match_phrase": {
+                                        "tags.value.text": {
+                                            "query": query,
+                                            "boost": 8
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "nested": {
+                                "path": "tags",
+                                "query": {
+                                    "match": {
+                                        "tags.value.text": {
+                                            "query": query,
+                                            "fuzziness": fuzziness,
+                                            "prefix_length": prefix_length,
+                                            "operator": "and",
+                                            "boost": 4
+                                        }
+                                    }
+                                }
+                            }
                         }
                     ]
                 }
@@ -1167,8 +1196,7 @@ class Search:
                                                     "simple_query_string": {
                                                         **simple_query_string_search,
                                                         "fields": [
-                                                            "tags.value.text",
-                                                            "tags.category"
+                                                            "tags.value.text"
                                                         ]
                                                     }
                                                 }
