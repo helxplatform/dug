@@ -157,7 +157,7 @@ class DefaultNormalizer():
         preferred_id = normalization.get("id", {})
         equivalent_identifiers = normalization.get("equivalent_identifiers", [])
         biolink_type = normalization.get("type", [])
-        description = normalization.get("description", "")
+        # description = normalization.get("description", "")
         # Return none if there isn't actually a preferred id
         if "identifier" not in preferred_id:
             logger.debug(f"ERROR: normalize({curie})=>({preferred_id}). No identifier?")
@@ -166,7 +166,7 @@ class DefaultNormalizer():
         logger.debug(f"Preferred id: {preferred_id}")
         identifier.id = preferred_id.get("identifier", "")
         identifier.label = preferred_id.get("label", "")
-        identifier.description = description
+        identifier.description = preferred_id.get("description", "")
         identifier.equivalent_identifiers = [
             v["identifier"] for v in equivalent_identifiers
         ]

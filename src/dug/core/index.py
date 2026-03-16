@@ -12,18 +12,18 @@ logger = logging.getLogger('dug')
 
 
 class Index:
-    def __init__(self, cfg: Config, indices=None):
+    def __init__(self, cfg: Config):
 
-        if indices is None:
-            indices = {'concepts_index':'concepts_index', 
-                       'variables_index':'variables_index', 
-                       'studies_index':'studies_index',
-                       'sections_index':'sections_index',
-                       'kg_index':'kg_index'}
-        
         self._cfg = cfg
         logger.debug(f"******** Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
+        indices = {
+            'concepts_index': self._cfg.concepts_index_name,
+            'variables_index': self._cfg.variables_index_name,
+            'studies_index': self._cfg.studies_index_name,
+            'sections_index': self._cfg.sections_index_name,
+            'kg_index': self._cfg.kg_index_name
+        }
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
 
@@ -130,6 +130,23 @@ class Index:
                     "metadata": {
                         "type": "object",
                         "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -167,9 +184,24 @@ class Index:
                     "data_type": {"type": "text", "analyzer": "std_with_stopwords",
                                   "fields": {"keyword": {"type": "keyword"}}},
                     "metadata": {
-                        "type": "object",
-                        "dynamic": True,
-                        "numeric_detection": False
+                        "type": "flattened"
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
                     }
                     # typed as keyword for bucket aggs
                 }
@@ -214,6 +246,23 @@ class Index:
                     "metadata": {
                         "type": "object",
                         "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
                     }
                     # typed as keyword for bucket aggs
                 }
@@ -255,6 +304,23 @@ class Index:
                     "metadata": {
                         "type": "object",
                         "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
                     }
                     # typed as keyword for bucket aggs
                 }
@@ -328,12 +394,14 @@ class Index:
             optional_terms = results['_source']['optional_terms'] + update_doc['optional_terms']
             parents = results['_source']['parents'] + update_doc['parents']
             programs = results['_source']['programs'] + update_doc['programs']
+            tags = results['_source']['tags'] + update_doc['tags']
             identifiers = results['_source']['identifiers'] + update_doc['identifiers']
             doc = {"doc": {}}
             doc['doc']['search_terms'] = list(set(search_terms))
             doc['doc']['optional_terms'] = list(set(optional_terms))
             doc['doc']['parents'] = list(set(parents))
             doc['doc']['programs'] = list(set(programs))
+            doc['doc']['tags'] = [dict(t) for t in {tuple(sorted(d.items())) for d in tags}]
             doc['doc']['identifiers'] = list(set(identifiers))
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 

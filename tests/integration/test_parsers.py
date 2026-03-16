@@ -170,3 +170,4 @@ def test_heal_study_ddm2_parser():
     assert(len(studies) == 1)
     variables = [k for k in elements if k.type == 'variable']
     assert(len(variables) > 0)
+    assert(studies[0].tags == [{"category":"Research Network", "value":"JCOIN"}])

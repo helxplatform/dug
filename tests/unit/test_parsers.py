@@ -43,7 +43,8 @@ def test_dug_concept_searchable_dict():
         'identifiers': [],
         'metadata': {},
         'parents': [],
-        'programs': []
+        'programs': [],
+        'tags': []
     }
 
 
@@ -78,6 +79,7 @@ def test_dug_element_searchable_dict():
         description=elem_desc, 
         type=elem_type,
     )
+    element.add_tag("data type", "integer")
     searchable = element.get_searchable_dict()
     assert searchable == {
         'id': elem_id,
@@ -91,6 +93,7 @@ def test_dug_element_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [{"category": "data type", "value":"integer"}]
     }
 
 
@@ -130,8 +133,9 @@ def test_dug_variable_searchable_dict():
         name=variable_name, 
         description=variable_desc, 
         type=elem_type,
-        data_type=data_type
+        data_type=data_type,
     )
+    variable.add_tag("network", "dummy_network")
     searchable = variable.get_searchable_dict()
     assert searchable == {
         'id': variable_id,
@@ -145,6 +149,7 @@ def test_dug_variable_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [{"category": "network", "value":"dummy_network"}],
         'data_type': data_type,
         'is_cde': False
     }
@@ -196,6 +201,7 @@ def test_dug_study_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [],
         'publications': [],
         'variable_list': [],
         'section_list': [],
@@ -249,6 +255,7 @@ def test_dug_section_searchable_dict():
         'metadata': {},
         'parents': [],
         'programs': [],
+        'tags': [],
         'variable_list': [],
         'is_crf': is_crf
     }
