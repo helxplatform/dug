@@ -1,0 +1,34 @@
+[
+    {
+        "query": "blood pressure",
+        "endpoints": ["concepts", "variables"]
+    },
+    {
+        "query": "diabetes",
+        "endpoints": ["concepts", "variables", "studies"]
+    },
+    {
+        "query": "heart failure",
+        "endpoints": ["concepts", "variables"]
+    },
+    {
+        "query": "COVID",
+        "endpoints": ["concepts", "variables", "studies"]
+    },
+    {
+        "query": "obesity",
+        "endpoints": ["concepts", "variables"]
+    },
+    {
+        "query": "lung function",
+        "endpoints": ["concepts", "variables"]
+    },
+    {
+        "query": "smoking",
+        "endpoints": ["concepts", "variables"]
+    },
+    {
+        "query": "depression",
+        "endpoints": ["concepts", "variables"]
+    }
+]

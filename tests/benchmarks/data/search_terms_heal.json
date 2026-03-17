@@ -1,0 +1,236 @@
+[
+  {
+    "query": "\"Muscle pain\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"Substance abuse\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "Neuralgia",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"non-opioid treatment\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "neonatal",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"neonatal opioid withdrawal\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"non-pharmacologic pain management\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"opioid use disorder\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "depression",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"generalized anxiety\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"pain management\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"acute pain\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"chronic pain\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "opioid-free treatment",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"novel analgesic\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "orofascial",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "migraine",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "mindfulness",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "tobacco-dependence",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"back pain\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "pain biomarkers",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "signature of pain",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "GLP-1",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "buprenorphine",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "\"neuropathic pain\"",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  },
+  {
+    "query": "fibromyalgia",
+    "endpoints": [
+      "concepts",
+      "variables",
+      "studies",
+      "cdes"
+    ]
+  }
+]

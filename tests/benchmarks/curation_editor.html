@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Benchmark — Expectation Curator</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d; --border: #30363d;
+    --text: #e6edf3; --text2: #8b949e; --accent: #58a6ff; --green: #3fb950;
+    --red: #f85149; --yellow: #d29922; --orange: #db6d28;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+  /* Top bar */
+  .topbar { position: sticky; top: 0; z-index: 100; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .topbar h1 { font-size: 16px; font-weight: 600; white-space: nowrap; }
+  .topbar .actions { display: flex; gap: 8px; margin-left: auto; }
+  .btn { padding: 6px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13px; cursor: pointer; font-weight: 500; transition: .15s; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: #238636; border-color: #2ea043; color: #fff; }
+  .btn.primary:hover { background: #2ea043; }
+  .btn.danger { border-color: var(--red); color: var(--red); }
+
+  /* Stats bar */
+  .stats { padding: 8px 24px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; gap: 24px; font-size: 13px; color: var(--text2); }
+  .stats .stat-val { color: var(--text); font-weight: 600; }
+
+  /* Filter */
+  .filter-bar { padding: 12px 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .filter-bar input, .filter-bar select { padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; }
+  .filter-bar input { width: 260px; }
+  .filter-bar label { font-size: 13px; color: var(--text2); }
+
+  /* Cards */
+  .container { padding: 0 24px 80px; }
+  .case-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-top: 16px; overflow: hidden; }
+  .case-card.curated { border-left: 3px solid var(--green); }
+  .case-card.uncurated { border-left: 3px solid var(--yellow); }
+  .case-card.empty-results { border-left: 3px solid var(--text2); }
+
+  .case-header { padding: 14px 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; flex-wrap: wrap; }
+  .case-header:hover { background: var(--surface2); }
+  .case-header .query { font-weight: 600; font-size: 15px; font-family: 'SFMono-Regular', Consolas, monospace; color: var(--accent); }
+  .case-header .endpoint { font-size: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; color: var(--text2); }
+  .case-header .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .badge.curated { background: rgba(63,185,80,.15); color: var(--green); }
+  .badge.uncurated { background: rgba(210,153,34,.15); color: var(--yellow); }
+  .badge.empty { background: rgba(139,148,158,.15); color: var(--text2); }
+  .case-header .result-count { font-size: 12px; color: var(--text2); margin-left: auto; }
+  .chevron { transition: .2s; color: var(--text2); font-size: 12px; }
+  .case-card.open .chevron { transform: rotate(90deg); }
+
+  .case-body { display: none; border-top: 1px solid var(--border); }
+  .case-card.open .case-body { display: block; }
+
+  /* Case-level controls */
+  .case-controls { padding: 12px 18px; background: var(--surface2); display: flex; gap: 16px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+  .case-controls label { color: var(--text2); }
+  .case-controls input[type="number"] { width: 70px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; }
+  .case-controls input[type="date"] { padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; }
+
+  /* Results table */
+  .results-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .results-table th { text-align: left; padding: 8px 12px; background: var(--surface2); color: var(--text2); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; position: sticky; top: 0; }
+  .results-table td { padding: 8px 12px; border-top: 1px solid var(--border); vertical-align: middle; }
+  .results-table tr:hover td { background: rgba(88,166,255,.04); }
+  .results-table .pos { color: var(--text2); font-family: monospace; width: 30px; }
+  .results-table .id-col { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 12px; color: var(--accent); max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+  .results-table .name-col { max-width: 350px; }
+
+  /* Grade selector */
+  .grade-group { display: inline-flex; gap: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+  .grade-group label { padding: 4px 10px; font-size: 12px; cursor: pointer; background: var(--surface); color: var(--text2); border-right: 1px solid var(--border); transition: .15s; font-weight: 500; }
+  .grade-group label:last-child { border-right: none; }
+  .grade-group input { display: none; }
+  .grade-group input:checked + span { font-weight: 700; }
+  .grade-group label:has(input:checked) { color: #fff; }
+  .grade-group label.g-null:has(input:checked) { background: #484f58; }
+  .grade-group label.g-0:has(input:checked) { background: var(--red); }
+  .grade-group label.g-1:has(input:checked) { background: var(--orange); }
+  .grade-group label.g-2:has(input:checked) { background: var(--yellow); }
+  .grade-group label.g-3:has(input:checked) { background: var(--green); }
+
+  /* Checkbox toggles */
+  .toggle-cell { display: flex; gap: 12px; }
+  .toggle-cell label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text2); cursor: pointer; }
+  .toggle-cell input[type="checkbox"] { accent-color: var(--accent); }
+
+  /* Drag/drop zone */
+  .dropzone { border: 2px dashed var(--border); border-radius: 12px; padding: 60px; text-align: center; margin: 40px 24px; transition: .2s; }
+  .dropzone.over { border-color: var(--accent); background: rgba(88,166,255,.05); }
+  .dropzone p { color: var(--text2); font-size: 15px; }
+  .dropzone .or { margin: 16px 0; color: var(--text2); font-size: 13px; }
+
+  /* Empty state for no results */
+  .empty-msg { padding: 24px 18px; color: var(--text2); font-style: italic; font-size: 13px; }
+
+  /* Bulk actions */
+  .bulk-row { padding: 8px 18px; background: rgba(88,166,255,.05); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; font-size: 12px; }
+  .bulk-row span { color: var(--text2); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>🔬 Search Benchmark Curator</h1>
+  <div class="actions">
+    <button class="btn" id="loadBtn" title="Load JSON file">📂 Load JSON</button>
+    <button class="btn" id="loadApiBtn" title="Fetch from live API">🌐 Harvest from API</button>
+    <button class="btn primary" id="saveBtn" disabled>💾 Save JSON</button>
+  </div>
+</div>
+<div class="stats" id="statsBar" style="display:none;">
+  <div>Total queries: <span class="stat-val" id="statTotal">0</span></div>
+  <div>Curated: <span class="stat-val" id="statCurated">0</span></div>
+  <div>Uncurated: <span class="stat-val" id="statUncurated">0</span></div>
+  <div>Empty results: <span class="stat-val" id="statEmpty">0</span></div>
+  <div>Total results: <span class="stat-val" id="statResults">0</span></div>
+</div>
+<div class="filter-bar" id="filterBar" style="display:none;">
+  <input type="text" id="filterQuery" placeholder="Filter by query text…">
+  <select id="filterStatus">
+    <option value="all">All statuses</option>
+    <option value="curated">Curated</option>
+    <option value="uncurated">Uncurated</option>
+    <option value="empty">Empty results</option>
+  </select>
+  <label style="margin-left:auto;"><input type="checkbox" id="expandAll"> Expand all</label>
+</div>
+
+<div class="container" id="main">
+  <div class="dropzone" id="dropzone">
+    <p>Drop an expectations JSON file here</p>
+    <div class="or">— or —</div>
+    <button class="btn" onclick="document.getElementById('fileInput').click()">Choose file</button>
+    <input type="file" id="fileInput" accept=".json" style="display:none">
+  </div>
+</div>
+
+<!-- Harvest modal -->
+<div id="harvestModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200; display:none; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; width:480px; max-width:90vw;">
+    <h3 style="margin-bottom:16px;">Harvest from Live API</h3>
+    <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Base URL</label>
+    <input type="text" id="harvestUrl" value="https://radx-dev.apps.renci.org/search-api" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:13px; margin-bottom:12px;">
+    <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Search terms (one per line)</label>
+    <textarea id="harvestTerms" rows="8" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:13px; font-family:monospace; margin-bottom:12px; resize:vertical;">blood pressure
+diabetes
+COVID
+chronic pain</textarea>
+    <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Endpoint</label>
+    <select id="harvestEndpoint" style="padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:13px; margin-bottom:16px;">
+      <option value="concepts">concepts</option>
+      <option value="variables">variables</option>
+      <option value="studies">studies</option>
+      <option value="cdes">cdes</option>
+    </select>
+    <label style="font-size:13px; color:var(--text2); display:block; margin-bottom:4px;">Results per query</label>
+    <input type="number" id="harvestSize" value="20" min="1" max="100" style="width:80px; padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--surface2); color:var(--text); font-size:13px; margin-bottom:16px;">
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="btn" id="harvestCancel">Cancel</button>
+      <button class="btn primary" id="harvestGo">🚀 Harvest</button>
+    </div>
+    <div id="harvestStatus" style="margin-top:12px; font-size:13px; color:var(--text2);"></div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let expectations = [];
+let filename = 'expectations.json';
+
+// ── DOM refs ──
+const mainEl = document.getElementById('main');
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const saveBtn = document.getElementById('saveBtn');
+const loadBtn = document.getElementById('loadBtn');
+const statsBar = document.getElementById('statsBar');
+const filterBar = document.getElementById('filterBar');
+const filterQuery = document.getElementById('filterQuery');
+const filterStatus = document.getElementById('filterStatus');
+const expandAll = document.getElementById('expandAll');
+
+// ── File loading ──
+loadBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('over'));
+dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('over'); if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+
+function loadFile(file) {
+  filename = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      expectations = JSON.parse(e.target.result);
+      if (!Array.isArray(expectations)) expectations = [expectations];
+      render();
+    } catch (err) { alert('Invalid JSON: ' + err.message); }
+  };
+  reader.readAsText(file);
+}
+
+// ── Save ──
+saveBtn.addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(expectations, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// ── Harvest modal ──
+const harvestModal = document.getElementById('harvestModal');
+document.getElementById('loadApiBtn').addEventListener('click', () => { harvestModal.style.display = 'flex'; });
+document.getElementById('harvestCancel').addEventListener('click', () => { harvestModal.style.display = 'none'; });
+document.getElementById('harvestGo').addEventListener('click', runHarvest);
+
+async function runHarvest() {
+  const baseUrl = document.getElementById('harvestUrl').value.replace(/\/$/, '');
+  const terms = document.getElementById('harvestTerms').value.split('\n').map(t => t.trim()).filter(Boolean);
+  const endpoint = document.getElementById('harvestEndpoint').value;
+  const size = parseInt(document.getElementById('harvestSize').value) || 20;
+  const statusEl = document.getElementById('harvestStatus');
+
+  if (!terms.length) { statusEl.textContent = 'Enter at least one search term.'; return; }
+
+  expectations = [];
+  statusEl.textContent = `Harvesting 0/${terms.length}…`;
+
+  for (let i = 0; i < terms.length; i++) {
+    const query = terms[i];
+    statusEl.textContent = `Harvesting ${i + 1}/${terms.length}: "${query}"…`;
+    try {
+      const resp = await fetch(`${baseUrl}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, size })
+      });
+      const data = await resp.json();
+      const results = (data.results || []).map(r => ({
+        id: r.id || '',
+        name: r.name || '',
+        relevance_grade: null
+      }));
+      expectations.push({
+        query,
+        endpoint,
+        concept_id: null,
+        curated_at: null,
+        expected_results: results,
+        must_appear: [],
+        must_not_appear: [],
+        min_ndcg_at_10: 0.0
+      });
+    } catch (err) {
+      expectations.push({
+        query,
+        endpoint,
+        concept_id: null,
+        curated_at: null,
+        expected_results: [],
+        must_appear: [],
+        must_not_appear: [],
+        min_ndcg_at_10: 0.0
+      });
+    }
+  }
+
+  filename = `${endpoint}.json`;
+  statusEl.textContent = `Done! ${expectations.length} queries harvested.`;
+  setTimeout(() => { harvestModal.style.display = 'none'; render(); }, 800);
+}
+
+// ── Filtering ──
+filterQuery.addEventListener('input', applyFilter);
+filterStatus.addEventListener('change', applyFilter);
+expandAll.addEventListener('change', () => {
+  document.querySelectorAll('.case-card').forEach(c => {
+    expandAll.checked ? c.classList.add('open') : c.classList.remove('open');
+  });
+});
+
+function applyFilter() {
+  const q = filterQuery.value.toLowerCase();
+  const s = filterStatus.value;
+  document.querySelectorAll('.case-card').forEach(card => {
+    const idx = parseInt(card.dataset.idx);
+    const exp = expectations[idx];
+    const matchQ = !q || exp.query.toLowerCase().includes(q);
+    const status = getStatus(exp);
+    const matchS = s === 'all' || s === status;
+    card.style.display = (matchQ && matchS) ? '' : 'none';
+  });
+}
+
+function getStatus(exp) {
+  if (!exp.expected_results.length) return 'empty';
+  const hasGrades = exp.expected_results.some(r => r.relevance_grade !== null);
+  return hasGrades ? 'curated' : 'uncurated';
+}
+
+// ── Render ──
+function render() {
+  saveBtn.disabled = false;
+  statsBar.style.display = 'flex';
+  filterBar.style.display = 'flex';
+
+  const curated = expectations.filter(e => getStatus(e) === 'curated').length;
+  const empty = expectations.filter(e => getStatus(e) === 'empty').length;
+  document.getElementById('statTotal').textContent = expectations.length;
+  document.getElementById('statCurated').textContent = curated;
+  document.getElementById('statUncurated').textContent = expectations.length - curated - empty;
+  document.getElementById('statEmpty').textContent = empty;
+  document.getElementById('statResults').textContent = expectations.reduce((s, e) => s + e.expected_results.length, 0);
+
+  mainEl.innerHTML = '';
+  expectations.forEach((exp, i) => {
+    const status = getStatus(exp);
+    const card = document.createElement('div');
+    card.className = `case-card ${status === 'empty' ? 'empty-results' : status}`;
+    card.dataset.idx = i;
+
+    card.innerHTML = `
+      <div class="case-header" onclick="this.parentElement.classList.toggle('open')">
+        <span class="chevron">▶</span>
+        <span class="query">${escHtml(exp.query)}</span>
+        <span class="endpoint">/${exp.endpoint}</span>
+        ${exp.concept_id ? `<span class="endpoint">concept: ${escHtml(exp.concept_id)}</span>` : ''}
+        <span class="badge ${status}">${status === 'curated' ? '✓ Curated' : status === 'empty' ? '∅ Empty' : '◯ Uncurated'}</span>
+        <span class="result-count">${exp.expected_results.length} results</span>
+      </div>
+      <div class="case-body">
+        <div class="case-controls">
+          <label>Min NDCG@10:
+            <input type="number" step="0.05" min="0" max="1" value="${exp.min_ndcg_at_10}"
+              onchange="expectations[${i}].min_ndcg_at_10 = parseFloat(this.value) || 0; updateStats();">
+          </label>
+          <label>Curated at:
+            <input type="date" value="${exp.curated_at || ''}"
+              onchange="expectations[${i}].curated_at = this.value || null; updateStats();">
+          </label>
+          <button class="btn" style="font-size:12px;" onclick="markAllGrade(${i}, 0)">All → 0</button>
+          <button class="btn" style="font-size:12px;" onclick="autoGrade(${i})">Auto-grade</button>
+          <button class="btn" style="font-size:12px;" onclick="setCuratedToday(${i})">Mark curated today</button>
+        </div>
+        ${exp.expected_results.length ? renderResultsTable(exp, i) : '<div class="empty-msg">No results for this query. Consider adjusting the search or removing this test case.</div>'}
+      </div>
+    `;
+    mainEl.appendChild(card);
+  });
+}
+
+function renderResultsTable(exp, caseIdx) {
+  let html = `<table class="results-table"><thead><tr>
+    <th>#</th><th>ID</th><th>Name</th><th>Relevance Grade</th><th>Flags</th>
+  </tr></thead><tbody>`;
+
+  exp.expected_results.forEach((r, ri) => {
+    const uid = `c${caseIdx}_r${ri}`;
+    const mustApp = exp.must_appear.includes(r.id);
+    const mustNot = exp.must_not_appear.includes(r.id);
+    html += `<tr>
+      <td class="pos">${ri + 1}</td>
+      <td class="id-col" title="${escHtml(r.id)}">${escHtml(r.id)}</td>
+      <td class="name-col">${escHtml(r.name)}</td>
+      <td>${gradeSelector(caseIdx, ri, r.relevance_grade)}</td>
+      <td>
+        <div class="toggle-cell">
+          <label><input type="checkbox" ${mustApp ? 'checked' : ''}
+            onchange="toggleFlag(${caseIdx}, ${ri}, 'must_appear', this.checked)"> must appear</label>
+          <label><input type="checkbox" ${mustNot ? 'checked' : ''}
+            onchange="toggleFlag(${caseIdx}, ${ri}, 'must_not_appear', this.checked)"> must NOT</label>
+        </div>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  return html;
+}
+
+function gradeSelector(ci, ri, current) {
+  const grades = [
+    { val: 'null', label: '—', cls: 'g-null' },
+    { val: '0', label: '0', cls: 'g-0' },
+    { val: '1', label: '1', cls: 'g-1' },
+    { val: '2', label: '2', cls: 'g-2' },
+    { val: '3', label: '3', cls: 'g-3' },
+  ];
+  const name = `grade_${ci}_${ri}`;
+  return `<div class="grade-group">${grades.map(g => {
+    const checked = (current === null && g.val === 'null') || (current !== null && String(current) === g.val) ? 'checked' : '';
+    return `<label class="${g.cls}"><input type="radio" name="${name}" value="${g.val}" ${checked}
+      onchange="setGrade(${ci}, ${ri}, this.value)"><span>${g.label}</span></label>`;
+  }).join('')}</div>`;
+}
+
+// ── Actions ──
+function setGrade(ci, ri, val) {
+  expectations[ci].expected_results[ri].relevance_grade = val === 'null' ? null : parseInt(val);
+  updateStats();
+}
+
+function toggleFlag(ci, ri, flagName, checked) {
+  const id = expectations[ci].expected_results[ri].id;
+  const arr = expectations[ci][flagName];
+  if (checked && !arr.includes(id)) arr.push(id);
+  if (!checked) {
+    const idx = arr.indexOf(id);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
+}
+
+function markAllGrade(ci, grade) {
+  expectations[ci].expected_results.forEach((r, ri) => { r.relevance_grade = grade; });
+  render();
+}
+
+function autoGrade(ci) {
+  // Simple heuristic: check if query terms appear in the name
+  const exp = expectations[ci];
+  const queryWords = exp.query.replace(/"/g, '').toLowerCase().split(/\s+/);
+  exp.expected_results.forEach(r => {
+    const name = r.name.toLowerCase();
+    const allMatch = queryWords.every(w => name.includes(w));
+    const someMatch = queryWords.some(w => name.includes(w));
+    if (allMatch) r.relevance_grade = 3;
+    else if (someMatch) r.relevance_grade = 2;
+    else r.relevance_grade = 0;
+  });
+  render();
+}
+
+function setCuratedToday(ci) {
+  expectations[ci].curated_at = new Date().toISOString().split('T')[0];
+  render();
+}
+
+function updateStats() {
+  const curated = expectations.filter(e => getStatus(e) === 'curated').length;
+  const empty = expectations.filter(e => getStatus(e) === 'empty').length;
+  document.getElementById('statCurated').textContent = curated;
+  document.getElementById('statUncurated').textContent = expectations.length - curated - empty;
+  // Update badges
+  document.querySelectorAll('.case-card').forEach(card => {
+    const idx = parseInt(card.dataset.idx);
+    const status = getStatus(expectations[idx]);
+    card.className = `case-card ${status === 'empty' ? 'empty-results' : status}${card.classList.contains('open') ? ' open' : ''}`;
+    const badge = card.querySelector('.badge');
+    if (badge) {
+      badge.className = `badge ${status}`;
+      badge.textContent = status === 'curated' ? '✓ Curated' : status === 'empty' ? '∅ Empty' : '◯ Uncurated';
+    }
+  });
+}
+
+function escHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+</script>
+</body>
+</html>
