@@ -5,7 +5,7 @@
 ######################################################
 FROM dhi.io/python:3.13-alpine3.22-dev AS builder
 
-ARG USER=dug
+ENV USER=nonroot
 
 # Install required packages
 RUN apk update && \
@@ -16,9 +16,9 @@ RUN apk upgrade -Ua
 RUN pip install --upgrade pip
 # Create a non-root user.
 ENV HOME=/home/$USER
-ENV UID=1000
+# ENV UID=1000
 
-RUN adduser -D --home $HOME  --uid $UID $USER
+# RUN adduser -D --home $HOME  --uid $UID $USER
 
 USER $USER
 WORKDIR $HOME
@@ -34,11 +34,16 @@ RUN make install
 RUN make install.dug
 
 FROM dhi.io/python:3.13-alpine3.22
-ARG USER
+
+ENV USER=nonroot
 ENV HOME=/home/$USER
 
-COPY --from=builder $HOME $HOME
+COPY --from=builder /opt/python /opt/python
+
 USER $USER
+COPY --chown=$USER --from=builder $HOME $HOME
+
+WORKDIR $HOME/dug
 
 # Run it
-ENTRYPOINT dug
+ENTRYPOINT ["dug"]

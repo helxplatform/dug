@@ -41,19 +41,19 @@ services:
       PYTHONUNBUFFERED: "TRUE"
     entrypoint:
       [
-        "uvicorn",
+        "/home/nonroot/.local/bin/uvicorn",
         "--host",
         "0.0.0.0",
         "--port",
         "$API_PORT",
         "--log-level=debug",
         "--reload-dir",
-        "/home/dug/dug/",
+        "/home/nonroot/dug/",
         "--reload",
         "dug.server:APP",
       ]
     volumes:
-      - ./src:/home/dug/dug/
+      - ./src:/home/nonroot/dug/
     ports:
       - $API_PORT:$API_PORT
 
