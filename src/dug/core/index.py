@@ -402,7 +402,7 @@ class Index:
             doc['doc']['parents'] = list(set(parents))
             doc['doc']['programs'] = list(set(programs))
             doc['doc']['tags'] = [dict(t) for t in {tuple(sorted(d.items())) for d in tags}]
-            doc['doc']['identifiers'] = list(set(identifiers))
+            doc['doc']['identifiers'] = list({ident["id"]: ident for ident in identifiers}.values())
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
