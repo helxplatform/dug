@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug.core.parsers import Parser, DugConcept
+from dug_data_model.v2 import Parser, DugConcept
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name

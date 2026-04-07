@@ -3,7 +3,16 @@ from typing import Dict
 
 import pluggy
 
-from ._base import DugElement, DugVariable, DugStudy, DugSection, DugConcept, Indexable, Parser, FileParser
+from dug_data_model.v2 import (
+    DugElement,
+    DugVariable,
+    DugStudy,
+    DugSection,
+    DugConcept,
+    Indexable,
+    Parser,
+    FileParser,
+)
 from .dbgap_parser import *
 from .nida_parser import NIDAParser
 from .scicrunch_parser import SciCrunchParser

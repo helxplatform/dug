@@ -5,7 +5,7 @@ import os
 from typing import List
 
 from dug import utils as utils
-from ._base import DugConcept, DugElement, FileParser, Indexable, InputFile
+from dug_data_model.v2 import DugConcept, DugElement, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 

@@ -3,8 +3,10 @@ import os
 from typing import List
 import json
 from dug import utils as utils
-from ._base import DugVariable, DugStudy, DugSection, FileParser, Indexable, InputFile, DugElementParsedList
-from ._base import VARIABLE_TYPE, STUDY_TYPE, CONCEPT_TYPE, SECTION_TYPE
+from dug_data_model.v2 import (
+    DugVariable, DugStudy, DugSection, FileParser, Indexable, InputFile,
+    DugElementParsedList, VARIABLE_TYPE, STUDY_TYPE, CONCEPT_TYPE, SECTION_TYPE,
+)
 
 logger = logging.getLogger('dug')
 

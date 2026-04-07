@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 
 from dug import utils as utils
 from pathlib import Path
-from ._base import DugVariable, DugStudy, FileParser, Indexable, InputFile
+from dug_data_model.v2 import DugVariable, DugStudy, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 
