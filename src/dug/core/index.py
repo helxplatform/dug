@@ -395,14 +395,14 @@ class Index:
             parents = results['_source']['parents'] + update_doc['parents']
             programs = results['_source']['programs'] + update_doc['programs']
             tags = results['_source']['tags'] + update_doc['tags']
-            identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
+            identifiers = results['_source']['identifiers'] + update_doc['identifiers']
             doc = {"doc": {}}
             doc['doc']['search_terms'] = list(set(search_terms))
             doc['doc']['optional_terms'] = list(set(optional_terms))
             doc['doc']['parents'] = list(set(parents))
             doc['doc']['programs'] = list(set(programs))
             doc['doc']['tags'] = [dict(t) for t in {tuple(sorted(d.items())) for d in tags}]
-            doc['doc']['identifiers'] = list(set(identifiers))
+            doc['doc']['identifiers'] = list({ident["id"]: ident for ident in identifiers}.values())
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
