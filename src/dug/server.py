@@ -11,6 +11,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from dug.api_models.response_models import *
 from dug.api_models.request_models import *
+from dug.core.search_for_v1 import search_var_for_v1
 
 logger = logging.getLogger(__name__)
 
