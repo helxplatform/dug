@@ -80,11 +80,13 @@ async def search_kg(search_query: SearchKgQuery):
 
 @APP.post('/search_var')
 async def search_var(search_query: SearchVariablesQuery):
+    results = await search_var_for_v1(search_query, config.variables_index_name, config.studies_index_name, search)
+
     return {
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "variables_index"
-        "result": await search.search_variables(**search_query.dict(exclude={"index"})),
+        "result": results,
         "status": "success"
     }
 
