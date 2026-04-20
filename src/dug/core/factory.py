@@ -7,7 +7,7 @@ import dug.core.tranql as tql
 from dug.core.concept_expander import ConceptExpander
 from dug.config import Config as DugConfig, TRANQL_SOURCE
 from dug.core.crawler import Crawler
-from dug.core.parsers import Parser
+from dug_data_model.v2 import Parser
 from dug.core.annotators import Annotator
 from dug.core.async_search import Search
 from dug.core.index import Index

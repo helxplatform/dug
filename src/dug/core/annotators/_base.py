@@ -4,7 +4,7 @@ import re
 import logging
 import urllib.parse
 from typing import Union, Callable, Any, Iterable, TypeVar, Generic, List, Optional
-from dug import utils as utils
+from dug_data_model.v2 import complex_handler
 from requests import Session
 import bmt
 from retrying import retry
@@ -73,7 +73,7 @@ class DugIdentifier:
 
 
     def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
+        return json.dumps(self.__dict__, indent=2, default=complex_handler)
 
 
 Input = TypeVar("Input")

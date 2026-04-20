@@ -20,13 +20,6 @@ class ObjectFactory:
         return list(self._builders.keys())
 
 
-def complex_handler(obj):
-    if hasattr(obj, 'jsonable'):
-        return obj.jsonable()
-    else:
-        raise TypeError(f'Object of type {type(obj)} with value of {type(obj)} is not JSON serializable')
-
-
 def get_dbgap_var_link(study_id, variable_id):
     base_url = "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi"
     return f'{base_url}?study_id={study_id}&phv={variable_id}'

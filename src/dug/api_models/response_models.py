@@ -1,6 +1,6 @@
-from dug.core.parsers._base import *
-from pydantic import BaseModel, model_serializer
-from typing import Optional, Any, List
+from dug_data_model.v2 import DugConcept, DugVariable, DugStudy, DugSection
+from pydantic import BaseModel, Field, model_serializer
+from typing import Dict, Optional, Any, List
 
 
 class ElasticResultMetaData(BaseModel):

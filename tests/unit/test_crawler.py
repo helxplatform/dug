@@ -1,11 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from dug.core import DugConcept
-from dug.core.parsers import DugElement
-from dug.core.parsers import DugVariable
-from dug.core.parsers import DugStudy
-from dug.core.parsers import DugSection
+from dug_data_model.v2 import DugConcept, DugElement, DugVariable, DugStudy, DugSection
 from tests.unit.mocks.MockCrawler import *
 
 

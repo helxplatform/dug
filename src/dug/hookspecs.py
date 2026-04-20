@@ -2,7 +2,7 @@ from typing import Dict
 
 import pluggy
 
-from dug.core.parsers import Parser
+from dug_data_model.v2 import Parser
 from dug.core.annotators import Annotator
 from dug.config import Config
 
