@@ -5,7 +5,7 @@ from xml.etree import ElementTree as ET
 
 from dug import utils as utils
 from pathlib import Path
-from dug_data_model.v2 import DugVariable, DugStudy, FileParser, Indexable, InputFile
+from dug_data_model.v2 import DugVariable, DugStudy, FileParser, Indexable, InputFile, STUDY_TYPE
 
 logger = logging.getLogger('dug')
 
@@ -100,7 +100,7 @@ class BDCParser(FileParser):
                 action=utils.get_dbgap_var_link(study_id=study_id,
                                                 variable_id=var_id.split(".")[0].split("phv")[1]),
                 parents=[study_id],
-                parent_type="study",
+                parent_type=STUDY_TYPE,
                 programs=[self._get_program_name()],
                 data_type=data_type
             )

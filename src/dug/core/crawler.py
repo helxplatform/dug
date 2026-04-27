@@ -4,7 +4,7 @@ import os
 import traceback
 from typing import List
 
-from dug_data_model.v2 import Parser, DugConcept
+from dug_data_model.v2 import Parser, DugConcept, prepare_for_indexing
 from dug.core.annotators import Annotator, DugIdentifier
 import dug.core.tranql as tql
 from dug.utils import biolink_snake_case, get_formatted_biolink_name
@@ -69,14 +69,8 @@ class Crawler:
             # Use TranQL queries to fetch knowledge graphs containing related but not synonymous biological terms
             self.expand_concept(concept)
 
-            # Traverse identifiers to create single list of of search targets/synonyms for concept
-            concept.set_search_terms()
-
-            # Traverse kg answers to create list of optional search targets containing related concepts
-            concept.set_optional_terms()
-
-            # Remove duplicate search terms and optional search terms
-            concept.clean()
+            # Aggregate search/optional terms from identifiers + kg answers, then dedupe
+            prepare_for_indexing([concept])
 
             # Write concept out to a file
             concept_file.write(f"{json.dumps(concept.get_searchable_dict(), indent=2)}")

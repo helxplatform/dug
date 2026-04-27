@@ -6,6 +6,8 @@ import logging
 from elasticsearch import Elasticsearch
 import ssl
 
+from dug_data_model.v2 import dedupe_and_sort
+
 from dug.config import Config
 
 logger = logging.getLogger('dug')
@@ -397,12 +399,12 @@ class Index:
             tags = results['_source']['tags'] + update_doc['tags']
             identifiers = results['_source']['identifiers'] + update_doc['identifiers']
             doc = {"doc": {}}
-            doc['doc']['search_terms'] = list(set(search_terms))
-            doc['doc']['optional_terms'] = list(set(optional_terms))
-            doc['doc']['parents'] = list(set(parents))
-            doc['doc']['programs'] = list(set(programs))
+            doc['doc']['search_terms'] = dedupe_and_sort(search_terms)
+            doc['doc']['optional_terms'] = dedupe_and_sort(optional_terms)
+            doc['doc']['parents'] = dedupe_and_sort(parents)
+            doc['doc']['programs'] = dedupe_and_sort(programs)
             doc['doc']['tags'] = [dict(t) for t in {tuple(sorted(d.items())) for d in tags}]
-            doc['doc']['identifiers'] = list(set(identifiers))
+            doc['doc']['identifiers'] = dedupe_and_sort(identifiers)
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
@@ -414,7 +416,7 @@ class Index:
         # Create the Doc
         doc = {
             'concept_id': concept_id,
-            'search_targets': list(set(search_targets)),
+            'search_targets': dedupe_and_sort(search_targets),
             'knowledge_graph': kg_answer.get_kg()
         }
 
