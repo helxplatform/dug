@@ -34,7 +34,7 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     # parser_dict["sprint"] = SPRINTParser()
     # parser_dict["bacpac"] = BACPACParser()
     parser_dict["heal-ddm2"] = HEALDDM2Parser(study_type="HEAL Studies")
-    # parser_dict["ctn"] = CTNParser()
+    parser_dict["ctn"] = CTNParser()
     parser_dict["biolincc"] = BioLINCCDbGaPParser()
     parser_dict["covid19"] = Covid19DbGaPParser()
     parser_dict["dir"] = DIRDbGaPParser()
