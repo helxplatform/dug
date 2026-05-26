@@ -92,21 +92,21 @@ Each result needs a **relevance grade** assigned by a human reviewer.
 #### Option A: HTML Editor (recommended)
 
 1. Open `curation_editor.html` in a browser
-2. Click **Load JSON** and select an expectations file (e.g. `data/expectations/concepts.json`)
-3. Expand each query card and grade results:
-   - **3** = highly relevant (exact or near-exact match)
-   - **2** = relevant (clearly related concept)
-   - **1** = marginally relevant (loosely related)
-   - **0** = irrelevant (noise)
-   - **—** = uncurated (skipped by tests)
-4. Check **must appear** for results that must always be returned
-5. Check **must NOT** for results that indicate a search quality problem
-6. Set **Min NDCG@10** threshold (e.g. 0.5) for pass/fail
-7. Click **Save JSON** and replace the file in `data/expectations/`
+2. Click **Load JSON** and select an expectations file (e.g. `data/expectations/concepts.json`), or drag-and-drop the file
+3. Click **Harvest from API** to fetch fresh results — scores are captured from Elasticsearch automatically
+4. Click **Auto-grade (score)** on any card to assign grades based on each result's Elasticsearch score as a % of the top result score:
+   - Score ≥ 70% of top → grade **3** (highly relevant)
+   - Score ≥ 40% of top → grade **2** (relevant)
+   - Score ≥ 15% of top → grade **1** (marginal)
+   - Score < 15% of top → grade **0** (irrelevant)
+   - Thresholds are configurable per-card; click **Apply to all cards** to grade everything at once
+5. Review the auto-grades and adjust any that look wrong — look especially at results near threshold boundaries
+6. Check **must appear** for results that must always be returned
+7. Check **must NOT** for results that indicate a search quality problem
+8. Set **Min NDCG@10** threshold (e.g. 0.5) for pass/fail
+9. Click **Save JSON** and replace the file in `data/expectations/` (internal score fields are stripped automatically)
 
-The editor also supports **Harvest from API** to fetch results directly from the browser without using the CLI.
-
-**Auto-grade** applies a quick heuristic (keyword overlap with result name) as a starting point — always review manually.
+> **Note:** Auto-grade is a starting point, not a substitute for human review. Results near threshold boundaries (e.g., 38%, 68%) should be checked manually. The ES score reflects keyword match quality, not semantic relevance — a result can score high by matching a synonym rather than being truly relevant.
 
 #### Option B: Edit JSON Directly
 

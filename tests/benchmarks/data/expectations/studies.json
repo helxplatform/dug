@@ -8,17 +8,17 @@
       {
         "id": "HDP01566",
         "name": "Targeting Immune Inflammation in Cocaine Use Disorder: A Human Laboratory Study with Pentoxifylline",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01416",
         "name": "Development and Clinical Translation of RPBM for Quantitative Assessment of Myofascial Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"Substance abuse\"",
@@ -29,107 +29,107 @@
       {
         "id": "HDP01513",
         "name": "National Survey of Substance Abuse Treatment Services (N-SSATS), 2004",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01514",
         "name": "Treatment Episode Data Set -- Discharges (TEDS-D) -- Concatenated, 2006 to 2011",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00208",
         "name": "RAE (Realize, Analyze, Engage)- A Digital Biomarker Based Detection and Intervention System for Stress and Craving During Recovery from Substance Abuse Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01515",
         "name": "National Mental Health Services Survey (N-MHSS), 2010",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00518",
         "name": "Enhancing Exercise and Psychotherapy to Treat Comorbid Addiction and Pain for ImprovingAdherence to Medication Assisted Treatment in Opioid Use Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00778",
         "name": "Facilitating Sustainment Through Implementation Feedback: The SIC Coaching Model",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00644",
         "name": "Clinical Data Intelligence & Advanced Analytics to Reduce Drug Diversion across the Care Delivery Cycle and Drug Supply Chain in Health Systems",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00357",
         "name": "Using Implementation Interventions and Peer Recovery Support to Improve Opioid Treatment Outcomes in Community Supervision",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00160",
         "name": "A Mindfulness and Peer Mentoring Program to Improve Adherence to Medication Assisted Treatment for Opioid Use Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00101",
         "name": "Facilitating Sustainment Through Implementation Feedback: The SIC Coaching Model",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00693",
         "name": "Improving Access to Substance Abuse Evidence-Based Practices for Youth in the Justice System: Strategies Used by JPOs",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00556",
         "name": "Development & Malleability from Childhood to Adulthood",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00586",
         "name": "Supplement to Prevention Research Center: Parenting Among Women Who Are Opioid Users, Project 2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01402",
         "name": "Reducing opioid misuse among urban Indigenous young adults in Montana using a culturally centered intervention",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01354",
         "name": "Efficacy, safety, and pharmacokinetic study of BICX104 naltrexone subcutaneous implant alone and in combination with bupropion for the treatment of Methamphetamine Use Disorder (MUD).",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01053",
         "name": "Testing of a patient-centered e-health implementation model in addiction treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01588",
         "name": "Testing MOUD Scale-Up Strategies in Criminal Legal Settings",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00646",
         "name": "INTERACT Meeting with FDA on Cohort Design and Development of ALFQ as an Adjuvant for Heroin Vaccine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01439",
         "name": "Noninvasive Brain Stimulation for Treating Addiction (Supplement)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00360",
         "name": "HEALing Communities Study Data Coordinating Center",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "Neuralgia",
@@ -140,37 +140,37 @@
       {
         "id": "HDP00034",
         "name": "Development of a Novel Chemokine Receptor Antagonist Peptide as a Non-Opioid Treatment for Relief of Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00537",
         "name": "Regulation of Trigeminal Nociception by TRESK Channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01228",
         "name": "Regulation of Trigeminal Nociception by TRESK Channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01348",
         "name": "Transspinal Magnetic Stimulation for the Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01284",
         "name": "Focused Ultrasound Neuromodulation of Dorsal Root Ganglion for Noninvasive Mitigation of Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00019",
         "name": "Minimally Invasive Intercostal Nerve Block Device to Treat Severe Pain and Reduce Usage of Opiates",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-opioid treatment\"",
@@ -181,72 +181,72 @@
       {
         "id": "HDP00140",
         "name": "Closed-Loop Micromagnetic Neuromodulation as a Non-Opioid Treatment for Neuropathic Pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00384",
         "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00587",
-        "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00799",
         "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00587",
+        "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01556",
         "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00034",
         "name": "Development of a Novel Chemokine Receptor Antagonist Peptide as a Non-Opioid Treatment for Relief of Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00250",
         "name": "Opioid use disorders: UF Pharmacy medications discovery and development",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00181",
         "name": "Cannabidiol in the treatment of opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00491",
         "name": "LIGHT and Lymphotoxin induced modulation of trigeminal ganglia sensory neuron excitability",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00118",
         "name": "Pharmacokinetic and toxicology studies of AYX2, a transcription factor decoy, non-opioid, disease modifying drug candidate for the long-term treatment of chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00807",
         "name": "Use of a GLP-1 Agonist to Treat Opioid Use Disorder in Rats and Man",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00798",
         "name": "Opioid use disorders: UF Pharmacy medications discovery and development",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01386",
         "name": "Neural Ice Technology for Treatment of Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "neonatal",
@@ -257,107 +257,107 @@
       {
         "id": "HDP00002",
         "name": "HEAL Evaluation of Limited Pharmacotherapies for Neonatal Opioid Withdrawal Syndrome (HELP for NOWS) - Data Coordinating Center",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00540",
         "name": "Data Coordinating Center for the NICHD Neonatal Research Network (U24)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00075",
         "name": "Transcutaneous auricular neurostimulation for neonatal abstinence syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01474",
         "name": "Developing AI-Driven Pain Intensity and Pain Sensitization Biomarker Signatures to Optimize Neonatal Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01563",
         "name": "Wireless Wearable with AI Analytics for Monitoring Neonatal Abstinence Syndrome (NAS)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066",
         "name": "HEAL Initiative: Antenatal Opioid Exposure Longitudinal Study Consortium",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00453",
         "name": "Delivering Transcutaneous Auricular Neurostimulation as an Adjunct Treatment for Neonatal Opioid Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01149",
         "name": "Predicting neonatal health outcomes from placental and fetal brain extracellular vesicles in pregnant opioid users",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00008",
         "name": "Development of Lofexidine as a First-line Non-Opioid Pharmacologic Treatment for Neonatal Opioid Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00154",
         "name": "Prapela SVS: A cost-effective stochastic vibrotactile stimulation device to improve the clinical course of infants with neonatal abstinence syndrome.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00450",
         "name": "Prapela SVS: A cost-effective stochastic vibrotactile stimulation device toimprove the clinical course of infants with neonatal abstinence syndrome.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00222",
         "name": "Neonatal Opioid Screening Using Aptamers and Compensated Interferometry",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00858",
         "name": "Neonatal Opioid Screening Using Aptamers and Compensated Interferometry",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00295",
         "name": "Effects of Opioid Use Disorder in Pregnancy on Long-Term Maternal and Child Outcomes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01523",
         "name": "CADENCE - Continuous And Data-drivEN CarE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00999",
         "name": "CADENCE - Continuous And Data-drivEN CarE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01143",
         "name": "POWS for NOWS: Using physiomarkers as an objective tool for assessing the withdrawing infant",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01096",
         "name": "Predicting and Preventing Adverse Maternal and Child Outcomes of Opioid Use Disorder in Pregnancy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01135",
         "name": "Multimodal Fetal and Placental Imaging and Biomarkers of Clinical Outcomes in Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01127",
         "name": "POPI: Placenta, Opioids and Perinatal Implications",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neonatal opioid withdrawal\"",
@@ -368,107 +368,107 @@
       {
         "id": "HDP00002",
         "name": "HEAL Evaluation of Limited Pharmacotherapies for Neonatal Opioid Withdrawal Syndrome (HELP for NOWS) - Data Coordinating Center",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00008",
         "name": "Development of Lofexidine as a First-line Non-Opioid Pharmacologic Treatment for Neonatal Opioid Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00453",
         "name": "Delivering Transcutaneous Auricular Neurostimulation as an Adjunct Treatment for Neonatal Opioid Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066",
         "name": "HEAL Initiative: Antenatal Opioid Exposure Longitudinal Study Consortium",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00540",
         "name": "Data Coordinating Center for the NICHD Neonatal Research Network (U24)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01143",
         "name": "POWS for NOWS: Using physiomarkers as an objective tool for assessing the withdrawing infant",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01096",
         "name": "Predicting and Preventing Adverse Maternal and Child Outcomes of Opioid Use Disorder in Pregnancy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01135",
         "name": "Multimodal Fetal and Placental Imaging and Biomarkers of Clinical Outcomes in Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01127",
         "name": "POPI: Placenta, Opioids and Perinatal Implications",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01119",
         "name": "The Opioid in Pregnancy: Imaging of Oxygenation, Inflammation, and Development in Brain & Placenta Project (OPIOID BPP)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01149",
         "name": "Predicting neonatal health outcomes from placental and fetal brain extracellular vesicles in pregnant opioid users",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00450",
         "name": "Prapela SVS: A cost-effective stochastic vibrotactile stimulation device toimprove the clinical course of infants with neonatal abstinence syndrome.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01627",
         "name": "Disparities in early childhood health outcomes following prenatal opioid exposure and protective health system factors: a population perspective",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00586",
         "name": "Supplement to Prevention Research Center: Parenting Among Women Who Are Opioid Users, Project 2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00278",
         "name": "NeoGUARD: An easy-to-use, low-cost brain monitor for objective screening and treatment of opioid-exposed infants",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00982",
         "name": "Understanding the Mechanistic, Neurophysiological, and Antinociceptive Effects of Transcutaneous Auricular Neurostimulation for Treatment of Chronic Pain",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00263",
-        "name": "CVL-354, a kappa opioid receptor antagonist for treatment of opioid use disorder, withdrawal and relapse",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00088",
-        "name": "NOP Receptor Antagonist for OUD Pharmacotherapy",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00350",
-        "name": "AMPA Antagonism: A Novel Pharmacology for Launching Recovery from Opioid Addiction",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01009",
         "name": "Phase 1 and 2 studies of sublingual dexmedetomidine, an alpha 2 adrenergic agonist, for treating opioid withdrawal",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00350",
+        "name": "AMPA Antagonism: A Novel Pharmacology for Launching Recovery from Opioid Addiction",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00088",
+        "name": "NOP Receptor Antagonist for OUD Pharmacotherapy",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00263",
+        "name": "CVL-354, a kappa opioid receptor antagonist for treatment of opioid use disorder, withdrawal and relapse",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-pharmacologic pain management\"",
@@ -479,12 +479,12 @@
       {
         "id": "HDP01108",
         "name": "Reaching Rural Veterans: Applying Mind-Body Skills for Pain Using a Whole Health Telehealth Intervention (RAMP-WH)",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"opioid use disorder\"",
@@ -495,107 +495,107 @@
       {
         "id": "HDP00040",
         "name": "The Collaboration Linking Opioid Use Disorder and Sleep ('CLOUDS') Study",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01522",
         "name": "HEAL Initiative: Coordinating Center to Support NIDA Preventing Opioid Use Disorder in Older Adolescents and Young Adults",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00181",
         "name": "Cannabidiol in the treatment of opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00533",
         "name": "Optimized Interventions to Prevent Opioid Use Disorder among Adolescents and Young Adults in the Emergency Department",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00465",
         "name": "Use of a GLP-1 Agonist to Treat Opioid Use Disorder in Rats and Man",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00254",
         "name": "A novel and highly selective orexin 1 receptor antagonist for the treatment of patients with opioid use disorder.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01211",
         "name": "The impact of central sleep apnea in patients receiving medications for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00220",
         "name": "Evaluating Suvorexant for Sleep Disturbance in Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00968",
         "name": "Target Specificity of Tabernanthalog Treatment in Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00179",
         "name": "Web-Based Treatment for Perinatal Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01137",
         "name": "Feasibility of Deep Brain Stimulation as a Novel Treatment for Refractory Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00213",
         "name": "An ultra-long-acting oral treatment for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01207",
         "name": "Sleep and circadian rhythm phenotypes and mechanisms associated with opioid use disorder treatment outcomes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00045",
         "name": "Nalmefene Implant for the Long-Term Treatment of Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00709",
         "name": "Development of a novel drug for treating opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00300",
         "name": "A once-weekly oral methadone for maintenance therapy for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00146",
         "name": "Novel LAAM formulations to treat Opioid Use Disorder (UG3 DA048768-01A1)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01552",
         "name": "MEB-1170: A New Chemical Entity for the Treatment of Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01218",
         "name": "Value of Sleep Metrics in Predicting Opioid-Use Disorder Treatment Outcomes: Leadership and Data Coordinating Center",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00027",
         "name": "Dual-orexin antagonism as a mechanism for improving sleep and drug abstinence in opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "depression",
@@ -606,107 +606,107 @@
       {
         "id": "HDP01329",
         "name": "Equity Using Interventions for Pain and Depression (EQUIPD)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01011",
         "name": "Equity Using Interventions for Pain and Depression (EQUIPD)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00915",
         "name": "Endocannabinoid Targeting for Opioid Induced Respiratory Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00917",
         "name": "Long-term Opioid Therapy, Depression and Suicide Mortality Risk in Patients with Head and Neck Cancer",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00132",
         "name": "Patient-centered team-based primary care to Treat Opioid Use Disorder, Depression, and Other conditions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01543",
         "name": "Investigating Mechanisms of Intra- and Inter-individual Pain Variability in Patients with Comorbid Chronic Pain and Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01557",
         "name": "Repurposing FDA-approved oxytocin to treat opioid-induced respiratory depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00316",
         "name": "Intranasal Leptin as A Novel Treatment of Opioid-Induced Respiratory Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00950",
         "name": "Leptin Receptor Agonist as a Novel Prevention of Opioid Induced Respiratory Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01157",
         "name": "Autonomous Digital CBT Intervention for Opioid Use Disorder in Individuals with Co-Occurring Internalizing Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00728",
         "name": "Proof of concept study to treat negative affect in chronic low back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00909",
         "name": "Cancer Pain Management: A Technology-Based Intervention for Asian American Breast Cancer Survivors",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00257",
         "name": "Development of a CCKBR-targeting scFv as Therapy for Chronic Pain Patients",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00107",
         "name": "Treating Chronic Pain in Buprenorphine Patients in Primary Care Settings",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00906",
         "name": "Transcriptomic single-cell profiling in breathing-specific parabrachial mu-opioid receptor neurons",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00160",
         "name": "A Mindfulness and Peer Mentoring Program to Improve Adherence to Medication Assisted Treatment for Opioid Use Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01014",
         "name": "Development and Evaluation of Computerized Chemosensory-Based Orbitofrontal Networks Training for Treatment of Pain (CBOT-P)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00276",
         "name": "Improving Access and Treatment for Co-occurring Opioid Use Disorders and Mental Illness",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01667",
         "name": "Understanding vulvodynia: Using machine-learning-based modeling to identify factors associated with resolution and persistence of vulvar pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00934",
         "name": "Neuroimmune mechanisms of a humanized CCK-B receptor scFv as therapy for chronic pain patients",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"generalized anxiety\"",
@@ -716,7 +716,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"pain management\"",
@@ -727,107 +727,107 @@
       {
         "id": "HDP01022",
         "name": "The effects of hydrocodone rescheduling on pain management of older lung cancer patients",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01027",
         "name": "Pain Management Strategies, Associated Psychological Variables, and Outcomes in Critical Limb Ischemia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00464",
         "name": "Nonpharmacologic Pain Management for Lumbar Surgery",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00585",
         "name": "Pain Management Collaboratory Coordinating Center (PMC3)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01245",
         "name": "Virtual Reality as a Opioid Sparing Intervention for Acute Postoperative Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00543",
         "name": "Improving Clinical trial Education, Recruitment, and Enrollment at CTSA Hubs (I-CERCH)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00395",
         "name": "Psychosocial pain management to improve opioid use disorder treatment outcomes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00471",
         "name": "De-Implementing Opioid Use and Implementing Optimal Pain Management Following Dental Extractions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00460",
         "name": "Data Coord Ctr-NICHD Cooperative Multicenter Maternal Medicine Units Research Net",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00941",
         "name": "Achieving Equity through SocioCulturally-informed, Digitally-Enabled Cancer Pain managemeNT (ASCENT) Clinical Trial",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00723",
         "name": "Promoting Training in Clinical Pain Research as an Initiative of the Internet-delivered Management of Pain Among Cancer Survivors (IMPACTS) Trial",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00221",
         "name": "Enhancing the impact of behavioral pain management on MAT outcomes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00872",
         "name": "Micronized salsalate in a parenteral formulation is a safe and effective analgesic for acute postoperative pain management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01652",
         "name": "Coordinated cARe paiN mAnagement Technology ImplementatiON (CARNATION)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00209",
         "name": "Micronized salsalate in a parenteral formulation is a safe and effective analgesic for acute postoperative pain management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00499",
         "name": "Internet-delivered Management of Pain Among Cancer Treatment Survivors (IMPACTS)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00909",
         "name": "Cancer Pain Management: A Technology-Based Intervention for Asian American Breast Cancer Survivors",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01499",
         "name": "Peer suppoRt for adolescents and Emerging adults with Sickle cell pain: promoting ENgagement in Cognitive behavioral thErapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00917",
         "name": "Long-term Opioid Therapy, Depression and Suicide Mortality Risk in Patients with Head and Neck Cancer",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00299",
         "name": "Non-Opioid Post-Operative Pain Management Using Bupivacaine-loaded Poly(ester urea) Mesh",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"acute pain\"",
@@ -838,107 +838,107 @@
       {
         "id": "HDP01267",
         "name": "Development of A Focused Ultrasound Device for Noninvasive, Peripheral Nerve Blockade to Manage Acute Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01392",
         "name": "Efficacy of intravenous sub-dissociative ketamine versus intravenous morphine in children with acute pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00186",
         "name": "IMPACT-Instrument to Measure Pain and Assess Correlation to Treatment. Create a smartphone pupillometry to objectively determine the presence of acute pain, evaluate opioid as the treatment for pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01476",
         "name": "Optimizing Pain Treatment In Children On Mechanical ventilation (OPTICOM)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00931",
         "name": "Predicting Pediatric Sickle Cell Disease Acute Pain Using Mathematical Models Based on mHealth Data",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01665",
         "name": "An Adaptive Psychological Intervention to Improve Pain and Reduce Opioid Use following an Injury",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00120",
         "name": "Dnmt3a as an epigenetic target for chronic pain treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00111",
         "name": "The Inflammatory Index as a Biomarker for Pain in Patients with Sickle Cell Disease",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00460",
         "name": "Data Coord Ctr-NICHD Cooperative Multicenter Maternal Medicine Units Research Net",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01528",
         "name": "Clinical Development of SBS-147: First-in-class Oral Arylepoxamide Agonist for Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00235",
         "name": "Identification and Validation of a Novel Central Analgesia Circuit",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01474",
         "name": "Developing AI-Driven Pain Intensity and Pain Sensitization Biomarker Signatures to Optimize Neonatal Pain Management",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01602",
-        "name": "Improving Perioperative Care for Patients with Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01635",
         "name": "MODEL-pain MOdeling Diverse Experiences and Longitudinal trajectories of pain",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01602",
+        "name": "Improving Perioperative Care for Patients with Opioid Use Disorder",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00339",
         "name": "A Novel Opioid-Free Targeted Pain Control Method for Acute Post-Operative Localized Pain Related to Oral Surgical Procedures",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01173",
         "name": "A Novel Opioid-Free Targeted Pain Control Method for Acute Post-Operative Localized Pain Related to Oral Surgical Procedures",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01220",
         "name": "Novel non-narcotic analgesic for acute and chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01491",
         "name": "Optimizing the use of ketamine to reduce chronic postsurgical pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01490",
         "name": "Effectiveness of an mHealth psychosocial intervention to prevent transition from acute to chronic postsurgical pain in adolescents",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01657",
         "name": "Cannabis Use Impact on Pain and Recovery Post-Surgery - The Role of the Endocannabinoid System",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"chronic pain\"",
@@ -947,109 +947,109 @@
     "curated_at": null,
     "expected_results": [
       {
-        "id": "HDP00039",
-        "name": "Integrative Treatment for Achieving Holistic Recovery from Comorbid Chronic Pain and Opioid Use Disorder (OPTIC)",
-        "relevance_grade": null
-      },
-      {
         "id": "HDP01045",
         "name": "Integrative Treatment for Achieving Holistic Recovery from Comorbid Chronic Pain and Opioid Use Disorder (HOPE)",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00039",
+        "name": "Integrative Treatment for Achieving Holistic Recovery from Comorbid Chronic Pain and Opioid Use Disorder (OPTIC)",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01148",
         "name": "Adapting and Implementing a Nurse Care Management Model to Care for Rural Patients with Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01102",
         "name": "MIRHIQL Resource Center for Improving Quality of Life with Chronic Pain (MRC)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00161",
         "name": "Development of selective calpain-1 inhibitors for chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01108",
         "name": "Reaching Rural Veterans: Applying Mind-Body Skills for Pain Using a Whole Health Telehealth Intervention (RAMP-WH)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00018",
         "name": "A novel therapeutic to ameliorate chronic pain and reduce opiate use",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01048",
         "name": "Randomized Trial of Acceptance and Commitment Therapy (ACT) and a Care Management App in Primary Care-based Buprenorphine Treatment (IMPOWR-ME)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00247",
         "name": "FKBP51 antagonism to prevent chronic pain: optimizing efficacy & evaluating safety and mechanisms",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01106",
         "name": "Multilevel Interventions to Reduce Harm and Improve Quality of Life for Patients on Long Term Opioid Therapy - Yale Resource Center (MIRHIQL-YRC)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00230",
         "name": "Multisite adaptive brain stimulation for multidimensional treatment of refractory chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00015",
         "name": "Evaluating the Blood-Brain Barrier Bioavailability and in vivo Efficacy Potential of a Novel TAK1 Inhibitor Targeting Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00674",
         "name": "Examining the synergistic effects of cannabis and prescription opioid policies on chronic pain, opioid prescribing, and opioid overdose",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00097",
         "name": "Prognostic biomarkers for high-impact chronic pain: Development and validation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01576",
         "name": "Personalized Auricular Point Acupressure for Chronic Pain Self-Management in Rural Populations",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01660",
         "name": "Biopsychosocial determinants of pediatric-onset chronic musculoskeletal pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01298",
         "name": "Developing an Intervention to Address Intersecting Prescription Opioid and Chronic Pain Stigma in Cancer Survivors",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01654",
         "name": "SmartStim, a novel implantable neuromodulation system to cure chronic pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01428",
         "name": "Commercialization of a Behavioral Digital Health Program for Individuals with Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01508",
         "name": "Group-based Integrative Pain Management: A multi-level approach to address intersectional stigma and social isolation in diverse primary care safety net patients with chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "opioid-free treatment",
@@ -1060,107 +1060,107 @@
       {
         "id": "HDP01176",
         "name": "IMPACT: Integrative Mindfulness-Based Predictive Approach for Chronic low back pain Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01348",
         "name": "Transspinal Magnetic Stimulation for the Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01386",
         "name": "Neural Ice Technology for Treatment of Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01675",
         "name": "Nanodroplet Infused Analgesic-Wafer for Transmucosal Opioid-free Treatment of Subacute Oral Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01304",
         "name": "Selection Bias-Free Estimation of the Impact of Drug-Focused 12-step Mutual Help Groups",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00332",
         "name": "Testing the Effects of Contingency Management and Behavioral Economics on Buprenorphine-Naloxone Treatment Adherence Using a Sequential Multiple Assignment Randomized Trial (SMART) Design",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01650",
         "name": "Implantable, Degradable Drug Delivery Devices for Non-Opioid Post-Surgical Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01012",
         "name": "Enhancing Effectiveness Research on Recovery Housing for Persons Prescribed Medication for Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01484",
         "name": "A Formative Assessment of Mobile Pharmacy Services for Recovery Housing and Medication for Opioid Use Disorder (MOUD) Integration",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00042",
         "name": "Development of Next-generation Pharmacotherapy for Opioid Use Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00938",
         "name": "Tracking the opioid epidemic with social media: an early warning system",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01219",
         "name": "Testing the Effects of Contingency Management and Behavioral Economics on Buprenorphine-Naloxone Treatment Adherence Using a Sequential Multiple Assignment Randomized Trial (SMART) Design",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00107",
         "name": "Treating Chronic Pain in Buprenorphine Patients in Primary Care Settings",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01118",
         "name": "Chicago Data-driven OUD Screening, Engagement, Treatment and Planning (C-DOSETaP) System",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00915",
         "name": "Endocannabinoid Targeting for Opioid Induced Respiratory Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01679",
         "name": "A fully-implanted spinal cord stimulation system to restore sensation and relieve phantom limb pain after lower-limb amputation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00088",
         "name": "NOP Receptor Antagonist for OUD Pharmacotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00312",
         "name": "Development of novel therapeutics for opioid dependence",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00782",
         "name": "Customer discovery for minimally invasive nerve block device to treat severe pain and reduce usage of opiates",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01114",
         "name": "Strategies to define and mitigate the placental and fetal alterations caused by maternal oxycodone exposure",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"novel analgesic\"",
@@ -1171,37 +1171,37 @@
       {
         "id": "HDP00422",
         "name": "Site-directed RNA editing of Nav1.7 as a novel analgesic",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00116",
         "name": "Development of a novel analgesic for mixed inflammatory and neuropathic pain states",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01203",
         "name": "Novel models to study dorsal root ganglion neurons in knee osteoarthritis pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01462",
         "name": "Targeting GTP Cyclohydrolase 1 for treating chronic orofacial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01528",
         "name": "Clinical Development of SBS-147: First-in-class Oral Arylepoxamide Agonist for Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00744",
         "name": "Arylepoxamides: A new class of potent, safer analgesics",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "orofascial",
@@ -1212,67 +1212,67 @@
       {
         "id": "HDP00388",
         "name": "LIGHT and Lymphotoxin targeting for the treatment of chronic orofacial pain conditions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00754",
         "name": "LIGHT and Lymphotoxin targeting for the treatment of chronic orofacial pain conditions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00750",
         "name": "LIGHT and Lymphotoxin targeting for the treatment of chronic orofacial pain conditions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01462",
         "name": "Targeting GTP Cyclohydrolase 1 for treating chronic orofacial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00491",
         "name": "LIGHT and Lymphotoxin induced modulation of trigeminal ganglia sensory neuron excitability",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00235",
         "name": "Identification and Validation of a Novel Central Analgesia Circuit",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00749",
         "name": "Novel target identification for treatment of chronic overlapping pain using multimodal brain imaging",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00538",
         "name": "Modeling temporomandibular joint disorders pain: role of transient receptor potential ion channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00400",
         "name": "Development and Evaluation of Computerized Chemosensory-Based Orbitofrontal Cortex Training (CBOT) for relapse preventionin patients with Opioid Use (OUD)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01400",
         "name": "Role of Understudied aGPCRs in Orofacial Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00996",
         "name": "Neural Architecture of the Murine and Human Temporomandibular Joint",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00942",
         "name": "Secondary Analysis and Integration of Existing Data Related to Chronic Orofacial Pain and Placebo Effects",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "migraine",
@@ -1283,97 +1283,97 @@
       {
         "id": "HDP00252",
         "name": "Target validation of a novel CGRP receptor in migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00153",
         "name": "Development of a novel anti-migraine therapeutics",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01401",
         "name": "A novel platform for the discovery and characterization of migraine therapies",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00470",
         "name": "Protease Activated Receptor Type 2 Targeting for Migraine Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00236",
         "name": "Targeting lipid rafts for treatment of migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01403",
         "name": "The involvement of GPR37L1 on a chronic migraine-like state",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01082",
         "name": "Protease-activated-receptor-2 antagonists for treatment of migraine pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01605",
         "name": "Feasibility Trial of a Remotely-Delivered Mindfulness-Based Intervention for Adolescents with Migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00451",
         "name": "Drug Free Nerve Block Device for the Relief of Pain and Symptoms in Migraines and other Headaches",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00989",
         "name": "Development of an intranasal, direct to nerve treatment for headache disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01155",
         "name": "The Penn Human Precision Pain Center (HPPC): Discovery and Functional Evaluation of Human Primary Somatosensory Neuron Types at Normal and Chronic Pain Conditions",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00537",
         "name": "Regulation of Trigeminal Nociception by TRESK Channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01228",
         "name": "Regulation of Trigeminal Nociception by TRESK Channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01379",
         "name": "Development of PAC1 receptor antagonists for the treatment of Headache Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00347",
         "name": "Novel mGlu5 negative allosteric modulators as first-in-class non-addictive analgesic therapeutics",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00350",
         "name": "AMPA Antagonism: A Novel Pharmacology for Launching Recovery from Opioid Addiction",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00162",
         "name": "Validation of peripheral CGRP signaling as a target for the treatment of pain in chronic pancreatitis",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00422",
         "name": "Site-directed RNA editing of Nav1.7 as a novel analgesic",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "mindfulness",
@@ -1384,107 +1384,107 @@
       {
         "id": "HDP01497",
         "name": "Group-Based Mindfulness for Patients with Chronic Low Back Pain in the Primary Care",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01112",
         "name": "Optimizing Patient-Centered Opioid Tapering with Mindfulness-Oriented Recovery Enhancement",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01176",
         "name": "IMPACT: Integrative Mindfulness-Based Predictive Approach for Chronic low back pain Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00289",
         "name": "Mindful Moms in Recovery: Yoga-based mindfulness relapse prevention for pregnant women with opioid disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00825",
         "name": "Effect of Mindfulness Training on Opioid Use and Anxiety During Primary Care Buprenorphine Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00896",
         "name": "Motivational Interviewing and Mindfulness-Oriented Recovery Enhancement for Tobacco Dependence and Other Drug use in Methadone Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00454",
         "name": "Mindfulness Mobile App to Reduce Adolescent Substance Use",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00283",
         "name": "Mindfulness Oriented Recovery Enhancement as an Adjunct to Methadone Treatment for Opioid Use and Chronic Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00160",
         "name": "A Mindfulness and Peer Mentoring Program to Improve Adherence to Medication Assisted Treatment for Opioid Use Disorders",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01061",
         "name": "Implementation and Effectiveness of Mindfulness Oriented Recovery Enhancement as an Adjunct to Methadone Treatment for Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01605",
         "name": "Feasibility Trial of a Remotely-Delivered Mindfulness-Based Intervention for Adolescents with Migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01108",
         "name": "Reaching Rural Veterans: Applying Mind-Body Skills for Pain Using a Whole Health Telehealth Intervention (RAMP-WH)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00946",
         "name": "Partners for Pain & Wellbeing Equity: A Randomized Trial of Community Supported Complementary and Integrative Health Self Management for Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00613",
         "name": "Mechanisms of Psychosocial Treatments for Chronic Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00924",
         "name": "Integrating Nonpharmacologic Strategies for Pain with Inclusion, Respect, and Equity (INSPIRE): Tailored digital tools, telehealth coaching, and primary care coordination",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01665",
         "name": "An Adaptive Psychological Intervention to Improve Pain and Reduce Opioid Use following an Injury",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01492",
         "name": "Integrated Treatment for Veterans with Co-Occurring Chronic Pain and Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01076",
         "name": "Mindful Body Awareness Training as an Adjunct to Medication Assisted Treatment for Opioid Use Disorder",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00024",
-        "name": "NarcoBond: Opioid Targeted Biomimetic Nanosponges for Treatment of Opioid Overdose",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00783",
         "name": "NarcoBond: Opioid Targeted Biomimetic Nanosponges for Treatment of Opioid Overdose",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00024",
+        "name": "NarcoBond: Opioid Targeted Biomimetic Nanosponges for Treatment of Opioid Overdose",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "tobacco-dependence",
@@ -1495,107 +1495,107 @@
       {
         "id": "HDP00896",
         "name": "Motivational Interviewing and Mindfulness-Oriented Recovery Enhancement for Tobacco Dependence and Other Drug use in Methadone Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00558",
         "name": "Monitoring the Future: Drug Use and Lifestyles of American Youth",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00082",
         "name": "Cannabis Identity as Cognitive and Developmental Risk Factors For Adolescent Cannabis Misuse",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01504",
         "name": "Effects of Semaglutide and Tirzepatide on Incidence and Outcomes of Stimulant Use Disorders and Opioid Use Disorder in Real-world Populations: Target Trial Emulation Using Patient Electronic Health Records (GLP-SUD)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01517",
         "name": "Monitoring the Future: A Continuing Study of American Youth (8th- and 10th-Grade Surveys), 2021",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00143",
         "name": "Prescription Opioid Formulation to Deter Extraction, Injection, Insufflation, and Smoking",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01516",
         "name": "Monitoring the Future: A Continuing Study of American Youth (12th-Grade Survey), 2021",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01415",
         "name": "Substance Use in Pregnant People - Optimizing Retention in Treatment by Maximizing Opportunities for Management (SUPPORT-MOM)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01489",
         "name": "Tailored Non-Pharmacotherapy Services for Chronic Pain: Testing Scalable and Pragmatic Approaches",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01610",
         "name": "Continuous Monitoring of Pain using Facial Expressions in ICU Environment (COMPANION)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01097",
         "name": "Development of the OpiAID strength band platform",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01507",
         "name": "EMS initiated Buprenorphine for Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01086",
         "name": "Development of a Novel Calcium Channel Therapeutic for Opioid Use Disorder",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01107",
-        "name": "Building and Implementing Best Practices for Buprenorphine Initiation in the Setting of Fentanyl Use",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01080",
         "name": "Combination Therapeutic for Chronic Opioid Use Disorder Relapse",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01107",
+        "name": "Building and Implementing Best Practices for Buprenorphine Initiation in the Setting of Fentanyl Use",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01600",
         "name": "Evaluating state policies to facilitate emergency department-based treatment initiation for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00138",
         "name": "MOR/DOR Heterodimer Antagonists: A Novel Treatment for Opioid Dependence",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00263",
-        "name": "CVL-354, a kappa opioid receptor antagonist for treatment of opioid use disorder, withdrawal and relapse",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01009",
         "name": "Phase 1 and 2 studies of sublingual dexmedetomidine, an alpha 2 adrenergic agonist, for treating opioid withdrawal",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00282",
-        "name": "Pharmacologically-based Strategies for Buprenorphine Treatment During Pregnancy",
-        "relevance_grade": null
+        "id": "HDP00263",
+        "name": "CVL-354, a kappa opioid receptor antagonist for treatment of opioid use disorder, withdrawal and relapse",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00522",
+        "name": "Non invasive vagal nerve stimulation in opioid use disorders",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"back pain\"",
@@ -1606,107 +1606,107 @@
       {
         "id": "HDP00387",
         "name": "Imaging Epigenetic Dysregulation in Patients with Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00239",
         "name": "Wearable nanocomposite sensor system for diagnosing mechanical sources of low back pain and guiding rehabilitation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00728",
         "name": "Proof of concept study to treat negative affect in chronic low back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00349",
         "name": "Development, Evaluation and Translation of Robotic Apparel for Alleviating Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00308",
         "name": "Novel imaging of endplate biomarkers in chronic low back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01674",
         "name": "Whole person experience of pain: Novel integration with low back pain phenotypes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01604",
         "name": "A SMART design study using patient-based algorithms for multicomponent therapy in chronic low back pain and beyond",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00090",
         "name": "Treatment of chronic low back pain with transcutaneous auricular vagus nerve stimulation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00580",
         "name": "Deep Brain Stimulation of the Subgenual Cingulate Cortex for the Treatment of Medically Refractory Chronic Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01176",
         "name": "IMPACT: Integrative Mindfulness-Based Predictive Approach for Chronic low back pain Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01497",
         "name": "Group-Based Mindfulness for Patients with Chronic Low Back Pain in the Primary Care",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00356",
         "name": "UCSF Core Center for Patient-centric Mechanistic Phenotyping in Chronic Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01284",
         "name": "Focused Ultrasound Neuromodulation of Dorsal Root Ganglion for Noninvasive Mitigation of Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01494",
         "name": "Pragmatic Trial of Acupuncture for Chronic Low Back Pain in Older Adults",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00212",
         "name": "Deep Brain Stimulation of the Subgenual Cingulate Cortex for the Treatment of Medically Refractory Chronic Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00258",
         "name": "Back Pain Consortium (BACPAC) Research Program Data Integration, Algorithm Development and Operations Management Center",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00233",
         "name": "Randomized-controlled trial of virtual reality for chronic low back pain to improve patient-reported outcomes and physical activity",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00020",
         "name": "Opioid-Sparing pain management for Chronic Low Back Pain patients using TMC-CP01 - A VANISH (Virtual Autonomic Neuromodulation Induced Systemic Healing) based program",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01339",
         "name": "BACKHOME Study",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01338",
         "name": "comeBACK Study",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "pain biomarkers",
@@ -1717,107 +1717,107 @@
       {
         "id": "HDP00330",
         "name": "Validation of a novel cortical biomarker signature for pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00974",
         "name": "Multimodal imaging biomarkers for investigating fascia, muscle and vasculature in myofascial pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01214",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00337",
         "name": "Discovery of Biomarker Signatures Prognostic for Neuropathic Pain after Acute Spinal Cord Injury",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00097",
         "name": "Prognostic biomarkers for high-impact chronic pain: Development and validation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01474",
         "name": "Developing AI-Driven Pain Intensity and Pain Sensitization Biomarker Signatures to Optimize Neonatal Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00308",
         "name": "Novel imaging of endplate biomarkers in chronic low back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00230",
         "name": "Multisite adaptive brain stimulation for multidimensional treatment of refractory chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01004",
         "name": "Development and identification of magnetic resonance, electrophysiological, and fiber-optic imaging biomarkers of myofascial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00033",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01032",
         "name": "MRI-based quantitative characterization of impaired myofascial interface properties in myofascial pain syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00922",
         "name": "Electrophysiological and ultrasound quantitative biomarkers for myofascial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933",
         "name": "Development and Validation of a Multimodal Ultrasound- Based Biomarker for Myofascial Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01685",
         "name": "Total-body PET for assessing myofascial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01023",
         "name": "Scale up single-cell technologies to map pain-associated genes and cells across the lifespan",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01029",
         "name": "From Nerve to Brain: Toward a Mechanistic Understanding of Spinal Cord Stimulation in Human Subjects",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01018",
         "name": "Quantifying and Treating Myofascial Dysfunction in Post Stroke Shoulder Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01422",
         "name": "Role of Scn1b in Susceptibility to Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01253",
         "name": "Identifying plasma proteomic profiles of chronic pain development in endometriosis from adolescence to adulthood",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01412",
         "name": "Imaging of pain sources in myofascial pain syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "signature of pain",
@@ -1828,107 +1828,107 @@
       {
         "id": "HDP00330",
         "name": "Validation of a novel cortical biomarker signature for pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00253",
         "name": "SPRINT: Signature for Pain Recovery IN Teens",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00033",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01198",
         "name": "Meaningful data integration, visualization and distribution for Human Pain Associated Genes & Cells Datasets",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01474",
         "name": "Developing AI-Driven Pain Intensity and Pain Sensitization Biomarker Signatures to Optimize Neonatal Pain Management",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00337",
         "name": "Discovery of Biomarker Signatures Prognostic for Neuropathic Pain after Acute Spinal Cord Injury",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01214",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933",
         "name": "Development and Validation of a Multimodal Ultrasound- Based Biomarker for Myofascial Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00630",
         "name": "Integrated Microphysiological System of Cerebral Organoid and Blood Vessel for Disease Modeling and Neuropsychiatric Drug screening",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00922",
         "name": "Electrophysiological and ultrasound quantitative biomarkers for myofascial pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00951",
         "name": "Neuronal anatomy, connectivity, and phenotypic innervation of the knee joint",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00960",
         "name": "Mapping the joint-nerve interactome of the knee",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00369",
         "name": "Biomarker Signature to Predict the Persistence of Post-Traumatic Headache",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00387",
         "name": "Imaging Epigenetic Dysregulation in Patients with Low Back Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01384",
         "name": "Developing small molecules to engage an analgesic GPCR in pain unpleasantness neural circuits",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00097",
         "name": "Prognostic biomarkers for high-impact chronic pain: Development and validation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00538",
         "name": "Modeling temporomandibular joint disorders pain: role of transient receptor potential ion channels",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00293",
         "name": "Discovery and Analytical Validation of Inflammatory Bio-Signatures of the Human Pain Experience",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01069",
         "name": "HEAL-affiliated NIH Common Fund Acute to Chronic Pain Signatures (A2CPS) Program",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00974",
         "name": "Multimodal imaging biomarkers for investigating fascia, muscle and vasculature in myofascial pain.",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "GLP-1",
@@ -1939,92 +1939,92 @@
       {
         "id": "HDP00204",
         "name": "Use of a GLP-1 Agonist to Treat Opioid Use Disorder in Rats and Man",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00465",
         "name": "Use of a GLP-1 Agonist to Treat Opioid Use Disorder in Rats and Man",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01380",
         "name": "Advancing Integrated Treatment for Co-Occurring Opioid and Alcohol Use Disorders: A Comprehensive Analysis of GLP-1 Receptor Agonists and Traditional Pharmacotherapies in Real-World Settings",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00807",
         "name": "Use of a GLP-1 Agonist to Treat Opioid Use Disorder in Rats and Man",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01571",
         "name": "Repurposing Semaglutide for the Treatment of Cocaine Use Disorder: a Pilot Mechanistic Study",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01506",
         "name": "Evaluation of Tirzepatide as an Adjunct to Buprenorphine for the treatment of opioid use disorder: A pragmatic, multi-site, double-blind, Randomized, placebo-controlled, trial (TAB)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01575",
         "name": "Glutide for Ending Methamphetamine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00744",
         "name": "Arylepoxamides: A new class of potent, safer analgesics",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01504",
         "name": "Effects of Semaglutide and Tirzepatide on Incidence and Outcomes of Stimulant Use Disorders and Opioid Use Disorder in Real-world Populations: Target Trial Emulation Using Patient Electronic Health Records (GLP-SUD)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01177",
         "name": "Disease Modifying Analgesia with CA8 Gene Therapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01263",
         "name": "IND-enabling studies on novel Cav3 T-channel modulators for treatment of neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01165",
         "name": "Antibody-based therapy for fentanyl-related opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01220",
         "name": "Novel non-narcotic analgesic for acute and chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01679",
         "name": "A fully-implanted spinal cord stimulation system to restore sensation and relieve phantom limb pain after lower-limb amputation",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00493",
         "name": "An ultra-long-acting oral treatment for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00679",
         "name": "A Phase I/IIa Clinical Trial Testing the Safety and Immunogenicity of a Heroin Vaccine and its Efficacy Against Morphine Challenge.",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01090",
         "name": "Clinical Development of a Therapeutic Agent for Rapid Reversal of Methamphetamine Intoxication",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "buprenorphine",
@@ -2035,107 +2035,107 @@
       {
         "id": "HDP01171",
         "name": "Elucidating High Oral Fluid Exposure Mechanisms of Buprenorphine to Reduce Dental Caries",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00562",
         "name": "Buprenorphine Effect on Suicidal Behavior",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01131",
         "name": "Long acting biodegradable buprenorphine depots",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01193",
         "name": "Understanding the Association between Sublingual Buprenorphine and Oral Health Outcomes",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00575",
         "name": "Buprenorphine for probationers and parolees: Bridging the gap into treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01507",
         "name": "EMS initiated Buprenorphine for Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01107",
         "name": "Building and Implementing Best Practices for Buprenorphine Initiation in the Setting of Fentanyl Use",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01316",
         "name": "Innovatively Increasing PCP Prescribing of Buprenorphine: Measurement Based Care and Integrated Electronic Solution",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01197",
         "name": "Oral complications from sublingual buprenorphine treatment: A prospective cohort study",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01305",
         "name": "Ancillary Study of the Adoption and Sustainability of ED-Initiated Buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01586",
         "name": "Strengthening buprenorphine treatment for Individuals in carceral settings (STAND): A hybrid implementation-effectiveness trial of long-acting injectable versus sublingual buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01296",
         "name": "Standard versus High Dose ED-Initiated Buprenorphine Induction",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00542",
         "name": "Opioid Use Disorder Stigma Mechanisms in the Context of Buprenorphine Treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00156",
         "name": "A Prescription Digital Therapeutic to Promote Adherence to Buprenorphine Pharmacotherapy for Patients with Opioid Use Disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00107",
         "name": "Treating Chronic Pain in Buprenorphine Patients in Primary Care Settings",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01505",
         "name": "Low-threshold Buprenorphine Treatment at Syringe Services Programs: a Type I Hybrid Effectiveness-implementation Trial",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01537",
         "name": "Development of a bioabsorbable, subcutaneous, extended-release buprenorphine implant for opioid use disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01310",
         "name": "A Foundation to Examine Reasons for Discontinuation for Buprenorphine Care in the Veterans Health Administration",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01686",
         "name": "Extended-Release vs Sublingual Buprenorphine for Adolescent Opioid Use Disorder (ERA)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00472",
+        "id": "HDP00578",
         "name": "Development and Evaluation of Video-Based Directly Observed Therapy for Office-Based Treatment of Opioid Use Disorders with Buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neuropathic pain\"",
@@ -2146,107 +2146,107 @@
       {
         "id": "HDP00683",
         "name": "S1P Receptor Mechanisms in Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01422",
         "name": "Role of Scn1b in Susceptibility to Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00191",
         "name": "Selective Kv7.2/3 activators for the treatment of neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00035",
         "name": "Development and Optimization of MNK Inhibitors for the Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00303",
         "name": "Disrupting ion channel scaffolding to treat neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00321",
         "name": "Discovery and validation of a new long noncoding RNA as a novel target for neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01655",
         "name": "Development of MMP-9 inhibitory monoclonal antibodies to relieve neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01214",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00364",
         "name": "Discovery and validation of a novel orphan GPCR as a target for therapeutic intervention in neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00056",
         "name": "Development of aWireless Endovascular Nerve Stimulator for Treatment of Refractory Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00337",
         "name": "Discovery of Biomarker Signatures Prognostic for Neuropathic Pain after Acute Spinal Cord Injury",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01263",
         "name": "IND-enabling studies on novel Cav3 T-channel modulators for treatment of neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00799",
         "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01611",
         "name": "Parmodulins without Abuse Potential for the Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01383",
         "name": "Development of selective GPR34 antagonists for the treatment of neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00587",
         "name": "High-Resolution, Spinal Cord Stimulation for Non-Opioid Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01091",
         "name": "Development of positive TMEM97 modulators for treating neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00051",
         "name": "Nrf2 Activation for Addiction-Free Treatment of Neuropathic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00033",
         "name": "Multi-Omic Biomarkers for Neuropathic Pain Secondary to Chemotherapy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01192",
         "name": "Validation of a new large-pore channel as a novel target for neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "fibromyalgia",
@@ -2257,36 +2257,36 @@
       {
         "id": "HDP01498",
         "name": "Fibromyalgia TENS in Physical Therapy Study (TIPS):an embedded pragmatic clinical trial",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01374",
         "name": "Establishment and Validation of a Novel Animal Model of Fibromyalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00167",
         "name": "Profiling the human gut microbiome for potential analgesic bacterial therapies",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01129",
         "name": "Development of Adrb3 Antagonists for the Treatment of Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00244",
         "name": "Combining Pregabalin with Lofexidine: Can it Increase the Success of Transition to Naltrexone?",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01459",
         "name": "Neural Mechanisms of Colored Light Driven Analgeisa",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   }
 ]

@@ -40,6 +40,8 @@ class VariableResponse(ElasticDugElementResult, DugVariable):
     @model_serializer
     def serialize(self):
         response = self.get_response_dict()
+        response['score'] = self.score
+        response['explanation'] = self.explanation
         return response
 
 
@@ -52,6 +54,8 @@ class StudyResponse(ElasticDugElementResult, DugStudy):
     def serialize(self):
         response = self.get_response_dict()
         response.pop('abstract')
+        response['score'] = self.score
+        response['explanation'] = self.explanation
         return response
 
 
@@ -63,6 +67,8 @@ class SectionResponse(ElasticDugElementResult, DugSection):
     @model_serializer
     def serialize(self):
         response = self.get_response_dict()
+        response['score'] = self.score
+        response['explanation'] = self.explanation
         return response
 
 

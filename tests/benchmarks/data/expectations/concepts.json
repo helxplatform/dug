@@ -8,22 +8,22 @@
       {
         "id": "HP:0003738",
         "name": "Exercise-induced myalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0003326",
         "name": "Myalgia",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "UMLS:C3274502",
         "name": "Opiate Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 1
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"Substance abuse\"",
@@ -34,22 +34,22 @@
       {
         "id": "MONDO:0002491",
         "name": "substance abuse",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0001225",
         "name": "opioid abuse",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0005303",
         "name": "drug dependence",
-        "relevance_grade": null
+        "relevance_grade": 0
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "Neuralgia",
@@ -60,42 +60,42 @@
       {
         "id": "MONDO:0016374",
         "name": "cranial neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0008599",
         "name": "trigeminal neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C143703",
         "name": "Neuralgia, CTCAE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0041052",
         "name": "postherpetic neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0021667",
         "name": "neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0024333",
         "name": "sciatica",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0005609",
         "name": "herpes zoster",
-        "relevance_grade": null
+        "relevance_grade": 0
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-opioid treatment\"",
@@ -105,7 +105,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "neonatal",
@@ -116,107 +116,107 @@
       {
         "id": "MONDO:0004354",
         "name": "neonatal leukemia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C0947700",
         "name": "Leukopenia neonatal",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0006866",
         "name": "neonatal myasthenia gravis",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0018360",
         "name": "neonatal lupus erythematosus",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0800339",
         "name": "laryngospasm, severe neonatal episodic",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0001998",
         "name": "Neonatal hypoglycemia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C0235820",
         "name": "Neonatal encephalopathy",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0700217",
         "name": "neonatal sepsis",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C5238908",
         "name": "Neonatal Complication",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0005566",
         "name": "neonatal abstinence syndrome",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C3898147",
         "name": "Hypoxic ischaemic encephalopathy neonatal",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "NCIT:C154943",
         "name": "Neonatal Gastrointestinal Bleeding, AE",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C3274639",
         "name": "Neonatal Opiate Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "NCIT:C155250",
         "name": "Grade 1 Neonatal Gastrointestinal Bleeding, AE",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "NCIT:C155251",
         "name": "Grade 2 Neonatal Gastrointestinal Bleeding, AE",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C3540839",
         "name": "Neonatal Drug Withdrawal",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "CL:0002495",
         "name": "fetal cardiomyocyte",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0008532",
         "name": "Natal Teeth",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0005808",
         "name": "inclusion conjunctivitis",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "HP:0410280",
         "name": "Pediatric onset",
-        "relevance_grade": null
+        "relevance_grade": 1
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neonatal opioid withdrawal\"",
@@ -227,12 +227,12 @@
       {
         "id": "UMLS:C3274639",
         "name": "Neonatal Opiate Withdrawal Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-pharmacologic pain management\"",
@@ -242,7 +242,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"opioid use disorder\"",
@@ -253,32 +253,32 @@
       {
         "id": "MONDO:0005530",
         "name": "opiate dependence",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0001225",
         "name": "opioid abuse",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C2874433",
         "name": "opioid abuse with opioid-induced sexual dysfunction",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C2874427",
         "name": "opioid abuse with opioid-induced mood disorder",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "UMLS:C2874431",
         "name": "opioid abuse with opioid-induced psychotic disorder",
-        "relevance_grade": null
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "depression",
@@ -289,107 +289,107 @@
       {
         "id": "MONDO:0024614",
         "name": "neurotic depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0005929",
         "name": "Maternity blues",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0024613",
         "name": "bipolar depression",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0002444",
         "name": "melancholia",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0002009",
         "name": "major depressive disorder",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "MONDO:0002050",
         "name": "Depressed mood",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0001485",
         "name": "atypical depressive disorder",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "HP:0002791",
         "name": "Hypoventilation",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0010026",
         "name": "SHORT syndrome",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0004985",
         "name": "bipolar disorder",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "UMLS:C0270497",
         "name": "Schizoaffective disorder, depressive type",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "UMLS:C0270496",
         "name": "Schizoaffective disorder, bipolar type",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "UBERON:0013069",
         "name": "popliteal area",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0004572",
         "name": "cyclothymic disorder",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "UBERON:0003689",
         "name": "sella turcica",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "NCIT:C117162",
         "name": "Emotional Distress",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0018173",
         "name": "acute opioid poisoning",
-        "relevance_grade": null
+        "relevance_grade": 0
       },
       {
         "id": "UMLS:C2825032",
         "name": "Withdrawal",
-        "relevance_grade": null
+        "relevance_grade": 0
       },
       {
         "id": "UMLS:C0028047",
         "name": "Nicotine withdrawal",
-        "relevance_grade": null
+        "relevance_grade": 0
       },
       {
         "id": "MONDO:0005487",
         "name": "schizoaffective disorder",
-        "relevance_grade": null
+        "relevance_grade": 0
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"generalized anxiety\"",
@@ -400,12 +400,12 @@
       {
         "id": "MONDO:0001942",
         "name": "generalized anxiety disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"pain management\"",
@@ -416,17 +416,17 @@
       {
         "id": "NCIT:C112216",
         "name": "Pain Relief",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C27003",
         "name": "Acute Pain",
-        "relevance_grade": null
+        "relevance_grade": 1
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"acute pain\"",
@@ -437,12 +437,12 @@
       {
         "id": "NCIT:C27003",
         "name": "Acute Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"chronic pain\"",
@@ -453,32 +453,32 @@
       {
         "id": "HP:0012532",
         "name": "Chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0024317",
         "name": "chronic pain syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C3178789",
         "name": "Widespread Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0021722",
         "name": "vulvodynia",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "NCIT:C9467",
         "name": "Chronic Cancer Pain",
-        "relevance_grade": null
+        "relevance_grade": 1
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "opioid-free treatment",
@@ -488,7 +488,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"novel analgesic\"",
@@ -498,7 +498,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "orofascial",
@@ -509,17 +509,17 @@
       {
         "id": "HP:0032899",
         "name": "Focal orofacial automatism seizure",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C2827582",
         "name": "Orofacial",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "migraine",
@@ -530,17 +530,17 @@
       {
         "id": "MONDO:0005277",
         "name": "migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0100246",
         "name": "migraine with or without aura, susceptibility to",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "mindfulness",
@@ -550,7 +550,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "tobacco-dependence",
@@ -560,7 +560,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"back pain\"",
@@ -571,22 +571,22 @@
       {
         "id": "NCIT:C146739",
         "name": "Back Pain, CTCAE 5.0",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0003418",
         "name": "Back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0003419",
         "name": "Low back pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "pain biomarkers",
@@ -597,107 +597,107 @@
       {
         "id": "MONDO:0021667",
         "name": "neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0002829",
         "name": "Arthralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C3244",
         "name": "Musculoskeletal Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0003326",
         "name": "Myalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0500005",
         "name": "Anal pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0034267",
         "name": "Pelvic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0012532",
         "name": "Chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0032148",
         "name": "Episodic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C144372",
         "name": "Grade 1 Rectal Pain, CTCAE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C122409",
         "name": "Ostomy Site Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0100607",
         "name": "Dysmenorrhea",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C112216",
         "name": "Pain Relief",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0024317",
         "name": "chronic pain syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C168488",
         "name": "Burning Chest Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0002315",
         "name": "Headache",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C3178789",
         "name": "Widespread Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C144965",
         "name": "Grade 2 Rectal Pain, CTCAE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "GO:0048266",
         "name": "behavioral response to pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0700057",
         "name": "neurological pain disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0010832",
         "name": "Abnormality of pain sensation",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "signature of pain",
@@ -708,107 +708,107 @@
       {
         "id": "MONDO:0021667",
         "name": "neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0002829",
         "name": "Arthralgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C3244",
         "name": "Musculoskeletal Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0003326",
         "name": "Myalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0500005",
         "name": "Anal pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0034267",
         "name": "Pelvic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0012532",
         "name": "Chronic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0032148",
         "name": "Episodic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C144372",
         "name": "Grade 1 Rectal Pain, CTCAE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C122409",
         "name": "Ostomy Site Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0100607",
         "name": "Dysmenorrhea",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C112216",
         "name": "Pain Relief",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0024317",
         "name": "chronic pain syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C168488",
         "name": "Burning Chest Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0002315",
         "name": "Headache",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C3178789",
         "name": "Widespread Chronic Pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "NCIT:C144965",
         "name": "Grade 2 Rectal Pain, CTCAE",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "GO:0048266",
         "name": "behavioral response to pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0700057",
         "name": "neurological pain disorder",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HP:0010832",
         "name": "Abnormality of pain sensation",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "GLP-1",
@@ -818,7 +818,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "buprenorphine",
@@ -828,7 +828,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neuropathic pain\"",
@@ -839,27 +839,27 @@
       {
         "id": "HP:6000040",
         "name": "Neuropathic pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "MONDO:0700057",
         "name": "neurological pain disorder",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0020509",
         "name": "secondary syringomyelia",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "MONDO:0021667",
         "name": "neuralgia",
-        "relevance_grade": null
+        "relevance_grade": 1
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "fibromyalgia",
@@ -870,16 +870,16 @@
       {
         "id": "MONDO:0005546",
         "name": "fibromyalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "UMLS:C3896653",
         "name": "Juvenile Primary Fibromyalgia Syndrome",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   }
 ]

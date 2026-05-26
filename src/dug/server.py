@@ -368,7 +368,8 @@ async def get_variables(search_query: SearchElementQuery):
     """
     elastic_results, total_count, aggregations = await search.search_elements(
         config.variables_index_name,
-        **search_query.dict()
+        **search_query.dict(),
+        explain=True
     )
 
     results = []
@@ -432,7 +433,8 @@ async def get_studies(search_query: SearchElementQuery):
     """
     result, total_count, aggregations = await search.search_elements(
         config.studies_index_name,
-        **search_query.model_dump()
+        **search_query.model_dump(),
+        explain=True
     )
 
 
@@ -490,7 +492,8 @@ async def get_cdes(search_query: SearchElementQuery):
     """
     elastic_results, total_count, aggregations = await search.search_elements(
         config.sections_index_name,
-        **search_query.model_dump()
+        **search_query.model_dump(),
+        explain=True
     )
     results = []
     for result in elastic_results:

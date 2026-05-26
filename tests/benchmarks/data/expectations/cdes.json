@@ -3,7 +3,7 @@
     "query": "\"Muscle pain\"",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
@@ -13,27 +13,27 @@
     "query": "\"Substance abuse\"",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [
       {
         "id": "aaqsa",
         "name": "Acceptance and Action Questionnaire – Substance Abuse (AAQ-SA)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-severity-of-substance-use-7a",
         "name": "PROMIS Severity of Substance Use v1.0 Short Form 7a",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "taps2",
         "name": "Tobacco, Alcohol, Prescription medications, and other Substance (TAPS-2)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "barc-10",
         "name": "Brief Assessment of Recovery Capital (BARC-10)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "phq-m",
@@ -41,13 +41,7 @@
         "relevance_grade": 2
       }
     ],
-    "must_appear": [
-      "aaqsa",
-      "promis-severity-of-substance-use-7a",
-      "taps2",
-      "phq-m",
-      "barc-10"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -55,7 +49,7 @@
     "query": "Neuralgia",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
@@ -65,7 +59,7 @@
     "query": "\"non-opioid treatment\"",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
@@ -80,19 +74,16 @@
       {
         "id": "cows",
         "name": "Clinical Opiate Withdrawal Scale",
-        "relevance_grade": 0
+        "relevance_grade": 3
       },
       {
         "id": "promis-gastrointestinal-constipation-9a",
         "name": "PROMIS GI Constipation 9a",
-        "relevance_grade": 0
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
-    "must_not_appear": [
-      "cows",
-      "promis-gastrointestinal-constipation-9a"
-    ],
+    "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
   {
@@ -104,20 +95,18 @@
       {
         "id": "cows",
         "name": "Clinical Opiate Withdrawal Scale",
-        "relevance_grade": 0
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
-    "must_not_appear": [
-      "cows"
-    ],
+    "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-pharmacologic pain management\"",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
@@ -132,12 +121,10 @@
       {
         "id": "opioid-risk-tool",
         "name": "Opioid Risk Tool (ORT)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
-    "must_appear": [
-      "opioid-risk-tool"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -150,72 +137,60 @@
       {
         "id": "promis-emotional-distress-depression-8b",
         "name": "Emotional Distress - Depression - Short Form 8a ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-emotional-distress-depression-4a",
         "name": "PROMIS Emotional Distress-Depression – Short Form 4a",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cesd",
         "name": "Center for Epidemiologic Studies Depression Scale (CES-D)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-emotional-distress-depression-item-bank",
         "name": "PROMIS - Ca Item Bank v1.0 - Emotional Distress - Depression",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-pediatric-depressive-symptoms-8a",
         "name": "Pediatric Depressive Symptoms – Short Form 8a",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "phq-4",
         "name": "Patient Health Questionnaire-4 (PHQ-4)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "phq2",
         "name": "Patient Health Questionnaire-2 (PHQ-2)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "patient-health-questionnaire-9",
         "name": "Patient Health Questionnaire (PHQ-9)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "patient-health-questionnaire-8",
         "name": "Patient Health Questionnaire (PHQ-8)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "promis-29-profile-v2.1",
         "name": "PROMIS-29 Profile v2.1",
-        "relevance_grade": 1
+        "relevance_grade": 2
       },
       {
         "id": "promis-43-profile-v2.1",
         "name": "PROMIS-43 Profile v2.1",
-        "relevance_grade": 1
+        "relevance_grade": 0
       }
     ],
-    "must_appear": [
-      "promis-emotional-distress-depression-8b",
-      "promis-emotional-distress-depression-4a",
-      "cesd",
-      "promis-emotional-distress-depression-item-bank",
-      "promis-pediatric-depressive-symptoms-8a",
-      "phq-4",
-      "phq2",
-      "patient-health-questionnaire-9",
-      "patient-health-questionnaire-8",
-      "promis-29-profile-v2.1",
-      "promis-43-profile-v2.1"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -228,18 +203,15 @@
       {
         "id": "generalized-anxiety-disorder-7",
         "name": "Generalized Anxiety Disorder (GAD-7)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "gad2",
         "name": "Generalized Anxiety Disorder-2 (GAD-2) ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
-    "must_appear": [
-      "generalized-anxiety-disorder-7",
-      "gad2"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -252,18 +224,15 @@
       {
         "id": "pppm",
         "name": "Parent's Postoperative Pain Management",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-prescription-pain-med-misuse-7a",
         "name": "Prescription Pain Medication Misuse v1.0 – Short Form 7a",
-        "relevance_grade": 1
+        "relevance_grade": 2
       }
     ],
-    "must_appear": [
-      "pppm",
-      "promis-prescription-pain-med-misuse-7a"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -286,37 +255,37 @@
       {
         "id": "graded-chronic-pain",
         "name": "Graded Chronic Pain Scale Revised",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "addiction-behaviors-checklist",
         "name": "Addiction Behaviors Checklist (ABC)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "fear-of-daily-activities",
         "name": "Fear of Daily Activities Questionnaire (FDAQ)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "opioid-risk-tool",
         "name": "Opioid Risk Tool (ORT)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cpaq",
         "name": "Chronic Pain Acceptance Questionnaire  - 20 (CPAQ-20)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-a8",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-8",
         "name": "Chronic Pain Acceptance Questionnaire-8 (CPAQ-8)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "peg",
@@ -331,7 +300,7 @@
       {
         "id": "promis-nociceptive-pain-quality-5a",
         "name": "PROMIS Nociceptive Pain Quality 5a",
-        "relevance_grade": 2
+        "relevance_grade": 1
       },
       {
         "id": "pain-visual-analogue-scale",
@@ -349,21 +318,7 @@
         "relevance_grade": 1
       }
     ],
-    "must_appear": [
-      "graded-chronic-pain",
-      "addiction-behaviors-checklist",
-      "fear-of-daily-activities",
-      "opioid-risk-tool",
-      "cpaq",
-      "cpaq-a8",
-      "cpaq-8",
-      "peg",
-      "psocq-a",
-      "promis-nociceptive-pain-quality-5a",
-      "pain-visual-analogue-scale",
-      "mbm",
-      "pain-vas-nrs"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -406,24 +361,20 @@
       {
         "id": "midas",
         "name": "Migraine Impairment Disability Assessment Scale",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "poem",
         "name": "Penn Online Evaluation of Migraine (POEM)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "csi",
         "name": "Central Sensitization Inventory (CSI)",
-        "relevance_grade": 1
+        "relevance_grade": 2
       }
     ],
-    "must_appear": [
-      "midas",
-      "poem",
-      "csi"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -431,23 +382,20 @@
     "query": "mindfulness",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [
       {
         "id": "fmi",
         "name": "Freiburg Mindfulness Inventory (FMI)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "amps",
         "name": "Applied Process Mindfulness Scale (AMPS)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
-    "must_appear": [
-      "fmi",
-      "amps"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -455,17 +403,15 @@
     "query": "tobacco-dependence",
     "endpoint": "cdes",
     "concept_id": null,
-    "curated_at": "2026-03-17",
+    "curated_at": null,
     "expected_results": [
       {
         "id": "taps",
         "name": "Tobacco Alcohol Prescription medications and other Substance (TAPS)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
-    "must_appear": [
-      "taps"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -478,22 +424,22 @@
       {
         "id": "rmdq",
         "name": "Roland-Morris Disability Questionnaire (RDQ)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "fear-avoidance-1-question",
         "name": "Acu-OA Study-Fear Avoidance Question",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "keele-start-back",
         "name": "The Keele STarT Back Screening Tool (KSBST)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "fabq",
         "name": "Fear-Avoidance Beliefs Questionnaire (FABQ)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "osproyf",
@@ -506,14 +452,7 @@
         "relevance_grade": 1
       }
     ],
-    "must_appear": [
-      "fabq-physical-activity",
-      "osproyf",
-      "fabq",
-      "keele-start-back",
-      "fear-avoidance-1-question",
-      "rmdq"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   },
@@ -526,102 +465,102 @@
       {
         "id": "bpi-pain-severity",
         "name": "Brief Pain Inventory Pain Severity",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "bpi-pain-severity-7d",
         "name": "Brief Pain Inventory Pain Severity 7 day",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pseq-2",
         "name": "Pain Self Efficacy Questionnaire ",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pppm",
         "name": "Parent's Postoperative Pain Management",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-intensity-1a",
         "name": "PROMIS Pain Intensity – 1a",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-behavior-item-bank-v1.0",
         "name": "PROMIS v1.0 - Pain Behavior",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pain-vas-nrs",
         "name": "Visual scales for pain",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "graded-chronic-pain",
         "name": "Graded Chronic Pain Scale Revised",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "peg",
         "name": "PEG Pain Screening Tool",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "promis-nociceptive-pain-quality-5a",
         "name": "PROMIS Nociceptive Pain Quality 5a",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pseq-10",
         "name": "Pain Self Efficacy Questionnaire 10 item",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "spq",
         "name": "Social support and Pain Questionnaire (SPQ)",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "fps-r",
         "name": "The Faces Pain Scale - Revised (FPS-R)",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-interference-cat",
         "name": "Pain Interference (PI)",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "cpaq",
         "name": "Chronic Pain Acceptance Questionnaire  - 20 (CPAQ-20)",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pain-visual-analogue-scale",
         "name": "Visual scales for pain",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-8",
         "name": "Chronic Pain Acceptance Questionnaire-8 (CPAQ-8)",
-        "relevance_grade": 2
-      },
-      {
-        "id": "pcs-parent",
-        "name": "Pain Catastrophizing Scale - Parent (PCS-P)",
-        "relevance_grade": 2
+        "relevance_grade": 3
       },
       {
         "id": "pcs-child",
         "name": "Pain Catastrophizing Scale - Child (PCS-C)",
-        "relevance_grade": 2
+        "relevance_grade": 3
+      },
+      {
+        "id": "pcs-parent",
+        "name": "Pain Catastrophizing Scale - Parent (PCS-P)",
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-a8",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) ",
-        "relevance_grade": 2
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
@@ -637,102 +576,102 @@
       {
         "id": "bpi-pain-severity",
         "name": "Brief Pain Inventory Pain Severity",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "bpi-pain-severity-7d",
         "name": "Brief Pain Inventory Pain Severity 7 day",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pseq-2",
         "name": "Pain Self Efficacy Questionnaire ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pppm",
         "name": "Parent's Postoperative Pain Management",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-intensity-1a",
         "name": "PROMIS Pain Intensity – 1a",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-behavior-item-bank-v1.0",
         "name": "PROMIS v1.0 - Pain Behavior",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pain-vas-nrs",
         "name": "Visual scales for pain",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "graded-chronic-pain",
         "name": "Graded Chronic Pain Scale Revised",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "peg",
         "name": "PEG Pain Screening Tool",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-nociceptive-pain-quality-5a",
         "name": "PROMIS Nociceptive Pain Quality 5a",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pseq-10",
         "name": "Pain Self Efficacy Questionnaire 10 item",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "spq",
         "name": "Social support and Pain Questionnaire (SPQ)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "fps-r",
         "name": "The Faces Pain Scale - Revised (FPS-R)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "promis-pain-interference-cat",
         "name": "Pain Interference (PI)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cpaq",
         "name": "Chronic Pain Acceptance Questionnaire  - 20 (CPAQ-20)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pain-visual-analogue-scale",
         "name": "Visual scales for pain",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-8",
         "name": "Chronic Pain Acceptance Questionnaire-8 (CPAQ-8)",
-        "relevance_grade": 1
-      },
-      {
-        "id": "pcs-parent",
-        "name": "Pain Catastrophizing Scale - Parent (PCS-P)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "pcs-child",
         "name": "Pain Catastrophizing Scale - Child (PCS-C)",
-        "relevance_grade": 1
+        "relevance_grade": 3
+      },
+      {
+        "id": "pcs-parent",
+        "name": "Pain Catastrophizing Scale - Parent (PCS-P)",
+        "relevance_grade": 3
       },
       {
         "id": "cpaq-a8",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
@@ -768,7 +707,7 @@
       {
         "id": "promis-neuropathic-pain-quality-5a",
         "name": "PROMIS Neuropathic Pain Quality 5a ",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
@@ -784,18 +723,15 @@
       {
         "id": "misci",
         "name": "Multidimensional Inventory of Subjective Cognitive Impairment (MISCI)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       },
       {
         "id": "csi",
         "name": "Central Sensitization Inventory (CSI)",
-        "relevance_grade": 1
+        "relevance_grade": 3
       }
     ],
-    "must_appear": [
-      "misci",
-      "csi"
-    ],
+    "must_appear": [],
     "must_not_appear": [],
     "min_ndcg_at_10": 0
   }

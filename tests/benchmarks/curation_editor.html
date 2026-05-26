@@ -94,6 +94,19 @@
   .dropzone p { color: var(--text2); font-size: 15px; }
   .dropzone .or { margin: 16px 0; color: var(--text2); font-size: 13px; }
 
+  /* Score bar */
+  .score-bar-wrap { display: flex; align-items: center; gap: 6px; }
+  .score-bar { width: 60px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .score-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+  .score-pct { font-size: 11px; color: var(--text2); font-family: monospace; }
+
+  /* Auto-grade threshold row */
+  .thresh-row { display: flex; gap: 14px; align-items: center; padding: 8px 18px; background: rgba(88,166,255,.04); border-top: 1px solid var(--border); font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+  .thresh-row input[type=number] { width: 50px; padding: 3px 6px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 12px; text-align: center; }
+  .g3-label { color: #3fb950; font-weight: 600; }
+  .g2-label { color: #d29922; font-weight: 600; }
+  .g1-label { color: #db6d28; font-weight: 600; }
+
   /* Empty state for no results */
   .empty-msg { padding: 24px 18px; color: var(--text2); font-style: italic; font-size: 13px; }
 
@@ -110,6 +123,7 @@
     <button class="btn" id="loadBtn" title="Load JSON file">📂 Load JSON</button>
     <button class="btn" id="loadApiBtn" title="Fetch from live API">🌐 Harvest from API</button>
     <button class="btn primary" id="saveBtn" disabled>💾 Save JSON</button>
+    <button class="btn" id="exportCsvBtn" disabled title="Export as CSV for stakeholder review">📊 Export CSV</button>
   </div>
 </div>
 <div class="stats" id="statsBar" style="display:none;">
@@ -207,7 +221,15 @@ function loadFile(file) {
 
 // ── Save ──
 saveBtn.addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(expectations, null, 2)], { type: 'application/json' });
+  // Strip internal display-only fields before saving
+  const clean = expectations.map(e => ({
+    ...e,
+    expected_results: e.expected_results.map(r => {
+      const { _score, _score_pct, ...rest } = r;
+      return rest;
+    })
+  }));
+  const blob = new Blob([JSON.stringify(clean, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = filename;
@@ -243,10 +265,14 @@ async function runHarvest() {
         body: JSON.stringify({ query, size })
       });
       const data = await resp.json();
-      const results = (data.results || []).map(r => ({
+      const rawResults = data.results || [];
+      const maxScore = Math.max(...rawResults.map(r => r.score || 0), 0.0001);
+      const results = rawResults.map(r => ({
         id: r.id || '',
         name: r.name || '',
-        relevance_grade: null
+        relevance_grade: null,
+        _score: r.score || 0,
+        _score_pct: Math.round(((r.score || 0) / maxScore) * 100)
       }));
       expectations.push({
         query,
@@ -308,6 +334,7 @@ function getStatus(exp) {
 // ── Render ──
 function render() {
   saveBtn.disabled = false;
+  document.getElementById('exportCsvBtn').disabled = false;
   statsBar.style.display = 'flex';
   filterBar.style.display = 'flex';
 
@@ -346,8 +373,15 @@ function render() {
               onchange="expectations[${i}].curated_at = this.value || null; updateStats();">
           </label>
           <button class="btn" style="font-size:12px;" onclick="markAllGrade(${i}, 0)">All → 0</button>
-          <button class="btn" style="font-size:12px;" onclick="autoGrade(${i})">Auto-grade</button>
+          <button class="btn" style="font-size:12px;" onclick="autoGrade(${i})">Auto-grade (score)</button>
           <button class="btn" style="font-size:12px;" onclick="setCuratedToday(${i})">Mark curated today</button>
+        </div>
+        <div class="thresh-row">
+          <span>Auto-grade thresholds (% of top ES score):</span>
+          ≥ <input type="number" id="t3_${i}" value="70" min="0" max="100"> <span class="g3-label">→ 3 (highly relevant)</span>
+          &nbsp;≥ <input type="number" id="t2_${i}" value="40" min="0" max="100"> <span class="g2-label">→ 2 (relevant)</span>
+          &nbsp;≥ <input type="number" id="t1_${i}" value="15" min="0" max="100"> <span class="g1-label">→ 1 (marginal) &nbsp;else 0</span>
+          &nbsp;<button class="btn" style="font-size:11px;padding:3px 8px;" onclick="autoGradeAll()">Apply to all cards</button>
         </div>
         ${exp.expected_results.length ? renderResultsTable(exp, i) : '<div class="empty-msg">No results for this query. Consider adjusting the search or removing this test case.</div>'}
       </div>
@@ -358,7 +392,7 @@ function render() {
 
 function renderResultsTable(exp, caseIdx) {
   let html = `<table class="results-table"><thead><tr>
-    <th>#</th><th>ID</th><th>Name</th><th>Relevance Grade</th><th>Flags</th>
+    <th>#</th><th>ID</th><th>Name</th><th>ES Score</th><th>Relevance Grade</th><th>Flags</th>
   </tr></thead><tbody>`;
 
   exp.expected_results.forEach((r, ri) => {
@@ -369,6 +403,7 @@ function renderResultsTable(exp, caseIdx) {
       <td class="pos">${ri + 1}</td>
       <td class="id-col" title="${escHtml(r.id)}">${escHtml(r.id)}</td>
       <td class="name-col">${escHtml(r.name)}</td>
+      <td>${scoreCell(exp, r)}</td>
       <td>${gradeSelector(caseIdx, ri, r.relevance_grade)}</td>
       <td>
         <div class="toggle-cell">
@@ -422,18 +457,44 @@ function markAllGrade(ci, grade) {
 }
 
 function autoGrade(ci) {
-  // Simple heuristic: check if query terms appear in the name
   const exp = expectations[ci];
-  const queryWords = exp.query.replace(/"/g, '').toLowerCase().split(/\s+/);
-  exp.expected_results.forEach(r => {
-    const name = r.name.toLowerCase();
-    const allMatch = queryWords.every(w => name.includes(w));
-    const someMatch = queryWords.some(w => name.includes(w));
-    if (allMatch) r.relevance_grade = 3;
-    else if (someMatch) r.relevance_grade = 2;
-    else r.relevance_grade = 0;
-  });
+  const hasScores = exp.expected_results.some(r => r._score_pct !== undefined);
+
+  if (hasScores) {
+    // Score-based: use % of top ES score with configurable thresholds
+    const t3 = parseInt(document.getElementById(`t3_${ci}`)?.value ?? 70);
+    const t2 = parseInt(document.getElementById(`t2_${ci}`)?.value ?? 40);
+    const t1 = parseInt(document.getElementById(`t1_${ci}`)?.value ?? 15);
+    exp.expected_results.forEach(r => {
+      const pct = r._score_pct ?? 0;
+      r.relevance_grade = pct >= t3 ? 3 : pct >= t2 ? 2 : pct >= t1 ? 1 : 0;
+    });
+  } else {
+    // Fallback: keyword match when scores unavailable (loaded from old file)
+    const queryWords = exp.query.replace(/"/g, '').toLowerCase().split(/\s+/);
+    exp.expected_results.forEach(r => {
+      const name = r.name.toLowerCase();
+      const allMatch = queryWords.every(w => name.includes(w));
+      const someMatch = queryWords.some(w => name.includes(w));
+      r.relevance_grade = allMatch ? 3 : someMatch ? 2 : 0;
+    });
+  }
   render();
+}
+
+function autoGradeAll() {
+  expectations.forEach((_, ci) => autoGrade(ci));
+  render();
+}
+
+function scoreCell(exp, r) {
+  if (r._score_pct === undefined) return '<span style="color:var(--text2);font-size:12px;">—</span>';
+  const pct = r._score_pct;
+  const raw = r._score ? r._score.toFixed(1) : '';
+  return `<div class="score-bar-wrap">
+    <div class="score-bar"><div class="score-bar-fill" style="width:${pct}%"></div></div>
+    <span class="score-pct" title="Raw score: ${raw}">${pct}%</span>
+  </div>`;
 }
 
 function setCuratedToday(ci) {
@@ -463,6 +524,70 @@ function escHtml(s) {
   const d = document.createElement('div');
   d.textContent = s || '';
   return d.innerHTML;
+}
+
+// ── CSV Export ──
+document.getElementById('exportCsvBtn').addEventListener('click', exportCsv);
+
+function exportCsv() {
+  const gradeLabels = { null: '', 0: '0 - Irrelevant', 1: '1 - Marginal', 2: '2 - Relevant', 3: '3 - Highly Relevant' };
+
+  const headers = [
+    'Query', 'Endpoint', 'Concept ID',
+    'Rank', 'Result ID', 'Result Name',
+    'Relevance Grade', 'Grade Label',
+    'Must Appear', 'Must NOT Appear',
+    'Min NDCG@10', 'Curated At'
+  ];
+
+  const rows = [headers];
+
+  for (const exp of expectations) {
+    if (!exp.expected_results.length) {
+      // Still emit a row for empty-result queries so stakeholders see them
+      rows.push([
+        exp.query, exp.endpoint, exp.concept_id || '',
+        '', '', '(no results)',
+        '', '', '', '',
+        exp.min_ndcg_at_10, exp.curated_at || ''
+      ]);
+      continue;
+    }
+    for (let i = 0; i < exp.expected_results.length; i++) {
+      const r = exp.expected_results[i];
+      const grade = r.relevance_grade;
+      rows.push([
+        exp.query,
+        exp.endpoint,
+        exp.concept_id || '',
+        i + 1,
+        r.id,
+        r.name,
+        grade === null || grade === undefined ? '' : grade,
+        gradeLabels[grade] ?? '',
+        exp.must_appear.includes(r.id) ? 'yes' : '',
+        exp.must_not_appear.includes(r.id) ? 'yes' : '',
+        i === 0 ? exp.min_ndcg_at_10 : '',   // only on first row per query
+        i === 0 ? (exp.curated_at || '') : ''
+      ]);
+    }
+  }
+
+  const csv = rows.map(row =>
+    row.map(v => {
+      const s = String(v ?? '');
+      // Quote if contains comma, quote, or newline
+      return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    }).join(',')
+  ).join('\r\n');
+
+  const base = filename.replace(/\.json$/i, '');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }); // BOM for Excel
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${base}_review.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 </script>
 </body>

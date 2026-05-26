@@ -8,107 +8,107 @@
       {
         "id": "HDP00104:a185",
         "name": "a185",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_pdd_c7_cb02_a185b",
         "name": "sciddv_pdd_c7_cb02_a185b",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00210:jointpain_sae",
         "name": "jointpain_sae",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_11A_Myalgia",
         "name": "Diagnostic Criteria for TMD (DCTMD) Myalgia diagnosis",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:PMbackUpmuscleYN",
         "name": "PMbackUpmuscleYN",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:PMbackLowmuscleYN",
         "name": "PMbackLowmuscleYN",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:PMbackUpmuscleLVL",
         "name": "PMbackUpmuscleLVL",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:PMbackLowmuscleLVL",
         "name": "PMbackLowmuscleLVL",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:painmap8b_muscle_int",
         "name": "painmap8b_muscle_int",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01340:painmap9b_muscle_int",
         "name": "painmap9b_muscle_int",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_4BR4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Opening movements -  maximum unassisted opening -  right side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_4BL4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Opening movements -  maximum unassisted opening -  left side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_4CR4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Opening Movements -  maximum assisted opening -  right side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_4CL4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Opening Movements -  maximum assisted opening -  left side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5CR4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements - protrusion movement - right side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5CL4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements - protrusion movement - left side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5AR4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements -  right lateral movement - right side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5AL4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements -  right lateral movement - left side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5BR4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements - left lateral movement - right side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "DCTMD_5BL4_pain",
         "name": "Diagnostic Criteria for TMD (DCTMD) Lateral and protrusive movements - left lateral movement - left side other masticatory muscle pain",
-        "relevance_grade": null
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"Substance abuse\"",
@@ -118,108 +118,108 @@
     "expected_results": [
       {
         "id": "AAQSA_SubAbuser",
-        "name": "Acceptance and Action Questionnaire \u2013 Substance Abuse (AAQ-SA) Substance abuser",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:alcohol_family_history",
-        "name": "alcohol_family_history",
-        "relevance_grade": null
+        "name": "Acceptance and Action Questionnaire – Substance Abuse (AAQ-SA) Substance abuser",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00110:alcohol_personal_history",
         "name": "alcohol_personal_history",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:illegal_drugs_family_history",
-        "name": "illegal_drugs_family_history",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:rx_drugs_family_history",
-        "name": "rx_drugs_family_history",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00110:illegal_drugs",
         "name": "illegal_drugs",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00110:rx_drugs_personal_history",
         "name": "rx_drugs_personal_history",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00110:illegal_drugs_family_history",
+        "name": "illegal_drugs_family_history",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00110:rx_drugs_family_history",
+        "name": "rx_drugs_family_history",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01482:iaff_5",
         "name": "iaff_5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01415:cmbq_30",
         "name": "cmbq_30",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:psthinkl",
         "name": "psthinkl",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00362:sud_tx_satisfied",
-        "name": "sud_tx_satisfied",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00357:sud_tx_satisfied",
-        "name": "sud_tx_satisfied",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01062:sud_tx_satisfied",
-        "name": "sud_tx_satisfied",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00178:sud_tx_satisfied",
-        "name": "sud_tx_satisfied",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00166:sud_tx_satisfied",
-        "name": "sud_tx_satisfied",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00145:sud_tx_satisfied",
         "name": "sud_tx_satisfied",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00163:sud_tx_satisfied",
         "name": "sud_tx_satisfied",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00362:sud_tx_satisfied",
+        "name": "sud_tx_satisfied",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01062:sud_tx_satisfied",
+        "name": "sud_tx_satisfied",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00357:sud_tx_satisfied",
+        "name": "sud_tx_satisfied",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00178:sud_tx_satisfied",
+        "name": "sud_tx_satisfied",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00183:sud_tx_satisfied",
         "name": "sud_tx_satisfied",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00091:sud_tx_satisfied",
         "name": "sud_tx_satisfied",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00362:sud_tx_organized",
+        "id": "HDP00166:sud_tx_satisfied",
+        "name": "sud_tx_satisfied",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00145:sud_tx_organized",
         "name": "sud_tx_organized",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00163:sud_tx_organized",
+        "name": "sud_tx_organized",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "Neuralgia",
@@ -230,12 +230,12 @@
       {
         "id": "HDP00337:if_np_locn",
         "name": "if_np_locn",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-opioid treatment\"",
@@ -245,7 +245,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "neonatal",
@@ -256,107 +256,107 @@
       {
         "id": "HDP00066:neotox",
         "name": "neotox",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:uothsp",
         "name": "uothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mothsp",
         "name": "mothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:bothsp",
         "name": "bothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:tothsp",
         "name": "tothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhhair",
         "name": "mhhair",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:hothsp",
         "name": "hothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:daothsp",
         "name": "daothsp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurine",
         "name": "mhurine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhmecon",
         "name": "mhmecon",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhumcts",
         "name": "mhumcts",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___1",
         "name": "mhurinesp___1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___11",
         "name": "mhurinesp___11",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___14",
         "name": "mhurinesp___14",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___16",
         "name": "mhurinesp___16",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___17",
         "name": "mhurinesp___17",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhurinesp___888",
         "name": "mhurinesp___888",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhmeconsp___16",
         "name": "mhmeconsp___16",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhmeconsp___888",
         "name": "mhmeconsp___888",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:mhumcbldsp___18",
         "name": "mhumcbldsp___18",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neonatal opioid withdrawal\"",
@@ -367,107 +367,107 @@
       {
         "id": "HDP00066:opiodwd1",
         "name": "opiodwd1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:opiodwd2",
         "name": "opiodwd2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:opiodwd3",
         "name": "opiodwd3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:opiodwd4",
         "name": "opiodwd4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:samehos1",
         "name": "samehos1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:samehos2",
         "name": "samehos2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:samehos3",
         "name": "samehos3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00066:samehos4",
         "name": "samehos4",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00084:e1a99_text_y2",
-        "name": "e1a99_text_y2",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00084:e1a99_text_y3",
-        "name": "e1a99_text_y3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:e1a99_text_y2",
         "name": "e1a99_text_y2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:e1a99_text_y3",
         "name": "e1a99_text_y3",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00084:e1a99_text_y2",
+        "name": "e1a99_text_y2",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00084:e1a99_text_y3",
+        "name": "e1a99_text_y3",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00074:e1a99_text_y2",
         "name": "e1a99_text_y2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00074:e1a99_text_y3",
         "name": "e1a99_text_y3",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00360:e1a99_text_y2",
-        "name": "e1a99_text_y2",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00360:e1a99_text_y3",
-        "name": "e1a99_text_y3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:e1a99_text_y2",
         "name": "e1a99_text_y2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:e1a99_text_y3",
         "name": "e1a99_text_y3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00084:e1a99_text",
-        "name": "e1a99_text",
-        "relevance_grade": null
+        "id": "HDP00360:e1a99_text_y2",
+        "name": "e1a99_text_y2",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00360:e1a99_text_y3",
+        "name": "e1a99_text_y3",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:e1a99_text",
         "name": "e1a99_text",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00084:e1a99_text",
+        "name": "e1a99_text",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"non-pharmacologic pain management\"",
@@ -477,7 +477,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"opioid use disorder\"",
@@ -488,107 +488,107 @@
       {
         "id": "HDP01239:q1_5",
         "name": "q1_5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01340:ieopioduse",
         "name": "ieopioduse",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20ofh3",
+        "id": "HDP00036:hcs_ceqpt20ofh3",
         "name": "hcs_ceqpt20ofh3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20ofh4",
+        "id": "HDP00036:hcs_ceqpt20ofh4",
         "name": "hcs_ceqpt20ofh4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20ofh",
+        "id": "HDP00036:hcs_ceqpt20ofh",
         "name": "hcs_ceqpt20ofh",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20off",
+        "id": "HDP00036:hcs_ceqpt20off",
         "name": "hcs_ceqpt20off",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20ofc",
+        "id": "HDP00036:hcs_ceqpt20ofc",
         "name": "hcs_ceqpt20ofc",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt41oh3f",
+        "id": "HDP00036:hcs_ceqpt41oh3f",
         "name": "hcs_ceqpt41oh3f",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20kfh3",
+        "id": "HDP00036:hcs_ceqpt20kfh3",
         "name": "hcs_ceqpt20kfh3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20kfh4",
+        "id": "HDP00036:hcs_ceqpt20kfh4",
         "name": "hcs_ceqpt20kfh4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20kfh",
+        "id": "HDP00036:hcs_ceqpt20kfh",
         "name": "hcs_ceqpt20kfh",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20kff",
+        "id": "HDP00036:hcs_ceqpt20kff",
         "name": "hcs_ceqpt20kff",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20kfc",
+        "id": "HDP00036:hcs_ceqpt20kfc",
         "name": "hcs_ceqpt20kfc",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt41ky3f",
+        "id": "HDP00036:hcs_ceqpt41ky3f",
         "name": "hcs_ceqpt41ky3f",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20nfh3",
+        "id": "HDP00036:hcs_ceqpt20nfh3",
         "name": "hcs_ceqpt20nfh3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20nfh4",
+        "id": "HDP00036:hcs_ceqpt20nfh4",
         "name": "hcs_ceqpt20nfh4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20nfh",
+        "id": "HDP00036:hcs_ceqpt20nfh",
         "name": "hcs_ceqpt20nfh",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20nff",
+        "id": "HDP00036:hcs_ceqpt20nff",
         "name": "hcs_ceqpt20nff",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt20nfc",
+        "id": "HDP00036:hcs_ceqpt20nfc",
         "name": "hcs_ceqpt20nfc",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:hcs_ceqpt41ny3f",
+        "id": "HDP00036:hcs_ceqpt41ny3f",
         "name": "hcs_ceqpt41ny3f",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "depression",
@@ -599,107 +599,107 @@
       {
         "id": "HDP01340:depression",
         "name": "depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00110:depression",
         "name": "depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "EDD_NeedHelp",
         "name": "PROMIS Emotional Distress - Depression Item Bank - Help for depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "CSIDprsYN",
         "name": "Central Sensitization Inventory (CSI) depression indicator",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "EDD8total",
         "name": "Emotional Distress - Depression - Short Form 8a (EDD8) total score",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "SCQDepressn",
         "name": "Self-Administered Comorbidity Questionnaire (SCQ) depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "CSIDprDxYr",
         "name": "Central Sensitization Inventory (CSI) Year diagnosed depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "PHQ4DepressionSubScl",
         "name": "Patient Health Questionnaire 4 (PHQ-4) depression subscale score",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "SCQDepressnTreat",
         "name": "Self-Administered Comorbidity Questionnaire (SCQ) depression treatment",
-        "relevance_grade": null
-      },
-      {
-        "id": "MARSfocusdep",
-        "name": "Mobile Application Rating Scale (MARS) Classification Focus- Depression indicator",
-        "relevance_grade": null
-      },
-      {
-        "id": "SCQDepressnActivLmt",
-        "name": "Self-Administered Comorbidity Questionnaire (SCQ) depression limits activity",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "IPIPNEOsclDepression",
         "name": "International Personality Item Pool (IPIP) NEO subcale Depression",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "CESDHappy",
-        "name": "Center for Epidemiologic Studies Depression Scale (CES-D) Happy",
-        "relevance_grade": null
+        "id": "SCQDepressnActivLmt",
+        "name": "Self-Administered Comorbidity Questionnaire (SCQ) depression limits activity",
+        "relevance_grade": 3
+      },
+      {
+        "id": "MARSfocusdep",
+        "name": "Mobile Application Rating Scale (MARS) Classification Focus- Depression indicator",
+        "relevance_grade": 3
       },
       {
         "id": "CESDDepressed",
         "name": "Center for Epidemiologic Studies Depression Scale (CES-D) Depressed",
-        "relevance_grade": null
-      },
-      {
-        "id": "EDD8sadScl",
-        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) sad scale",
-        "relevance_grade": null
-      },
-      {
-        "id": "EDD8depressScl",
-        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) depressed scale",
-        "relevance_grade": null
-      },
-      {
-        "id": "EDD8helplessScl",
-        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) helpless scale",
-        "relevance_grade": null
-      },
-      {
-        "id": "EDD8hopelessScl",
-        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) hopeless scale",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00540:mmhv1_depress",
         "name": "mmhv1_depress",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "EDD8worthlessScl",
-        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) worthless scale",
-        "relevance_grade": null
+        "id": "EDD8depressScl",
+        "name": "Emotional Distress - Depression - Short Form 8a (EDD8) depressed scale",
+        "relevance_grade": 2
+      },
+      {
+        "id": "EDD_depressed",
+        "name": "PROMIS Emotional Distress - Depression Item Bank - Depressed",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01345:acr_depression",
+        "name": "acr_depression",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01345:csi_depression",
+        "name": "csi_depression",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01068:emo_4",
+        "name": "emo_4",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01068:emo_4_3mo",
+        "name": "emo_4_3mo",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"generalized anxiety\"",
@@ -710,107 +710,107 @@
       {
         "id": "GAD2NotStopWryScale",
         "name": "Generalized Anxiety Disorder (GAD-2) - not stop worry scale",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "GAD2FeelNervScale",
         "name": "Generalized Anxiety Disorder (GAD-2) - feeling nervous scale",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scidv_gen_anx_lp",
         "name": "scidv_gen_anx_lp",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scidv_gen_anx_cd",
         "name": "scidv_gen_anx_cd",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:axgadage",
         "name": "axgadage",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f112ltype",
         "name": "sciddv_f112ltype",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01340:ind_gad7_scorable",
         "name": "ind_gad7_scorable",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scidv_gen_anx_chk",
         "name": "scidv_gen_anx_chk",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scid_5v_79",
         "name": "scid_5v_79",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f140n",
         "name": "sciddv_f140n",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f112n",
         "name": "sciddv_f112n",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f112l",
         "name": "sciddv_f112l",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f124n",
         "name": "sciddv_f124n",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f128n",
         "name": "sciddv_f128n",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f128l",
         "name": "sciddv_f128l",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scidv_f35",
         "name": "scidv_f35",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scid_5v_91e",
         "name": "scid_5v_91e",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:scidv_f141",
         "name": "scidv_f141",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f136n",
         "name": "sciddv_f136n",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:sciddv_f138n",
         "name": "sciddv_f138n",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"pain management\"",
@@ -821,107 +821,107 @@
       {
         "id": "HDP00941:needs",
         "name": "needs",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00908:opioid_treatment___opioid_treatment__14",
         "name": "opioid_treatment___opioid_treatment__14",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00941:support5",
         "name": "support5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01368:dem_q5_provider",
         "name": "dem_q5_provider",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00941:helpfulmailed",
-        "name": "helpfulmailed",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00941:utilized2",
         "name": "utilized2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01418:ci_act_m3",
         "name": "ci_act_m3",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00941:helpfulmailed",
+        "name": "helpfulmailed",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00941:understandmail",
         "name": "understandmail",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_8",
         "name": "bpi_8",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01000:PRESC_MED",
         "name": "PRESC_MED",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00933:bpi_10",
         "name": "bpi_10",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01288:bpi_pain_scale_relief_1",
-        "name": "bpi_pain_scale_relief_1",
-        "relevance_grade": null
+        "id": "HDP01288:scrn_painmed_yn",
+        "name": "scrn_painmed_yn",
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01498:bpi_treatment",
-        "name": "bpi_treatment",
-        "relevance_grade": null
+        "id": "HDP00337:pain_trtmt",
+        "name": "pain_trtmt",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01368:dem_pain_self_management___7",
+        "name": "dem_pain_self_management___7",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01368:dem_pain_self_management___9",
+        "name": "dem_pain_self_management___9",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01368:dem_pain_self_management___15",
+        "name": "dem_pain_self_management___15",
+        "relevance_grade": 2
       },
       {
         "id": "HDP00104:bpi_21",
         "name": "bpi_21",
-        "relevance_grade": null
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01368:dem_pain_self_management___1",
+        "name": "dem_pain_self_management___1",
+        "relevance_grade": 2
       },
       {
         "id": "HDP00253:bpi_8",
         "name": "bpi_8",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00104:bpi_q8_relief",
         "name": "bpi_q8_relief",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00104:bpi_26",
-        "name": "bpi_26",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00331:pnmed_othersrx",
-        "name": "pnmed_othersrx",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01368:med_ov_others",
-        "name": "med_ov_others",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01368:dos_pre_lyrica",
-        "name": "dos_pre_lyrica",
-        "relevance_grade": null
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"acute pain\"",
@@ -930,39 +930,39 @@
     "curated_at": null,
     "expected_results": [
       {
-        "id": "HDP00074:cbs16d_m_2",
-        "name": "cbs16d_m_2",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00221:cbs16d_m_2",
-        "name": "cbs16d_m_2",
-        "relevance_grade": null
-      },
-      {
         "id": "HDP00036:cbs16d_m_2",
         "name": "cbs16d_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00084:cbs16d_m_2",
         "name": "cbs16d_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:cbs16d_m_2",
+        "id": "HDP00074:cbs16d_m_2",
         "name": "cbs16d_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:cbs16d_m_2",
         "name": "cbs16d_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00360:cbs16d_m_2",
+        "name": "cbs16d_m_2",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00221:cbs16d_m_2",
+        "name": "cbs16d_m_2",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"chronic pain\"",
@@ -971,109 +971,109 @@
     "curated_at": null,
     "expected_results": [
       {
-        "id": "CPAQA8ImptFunScl",
-        "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) - Important and Fun Scale",
-        "relevance_grade": null
+        "id": "MNone",
+        "name": "Michigan Body Map no chronic pain",
+        "relevance_grade": 3
       },
       {
         "id": "CPAQA8NeedConcentratScl",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) - Need to Concentrate Scale",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "CPAQA8ImptFunScl",
+        "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) - Important and Fun Scale",
+        "relevance_grade": 3
       },
       {
         "id": "CPAQA8LifeGoingWellScl",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) - Life Going Well Scale",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "CPAQA8LvngNormLifeScl",
         "name": "Chronic Pain Acceptance Questionaire for Adolescents (CPAQ-A8) - Living Normal Life Scale",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "CPAQ8FullLifeChrncPainScl",
-        "name": "CPAQ8FullLifeChrncPainScl",
-        "relevance_grade": null
+        "id": "CPAQLfWllChrncPnScl",
+        "name": "CPAQLfWllChrncPnScl",
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00284:phv00530456_affection_status",
-        "name": "phv00530456_affection_status",
-        "relevance_grade": null
+        "id": "CPAQFllLfeDspChrncPnScl",
+        "name": "CPAQFllLfeDspChrncPnScl",
+        "relevance_grade": 3
       },
       {
         "id": "CPAQ8ChngNrmLfChrncPnScl",
         "name": "CPAQ8ChngNrmLfChrncPnScl",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00284:phv00530456_affection_status",
+        "name": "phv00530456_affection_status",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:no_chronic_pain",
         "name": "no_chronic_pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00110:recommend_friend___9",
-        "name": "recommend_friend___9",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___5",
-        "name": "recommend_friend___5",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___8",
-        "name": "recommend_friend___8",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___7",
-        "name": "recommend_friend___7",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___2",
-        "name": "recommend_friend___2",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___6",
-        "name": "recommend_friend___6",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___4",
-        "name": "recommend_friend___4",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___1",
-        "name": "recommend_friend___1",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___3",
-        "name": "recommend_friend___3",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00110:recommend_friend___10",
-        "name": "recommend_friend___10",
-        "relevance_grade": null
+        "id": "CPAQLvNrmlChrncPnScl",
+        "name": "CPAQLvNrmlChrncPnScl",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:cpaq09",
         "name": "cpaq09",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00110:recommend_friend___11",
-        "name": "recommend_friend___11",
-        "relevance_grade": null
+        "id": "HDP00253:p_du2_v2",
+        "name": "p_du2_v2",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00429:cpaq06",
+        "name": "cpaq06",
+        "relevance_grade": 3
+      },
+      {
+        "id": "SPQ_ReceiveCare",
+        "name": "Social support and Pain Questionnaire (SPQ) Receive Care",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00253:p_du1c_specialist_v2",
+        "name": "p_du1c_specialist_v2",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:p_du2b_specialist_v2",
+        "name": "p_du2b_specialist_v2",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:p_du1b_v2",
+        "name": "p_du1b_v2",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:p_du1a_v2",
+        "name": "p_du1a_v2",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:p_du3a_v2",
+        "name": "p_du3a_v2",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "opioid-free treatment",
@@ -1082,109 +1082,109 @@
     "curated_at": null,
     "expected_results": [
       {
-        "id": "HDP00221:cbs16c_m_2",
-        "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "id": "HDP01476:medhx_opioid_specify___4",
+        "name": "medhx_opioid_specify___4",
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00074:cbs16c_m_2",
+        "id": "HDP00221:cbs16c_m_2",
         "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:cbs16c_m_2",
         "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00084:cbs16c_m_2",
         "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:cbs16c_m_2",
+        "id": "HDP00074:cbs16c_m_2",
         "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:cbs16c_m_2",
         "name": "cbs16c_m_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00074:cbs16d_m_4",
-        "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "id": "HDP00360:cbs16c_m_2",
+        "name": "cbs16c_m_2",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:cbs16d_m_4",
         "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00084:cbs16d_m_4",
         "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:cbs16d_m_4",
+        "id": "HDP00074:cbs16d_m_4",
         "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:cbs16d_m_4",
         "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00074:cbs16b_m_1",
-        "name": "cbs16b_m_1",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00036:cbs16b_m_1",
-        "name": "cbs16b_m_1",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00084:cbs16b_m_1",
-        "name": "cbs16b_m_1",
-        "relevance_grade": null
+        "id": "HDP00360:cbs16d_m_4",
+        "name": "cbs16d_m_4",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00221:cbs16d_m_4",
         "name": "cbs16d_m_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00074:cbs11m2_1",
-        "name": "cbs11m2_1",
-        "relevance_grade": null
+        "id": "mme_oxycod_la_dose",
+        "name": "Opioid MME oxycodone dose",
+        "relevance_grade": 3
+      },
+      {
+        "id": "mme_oxycod_rxdur",
+        "name": "Opioid MME oxycodone prescription duration (days)",
+        "relevance_grade": 3
+      },
+      {
+        "id": "mme_oxycod_la_rxdur",
+        "name": "Opioid MME oxycodone prescription duration (days)",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00036:cbs11m2_1",
         "name": "cbs11m2_1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00084:cbs11m2_1",
         "name": "cbs11m2_1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP00360:cbs11m2_1",
+        "id": "HDP00074:cbs11m2_1",
         "name": "cbs11m2_1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00150:cbs11m2_1",
         "name": "cbs11m2_1",
-        "relevance_grade": null
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"novel analgesic\"",
@@ -1194,7 +1194,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "orofascial",
@@ -1204,7 +1204,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "migraine",
@@ -1215,107 +1215,107 @@
       {
         "id": "POEM36",
         "name": "Penn Online Evaluation of Migraine (POEM) Family migraine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "POEMResults",
         "name": "Penn Online Evaluation of Migraine (POEM) Results",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "midas_day",
         "name": "Migraine Impairment Disability Assessment Scale assessment date",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "midas_total",
         "name": "Migraine Impairment Disability Assessment Scale total score",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM1",
-        "name": "Penn Online Evaluation of Migraine (POEM) Sensitive to Light",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM35",
-        "name": "Penn Online Evaluation of Migraine (POEM) Motion sickness",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "POEM45",
         "name": "Penn Online Evaluation of Migraine (POEM) Answers correct",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM35",
+        "name": "Penn Online Evaluation of Migraine (POEM) Motion sickness",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM1",
+        "name": "Penn Online Evaluation of Migraine (POEM) Sensitive to Light",
+        "relevance_grade": 3
       },
       {
         "id": "POEM2",
         "name": "Penn Online Evaluation of Migraine (POEM) Get headaches",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "CSIMigraineYN",
         "name": "Central Sensitization Inventory (CSI) migraine or tension headaches indicator",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM15a",
-        "name": "Penn Online Evaluation of Migraine (POEM) Spots",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM15e",
-        "name": "Penn Online Evaluation of Migraine (POEM) Zigzag",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM46",
-        "name": "Penn Online Evaluation of Migraine (POEM) Contact",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "POEM15c",
         "name": "Penn Online Evaluation of Migraine (POEM) Lines",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM15b",
-        "name": "Penn Online Evaluation of Migraine (POEM) Stars",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM40",
-        "name": "Penn Online Evaluation of Migraine (POEM) Sunglasses",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM22",
-        "name": "Penn Online Evaluation of Migraine (POEM) Vision changes Last",
-        "relevance_grade": null
-      },
-      {
-        "id": "POEM21",
-        "name": "Penn Online Evaluation of Migraine (POEM) Vision changes when",
-        "relevance_grade": null
-      },
-      {
-        "id": "CSIMigraineDxYr",
-        "name": "Central Sensitization Inventory (CSI) Year diagnosed migraine or tension headaches",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "POEM43",
         "name": "Penn Online Evaluation of Migraine (POEM) Bright lights trigger",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "POEM3",
         "name": "Penn Online Evaluation of Migraine (POEM) Ever had a headache",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM15a",
+        "name": "Penn Online Evaluation of Migraine (POEM) Spots",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM15b",
+        "name": "Penn Online Evaluation of Migraine (POEM) Stars",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM40",
+        "name": "Penn Online Evaluation of Migraine (POEM) Sunglasses",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM46",
+        "name": "Penn Online Evaluation of Migraine (POEM) Contact",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM24",
+        "name": "Penn Online Evaluation of Migraine (POEM) Visions changes spread",
+        "relevance_grade": 3
+      },
+      {
+        "id": "CSIMigraineDxYr",
+        "name": "Central Sensitization Inventory (CSI) Year diagnosed migraine or tension headaches",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM15e",
+        "name": "Penn Online Evaluation of Migraine (POEM) Zigzag",
+        "relevance_grade": 3
+      },
+      {
+        "id": "POEM21",
+        "name": "Penn Online Evaluation of Migraine (POEM) Vision changes when",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "mindfulness",
@@ -1326,107 +1326,107 @@
       {
         "id": "HDP00825:mindfulness",
         "name": "mindfulness",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "AMPStotal",
         "name": "Applied Mindfulness Practice Scale (AMPS) Overall score",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS7positive",
-        "name": "Applied Mindfulness Practice Scale (AMPS) positive",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "AMPS13notFacts",
         "name": "Applied Mindfulness Practice Scale (AMPS) not facts",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS15altViews",
-        "name": "Applied Mindfulness Practice Scale (AMPS) alternate views",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "AMPS2relax",
         "name": "Applied Mindfulness Practice Scale (AMPS) relax",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "AMPS1thoughts",
-        "name": "Applied Mindfulness Practice Scale (AMPS) observe thoughts",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS10stopRxn",
-        "name": "Applied Mindfulness Practice Scale (AMPS) stop unhelpful reactions",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS3notTrue",
-        "name": "Applied Mindfulness Practice Scale (AMPS) thoughts not necessarily true",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS9stronger",
-        "name": "Applied Mindfulness Practice Scale (AMPS) grow stronger",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS11pleasantEvnt",
-        "name": "Applied Mindfulness Practice Scale (AMPS) appreciate pleasant events",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS8tension",
-        "name": "Applied Mindfulness Practice Scale (AMPS) reduce tension",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS4enjoy",
-        "name": "Applied Mindfulness Practice Scale (AMPS) enjoy little things",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS12letgo",
-        "name": "Applied Mindfulness Practice Scale (AMPS) let go",
-        "relevance_grade": null
+        "id": "AMPS7positive",
+        "name": "Applied Mindfulness Practice Scale (AMPS) positive",
+        "relevance_grade": 3
       },
       {
         "id": "AMPS6negImpulse",
         "name": "Applied Mindfulness Practice Scale (AMPS) negative impulses",
-        "relevance_grade": null
-      },
-      {
-        "id": "AMPS14noticePlsnt",
-        "name": "Applied Mindfulness Practice Scale (AMPS) notice pleasant things",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "AMPS5calm",
         "name": "Applied Mindfulness Practice Scale (AMPS) calm emotions",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS1thoughts",
+        "name": "Applied Mindfulness Practice Scale (AMPS) observe thoughts",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS12letgo",
+        "name": "Applied Mindfulness Practice Scale (AMPS) let go",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS9stronger",
+        "name": "Applied Mindfulness Practice Scale (AMPS) grow stronger",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS10stopRxn",
+        "name": "Applied Mindfulness Practice Scale (AMPS) stop unhelpful reactions",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS11pleasantEvnt",
+        "name": "Applied Mindfulness Practice Scale (AMPS) appreciate pleasant events",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS3notTrue",
+        "name": "Applied Mindfulness Practice Scale (AMPS) thoughts not necessarily true",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS8tension",
+        "name": "Applied Mindfulness Practice Scale (AMPS) reduce tension",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS15altViews",
+        "name": "Applied Mindfulness Practice Scale (AMPS) alternate views",
+        "relevance_grade": 3
+      },
+      {
+        "id": "AMPS14noticePlsnt",
+        "name": "Applied Mindfulness Practice Scale (AMPS) notice pleasant things",
+        "relevance_grade": 3
       },
       {
         "id": "SCSsf_mindful",
         "name": "Self-compassion Scale short form (SCS-SF) Mindfulness subscale",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "AMPSdecentering",
-        "name": "Applied Mindfulness Practice Scale (AMPS) Decentering scale",
-        "relevance_grade": null
+        "id": "AMPS4enjoy",
+        "name": "Applied Mindfulness Practice Scale (AMPS) enjoy little things",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01340:skillmindfulnessmeditation",
         "name": "skillmindfulnessmeditation",
-        "relevance_grade": null
+        "relevance_grade": 2
+      },
+      {
+        "id": "AMPSdecentering",
+        "name": "Applied Mindfulness Practice Scale (AMPS) Decentering scale",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "tobacco-dependence",
@@ -1435,109 +1435,109 @@
     "curated_at": null,
     "expected_results": [
       {
+        "id": "HDP00476:achew3",
+        "name": "achew3",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00476:achew1",
+        "name": "achew1",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00476:cchew1",
+        "name": "cchew1",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00476:achew2",
+        "name": "achew2",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00476:cchew2",
+        "name": "cchew2",
+        "relevance_grade": 3
+      },
+      {
         "id": "HDP00253:nida_3",
         "name": "nida_3",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00476:csubatt3",
+        "name": "csubatt3",
+        "relevance_grade": 3
       },
       {
         "id": "HDP00104:dsm5crossad_22",
         "name": "dsm5crossad_22",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "dsm5crossad_22",
-        "name": "DSM-5 Self-Rated Level 1 Cross-Cutting Symptom Measure-Adult smoking scale",
-        "relevance_grade": null
+        "id": "TAP2opioidScore",
+        "name": "Tobacco, Alcohol, Prescription medications, and other Substance Tool part 2 (TAPS-2) opioid score",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01329:tapsdrugusescl",
         "name": "tapsdrugusescl",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "TAPS2RxOpiateYN",
         "name": "Tobacco, Alcohol, Prescription medications, and other Substance Tool part 2 (TAPS-2) prescription opiate abuse indicator",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:tapsdrugusescl",
         "name": "tapsdrugusescl",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "TAPSAlcoholUseMaleScl",
-        "name": "Tobacco Alcohol Prescription medications and other Substance (TAPS) - Alcohol use male scale",
-        "relevance_grade": null
-      },
-      {
-        "id": "TAPSAlcoholUseFemaleScl",
-        "name": "Tobacco Alcohol Prescription medications and other Substance (TAPS) - Alcohol use female scale",
-        "relevance_grade": null
-      },
-      {
-        "id": "TAPS2alcoholConcernYN",
-        "name": "Tobacco, Alcohol, Prescription medications, and other Substance Tool part 2 (TAPS-2) alcohol anyone express concern about drinking indicator",
-        "relevance_grade": null
+        "id": "TAP2alcoholScore",
+        "name": "Tobacco, Alcohol, Prescription medications, and other Substance Tool part 2 (TAPS-2) Alcohol score",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:tapstobaccoproductscl",
         "name": "tapstobaccoproductscl",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:tapsprescriptionmedusescl",
-        "name": "tapsprescriptionmedusescl",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00074:e1a1_2",
-        "name": "e1a1_2",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00036:e1a1_2",
         "name": "e1a1_2",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00084:e1a1_2",
         "name": "e1a1_2",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "HDP00360:e1a1_2",
+        "id": "HDP00074:e1a1_2",
         "name": "e1a1_2",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00150:e1a1_2",
         "name": "e1a1_2",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01057:nw5___4",
-        "name": "nw5___4",
-        "relevance_grade": null
+        "id": "HDP00360:e1a1_2",
+        "name": "e1a1_2",
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01057:nw5___6",
-        "name": "nw5___6",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01057:nw5___96",
-        "name": "nw5___96",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01057:nw5___98",
-        "name": "nw5___98",
-        "relevance_grade": null
+        "id": "TAPS2alcoholConcernYN",
+        "name": "Tobacco, Alcohol, Prescription medications, and other Substance Tool part 2 (TAPS-2) alcohol anyone express concern about drinking indicator",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"back pain\"",
@@ -1546,109 +1546,109 @@
     "curated_at": null,
     "expected_results": [
       {
-        "id": "SCQBackPain",
-        "name": "Self-Administered Comorbidity Questionnaire (SCQ) back pain",
-        "relevance_grade": null
-      },
-      {
         "id": "SCQBackPainTreat",
         "name": "Self-Administered Comorbidity Questionnaire (SCQ) back pain treatment",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "KSBSTwalkShortYN",
         "name": "The Keele STarT Back Screening Tool (KSBST) - walk short distances due to back pain Indicator",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___4",
         "name": "bmh05___4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___5",
         "name": "bmh05___5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___8",
         "name": "bmh05___8",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___9",
         "name": "bmh05___9",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___10",
         "name": "bmh05___10",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:ongoing_prob",
         "name": "ongoing_prob",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___1",
         "name": "bmh05___1",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___2",
         "name": "bmh05___2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___6",
         "name": "bmh05___6",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___7",
         "name": "bmh05___7",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___3",
         "name": "bmh05___3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:lbpdf01",
         "name": "lbpdf01",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:bmh05___11",
         "name": "bmh05___11",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:fmh03___5",
         "name": "fmh03___5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:fmh03___6",
         "name": "fmh03___6",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:fmh03___9",
         "name": "fmh03___9",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00429:fmh03___11",
         "name": "fmh03___11",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00933:demo_offwork",
+        "name": "demo_offwork",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "pain biomarkers",
@@ -1659,107 +1659,107 @@
       {
         "id": "HDP00933:hx_painother",
         "name": "hx_painother",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:painin34",
         "name": "painin34",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:hx_paindiagnosis_2",
         "name": "hx_paindiagnosis_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:hx_paindiagnosis_3",
         "name": "hx_paindiagnosis_3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:hx_paindur_primary",
         "name": "hx_paindur_primary",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:hx_paindur_2",
         "name": "hx_paindur_2",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:hx_paindur_3",
         "name": "hx_paindur_3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:painin9",
         "name": "painin9",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_5",
         "name": "bpi_5",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:global07",
         "name": "global07",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_6",
         "name": "bpi_6",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:painin22",
         "name": "painin22",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:pdetect_6_ef58ed",
         "name": "pdetect_6_ef58ed",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_4",
         "name": "bpi_4",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:demo_painother",
         "name": "demo_painother",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_3",
         "name": "bpi_3",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:ongoing_prob",
         "name": "ongoing_prob",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00933:hx_paindiagnosis",
-        "name": "hx_paindiagnosis",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:bpi_7",
         "name": "bpi_7",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00933:painin31",
         "name": "painin31",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP00933:hx_paindiagnosis",
+        "name": "hx_paindiagnosis",
+        "relevance_grade": 3
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "signature of pain",
@@ -1768,109 +1768,109 @@
     "curated_at": null,
     "expected_results": [
       {
+        "id": "HDP01345:pain_radiate",
+        "name": "pain_radiate",
+        "relevance_grade": 3
+      },
+      {
         "id": "HDP01368:signature",
         "name": "signature",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:signature",
         "name": "signature",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP01368:sign_consent",
         "name": "sign_consent",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00253:consent_sign",
-        "name": "consent_sign",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00337:eic_enroller_signature",
         "name": "eic_enroller_signature",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00360:hcs_mec_consent_signature",
-        "name": "hcs_mec_consent_signature",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00360:hcs_toxic_intsig",
-        "name": "hcs_toxic_intsig",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01476:uppisign",
-        "name": "uppisign",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00253:consent_sign_v5",
-        "name": "consent_sign_v5",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00074:cbs_cons_verb_sigint",
-        "name": "cbs_cons_verb_sigint",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00074:hcs_mec_consent_signature",
-        "name": "hcs_mec_consent_signature",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00074:hcs_toxic_intsig",
-        "name": "hcs_toxic_intsig",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00221:cbs_cons_verb_sigint",
-        "name": "cbs_cons_verb_sigint",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00036:cbs_cons_verb_sigint",
-        "name": "cbs_cons_verb_sigint",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00036:hcs_mec_consent_signature",
         "name": "hcs_mec_consent_signature",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00036:hcs_toxic_intsig",
         "name": "hcs_toxic_intsig",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00084:cbs_cons_verb_sigint",
-        "name": "cbs_cons_verb_sigint",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00084:hcs_mec_consent_signature",
         "name": "hcs_mec_consent_signature",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "HDP00084:hcs_toxic_intsig",
         "name": "hcs_toxic_intsig",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "HDP00360:cbs_cons_verb_sigint",
+        "id": "HDP00074:hcs_mec_consent_signature",
+        "name": "hcs_mec_consent_signature",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00074:hcs_toxic_intsig",
+        "name": "hcs_toxic_intsig",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00360:hcs_mec_consent_signature",
+        "name": "hcs_mec_consent_signature",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00360:hcs_toxic_intsig",
+        "name": "hcs_toxic_intsig",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01476:uppisign",
+        "name": "uppisign",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:consent_sign",
+        "name": "consent_sign",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00253:consent_sign_v5",
+        "name": "consent_sign_v5",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00036:cbs_cons_verb_sigint",
         "name": "cbs_cons_verb_sigint",
-        "relevance_grade": null
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00084:cbs_cons_verb_sigint",
+        "name": "cbs_cons_verb_sigint",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00074:cbs_cons_verb_sigint",
+        "name": "cbs_cons_verb_sigint",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00150:cbs_cons_verb_sigint",
+        "name": "cbs_cons_verb_sigint",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "GLP-1",
@@ -1880,7 +1880,7 @@
     "expected_results": [],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "buprenorphine",
@@ -1891,107 +1891,107 @@
       {
         "id": "HDP01171:buprenorphine",
         "name": "buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_film_mcg",
         "name": "Opioid MME buprenorphine film (mcg)",
-        "relevance_grade": null
-      },
-      {
-        "id": "mme_bup_filmtab_mg_dose",
-        "name": "Opioid MME buprenorphine sublingual dose",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_patch_mcg_dose",
         "name": "Opioid MME buprenorphine transdermal dose",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "mme_bup_patch_mcg",
-        "name": "Opioid MME buprenorphine form transdermal patch",
-        "relevance_grade": null
+        "id": "mme_bup_filmtab_mg_dose",
+        "name": "Opioid MME buprenorphine sublingual dose",
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_patch_days_per",
         "name": "Opioid MME buprenorphine transdermal dose",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "mme_bup_film_mcg_dose",
-        "name": "Opioid MME buprenorphine film (mcg) dose",
-        "relevance_grade": null
+        "id": "mme_bup_patch_mcg",
+        "name": "Opioid MME buprenorphine form transdermal patch",
+        "relevance_grade": 3
       },
       {
         "id": "mme_buprenorphine",
         "name": "Opioid MME type of medication  buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "mme_bup_film_mcg_dose",
+        "name": "Opioid MME buprenorphine film (mcg) dose",
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_patch_mcg_mme",
         "name": "Opioid MME buprenorphine patch CALCULATED MME",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_filmtab_mme",
         "name": "Opioid MME buprenorphine  sublingual Calculated MME",
-        "relevance_grade": null
-      },
-      {
-        "id": "mme_bup_filmtab_mg",
-        "name": "Opioid MME buprenorphine form  sublingual (mg)",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_film_mcg_mme",
         "name": "Opioid MME buprenorphine film (mcg) CALCULATED MME",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "mme_bup_filmtab_mg",
+        "name": "Opioid MME buprenorphine form  sublingual (mg)",
+        "relevance_grade": 3
       },
       {
         "id": "mme_bup_film_mcg_rxdur",
         "name": "Opioid MME buprenorphine film (mcg) prescription duration (days)",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "mme_bup_patch_mcg_rxdur",
         "name": "Opioid MME buprenorphine  transdermal prescription duration (days)",
-        "relevance_grade": null
-      },
-      {
-        "id": "mme_bup_filmtab_mg_rxdur",
-        "name": "Opioid MME buprenorphine sublingual prescription duration (days)",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "mme_bup_film_mcg_24h",
         "name": "Opioid MME buprenorphine film (mcg) number of doses in 24 h",
-        "relevance_grade": null
+        "relevance_grade": 2
+      },
+      {
+        "id": "mme_bup_filmtab_mg_rxdur",
+        "name": "Opioid MME buprenorphine sublingual prescription duration (days)",
+        "relevance_grade": 2
       },
       {
         "id": "mme_bup_patch_mcg_mme24",
         "name": "Opioid MME buprenorphine transdermal calculated 24 hour MME",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "mme_bup_filmtab_mg_24h",
         "name": "Opioid MME buprenorphine sublingual number of doses in 24 h",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "mme_sum_allrx_mme",
         "name": "Opioid MME calculation - sum of the MME across all prescriptions excluding buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
         "id": "mme_total_mme_therapy_days",
         "name": "Opioid MME \nMME/Day based on Definition 2: On Therapy Days excluding buprenorphine",
-        "relevance_grade": null
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "\"neuropathic pain\"",
@@ -2002,97 +2002,107 @@
       {
         "id": "HDP01340:pain_neuropathic",
         "name": "pain_neuropathic",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01340:neuropathic_pain",
         "name": "neuropathic_pain",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP00337:burish_neuropathic___5",
         "name": "burish_neuropathic___5",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01340:pain2_2___1",
-        "name": "pain2_2___1",
-        "relevance_grade": null
-      },
-      {
-        "id": "NPQ5aPainTinglyScl",
-        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain tingly",
-        "relevance_grade": null
-      },
-      {
-        "id": "NPQ5aPainStingingScl",
-        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain stinging",
-        "relevance_grade": null
-      },
-      {
-        "id": "NPQ5aPainElectricalScl",
-        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain electrical",
-        "relevance_grade": null
-      },
-      {
-        "id": "NPQ5aPainNumbScl",
-        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain numb",
-        "relevance_grade": null
-      },
-      {
-        "id": "NPQ5aPainPinsNeedlesScl",
-        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain pins and needles",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01340:npq_total_score",
-        "name": "npq_total_score",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00337:if_np_locn",
-        "name": "if_np_locn",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01368:neuropathic_pain",
         "name": "neuropathic_pain",
-        "relevance_grade": null
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01340:pain2_2___1",
+        "name": "pain2_2___1",
+        "relevance_grade": 2
+      },
+      {
+        "id": "NPQ5aPainTinglyScl",
+        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain tingly",
+        "relevance_grade": 2
+      },
+      {
+        "id": "NPQ5aPainStingingScl",
+        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain stinging",
+        "relevance_grade": 2
+      },
+      {
+        "id": "NPQ5aPainElectricalScl",
+        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain electrical",
+        "relevance_grade": 2
+      },
+      {
+        "id": "NPQ5aPainNumbScl",
+        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain numb",
+        "relevance_grade": 2
+      },
+      {
+        "id": "NPQ5aPainPinsNeedlesScl",
+        "name": "PROMIS Neuropathic Pain Quality 5a (NPQ5a) pain pins and needles",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP01340:npq_total_score",
+        "name": "npq_total_score",
+        "relevance_grade": 2
+      },
+      {
+        "id": "HDP00258:submitter_id",
+        "name": "submitter_id",
+        "relevance_grade": 1
+      },
+      {
+        "id": "HDP00337:if_np_locn",
+        "name": "if_np_locn",
+        "relevance_grade": 1
       },
       {
         "id": "HDP00337:burish_neuropathic___1",
         "name": "burish_neuropathic___1",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "HDP00337:burish_neuropathic___2",
         "name": "burish_neuropathic___2",
-        "relevance_grade": null
+        "relevance_grade": 1
       },
       {
         "id": "HDP00284:phv00530456_affection_status",
         "name": "phv00530456_affection_status",
-        "relevance_grade": null
+        "relevance_grade": 1
+      },
+      {
+        "id": "HDP00284:phv00400290_duration_of_neuropathic_or_radicular_symptoms",
+        "name": "phv00400290_duration_of_neuropathic_or_radicular_symptoms",
+        "relevance_grade": 1
+      },
+      {
+        "id": "HDP00253:hcud_4a___6",
+        "name": "hcud_4a___6",
+        "relevance_grade": 1
+      },
+      {
+        "id": "HDP00253:hcudb_4a___6",
+        "name": "hcudb_4a___6",
+        "relevance_grade": 1
       },
       {
         "id": "HDP00337:neuropathic_type___5",
         "name": "neuropathic_type___5",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00337:neuropathic_type___1",
-        "name": "neuropathic_type___1",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP00337:neuropathic_type___2",
-        "name": "neuropathic_type___2",
-        "relevance_grade": null
+        "relevance_grade": 0
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   },
   {
     "query": "fibromyalgia",
@@ -2103,106 +2113,106 @@
       {
         "id": "CSIFbrmylgYN",
         "name": "Central Sensitization Inventory (CSI) fibromyalgia indicator",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "CSIFbrmylgDxYr",
         "name": "Central Sensitization Inventory (CSI) Year diagnosed fibromyalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01345:csi_fibromyalgia",
         "name": "csi_fibromyalgia",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fmdiag",
         "name": "fmdiag",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_overwhelmed_b28f86",
         "name": "fiqr_overwhelmed_b28f86",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_weeklygoals_176aba",
         "name": "fiqr_weeklygoals_176aba",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:fiqr_memory",
-        "name": "fiqr_memory",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:reffered",
-        "name": "reffered",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:fiqr_pain",
-        "name": "fiqr_pain",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:fiqr_energy",
-        "name": "fiqr_energy",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:fiqr_balancelvl_9e50ab",
-        "name": "fiqr_balancelvl_9e50ab",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_stiffness",
         "name": "fiqr_stiffness",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
-        "id": "HDP01498:fiqr_anxiety",
-        "name": "fiqr_anxiety",
-        "relevance_grade": null
+        "id": "HDP01498:fiqr_energy",
+        "name": "fiqr_energy",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:reffered",
+        "name": "reffered",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:fiqr_memory",
+        "name": "fiqr_memory",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:fiqr_balancelvl_9e50ab",
+        "name": "fiqr_balancelvl_9e50ab",
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:fiqr_pain",
+        "name": "fiqr_pain",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_touch",
         "name": "fiqr_touch",
-        "relevance_grade": null
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_sleep",
         "name": "fiqr_sleep",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:fiqr_anxiety",
+        "name": "fiqr_anxiety",
+        "relevance_grade": 3
       },
       {
         "id": "HDP01498:fiqr_depression",
         "name": "fiqr_depression",
-        "relevance_grade": null
+        "relevance_grade": 3
+      },
+      {
+        "id": "HDP01498:fiqr_sensitivitylvl_324764",
+        "name": "fiqr_sensitivitylvl_324764",
+        "relevance_grade": 2
       },
       {
         "id": "HDP01498:fiqr_preparemeal_92d87b",
         "name": "fiqr_preparemeal_92d87b",
-        "relevance_grade": null
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01498:walkcon_358f79",
-        "name": "walkcon_358f79",
-        "relevance_grade": null
+        "id": "HDP01498:fiqr_shopping_8891d7",
+        "name": "fiqr_shopping_8891d7",
+        "relevance_grade": 2
       },
       {
-        "id": "HDP01498:fiqr_brushhair_bdb852",
-        "name": "fiqr_brushhair_bdb852",
-        "relevance_grade": null
-      },
-      {
-        "id": "HDP01498:fiqr_sitinchair_211ed5",
-        "name": "fiqr_sitinchair_211ed5",
-        "relevance_grade": null
+        "id": "HDP01498:fiqr_carrybags_384326",
+        "name": "fiqr_carrybags_384326",
+        "relevance_grade": 2
       }
     ],
     "must_appear": [],
     "must_not_appear": [],
-    "min_ndcg_at_10": 0.0
+    "min_ndcg_at_10": 0
   }
 ]
