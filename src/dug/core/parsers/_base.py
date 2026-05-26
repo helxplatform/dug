@@ -41,6 +41,20 @@ class DugElement(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
+        extra = 'ignore'
+
+    def __setattr__(self, name, value):
+        # jsonpickle reconstructs objects via __new__ (skipping __init__), so
+        # __pydantic_fields_set__ may not exist yet, old serialized data may contain
+        # removed fields (e.g. concept_action), and computed properties (e.g.
+        # ml_ready_desc) have no setter. Handle all three cases gracefully.
+        try:
+            super().__setattr__(name, value)
+        except (AttributeError, ValueError):
+            try:
+                object.__setattr__(self, name, value)
+            except AttributeError:
+                pass
 
     def add_concept(self, concept: DugConcept):
         self.concepts[concept.id] = concept
