@@ -452,7 +452,7 @@ class Search:
         es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
         total_items = await self.es.count(body=es_query, index=self.indices["variables_index"])
         search_results = []
-        async for r in async_scan(self.es, query=es_query):
+        async for r in async_scan(self.es, query=es_query, index=self.indices["variables_index"]):
             search_results.append(r)
 
         return self._make_result(data_type, search_results, total_items, False)
@@ -470,13 +470,16 @@ class Search:
             if elem_type not in new_results:
                 new_results[elem_type] = {}
 
-            elem_id = elem_s['element_id']
-            coll_id = elem_s['collection_id']
+            # Support both old schema (element_id/collection_id) and
+            # DugModel2.0 schema (id/parents)
+            elem_id = elem_s.get('element_id') or elem_s.get('id', '')
+            parents = elem_s.get('parents', [])
+            coll_id = elem_s.get('collection_id') or (parents[0] if parents else elem_id)
             elem_info = {
-                "description": elem_s['element_desc'],
-                "e_link": elem_s['element_action'],
+                "description": elem_s.get('element_desc') or elem_s.get('description', ''),
+                "e_link": elem_s.get('element_action') or elem_s.get('action', ''),
                 "id": elem_id,
-                "name": elem_s['element_name'],
+                "name": elem_s.get('element_name') or elem_s.get('name', ''),
                 "metadata": elem_s.get('metadata', {})
             }
 
@@ -488,8 +491,8 @@ class Search:
                 # initialize document
                 doc = {
                     'c_id': coll_id,
-                    'c_link': elem_s['collection_action'],
-                    'c_name': elem_s['collection_name'],
+                    'c_link': elem_s.get('collection_action', ''),
+                    'c_name': elem_s.get('collection_name', ''),
                     'elements': [elem_info]
                 }
                 # save document
