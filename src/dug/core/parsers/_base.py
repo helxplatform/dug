@@ -54,7 +54,35 @@ class DugElement(BaseModel):
             try:
                 object.__setattr__(self, name, value)
             except AttributeError:
-                pass
+                pass  # read-only computed property — skip silently
+
+    def __getattr__(self, name):
+        # jsonpickle reconstructs via __new__, leaving Pydantic fields unset in
+        # __dict__. Return the field default so callers don't get AttributeError.
+        from pydantic_core import PydanticUndefinedType
+        fields = self.__class__.model_fields
+        if name in fields:
+            field_info = fields[name]
+            # Check factory first (covers List/Dict fields like parents, programs, tags)
+            if field_info.default_factory is not None:
+                return field_info.default_factory()
+            # Then check scalar default (covers action="", type="", etc.)
+            if not isinstance(field_info.default, PydanticUndefinedType):
+                return field_info.default
+        raise AttributeError(f"'{type(self).__name__}' object has no attribute '{name}'")
+
+    def __getstate__(self):
+        # jsonpickle calls __getstate__ when re-encoding objects that were
+        # reconstructed via __new__. Pydantic v2's __getstate__ needs
+        # __pydantic_private__, __pydantic_fields_set__, and __pydantic_extra__
+        # to exist.
+        if not hasattr(self, '__pydantic_private__'):
+            object.__setattr__(self, '__pydantic_private__', None)
+        if not hasattr(self, '__pydantic_fields_set__'):
+            object.__setattr__(self, '__pydantic_fields_set__', set())
+        if not hasattr(self, '__pydantic_extra__'):
+            object.__setattr__(self, '__pydantic_extra__', None)
+        return super().__getstate__()
 
     def add_concept(self, concept: DugConcept):
         self.concepts[concept.id] = concept
