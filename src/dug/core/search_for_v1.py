@@ -6,7 +6,7 @@ async def search_var_for_v1(search_query, var_index_name, studies_index_name, se
     )
 
     results = []
-    var2study = {}
+    var2program = {}
 
     for result in elastic_results:
         source = result["_source"]
@@ -24,17 +24,19 @@ async def search_var_for_v1(search_query, var_index_name, studies_index_name, se
 
             for studies in eresults:
 
-                study_id = studies["_source"]["id"]
-                if study_id not in var2study:
-                    var2study[study_id] = {}
-                    var2study[study_id]["elements"] = []
+                programs = studies["_source"]["programs"]
+                for program in programs:
 
-                var2study[study_id]["c_id"] = study_id
-                var2study[study_id]["c_name"] = studies["_source"]["name"]
-                var2study[study_id]["c_link"] = studies["_source"]["action"]
-                var2study[study_id]["elements"].append(item)
+                    if program not in var2program:
+                        var2program[program] = {}
+                        var2program[program]["elements"] = []
 
-    results.append(var2study)
+                    var2program[program]["c_id"] =  studies["_source"]["id"]
+                    var2program[program]["c_name"] = studies["_source"]["name"]
+                    var2program[program]["c_link"] = studies["_source"]["action"]
+                    var2program[program]["elements"].append(item)
+
+    results.append(var2program)
     return results
 
 
