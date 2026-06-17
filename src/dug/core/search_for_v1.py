@@ -5,7 +5,6 @@ async def search_var_for_v1(search_query, var_index_name, studies_index_name, se
         **search_query.model_dump()
     )
 
-    results = []
     var2program = {}
 
     for result in elastic_results:
@@ -36,8 +35,8 @@ async def search_var_for_v1(search_query, var_index_name, studies_index_name, se
                     var2program[program]["c_link"] = studies["_source"]["action"]
                     var2program[program]["elements"].append(item)
 
-    results.append(var2program)
-    return results
+
+    return var2program
 
 
 async def search_concepts_for_v1(search_query, search):
