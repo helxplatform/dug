@@ -262,11 +262,11 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, concept_types=None, **kwargs):
+    async def search_concepts(self, query, simple_search:bool, offset=0, size=None, concept_types=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
-        if self.is_simple_search_query(query):
+        if self.is_simple_search_query(query) or simple_search:
             search_body = self.get_simple_concept_search_query(query)
         else:
             search_body = self._get_concepts_query(query, **kwargs)
@@ -315,7 +315,7 @@ class Search:
 
         return search_results, total_items['count'], concept_types
 
-    async def search_variables(self, concept="", query="", size=None,
+    async def search_variables(self, concept="", query="", simple_search:bool = False, size=None,
                                data_type=None, offset=0, fuzziness=1,
                                prefix_length=3):
         """
@@ -329,7 +329,7 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        if self.is_simple_search_query(query):
+        if self.is_simple_search_query(query) or simple_search:
             es_query = self._get_element_simple_search_query(concept, query)
         else:
             es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
@@ -354,6 +354,7 @@ class Search:
                               index_name,
                               concept="",
                               query="",
+                              simple_search: bool = False,
                               parent_ids=None,
                               element_ids=None,
                               filters=None,
@@ -364,7 +365,7 @@ class Search:
                               prefix_length=3,
                               explain=False):
         is_concepts_search = index_name == self.indices["concepts_index"]
-        is_simple_search = self.is_simple_search_query(query)
+        is_simple_search = self.is_simple_search_query(query) or simple_search
 
         if is_concepts_search:
             if is_simple_search:

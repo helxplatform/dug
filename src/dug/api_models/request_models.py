@@ -8,12 +8,14 @@ class SearchConceptQuery(BaseModel):
     query: str
     offset: int = 0
     size: int = 20
+    simple_search: bool = False
     concept_types: list = None
 
 class SearchVariablesQuery(BaseModel):
     query: str
     concept: str = ""
     offset: int = 0
+    simple_search: bool = False
     size: int = 1000
 
 class FilterGrouped(BaseModel):
@@ -46,6 +48,7 @@ class FilterCriterion(BaseModel):
 
 class SearchElementQuery(BaseModel):
     query: str = None
+    simple_search: bool = False
     parent_ids: Optional[List] = None
     element_ids: Optional[List] = None
     concept: Optional[str] = None
