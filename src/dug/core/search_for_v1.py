@@ -22,21 +22,33 @@ async def search_var_for_v1(search_query, var_index_name, studies_index_name, se
             eresults, total_count, aggregations = await search.search_elements(studies_index_name, element_ids=[p])
 
             for studies in eresults:
-
+                study_source = studies["_source"]
+                study_id = study_source["id"]
                 programs = studies["_source"]["programs"]
                 for program in programs:
 
                     if program not in var2program:
+                        # add the program
                         var2program[program] = {}
-                        var2program[program]["elements"] = []
 
-                    var2program[program]["c_id"] =  studies["_source"]["id"]
-                    var2program[program]["c_name"] = studies["_source"]["name"]
-                    var2program[program]["c_link"] = studies["_source"]["action"]
-                    var2program[program]["elements"].append(item)
+                    if study_id not in var2program[program]:
+                        # add the study
+                        var2program[program][study_id] = {
+                            "elements": []
+                        }
+                        var2program[program][study_id]["c_id"] = studies["_source"]["id"]
+                        var2program[program][study_id]["c_name"] = studies["_source"]["name"]
+                        var2program[program][study_id]["c_link"] = studies["_source"]["action"]
+                    # add all elements
+                    var2program[program][study_id]["elements"].append(item)
 
 
-    return var2program
+    formatted_result = {}
+    for program, studies_dict in var2program.items():
+        formatted_result[program] = list(studies_dict.values())
+
+    # Return wrapped in the standard response envelope
+    return formatted_result
 
 
 async def search_concepts_for_v1(search_query, search):
