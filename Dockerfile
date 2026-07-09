@@ -3,8 +3,9 @@
 # A container for the core semantic-search capability.
 #
 ######################################################
-FROM python:3.13-alpine3.22
+FROM dhi.io/python:3.13-alpine3.22-dev AS builder
 
+ENV USER=dug
 
 # Install required packages
 RUN apk update && \
@@ -14,7 +15,6 @@ RUN apk upgrade -Ua
 
 RUN pip install --upgrade pip
 # Create a non-root user.
-ENV USER=dug
 ENV HOME=/home/$USER
 ENV UID=1000
 
@@ -33,5 +33,19 @@ WORKDIR $HOME/dug
 RUN make install
 RUN make install.dug
 
+FROM dhi.io/python:3.13-alpine3.22
+
+ENV USER=dug
+ENV HOME=/home/$USER
+
+COPY --from=builder /opt/python /opt/python
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/shadow /etc/shadow
+
+USER $USER
+COPY --chown=$USER --from=builder $HOME $HOME
+
+WORKDIR $HOME/dug
+
 # Run it
-ENTRYPOINT dug
+ENTRYPOINT ["dug"]
