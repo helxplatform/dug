@@ -1,4 +1,4 @@
-from dug.core.parsers._base import DugElement, DugConcept, DugVariable, DugStudy, DugSection
+from dug_data_model.v2 import DugElement, DugConcept, DugVariable, DugStudy, DugSection
 from dug.core.annotators import DugIdentifier, AnnotateMonarch
 # from dug.core.annotators.monarch_annotator import AnnotateMonarch
 

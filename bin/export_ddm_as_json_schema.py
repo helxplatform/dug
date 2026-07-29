@@ -10,7 +10,7 @@ import click
 import json
 import logging
 
-from dug.core.parsers._base import DugStudy, DugSection, DugVariable
+from dug_data_model.v2 import DugStudy, DugSection, DugVariable
 
 logging.basicConfig(level=logging.INFO)
 

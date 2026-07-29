@@ -14,7 +14,8 @@ from dug import hookspecs
 from dug.core import parsers
 from dug.core import annotators
 from dug.core.factory import DugFactory
-from dug.core.parsers import DugConcept, DugStudy, DugVariable, DugSection, Parser, get_parser
+from dug_data_model.v2 import DugConcept, DugStudy, DugVariable, DugSection, Parser
+from dug.core.parsers import get_parser
 from dug.core.annotators import DugIdentifier, Annotator, get_annotator
 
 logger = logging.getLogger('dug')

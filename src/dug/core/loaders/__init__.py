@@ -1,1 +1,1 @@
-from ._base import InputFile, Loader
+from ._base import Loader

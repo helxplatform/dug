@@ -1,7 +1,7 @@
 # Tests for DugVariable.
 import pytest
 
-from src.dug.core.parsers import DugVariable
+from dug_data_model.v2 import DugVariable
 
 DUG_VARIABLE_EXPANSION_TEST_CASES = [
     ("variable_name", "variable name"),

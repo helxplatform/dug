@@ -1,4 +1,5 @@
 aiohttp
+dug-data-model
 asyncio
 fastapi
 uvicorn

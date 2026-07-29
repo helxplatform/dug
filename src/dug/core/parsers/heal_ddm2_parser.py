@@ -1,10 +1,12 @@
 import logging
 import os
 from typing import List
-import json
 from dug import utils as utils
-from ._base import DugVariable, DugStudy, DugSection, FileParser, Indexable, InputFile, DugElementParsedList
-from ._base import VARIABLE_TYPE, STUDY_TYPE, CONCEPT_TYPE, SECTION_TYPE
+from dug_data_model.v2 import (
+    DugVariable, DugStudy, DugSection, FileParser, Indexable, InputFile,
+    DugElementParsedList, VARIABLE_TYPE, STUDY_TYPE, CONCEPT_TYPE, SECTION_TYPE,
+    load_elements,
+)
 
 logger = logging.getLogger('dug')
 
@@ -25,10 +27,7 @@ class HEALDDM2Parser(FileParser):
     def __call__(self, input_file: InputFile) -> List[Indexable]:
         logger.debug(input_file)
 
-        elements = []
-        with open(input_file, "r") as f:
-            json_obj = json.load(f)
-            elements = DugElementParsedList.validate_python(json_obj)
+        elements = load_elements(input_file, DugElementParsedList)
         final_elements = [k for k in elements if k.get_id()!='']
         for k in final_elements:
             k.id = k.get_id().replace("HEALCDE:", "").replace("HEALDATAPLATFORM:", "")
