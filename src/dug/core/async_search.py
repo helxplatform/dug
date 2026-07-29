@@ -262,11 +262,11 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, offset=0, size=None, concept_types=None, **kwargs):
+    async def search_concepts(self, query, simple_search:bool, offset=0, size=None, concept_types=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
-        if self.is_simple_search_query(query):
+        if self.is_simple_search_query(query) or simple_search:
             search_body = self.get_simple_concept_search_query(query)
         else:
             search_body = self._get_concepts_query(query, **kwargs)
@@ -315,7 +315,7 @@ class Search:
 
         return search_results, total_items['count'], concept_types
 
-    async def search_variables(self, concept="", query="", size=None,
+    async def search_variables(self, concept="", query="", simple_search:bool = False, size=None,
                                data_type=None, offset=0, fuzziness=1,
                                prefix_length=3):
         """
@@ -329,7 +329,7 @@ class Search:
         If a data_type is passed in, the result will be filtered to only contain
         the passed-in data type.
         """
-        if self.is_simple_search_query(query):
+        if self.is_simple_search_query(query) or simple_search:
             es_query = self._get_element_simple_search_query(concept, query)
         else:
             es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
@@ -354,6 +354,7 @@ class Search:
                               index_name,
                               concept="",
                               query="",
+                              simple_search: bool = False,
                               parent_ids=None,
                               element_ids=None,
                               filters=None,
@@ -364,7 +365,7 @@ class Search:
                               prefix_length=3,
                               explain=False):
         is_concepts_search = index_name == self.indices["concepts_index"]
-        is_simple_search = self.is_simple_search_query(query)
+        is_simple_search = self.is_simple_search_query(query) or simple_search
 
         if is_concepts_search:
             if is_simple_search:
@@ -452,7 +453,7 @@ class Search:
         es_query = self._get_element_search_query(concept, fuzziness, prefix_length, query)
         total_items = await self.es.count(body=es_query, index=self.indices["variables_index"])
         search_results = []
-        async for r in async_scan(self.es, query=es_query):
+        async for r in async_scan(self.es, query=es_query, index=self.indices["variables_index"]):
             search_results.append(r)
 
         return self._make_result(data_type, search_results, total_items, False)
@@ -470,13 +471,16 @@ class Search:
             if elem_type not in new_results:
                 new_results[elem_type] = {}
 
-            elem_id = elem_s['element_id']
-            coll_id = elem_s['collection_id']
+            # Support both old schema (element_id/collection_id) and
+            # DugModel2.0 schema (id/parents)
+            elem_id = elem_s.get('element_id') or elem_s.get('id', '')
+            parents = elem_s.get('parents', [])
+            coll_id = elem_s.get('collection_id') or (parents[0] if parents else elem_id)
             elem_info = {
-                "description": elem_s['element_desc'],
-                "e_link": elem_s['element_action'],
+                "description": elem_s.get('element_desc') or elem_s.get('description', ''),
+                "e_link": elem_s.get('element_action') or elem_s.get('action', ''),
                 "id": elem_id,
-                "name": elem_s['element_name'],
+                "name": elem_s.get('element_name') or elem_s.get('name', ''),
                 "metadata": elem_s.get('metadata', {})
             }
 
@@ -488,8 +492,8 @@ class Search:
                 # initialize document
                 doc = {
                     'c_id': coll_id,
-                    'c_link': elem_s['collection_action'],
-                    'c_name': elem_s['collection_name'],
+                    'c_link': elem_s.get('collection_action', ''),
+                    'c_name': elem_s.get('collection_name', ''),
                     'elements': [elem_info]
                 }
                 # save document

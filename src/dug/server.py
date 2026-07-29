@@ -11,6 +11,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from dug.api_models.response_models import *
 from dug.api_models.request_models import *
+from dug.core.search_for_v1 import search_var_for_v1, search_concepts_for_v1
 
 logger = logging.getLogger(__name__)
 
@@ -59,11 +60,12 @@ async def agg_data_types():
 @APP.post('/search')
 async def search_concepts(search_query: SearchConceptQuery):
     logger.info("*** HITTING SEARCH CONCEPTS")
+    # Although index in provided by the query we will keep it around for backward compatibility, but
+    # search concepts should always search against "concepts_index"
+    res = await search_concepts_for_v1(search_query, search)
     return {
         "message": "Search result",
-        # Although index in provided by the query we will keep it around for backward compatibility, but
-        # search concepts should always search against "concepts_index"
-        "result": await search.search_concepts(**search_query.model_dump(exclude={"index"})),
+        "result": res,
         "status": "success"
     }
 
@@ -80,11 +82,13 @@ async def search_kg(search_query: SearchKgQuery):
 
 @APP.post('/search_var')
 async def search_var(search_query: SearchVariablesQuery):
+    results = await search_var_for_v1(search_query, config.variables_index_name, config.studies_index_name, search)
+
     return {
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "variables_index"
-        "result": await search.search_variables(**search_query.dict(exclude={"index"})),
+        "result": results,
         "status": "success"
     }
 

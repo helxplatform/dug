@@ -98,7 +98,7 @@ class BDCParser(FileParser):
                 name=variable.find('name').text,
                 description=desc_text,
                 action=utils.get_dbgap_var_link(study_id=study_id,
-                                                variable_id=var_id.split(".")[0].split("phv")[1]),
+                                                variable_id=var_id.split(".")[0].split("phv")[-1]),
                 parents=[study_id],
                 parent_type=STUDY_TYPE,
                 programs=[self._get_program_name()],
