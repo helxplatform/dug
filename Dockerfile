@@ -8,7 +8,7 @@ FROM python:3.13.11-alpine3.23
 
 # Install required packages
 RUN apk update && \
-    apk add g++ make cargo rust
+    apk add g++ make cargo rust git
 
 RUN apk upgrade -Ua
 
