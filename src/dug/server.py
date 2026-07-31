@@ -25,6 +25,7 @@ APP = FastAPI(
     title="Dug Search API",
     root_path=os.environ.get("ROOT_PATH", ""),
     lifespan=lifespan,
+    terms_of_service=os.environ.get("DUG_TOS_URL", None),
 )
 
 APP.add_middleware(
