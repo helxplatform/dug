@@ -262,7 +262,7 @@ class Search:
             return False
         return "*" in query or "\"" in query or "+" in query or "-" in query
 
-    async def search_concepts(self, query, simple_search:bool, offset=0, size=None, concept_types=None, **kwargs):
+    async def search_concepts(self, query, simple_search:bool=False, offset=0, size=None, concept_types=None, **kwargs):
         """
         Changed to a long boolean match query to optimize search results
         """
