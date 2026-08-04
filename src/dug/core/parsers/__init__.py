@@ -14,15 +14,7 @@ from dug_data_model.v2 import (
     FileParser,
 )
 from .dbgap_parser import *
-from .nida_parser import NIDAParser
-from .scicrunch_parser import SciCrunchParser
-from .topmed_tag_parser import TOPMedTagParser
-from .topmed_csv_parser import TOPMedCSVParser
-from .sprint_parser import SPRINTParser
-from .bacpac_parser import BACPACParser
 from .heal_ddm2_parser import HEALDDM2Parser
-from .ctn_parser import CTNParser
-from .radx_parser import RADxParser
 
 
 logger = logging.getLogger('dug')
@@ -33,17 +25,7 @@ hookimpl = pluggy.HookimplMarker("dug")
 @hookimpl
 def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["bdc"] = BDCParser()
-    # parser_dict["nida"] = NIDAParser()
-    # parser_dict["topmedtag"] = TOPMedTagParser()
-    # parser_dict["topmedcsv"] = TOPMedCSVParser()
-    # parser_dict["scicrunch"] = SciCrunchParser()
-    # parser_dict["anvil"] = AnvilDbGaPParser()
-    # parser_dict["crdc"] = CRDCDbGaPParser()
-    # parser_dict["kfdrc"] = KFDRCDbGaPParser()
-    # parser_dict["sprint"] = SPRINTParser()
-    # parser_dict["bacpac"] = BACPACParser()
     parser_dict["heal-ddm2"] = HEALDDM2Parser(study_type="HEAL Studies")
-    parser_dict["ctn"] = CTNParser()
     parser_dict["biolincc"] = BioLINCCBDCParser()
     parser_dict["covid19"] = Covid19BDCParser()
     parser_dict["dir"] = DIRBDCParser()
@@ -54,7 +36,6 @@ def define_parsers(parser_dict: Dict[str, Parser]):
     parser_dict["recover"] = RECOVERDBGaPParser()
     parser_dict["topmeddbgap"] = TopmedDBGaPParser()
     parser_dict["curesc"] = CureSC()
-    parser_dict["radx"] = RADxParser()
     parser_dict["heartfailure"] = HeartFailure()
     parser_dict["imaging"] = Imaging()
     parser_dict["reds"] = Reds()

@@ -1,5 +1,4 @@
-from dug.core.parsers import BDCParser, NIDAParser, TOPMedTagParser, SciCrunchParser,\
-    SPRINTParser, BACPACParser, CTNParser, HEALDDM2Parser
+from dug.core.parsers import BDCParser, HEALDDM2Parser
 from tests.integration.conftest import TEST_DATA_DIR
 from pathlib import Path
 
