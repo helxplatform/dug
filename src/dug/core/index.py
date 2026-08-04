@@ -337,23 +337,28 @@ class Index:
         }
 
         logger.info(f"creating indices")
-        logger.debug(self.indices)
+        logger.info(self.indices)
         for index_type in self.indices: ## This is a dict.
-            index = self.indices[index_type]
+            index_name = self.indices[index_type]
             try:
-                if self.es.indices.exists(index=index):
+                if self.es.indices.exists(index=index_name):
                     # if index exists check if replication is good 
-                    index_replicas = self.es.indices.get_settings(index=index)[index]["settings"]["index"]["number_of_replicas"]
+                    # Fetch the settings for the specific index
+                    response = self.es.indices.get_settings(index=index_name)
+                    # Extract the number of replicas from the response dictionary
+                    current_index_settings = response[index_name]["settings"]["index"]
+                    index_replicas = current_index_settings.get("number_of_replicas")
+                    # index_replicas = self.es.indices.get_settings(index=index)["settings"]["index"]["number_of_replicas"]
                     if index_replicas != self.replicas:
-                        self.es.indices.put_settings(index=index, body={"number_of_replicas": (self.replicas - 1) or 1 })
-                        self.es.indices.refresh(index=index)
-                    logger.info(f"Ignoring index {index} which already exists.")
+                        self.es.indices.put_settings(index=index_name, body={"number_of_replicas": (self.replicas - 1) or 1 })
+                        self.es.indices.refresh(index=index_name)
+                    logger.info(f"Ignoring index {index_name} which already exists.")
                 else:
                     result = self.es.indices.create(
-                        index=index,
+                        index=index_name,
                         body=settings[index_type],
                         ignore=400)
-                    logger.info(f"result created index {index}: {result}")
+                    logger.info(f"result created index {index_name}: {result}")
             except Exception as e:
                 logger.error(f"exception: {e}")
                 raise e

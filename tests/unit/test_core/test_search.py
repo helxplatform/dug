@@ -66,14 +66,7 @@ class MockIndices:
 
     def get_settings(self, index):
         index_schema = {"settings": {"index": {"number_of_replicas": self.number_of_replicas}}}
-        settings = {
-            "kg_index": index_schema,
-            "concepts_index": index_schema,
-            "variables_index": index_schema,
-            "studies_index": index_schema,
-            "sections_index": index_schema,
-        }
-        return settings
+        return {index: index_schema}
 
 class MockElastic:
     def __init__(self, indices: MockIndices):
@@ -146,18 +139,20 @@ async def test_init_indices(elastic):
 
 def test_index_doc(elastic: MockElastic):
     search = Index(Config.from_env())
+    concepts_index = search.indices["concepts_index"]
 
-    assert len(elastic.indices.get_index("concepts_index").values) == 0
-    search.index_doc("concepts_index", {"name": "sample"}, "ID:1")
-    assert len(elastic.indices.get_index("concepts_index").values) == 1
-    assert elastic.indices.get_index("concepts_index").get("ID:1") == {"name": "sample"}
+    assert len(elastic.indices.get_index(concepts_index).values) == 0
+    search.index_doc(concepts_index, {"name": "sample"}, "ID:1")
+    assert len(elastic.indices.get_index(concepts_index).values) == 1
+    assert elastic.indices.get_index(concepts_index).get("ID:1") == {"name": "sample"}
 
 
 def test_update_doc(elastic: MockElastic):
     search = Index(Config.from_env())
+    concepts_index = search.indices["concepts_index"]
 
-    search.index_doc("concepts_index", {"name": "sample"}, "ID:1")
-    search.update_doc("concepts_index", {"name": "new value!"}, "ID:1")
-    assert elastic.indices.get_index("concepts_index").get("ID:1") == {
+    search.index_doc(concepts_index, doc={"name": "sample"}, doc_id="ID:1")
+    search.update_doc(concepts_index, doc={"name": "new value!"}, doc_id="ID:1")
+    assert elastic.indices.get_index(concepts_index).get("ID:1") == {
         "name": "new value!"
     }
