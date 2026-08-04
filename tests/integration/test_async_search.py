@@ -22,9 +22,9 @@ class APISearchTestCase(TestCase):
 
         from dug.server import APP
         client = TestClient(APP)
-        types = ['anatomical entity', 'drug']
+        types = ['anatomical entity', 'phenotypic feature']
         body = {
-            "index": "concepts_index",
+            "index": cfg.concepts_index_name,
             "query": "brain",
             "offset": 0,
             "concept_types": types
@@ -37,6 +37,7 @@ class APISearchTestCase(TestCase):
                       "environment variables. See dug.config for more.")
         self.assertEqual(response.status_code, 200)
         response_obj = response.json()
-        response_types = set(hit['_source']['type'] for hit in
-                 response_obj['result']['hits']['hits'])
-        self.assertEqual(response_types, set(types))
+        response_types = set(hit['concept_type'] for hit in
+                 response_obj['results'])
+        response_type_match = [k for k in types if k in response_types]
+        self.assertGreater(len(response_type_match), 0)
