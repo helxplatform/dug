@@ -4,38 +4,38 @@
     "id": "GAD2FeelNervScale",
     "name": "Generalized Anxiety Disorder (GAD-2) - feeling nervous scale",
     "description": "Scale describing how often participant/subject has been bothered by feeling nervous, anxious or on edge, as a part of Generalized Anxiety Disorder (GAD-2)",
-    "data_type": "text",
+    "data_type": "integer",
     "is_cde": true,
     "parents": [
       "HEALCDE:gad2"
     ],
     "metadata": {
-      "permissible_values": [
-        {
-          "value": "0",
-          "description": "0 = Not at all"
-        },
-        {
-          "value": "1",
-          "description": "1 = Several days"
-        },
-        {
-          "value": "2",
-          "description": "2 = More than half the days"
-        },
-        {
-          "value": "3",
-          "description": "3 = Nearly every day"
-        }
-      ],
       "short_description": "Scale describing how often participant/subject has been bothered by feeling nervous, anxious or on edge, as a part of Generalized Anxiety Disorder (GAD-2)",
       "crf_name": "Generalized Anxiety Disorder-2 (GAD-2) ",
       "question_text": "Feeling nervous, anxious, or on edge",
       "references": "Kroenke K, Spitzer RL, Williams JB, Monahan PO, L\u00f6we B. Anxiety disorders in primary care: Prevalence, impairment, comorbidity, and detection. Ann Intern Med. 2007;146:317-25.",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "permissible_values": {
+        "0": "Not at all",
+        "1": "Several days",
+        "2": "More than half the days",
+        "3": "Nearly every day"
+      },
+      "instructions": "Choose one.",
       "study_variable_mappings": {
-        "HDP00253": [
-          "c_gad_1",
-          "p_gad_1"
+        "HDP00933": [
+          "gad2_nervous"
+        ],
+        "HDP01011": [
+          "gad2feelnervscl"
+        ],
+        "HDP01233": [
+          "gad2feelnervscale"
         ]
       }
     }
@@ -45,44 +45,32 @@
     "id": "GAD2NotStopWryScale",
     "name": "Generalized Anxiety Disorder (GAD-2) - not stop worry scale",
     "description": "Scale describing how often participant/subject has not been able to stop or control worrying, as a part of Generalized Anxiety Disorder (GAD-2).",
-    "data_type": "text",
+    "data_type": "integer",
     "is_cde": true,
     "parents": [
       "HEALCDE:gad2"
     ],
     "metadata": {
-      "permissible_values": [
-        {
-          "value": "0",
-          "description": "0 = Not at all"
-        },
-        {
-          "value": "1",
-          "description": "1 = Several days"
-        },
-        {
-          "value": "2",
-          "description": "2 = More than half the days"
-        },
-        {
-          "value": "3",
-          "description": "3 = Nearly every day"
-        }
-      ],
       "short_description": "Scale describing how often participant/subject has not been able to stop or control worrying, as a part of Generalized Anxiety Disorder (GAD-2).",
       "crf_name": "Generalized Anxiety Disorder-2 (GAD-2) ",
       "question_text": "Not being able to stop or control worrying ",
       "references": "Kroenke K, Spitzer RL, Williams JB, Monahan PO, L\u00f6we B. Anxiety disorders in primary care: Prevalence, impairment, comorbidity, and detection. Ann Intern Med. 2007;146:317-25.",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "permissible_values": {
+        "0": "Not at all",
+        "1": "Several days",
+        "2": "More than half the days",
+        "3": "Nearly every day"
+      },
+      "instructions": "Choose one.",
       "study_variable_mappings": {
-        "HDP00253": [
-          "c_gad_2",
-          "p_gad_2"
-        ],
-        "HDP00429": [
-          "gad02"
-        ],
-        "HDP00221": [
-          "bl_gad_2"
+        "HDP01233": [
+          "gad2notstopwryscale"
         ]
       }
     }
@@ -92,38 +80,47 @@
     "id": "GAD2TotalScore",
     "name": "Generalized Anxiety Disorder (GAD-2) - total score",
     "description": "Calculated overall/total score",
-    "data_type": "text",
+    "data_type": "number",
     "is_cde": true,
     "parents": [
       "HEALCDE:gad2"
     ],
     "metadata": {
-      "permissible_values": [
-        {
-          "value": "0 to 6"
-        }
-      ],
       "short_description": "Calculated overall/total score",
       "crf_name": "Generalized Anxiety Disorder-2 (GAD-2) ",
       "question_text": "Total Score",
-      "references": "Kroenke K, Spitzer RL, Williams JB, Monahan PO, L\u00f6we B. Anxiety disorders in primary care: Prevalence, impairment, comorbidity, and detection. Ann Intern Med. 2007;146:317-25."
+      "references": "Kroenke K, Spitzer RL, Williams JB, Monahan PO, L\u00f6we B. Anxiety disorders in primary care: Prevalence, impairment, comorbidity, and detection. Ann Intern Med. 2007;146:317-25.",
+      "enum": [
+        "0 to 6"
+      ],
+      "maximum": 6,
+      "instructions": "Sum the responses for both questions (total score).",
+      "study_variable_mappings": {
+        "HDP01362": [
+          "hdp01362_gad_total"
+        ],
+        "HDP01233": [
+          "gad2totalscore"
+        ]
+      }
     }
   },
   {
     "type": "section",
-    "id": "HEALCDE:gad2",
+    "id": "gad2",
     "parents": [
-      "HEALDATAPLATFORM:HDP00221",
-      "HEALDATAPLATFORM:HDP00253",
-      "HEALDATAPLATFORM:HDP00330",
-      "HEALDATAPLATFORM:HDP00429",
-      "HEALDATAPLATFORM:HDP00895",
-      "HEALDATAPLATFORM:HDP01340"
+      "HDP00097",
+      "HDP00933",
+      "HDP01011",
+      "HDP01233",
+      "HDP01362",
+      "HDP01497",
+      "HDP01679"
     ],
     "crf_id": "gad2",
     "name": "Generalized Anxiety Disorder-2 (GAD-2) ",
     "description": "The Generalized Anxiety Disorder 2 (GAD-2) is an initial screening tool for generalized anxiety disorder. Contains 3 CDEs.",
-    "action": "https://heal.nih.gov/files/CDEs/2023-05/gad2-crf.docx",
+    "action": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-crf.docx",
     "is_crf": true,
     "variable_list": [
       "GAD2FeelNervScale",
@@ -132,100 +129,129 @@
     ],
     "metadata": {
       "categories": [
-        "Adult Acute",
-        "Adult Chronic",
-        "All Core",
-        "Pediatrics"
+        "Core - Adult & Pediatric"
       ],
       "urls": [
         {
-          "url": "https://heal.nih.gov/files/CDEs/2023-05/gad2-crf.docx",
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-crf.docx",
           "filename": "gad2-crf.docx",
           "lang": "en",
           "mime-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           "description": "This is the English download of the Microsoft Word document containing the questionnaire.",
-          "drupal_id": "5101"
+          "drupal_id": null
         },
         {
-          "url": "https://heal.nih.gov/files/CDEs/2023-05/gad2-cdes.xlsx",
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-cdes.xlsx",
           "filename": "gad2-cdes.xlsx",
           "lang": "en",
           "mime-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "description": "This is the Excel file that describes the 3 CDEs present in this CRF.",
-          "drupal_id": "5096"
+          "drupal_id": null
         },
         {
-          "url": "https://heal.nih.gov/files/CDEs/2023-05/gad2-crf-spanish.docx",
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-01/gad2-crf-spanish.docx",
           "filename": "gad2-crf-spanish.docx",
           "lang": "es",
           "mime-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
           "description": "This is the Spanish download of the Microsoft Word document containing the questionnaire.",
-          "drupal_id": "4991"
+          "drupal_id": null
+        },
+        {
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-arabic.docx",
+          "filename": "gad2-crf-arabic.docx",
+          "lang": "ar",
+          "mime-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "description": "This is the Arabic download of the Microsoft Word document containing the questionnaire.",
+          "drupal_id": null
+        },
+        {
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-polish.docx",
+          "filename": "gad2-crf-polish.docx",
+          "lang": "pl",
+          "mime-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "description": "This is the Polish download of the Microsoft Word document containing the questionnaire.",
+          "drupal_id": null
+        },
+        {
+          "url": "https://www.nih.gov/sites/default/files/CDEs/2026-03/gad2-crf-somali_0.docx",
+          "filename": "gad2-crf-somali_0.docx",
+          "lang": "so",
+          "mime-type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "description": "This is the Somali download of the Microsoft Word document containing the questionnaire.",
+          "drupal_id": null
         }
       ],
       "study_mappings": {
-        "HDP01340": {
-          "_sources": [
-            [
-              "../heal-cde-mappings/HDP01340/HDP01340_wide_data_dictionary_2024_12_20.redcap.vlmd_2025-08-14_matches_confirmed.xlsx",
-              "./mappings/heal-data-dictionaries-mappings/heal-cde-mappings.csv"
-            ],
-            [
-              "../heal-cde-mappings/HDP01340/HDP01340_wide_data_dictionary_2024_12_20.redcap.vlmd_2025-08-26_matches_confirmed_vlmd_cdesearch_20250828_095120.xlsx",
-              "./mappings/heal-data-dictionaries-mappings/heal-cde-mappings.csv"
-            ]
-          ]
-        },
-        "HDP00253": {
-          "_sources": [
-            [
-              "../heal-cde-mappings/HDP00253/SPRINT_2020-12-16_2025-07-31_matches_confirmed_vlmd_cdesearch_20250829_103649.xlsx",
-              "./mappings/heal-data-dictionaries-mappings/heal-cde-mappings.csv"
-            ]
-          ],
+        "HDP00933": {
           "GAD2FeelNervScale": [
-            "c_gad_1",
-            "p_gad_1"
-          ],
-          "GAD2NotStopWryScale": [
-            "c_gad_2",
-            "p_gad_2"
-          ]
-        },
-        "HDP00429": {
-          "_sources": [
-            [
-              "../heal-cde-mappings/HDP00429/HDP00429_HDP00429_BACPAC.redcap.vlmd_2025-07-30_matches_confirmed_vlmd_cdesearch_20250902_093347.xlsx",
-              "./mappings/heal-data-dictionaries-mappings/heal-cde-mappings.csv"
-            ]
-          ],
-          "GAD2NotStopWryScale": [
-            "gad02"
-          ]
-        },
-        "HDP00221": {
-          "GAD2NotStopWryScale": [
-            "bl_gad_2"
+            "gad2_nervous"
           ],
           "_sources": [
             [
-              "../heal-cde-mappings/HDP00221/ThePersistStudy_DataDictionary_2023-09-15_2025-08-07_matches_confirmed_vlmd_cdesearch_20250814_153652.xlsx",
-              "./mappings/heal-data-dictionaries-mappings/heal-cde-mappings.csv"
+              "../cde-results-google-drive/final-reconciled/HDPDD00033_cde_reconciled.xlsx",
+              "./mappings/reconciled-cde-mappings/reconciled-cde-mappings.csv"
             ]
           ]
         },
-        "HDP00330": {
+        "HDP01011": {
+          "GAD2FeelNervScale": [
+            "gad2feelnervscl"
+          ],
           "_sources": [
             [
-              "Downloaded from Platform MDS at 2025-11-25T22:39:22.029930+00:00",
+              "../cde-results-google-drive/final-reconciled/HDPDD00083_cde_reconciled.xlsx",
+              "./mappings/reconciled-cde-mappings/reconciled-cde-mappings.csv"
+            ]
+          ]
+        },
+        "HDP01362": {
+          "GAD2TotalScore": [
+            "hdp01362_gad_total"
+          ],
+          "_sources": [
+            [
+              "../cde-results-google-drive/final-reconciled/HDPDD00100_cde_reconciled.xlsx",
+              "./mappings/reconciled-cde-mappings/reconciled-cde-mappings.csv"
+            ]
+          ]
+        },
+        "HDP01233": {
+          "GAD2FeelNervScale": [
+            "gad2feelnervscale"
+          ],
+          "_sources": [
+            [
+              "../cde-results-google-drive/final-reconciled/HDPDD00104_cde_reconciled.xlsx",
+              "./mappings/reconciled-cde-mappings/reconciled-cde-mappings.csv"
+            ]
+          ],
+          "GAD2NotStopWryScale": [
+            "gad2notstopwryscale"
+          ],
+          "GAD2TotalScore": [
+            "gad2totalscore"
+          ]
+        },
+        "HDP00097": {
+          "_sources": [
+            [
+              "Downloaded from Platform MDS version 2026jul14",
               "./mappings/platform-mds-mappings/platform-mds-mappings.csv"
             ]
           ]
         },
-        "HDP00895": {
+        "HDP01497": {
           "_sources": [
             [
-              "Downloaded from Platform MDS at 2025-11-25T22:39:22.029930+00:00",
+              "Downloaded from Platform MDS version 2026jul14",
+              "./mappings/platform-mds-mappings/platform-mds-mappings.csv"
+            ]
+          ]
+        },
+        "HDP01679": {
+          "_sources": [
+            [
+              "Downloaded from Platform MDS version 2026jul14",
               "./mappings/platform-mds-mappings/platform-mds-mappings.csv"
             ]
           ]
