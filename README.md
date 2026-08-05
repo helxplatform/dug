@@ -52,7 +52,7 @@ export REDIS_HOST=localhost
 Then you can actually crawl the data:
 
 ```shell
-dug crawl tests/integration/data/test_variables_v1.0.csv -p "TOPMedTag"
+dug crawl tests/integration/data/heal_study_ddm2_HDP00166.dug.json -p "heal-ddm2"
 ````
 
 After crawling, you can search:
@@ -63,13 +63,17 @@ dug search -q "vein" -t "variables" -k "concept=UBERON:0001638"
 
 You can also query Dug's REST API:
 ```shell
-query="`echo '{"index" : "concepts_index", "query" : "vein"}'`"
+query="`echo '{"query" : "vein"}'`"
 
 curl --data "$query" \
      --header "Content-Type: application/json" \
      --request POST \
      http://localhost:5551/search
 ```
+
+The full set of endpoints, request/response schemas, and interactive "try it out" forms are available from the
+auto-generated OpenAPI docs at `http://localhost:5551/docs` once the API is running. See
+[Search API](#search-api) below for an overview.
 
 ### Additional Notes
 
@@ -96,6 +100,31 @@ Dug's **indexing & search** phase query the graph infrastructure and analyze the
 
 
 Dug will then generate Translator knowledge sources for the annotated variables and present them for query via TranQL.
+
+## The Dug Data Model
+
+Dug's parsers, indexer, and Search API all share a common set of entity types defined in the
+[`dug-data-model`](https://github.com/helxplatform/dug-data-model) package (imported as `dug_data_model`, currently
+pinned via `git+https://github.com/helxplatform/dug-data-model.git@main` in `requirements.txt`). This gives ingest and
+search a single, versioned schema (currently `v2`) instead of ad hoc dictionaries.
+
+The model defines four entity types, all sharing a common base (`id`, `name`, `description`, `type`, `parents`,
+`metadata`, `tags`, `search_terms`, etc.):
+
+| Type          | Description                                                                 | Elasticsearch index          |
+| ------------- | ---------------------------------------------------------------------------- | ----------------------------- |
+| `DugConcept`  | An ontological concept used to organize and link searchable elements. Carries identifiers (e.g. ontology CURIEs) and knowledge-graph query results (`kg_answers`). | `concepts_index` |
+| `DugStudy`    | A study, with `publications`, `variable_list`, `section_list`, and an `abstract`. | `studies_index` |
+| `DugSection`  | A CDE set / CRF (Case Report Form) grouping variables, with `is_crf` and `variable_list`. | `sections_index` |
+| `DugVariable` | A study/CDE variable, with `data_type` and `is_cde`.                        | `variables_index` |
+
+Index names are configurable via `ELASTIC_CONCEPTS_INDEX_NAME`, `ELASTIC_STUDIES_INDEX_NAME`,
+`ELASTIC_SECTIONS_INDEX_NAME`, and `ELASTIC_VARIABLES_INDEX_NAME` (see `src/dug/config.py`).
+
+Parsers (`src/dug/core/parsers/`) produce these typed objects directly, and the Search API's v2.0 response models
+(`src/dug/api_models/response_models.py`) are built directly on top of the same `DugConcept`/`DugStudy`/`DugSection`/
+`DugVariable` classes, so the data returned by `/concepts`, `/studies`, `/cdes`, and `/variables` mirrors the model
+used during ingest.
 
 ## Knowledge Graphs
 
@@ -195,40 +224,24 @@ Dug provides a tool chain for the ingest, annotation, knowledge graph representa
 
 ### Ingest
 
-Data formats for harmonized variables appear to be in flux, hence the multiple approaches. More on this soon.
+Ingest is a single step, `dug crawl`, which parses an input file with the given parser, annotates it with ontology
+identifiers, and (via the crawl/index pipeline described below) makes it queryable through the Search API.
 
-| Command           | Description                                         | Example                  |
-| ----------------- | --------------------------------------------------- | ------------------------ |
-| bin/dug link      | Use NLP, etc to add ontology identifiers and types. | bin/dug link {input}     |
-| bin/dug load      | Create a knowledge graph database.                  | bin/dug load {input}     |
+| Command   | Description                                                   | Example                                          |
+| --------- | -------------------------------------------------------------- | -------------------------------------------------- |
+| dug crawl | Parse, annotate, and index elements from an input file.        | dug crawl {input} -p {parser} [-e {program_name}] |
 
-There are three sets of example metadata files in the repo.
-* A COPDGene dbGaP metadata file is at `data/dd.xml`
-* A harmonized variable metadata CSV is at `data/harmonized_variable_DD.csv`
-* Files with names starting with: `data/topmed_*`
+`-p`/`--parser` selects which registered parser (see `define_parsers` in `src/dug/core/parsers/__init__.py`) to use
+to read the input file into `DugStudy`/`DugSection`/`DugVariable` objects (see
+[The Dug Data Model](#the-dug-data-model)); each parser knows its own input format. Currently registered parsers
+include `bdc`, `heal-ddm2`, `biolincc`, `covid19`, `dir`, `lungmap`, `nsrr`, `parent`, `pcgc`, `recover`,
+`topmeddbgap`, `curesc`, `heartfailure`, `imaging`, and `reds`.
 
-This last format seems to be the go-forward TOPMed harmonized variable form.
+For example, to crawl a HEAL DDM2-format study:
+```
+dug crawl tests/integration/data/heal_study_ddm2_HDP00166.dug.json -p heal-ddm2
+```
 
-These can be run with 
-```
-bin/dug link data/dd.xml
-bin/dug load data/dd_tagged.json
-```
-or 
-```
-bin/dug link data/harmonized_variable_DD.csv
-bin/dug load data/harmoinzed_variable_DD_tagged.json
-```
-or
-```
-bin/dug link data/topmed_variables_v1.0.csv [--index x]
-```
-The first two formats will likely go away.
-The last format
-* Consists of two sets of files following that naming convention.
-* Combines the link and load phases into link.
-* Optionally allows the --index <arg> flag. This will run graph queries and index data in Elasticsearch.
- 
 ### Crawl & Index
 
 | Command        | Description                                                       | Example              |
@@ -239,15 +252,39 @@ The last format
  
 ### Search API
 
-Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a REST API. We'll use this as a place to enforce a schema and validate requests so that the search engine's network endpoint is strictly internal.
-| Command        | Description           | Example                              |
-| -------------- | --------------------- | ------------------------------------ |
-| bin/dug api    | Run the REST API.     | bin/dug api [--debug] [--port={int}] |
+Exposing the Elasticsearch interface to the internet is strongly discouraged for security reasons. Instead, we have a
+REST API (`src/dug/server.py`, a FastAPI app). We use this as a place to enforce a schema and validate requests so
+that the search engine's network endpoint is strictly internal. Run it with:
 
-To call the API endpoint using curl:
-| Command             | Description           | Example                   |
-| ------------------- | --------------------- | ------------------------- |
-| bin/dug query_api   | Call the REST API.    | bin/dug query_api {query} |
+```shell
+uvicorn dug.server:APP --port 5551
+```
+
+Full request/response schemas are available at `/docs` (Swagger UI) and `/redoc` once the API is running — that's the
+canonical reference. The current endpoints, grouped by data model type (see [The Dug Data Model](#the-dug-data-model)):
+
+| Endpoint              | Method | Description                                                                 |
+| ---------------------- | ------ | ---------------------------------------------------------------------------- |
+| `/concepts`            | POST   | Search `DugConcept`s related to a query, with filters/aggregations.         |
+| `/studies`             | POST   | Search `DugStudy` entities related to a query, or by `parent_ids`/`element_ids`. |
+| `/cdes`                | POST   | Search `DugSection` (CDE set / CRF) entities.                               |
+| `/variables`           | POST   | Search `DugVariable`/CDE entities, optionally scoped to `parent_ids`.       |
+| `/variables_by_ids`    | POST   | Fetch variables directly by a list of IDs.                                  |
+| `/study_sources`       | GET    | List available study sources.                                               |
+| `/search_program`      | GET    | Search for studies by program name.                                        |
+| `/program_list`        | GET    | List available programs.                                                   |
+| `/more_like_this`      | POST   | Find elements similar to a given element in an index.                      |
+| `/search`              | POST   | Legacy concept search (always queries `concepts_index`).                   |
+| `/search_var`          | POST   | Legacy variable search.                                                    |
+| `/search_var_grouped`  | POST   | Legacy variable search, grouped by variable ID across studies, with faceted counts. |
+| `/search_kg`           | POST   | Query a cached knowledge graph for a given concept.                        |
+| `/search_study`        | GET    | Legacy study search by ID or name.                                         |
+| `/dump_concepts`       | POST   | Dump raw indexed concepts.                                                 |
+| `/agg_data_types`      | GET    | Aggregate data types across the index.                                     |
+
+The `/concepts`, `/studies`, `/cdes`, and `/variables` endpoints (tagged `v2.0` in `/docs`) are the current,
+data-model-backed way to query Dug; the `/search*` and `/dump_concepts`/`/agg_data_types` endpoints predate the Dug
+Data Model and are kept for backward compatibility.
 
 ## Development
 
@@ -282,9 +319,17 @@ Once the test is complete, a command line search shows the contents of the index
 ![image](https://user-images.githubusercontent.com/306971/77009780-e939f580-693e-11ea-8a02-ca2fd59d4366.png)
 **Figure 4**: A command line query using the Dug Search OpenAPI to query the Elasticsearch index for a term.
 
-## Data Formats
+## Dug Data Model Repository
 
-TOPMed phenotypic concept data is [here](https://github.com/helxplatform/dug/tree/master/data).
+The `DugConcept`/`DugStudy`/`DugSection`/`DugVariable` schema introduced in
+[The Dug Data Model](#the-dug-data-model) lives in its own repository,
+[helxplatform/dug-data-model](https://github.com/helxplatform/dug-data-model), and is pulled in here as the
+`dug_data_model` package. That repository is the canonical source for:
+* The schema definitions themselves (currently `v2`, under `dug_data_model/v2/`).
+* Machine-readable JSON Schema and a human-readable Markdown reference generated from the models (`dug_data_model/schemas/`).
+* A `scaffold` CLI (`python -m dug_data_model.scaffold new {version}`) for bootstrapping the next schema version (e.g. `v3`) without breaking existing consumers.
+
+`bin/export_ddm_as_json_schema.py` in this repo exports the currently-pinned model version to JSON Schema for local inspection.
 
 
 ## Release
