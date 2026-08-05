@@ -1,28 +1,24 @@
-import os
-
 import pytest
 from elasticsearch import Elasticsearch
 
 from dug.core.async_search import Search
 from dug.config import Config
-from dug.core.index import Index, SearchException
+from dug.core.index import Index
 
 
 def is_elastic_up():
-    host = os.environ.get('ELASTIC_API_HOST')
-    port = 9200
-    hosts = [
-        {
-            'host': host,
-            'port': port
-        }
-    ]
-    username = os.environ.get('ELASTIC_USERNAME')
-    password = os.environ.get('ELASTIC_PASSWORD')
+    # Built from Config so the scheme/port match what dug itself would use --
+    # the es8 client rejects host dicts with no 'scheme', which made this
+    # return False (and skip) even when a cluster was reachable.
+    cfg = Config.from_env()
     try:
         es = Elasticsearch(
-            hosts=hosts,
-            basic_auth=(username, password)
+            hosts=[{
+                'host': cfg.elastic_host,
+                'port': cfg.elastic_port,
+                'scheme': cfg.elastic_scheme,
+            }],
+            basic_auth=(cfg.elastic_username, cfg.elastic_password)
         )
         return es.ping()
     except Exception:
@@ -55,10 +51,12 @@ def _test_config():
 
 @pytest.fixture
 def real_index():
-    try:
-        search = Index(_test_config())
-    except SearchException:
+    # Ping before constructing: Index.__init__ calls get_es_node_count() before
+    # it reaches its own ping()/SearchException check, so an unreachable cluster
+    # escapes as elastic_transport.ConnectionError rather than SearchException.
+    if not is_elastic_up():
         pytest.skip("ElasticSearch is down")
+    search = Index(_test_config())
     yield search
     for index_name in search.indices.values():
         search.es.indices.delete(index=index_name, ignore_unavailable=True)
