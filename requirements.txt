@@ -9,7 +9,6 @@ Jinja2
 jsonpickle
 jsonschema
 MarkupSafe
-ormar
 mistune
 pluggy
 pydantic==2.9.2
