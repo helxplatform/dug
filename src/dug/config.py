@@ -9,7 +9,7 @@ TRANQL_SOURCE: str = "redis:test"
 @dataclass
 class Config:
     """
-    TODO: Populate description
+    TODO: Make all URLs available as enviroment variables.
     """
 
     elastic_password: str = "changeme"
@@ -20,7 +20,10 @@ class Config:
     elastic_username: str = "elastic"
     elastic_scheme: str = "https"
     elastic_ca_path: str = ""
+    elastic_ca_verify: bool = True
+    max_ids_limit = 10000
 
+    use_redis_cache: bool = True
     redis_host: str = "redis"
     redis_port: int = 6379
 
@@ -29,7 +32,15 @@ class Config:
 
     studies_path: str=""
 
-    
+    kg_index_name: str="kg_index"
+    concepts_index_name: str="concepts_index"
+    variables_index_name: str='variables_index'
+    studies_index_name: str='studies_index'
+    sections_index_name: str='sections_index'
+
+    default_page_size: int = 100
+    # Limit the size of arbitrary elasticsearch aggregations (expensive)
+    aggregate_size_limit: int = 200
 
     # Preprocessor config that will be passed to annotate.Preprocessor constructor
     preprocessor: dict = field(
@@ -46,8 +57,8 @@ class Config:
                 "url": "https://api.monarchinitiative.org/api/nlp/annotate/entities?min_length=4&longest_only=false&include_abbreviation=false&include_acronym=false&include_numbers=false&content="
             },
             "sapbert": {
-                "classification_url": "https://med-nemo.apps.renci.org/annotate/",
-                "annotator_url": "https://sap-qdrant.apps.renci.org/annotate/",
+                "classification_url": "http://med-nemo-serve-nemo-web-server.ner/annotate/",
+                "annotator_url": "http://qdrant-sapbert-nemo-web-server.ner/annotate/",
                 "score_threshold": 0.8,
                 "bagel": {
                     "enabled": False,
@@ -70,14 +81,14 @@ class Config:
     # Normalizer config that will be passed to annotate.Normalizer constructor
     normalizer: dict = field(
         default_factory=lambda: {
-            "url": "https://nodenormalization-dev.apps.renci.org/get_normalized_nodes?conflate=false&description=true&curie="
+            "url": "http://nn-web-node-normalization-web-service-root.translator-dev:8080/get_normalized_nodes?conflate=false&description=true&curie="
         }
     )
 
     # Synonym service config that will be passed to annotate.SynonymHelper constructor
     synonym_service: dict = field(
         default_factory=lambda: {
-            "url": "https://name-resolution-sri.renci.org/reverse_lookup"
+            "url": "http://name-resolution-name-lookup-web-svc.translator-dev:2433/synonyms"
         }
     )
 
@@ -126,7 +137,7 @@ class Config:
 
     concept_expander: dict = field(
         default_factory=lambda: {
-            "url": "https://tranql-dev.renci.org/tranql/query?dynamic_id_resolution=true&asynchronous=false",
+            "url": "http://search-tranql:8081/tranql/tranql/query?dynamic_id_resolution=true&asynchronous=false",
             "min_tranql_score": 0.0,
         }
     )
@@ -153,18 +164,27 @@ class Config:
             "elastic_ca_path": "ELASTIC_CA_PATH",
             "elastic_username": "ELASTIC_USERNAME",
             "elastic_password": "ELASTIC_PASSWORD",
+            "elastic_ca_verify": "ELASTIC_CA_VERIFY",
             "redis_host": "REDIS_HOST",
             "redis_port": "REDIS_PORT",
             "redis_password": "REDIS_PASSWORD",
-            "studies_path": "STUDIES_PATH"
+            "studies_path": "STUDIES_PATH",
+            "kg_index_name": "ELASTIC_KG_INDEX_NAME",
+            "concepts_index_name": "ELASTIC_CONCEPTS_INDEX_NAME",
+            "variables_index_name": "ELASTIC_VARIABLES_INDEX_NAME",
+            "studies_index_name": "ELASTIC_STUDIES_INDEX_NAME",
+            "sections_index_name": "ELASTIC_SECTIONS_INDEX_NAME",
+            "default_page_size": "DEFAULT_PAGE_SIZE",
+            "aggregate_size_limit": "AGGREGATE_SIZE_LIMIT"
         }
-
         kwargs = {}
-
         for kwarg, env_var in env_vars.items():
             env_value = os.environ.get(env_var)
             if env_value:
                 kwargs[kwarg] = env_value
                 if kwarg in ['redis_port', 'elastic_port']:
                     kwargs[kwarg] = int(env_value)
+                # default elastic verify cert to true
+                if kwarg == "elastic_ca_verify":
+                    kwargs[kwarg] = False if (env_value and env_value.lower() == "false") else True
         return cls(**kwargs)

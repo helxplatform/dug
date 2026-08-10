@@ -4,12 +4,13 @@ import re
 import logging
 import urllib.parse
 from typing import Union, Callable, Any, Iterable, TypeVar, Generic, List, Optional
-from dug import utils as utils
+from dug_data_model.v2 import complex_handler
 from requests import Session
 import bmt
 from retrying import retry
 
 logger = logging.getLogger("dug")
+logger.setLevel(logging.INFO)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -72,7 +73,7 @@ class DugIdentifier:
 
 
     def __str__(self):
-        return json.dumps(self.__dict__, indent=2, default=utils.complex_handler)
+        return json.dumps(self.__dict__, indent=2, default=complex_handler)
 
 
 Input = TypeVar("Input")
@@ -125,19 +126,20 @@ class DefaultNormalizer():
         url = f"{self.url}{urllib.parse.quote(curie)}"
         try:
             response = http_session.get(url)
+            response.raise_for_status()
         except Exception as get_exc:
-            logger.info(f"Error normalizing {value} at {url}")
+            logger.error(f"Error normalizing {value} at {url}")
             logger.error(f"Error {get_exc.__class__.__name__}: {get_exc}")
             return {}
         try:
             normalized = response.json()
         except Exception as json_exc:
-            logger.info(
+            logger.error(
                 f"Error processing response: {response.text} (HTTP {response.status_code})"
             )
             logger.error(f"Error {json_exc.__class__.__name__}: {json_exc}")
             return {}
-
+        logger.info(normalized)
         return normalized
 
     def handle_response(
@@ -155,7 +157,7 @@ class DefaultNormalizer():
         preferred_id = normalization.get("id", {})
         equivalent_identifiers = normalization.get("equivalent_identifiers", [])
         biolink_type = normalization.get("type", [])
-
+        # description = normalization.get("description", "")
         # Return none if there isn't actually a preferred id
         if "identifier" not in preferred_id:
             logger.debug(f"ERROR: normalize({curie})=>({preferred_id}). No identifier?")
@@ -204,7 +206,7 @@ class DefaultSynonymFinder():
         # Get response from namelookup reverse lookup op
         # example (https://name-resolution-sri.renci.org/docs#/lookup/lookup_names_reverse_lookup_post)
         url = f"{self.url}"
-        payload = {"curies": [curie]}
+        payload = {"preferred_curies": [curie]}
         try:
             response = http_session.post(url, json=payload)
             if str(response.status_code).startswith("4"):

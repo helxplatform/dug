@@ -6,16 +6,25 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dug.config import Config
 from dug.core.async_search import Search
-from pydantic import BaseModel
-from typing import List, Dict, Set, Any
+from typing import Set, Any
 import asyncio
-from typing import Optional, Any
+from contextlib import asynccontextmanager
+from dug.api_models.response_models import *
+from dug.api_models.request_models import *
+from dug.core.search_for_v1 import search_var_for_v1, search_concepts_for_v1
 
-logger = logging.getLogger (__name__)
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    yield
+    shutdown_event()
 
 APP = FastAPI(
     title="Dug Search API",
     root_path=os.environ.get("ROOT_PATH", ""),
+    lifespan=lifespan,
     terms_of_service=os.environ.get("DUG_TOS_URL", None),
 )
 
@@ -27,56 +36,11 @@ APP.add_middleware(
     allow_headers=["*"],
 )
 
-class GetFromIndex(BaseModel):
-    index: str = "concepts_index"
-    size: int = 0
+config = Config.from_env()
+search = Search(config)
 
-
-class SearchConceptQuery(BaseModel):
-    query: str
-    index: str = "concepts_index"
-    offset: int = 0
-    size: int = 20
-    types: list = None
-
-class SearchVariablesQuery(BaseModel):
-    query: str
-    index: str = "variables_index"
-    concept: str = ""
-    offset: int = 0
-    size: int = 1000
-
-class FilterGrouped(BaseModel):
-    key: str
-    value: List[Any]
-class SearchVariablesQueryFiltered(SearchVariablesQuery):
-    filter: List[FilterGrouped] = []
-
-class SearchKgQuery(BaseModel):
-    query: str
-    unique_id: str
-    index: str = "kg_index"
-    size:int = 100
-
-class SearchStudyQuery(BaseModel):
-    #query: str
-    study_id: Optional[str] = None
-    study_name: Optional[str] = None
-    #index: str = "variables_index"
-    size:int = 100
-class SearchProgramQuery(BaseModel):
-    #query: str
-    program_id: Optional[str] = None
-    program_name: Optional[str] = None
-    #index: str = "variables_index"
-    size:int = 100   
-
-search = Search(Config.from_env())
-
-@APP.on_event("shutdown")
 def shutdown_event():
     asyncio.run(search.es.close())
-
 
 @APP.post('/dump_concepts')
 async def dump_concepts(request: GetFromIndex):
@@ -86,7 +50,6 @@ async def dump_concepts(request: GetFromIndex):
         "status": "success"
     }
 
-
 @APP.get('/agg_data_types')
 async def agg_data_types():
     return {
@@ -95,17 +58,17 @@ async def agg_data_types():
         "status": "success"
     }
 
-
 @APP.post('/search')
 async def search_concepts(search_query: SearchConceptQuery):
+    logger.info("*** HITTING SEARCH CONCEPTS")
+    # Although index in provided by the query we will keep it around for backward compatibility, but
+    # search concepts should always search against "concepts_index"
+    res = await search_concepts_for_v1(search_query, search)
     return {
         "message": "Search result",
-        # Although index in provided by the query we will keep it around for backward compatibility, but
-        # search concepts should always search against "concepts_index"
-        "result": await search.search_concepts(**search_query.dict(exclude={"index"})),
+        "result": res,
         "status": "success"
     }
-
 
 @APP.post('/search_kg')
 async def search_kg(search_query: SearchKgQuery):
@@ -120,14 +83,15 @@ async def search_kg(search_query: SearchKgQuery):
 
 @APP.post('/search_var')
 async def search_var(search_query: SearchVariablesQuery):
+    results = await search_var_for_v1(search_query, config.variables_index_name, config.studies_index_name, search)
+
     return {
         "message": "Search result",
         # Although index in provided by the query we will keep it around for backward compatibility, but
         # search concepts should always search against "variables_index"
-        "result": await search.search_variables(**search_query.dict(exclude={"index"})),
+        "result": results,
         "status": "success"
     }
-
 
 @APP.post('/search_var_grouped')
 async def search_var_grouped(search_query: SearchVariablesQueryFiltered):
@@ -316,6 +280,273 @@ async def search_study(study_id: Optional[str] = None, study_name: Optional[str]
     }
 
 
+@APP.post('/concepts', tags=['v2.0'], response_model=ConceptsAPIResponse)
+async def get_concepts(search_query: SearchElementQuery):
+    """
+    Search for concepts that are related to the search query passed in `query`
+
+    Parameters:
+    - **query**: Text to get related concepts for. To use a full string in search, encloset text in \"\".
+    - **concept_types**: Optional list of concept types to return. Acceptable values can be `disease`, `phenotypic feature`, `drug`, `biological process`, `anatomical entity` etc.
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
+
+    Returns:
+    
+    dict with list of `results`, `concept_types`, and `metadata`.
+        
+    Each concept in the result list has the following structure:
+    - **id**
+    - **name**
+    - **description**
+    - **type**
+    - **synonyms**: list
+    - **_score**
+    - **_explanation**
+    
+    Metadata contains the following:
+    - **total_count**
+    - **offset**
+    - **size**
+    """
+    concepts, total_count, aggregations = await search.search_elements(
+        config.concepts_index_name,
+        **search_query.model_dump(),
+        explain=True
+    )
+    res_concepts = []
+    for concept in concepts:
+        item = concept["_source"]
+        item["score"] = concept["_score"]
+        item["explanation"] = concept["_explanation"]
+        res_concepts.append(item)
+
+    res = {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "results": res_concepts,
+        "aggregations": aggregations
+    }
+    return res
+
+
+@APP.post('/variables', tags=['v2.0'], response_model=VariablesAPIResponse)
+async def get_variables(search_query: SearchElementQuery):
+    """
+    Search for variables/standardized measures (CDEs) related to search text in `query`
+    when provided. If `query` is empty, all variables/cdes either belonging to `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, only variables/cdes that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
+
+
+    Parameters:
+    - **query**(required): Text to get related variables/cdes for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of ids (ex. Study IDs, CDE IDs, CRF IDs) to get variables from.
+    - **element_ids**: List of ids for variables/cdes to be fetched. If `query` is not empty, only related variables will be returned.
+    - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
+
+    Returns:
+    
+    Dict with variables list.
+    Each variable has the following structure:
+    - **id**
+    - **name**
+    - **action**: URL (if available) for the variable
+    - **description**
+    - **is_cde**: Set to true when measure is standardized (CDE)
+    - **data_tye**: Type of the variable
+    - **parents**: List of IDs for Studies or CDEs/CRFs which contains this variable/measure
+    - **metadata**: dictionary with variable information like permissible values, min-max, pattern, etc.
+
+    """
+    elastic_results, total_count, aggregations = await search.search_elements(
+        config.variables_index_name,
+        **search_query.dict()
+    )
+
+    results = []
+    for result in elastic_results:
+        item = result["_source"]
+        item["score"] = result["_score"]
+        item["explanation"] = result.get("_explanation", {})
+        results.append(item)
+    res = {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "results": results,
+        "aggregations": aggregations
+    }
+    return res
+
+
+@APP.post('/studies', tags=['v2.0'], response_model=StudyAPIResponse)
+async def get_studies(search_query: SearchElementQuery):
+    """
+    Search for studies related to search text in `query`
+    when provided. If `query` is empty, all studies in either `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, only studies that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
+
+    Parameters:
+    - **query**(required): Text to get related studies for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of ids to get studies from. (** Parents are empty for studies for now)
+    - **element_ids**: List of study ids be fetched. If `query` is not empty, only related studies to the query string will be returned.
+    - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
+
+    Returns:
+    
+    Dict with study list.
+    Each study has the following structure:
+    - **id**
+    - **name**: Study title
+    - **action**: URL (if available) for the study
+    - **description**: Abstract for the study
+    - **parents**: List of parent IDs (to be used in future)
+    - **publications**: List of publications
+    - **variable_list**: List of varible IDs belonging to the study.
+    - **section_list**: List of IDs for sections/standardized questionnaires/CRFs used by this study.
+    - **metadata**: dictionary with study information. 
+        * **Project Start Date**
+        * **Project End Date**
+        * **Institution**
+        * **Investigator/s**: List of PIs for the study.
+        * **Data Available**: Indicator of study data availability.
+        * **Data Package Links**: List of links to the data packages.
+
+    """
+    result, total_count, aggregations = await search.search_elements(
+        config.studies_index_name,
+        **search_query.model_dump()
+    )
+
+
+    studies = []
+    for study in result:
+        item = study["_source"]
+        item["url"] = study["_source"]["action"]
+        studies.append(item)
+
+    return {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": len(studies)
+        },
+        "results": studies,
+        "aggregations": aggregations
+    }
+
+
+@APP.post('/cdes', tags=['v2.0'], response_model=SectionAPIResponse)
+async def get_cdes(search_query: SearchElementQuery):
+    """
+    Search for Common Data Element groups (CDEs) or CRFs (Case Report Forms) related to search text in `query`
+    when provided. If `query` is empty, all CDEs in either ids specified in `parent_ids`
+    or matching `element_ids` will be returned. When `parent_ids` or `element_ids` are passed along
+    with a non-empty `query` string, CDE sets/CRFs that are related to the search
+    query will be returned from `parent_ids` or `element_ids`.
+
+    Parameters:
+    - **query**(required): Text to get related studies for. To use a full string in search, encloset text in \"\". Query string can be empty.
+    - **parent_ids**: List of study IDs which use this CDE/CRF.
+    - **element_ids**: List of study ids be fetched. If `query` is not empty, only related CDEs to the query string will be returned.
+    - **concept**: 
+    - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
+      - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
+    - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **offset**: Offset index used for pagination
+    - **size**: Maximum number of items to return in the string
+
+    Returns:
+    
+    Dict with study list.
+    Each study has the following structure:
+    - **id**
+    - **name**: CDE title
+    - **action**: URL (if available) for the CDE set.
+    - **description**: Description for the CDE set.
+    - **parents**: List of Study IDs that use this CDE set/CRF.
+    - **variable_list**: List of varible IDs/CDE(measurement) IDs belonging to the CDE set.
+    - **is_crf**: Is set to true when this CDE set/CRF is standardized.
+    - **metadata**: dictionary with study information. 
+        * **URLs**: List of URLs pointing to downloadable CRF forms.
+
+    """
+    elastic_results, total_count, aggregations = await search.search_elements(
+        config.sections_index_name,
+        **search_query.model_dump()
+    )
+    results = []
+    for result in elastic_results:
+        item = result.get("_source")
+        item["score"] = result.get("_score", 0)
+        item["explanation"] = result.get("_explanation", {})
+        results.append(item)
+    res = {
+        "metadata": {
+            "total_count": total_count,
+            "offset": search_query.offset,
+            "size": search_query.size,
+        },
+        "results": results,
+        "aggregations": aggregations
+    }
+    return res
+
+@APP.post("/variables_by_ids", tags=['v2.0'], response_model=VariablesAPIResponse)
+async def get_variables_by_ids(ids: VariableIds):
+    """
+    Handles a POST request to fetch variables by their IDs.
+
+    Parameters:
+    ids (VariableIds): An object containing a list of variable IDs to retrieve.
+
+    Returns:
+    dict: A dictionary with a key 'variables', which contains the processed variables
+          data ready for the response.
+    """
+    result = await search.get_variables_by_ids(ids=ids.ids)
+    res_variables = search.get_variables_for_response(result)
+
+    res = {
+        "results": res_variables,
+    }
+    return res
+
+
+@APP.get('/study_sources', tags=['v2.0'])
+async def get_study_sources():
+    """
+    Handles a GET request to get study sources.
+
+    Returns:
+        JSON: A JSON response containing the retrieved study sources.
+    """
+    res = await search.get_study_sources()
+    return res
+
+
 @APP.get('/search_program')
 async def search_program(program_name: Optional[str] = None, use_elasticsearch: bool = False):
     """
@@ -339,5 +570,47 @@ async def get_program_list(use_elasticsearch: bool = False):
         "result": result,
         "status": "success"
     }
+
+
+@APP.post('/more_like_this')
+async def get_more_like_this(query: MoreLikeThisQuery):
+    """
+    Handles the retrieval of elements similar to a specified element in a given index.
+
+    Parameters:
+        query (MoreLikeThisQuery): The query object containing the index name, element ID,
+        size, and offset.
+
+    Returns:
+        dict: A dictionary containing metadata and a list of similar elements.
+    """
+    if query.index_name not in ["studies_index", "variables_index", "sections_index"]:
+        return {"message": "Invalid index name"}
+    if not query.element_id:
+        return {"message": "Invalid element id"}
+
+    result, total_count = await search.get_like_this_elements(
+        query.index_name,
+        query.element_id,
+        query.size,
+        query.offset
+    )
+
+    items = []
+    for r in result:
+        item = r["_source"]
+        item["url"] = r["_source"]["action"]
+        items.append(item)
+
+    return {
+        "metadata": {
+            "total_count": total_count,
+            "offset": 0,
+            "size": len(items)
+        },
+        "results": items,
+    }
+
+
 if __name__ == '__main__':
     uvicorn.run(APP,port=8181)
