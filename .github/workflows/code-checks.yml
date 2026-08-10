@@ -69,6 +69,32 @@ jobs:
 ################################### PYTEST ###################################
   pytest:
     runs-on: ubuntu-latest
+
+    # Real Elasticsearch so tests/integration/test_index.py exercises index
+    # creation against a live cluster instead of skipping. Version tracks the
+    # elasticsearch client pinned in requirements.txt.
+    services:
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.5.2
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: "false"
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
+        ports:
+          - 9200:9200
+        options: >-
+          --health-cmd "curl -sf http://localhost:9200/_cluster/health"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      ELASTIC_API_HOST: localhost
+      ELASTIC_API_PORT: 9200
+      ELASTIC_API_SCHEME: http
+      ELASTIC_USERNAME: elastic
+      ELASTIC_PASSWORD: changeme
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python

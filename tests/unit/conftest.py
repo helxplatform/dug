@@ -11,8 +11,11 @@ class MockResponse:
     status_code: int = 200
 
     def json(self):
-        return json.loads(self.text)
-
+        return json.loads(self.text)    
+    
+    def raise_for_status(self):
+        if 400 <= self.status_code < 600:
+            raise Exception(f"HTTP Error {self.status_code}: {self.text}")
 
 class MockApiService:
     def __init__(self, urls: Dict[str, list]):

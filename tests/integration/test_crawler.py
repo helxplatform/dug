@@ -23,7 +23,7 @@ def test_crawler_init():
         http_session=http_session,
     )
 
-    assert crawler.crawlspace == "crawl"
+    assert crawler.crawlspace == "/data/crawl/"
     assert len(crawler.elements) == 0
     assert len(crawler.concepts) == 0
 
