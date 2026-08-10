@@ -59,10 +59,9 @@ def get_argparser():
     )
 
     crawl_parser.add_argument(
-        '-e', '--element-type',
-        help='[Optional] Coerce all elements to a certain data type (e.g. DbGaP Variable).\n'
-             'Determines what tab elements will appear under in Dug front-end',
-        dest="element_type",
+        '-e', '--program_name',
+        help='[Optional] Coerce all elements to a certain program (e.g. HEAL/RADX/DBGap/etc).\n',
+        dest="program_name",
         default=None
     )
 
@@ -115,7 +114,7 @@ def crawl(args):
         config.node_to_element_queries = {}
     factory = DugFactory(config)
     dug = Dug(factory)
-    dug.crawl(args.target, args.parser_type, args.annotator_type, args.element_type)
+    dug.crawl(args.target, args.parser_type, args.annotator_type, args.program_name)
 
 
 def search(args):
@@ -126,7 +125,6 @@ def search(args):
     response = dug.search(args.target, args.query, **args.kwargs)
     # Using json.dumps raises 'TypeError: Object of type ObjectApiResponse is not JSON serializable'
     #jsonResponse = json.dumps(response, indent = 2)
-    print(response)
 
 def datatypes(args):
     config = Config.from_env()
@@ -137,7 +135,7 @@ def datatypes(args):
 
 
 def status(args):
-    print("Status check is not implemented yet!")
+    logger.warning("Status check is not implemented yet!")
 
 
 def main(args=None):

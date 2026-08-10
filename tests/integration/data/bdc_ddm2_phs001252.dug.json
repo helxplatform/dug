@@ -1,0 +1,68 @@
+[
+  {
+    "id": "phs001252.v1.p1",
+    "name": "Evaluation of COPD Longitudinally to Identify Predictive Surrogate Endpoints (ECLIPSE)",
+    "description": "<p>ECLIPSE was a longitudinal observational study of 2164 COPD subjects and a smaller number of smoking controls (337) and nonsmoking controls (245) followed regularly for three years, with three chest CT scans (at baseline, one year, and three years) (Vestbo, European Respiratory Journal 2008; 31: 869). Inclusion criteria included age 40-75, at least 10 pack-years of smoking, and spirometry in GOLD grades 2-4 (COPD cases) or normal spirometry with post-bronchodilator FEV1 &#62;85% predicted and FEV1/FVC&#62;0.7 (controls). Study visits were performed at enrollment, three months, and every six months thereafter with spirometry, questionnaires, and other clinical evaluations. The ECLIPSE CT scans have been analyzed with the VIDA software for emphysema and airway phenotypes. ECLIPSE has provided key insights into the clinical epidemiology of COPD, including COPD exacerbations (Hurst, NEJM 2010; 363: 1128) and lung function decline in COPD (Vestbo, NEJM 2011; 365: 1184). ECLIPSE has been used in a number of genetic studies of COPD susceptibility and protein biomarkers(Faner, Thorax 2014; 69: 666). Genome-wide gene expression microarray data are available in 147 induced sputum samples from COPD subjects and 248 peripheral blood samples from COPD and control subjects.</p>",
+    "type": "study",
+    "programs": [
+      "dbGaP"
+    ],
+    "action": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001252.v1.p1",
+    "parents": [],
+    "parent_type": "",
+    "concepts": {},
+    "search_terms": [],
+    "optional_terms": [],
+    "metadata": {},
+    "publications": [],
+    "variable_list": [
+      "phv00293196.v1.p1",
+      "phv00293197.v1.p1"
+    ],
+    "section_list": [],
+    "abstract": "",
+    "ml_ready_desc": "<p>ECLIPSE was a longitudinal observational study of 2164 COPD subjects and a smaller number of smoking controls (337) and nonsmoking controls (245) followed regularly for three years, with three chest CT scans (at baseline, one year, and three years) (Vestbo, European Respiratory Journal 2008; 31: 869). Inclusion criteria included age 40-75, at least 10 pack-years of smoking, and spirometry in GOLD grades 2-4 (COPD cases) or normal spirometry with post-bronchodilator FEV1 &#62;85% predicted and FEV1/FVC&#62;0.7 (controls). Study visits were performed at enrollment, three months, and every six months thereafter with spirometry, questionnaires, and other clinical evaluations. The ECLIPSE CT scans have been analyzed with the VIDA software for emphysema and airway phenotypes. ECLIPSE has provided key insights into the clinical epidemiology of COPD, including COPD exacerbations (Hurst, NEJM 2010; 363: 1128) and lung function decline in COPD (Vestbo, NEJM 2011; 365: 1184). ECLIPSE has been used in a number of genetic studies of COPD susceptibility and protein biomarkers(Faner, Thorax 2014; 69: 666). Genome-wide gene expression microarray data are available in 147 induced sputum samples from COPD subjects and 248 peripheral blood samples from COPD and control subjects.</p>"
+  },
+  {
+    "id": "phv00293196.v1.p1",
+    "name": "SUBJECT_ID",
+    "description": "subject id",
+    "type": "variable",
+    "programs": [
+      "dbGaP"
+    ],
+    "action": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi?study_id=phs001252.v1.p1&phv=00293196",
+    "parents": [
+      "phs001252.v1.p1"
+    ],
+    "parent_type": "study",
+    "concepts": {},
+    "search_terms": [],
+    "optional_terms": [],
+    "metadata": {},
+    "data_type": "string",
+    "is_cde": false,
+    "ml_ready_desc": "SUBJECT_ID (SUBJECT ID): subject id"
+  },
+  {
+    "id": "phv00293197.v1.p1",
+    "name": "CONSENT",
+    "description": "consent group as determined by dac",
+    "type": "variable",
+    "programs": [
+      "dbGaP"
+    ],
+    "action": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/variable.cgi?study_id=phs001252.v1.p1&phv=00293197",
+    "parents": [
+      "phs001252.v1.p1"
+    ],
+    "parent_type": "study",
+    "concepts": {},
+    "search_terms": [],
+    "optional_terms": [],
+    "metadata": {},
+    "data_type": "encoded value",
+    "is_cde": false,
+    "ml_ready_desc": "CONSENT: consent group as determined by dac"
+  }
+]

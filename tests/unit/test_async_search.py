@@ -33,15 +33,12 @@ class SearchTestCase(TestCase):
 
     def test_concepts_search(self):
         "Test async_search concepts search"
-        result = asyncio.run(
+        result, total_count, concept_types = asyncio.run(
             self.search.search_concepts("brain"))
-        self.assertIn('total_items', result)
-        self.assertEqual(result['total_items'], 90)
-        self.assertIn('concept_types', result)
-        self.assertIsInstance(result['concept_types'], dict)
-        self.assertEqual(len(result['concept_types']), 9)
-        self.assertEqual(result['concept_types']['anatomical entity'], 10)
-
+        self.assertEqual(total_count, 90)
+        self.assertIsInstance(concept_types, dict)
+        self.assertEqual(len(concept_types), 9)
+        self.assertEqual(concept_types['anatomical entity'], 10)
 
 brain_result_json = """{
   "hits": {
@@ -104,7 +101,6 @@ brain_result_json = """{
             "executive function measurement",
             "syntactic complexity measurement"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0005560",
@@ -164,7 +160,6 @@ brain_result_json = """{
             "blood vasculature",
             "brain infarction"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0005394",
@@ -207,7 +202,6 @@ brain_result_json = """{
             "encephalon"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0000955",
@@ -253,7 +247,6 @@ brain_result_json = """{
             "PLAN"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0017998",
@@ -323,7 +316,6 @@ brain_result_json = """{
             "Abnormal cardiovascular system physiology",
             "Abnormality of cardiovascular system morphology"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0002679",
@@ -388,7 +380,6 @@ brain_result_json = """{
             "CRG"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:6110636",
@@ -440,7 +431,6 @@ brain_result_json = """{
             "Reduced consciousness/confusion",
             "Phenotypic abnormality"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0045057",
@@ -506,7 +496,6 @@ brain_result_json = """{
             "lamina medullaris accessoria"
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0002298",
@@ -560,7 +549,6 @@ brain_result_json = """{
             "died."
           ],
           "optional_terms": [],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "UBERON:0001894",
@@ -642,7 +630,6 @@ brain_result_json = """{
             "Abnormality of blood circulation",
             "hemorrhage, intracerebral, susceptibility to"
           ],
-          "concept_action": "",
           "identifiers": [
             {
               "id": "MONDO:0013792",

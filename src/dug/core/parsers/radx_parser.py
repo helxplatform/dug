@@ -3,7 +3,7 @@ from typing import List
 from xml.etree import ElementTree as ET
 
 from dug import utils as utils
-from dug.core.parsers._base import DugElement, FileParser, Indexable, InputFile, DugConcept
+from dug_data_model.v2 import DugElement, FileParser, Indexable, InputFile, DugConcept
 import json
 
 

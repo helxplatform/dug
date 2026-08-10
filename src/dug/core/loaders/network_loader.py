@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 import requests
 
-from ._base import InputFile
+from dug_data_model.v2 import InputFile
 
 logger = logging.getLogger('dug')
 

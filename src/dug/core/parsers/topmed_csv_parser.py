@@ -3,7 +3,7 @@ import logging
 from typing import List
 
 from dug import utils as utils
-from ._base import DugElement, FileParser, Indexable, InputFile
+from dug_data_model.v2 import DugElement, FileParser, Indexable, InputFile
 
 logger = logging.getLogger('dug')
 

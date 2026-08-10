@@ -6,43 +6,55 @@ import logging
 from elasticsearch import Elasticsearch
 import ssl
 
+from dug_data_model.v2 import dedupe_and_sort
+
 from dug.config import Config
 
 logger = logging.getLogger('dug')
 
 
 class Index:
-    def __init__(self, cfg: Config, indices=None):
-
-        if indices is None:
-            indices = ['concepts_index', 'variables_index', 'kg_index']
+    def __init__(self, cfg: Config):
 
         self._cfg = cfg
-        logger.debug(f"Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
+        logger.debug(f"******** Connecting to elasticsearch host: {self._cfg.elastic_host} at port: {self._cfg.elastic_port}")
 
+        indices = {
+            'concepts_index': self._cfg.concepts_index_name,
+            'variables_index': self._cfg.variables_index_name,
+            'studies_index': self._cfg.studies_index_name,
+            'sections_index': self._cfg.sections_index_name,
+            'kg_index': self._cfg.kg_index_name
+        }
         self.indices = indices
         self.hosts = [{'host': self._cfg.elastic_host, 'port': self._cfg.elastic_port, 'scheme': self._cfg.elastic_scheme}]
 
         logger.debug(f"Authenticating as user {self._cfg.elastic_username} to host:{self.hosts}")
         if self._cfg.elastic_scheme == "https":
-            ssl_context = ssl.create_default_context(
-                cafile=self._cfg.elastic_ca_path
-            )
-            self.es = Elasticsearch(
-                hosts=self.hosts,
-                basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
-                ssl_context=ssl_context)
+            if self._cfg.elastic_ca_verify:
+                ssl_context = ssl.create_default_context(
+                    cafile=self._cfg.elastic_ca_path
+                )
+                self.es = Elasticsearch(
+                    hosts=self.hosts,
+                    basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                    ssl_context=ssl_context)
+            else:
+                self.es = Elasticsearch(
+                    hosts=self.hosts,
+                    basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password),
+                    verify_certs=self._cfg.elastic_ca_verify)
         else:
             self.es = Elasticsearch(
                 hosts=self.hosts,
                 basic_auth=(self._cfg.elastic_username, self._cfg.elastic_password))
+        
         self.replicas = self.get_es_node_count()
 
         if self.es.ping():
             logger.info('connected to elasticsearch')
             self.init_indices()
         else:
-            print(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
             logger.error(f"Unable to connect to elasticsearch at {self._cfg.elastic_host}:{self._cfg.elastic_port}")
             raise SearchException(
                 message='failed to connect to elasticsearch',
@@ -98,7 +110,7 @@ class Index:
                            "fields": {"keyword": {"type": "keyword"}}},
                     "name": {"type": "text", "analyzer": "std_with_stopwords"},
                     "description": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "type": {"type": "keyword"},
+                    "concept_type": {"type": "keyword"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {
                         "properties": {
@@ -110,8 +122,34 @@ class Index:
                             "synonyms": {"type": "text", "analyzer": "std_with_stopwords"}
                         }
                     },
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords", 
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    "element_type": {"type": "keyword"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "concept_action": {"type": "text", "analyzer": "std_with_stopwords"}
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -132,53 +170,195 @@ class Index:
             "mappings": {
                 "dynamic": "strict",
                 "properties": {
-                    "element_id": {"type": "text", "analyzer": "std_with_stopwords",
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
                                    "fields": {"keyword": {"type": "keyword"}}},
-                    "element_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "element_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
                     "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
                     "identifiers": {"type": "keyword"},
-                    "collection_id": {"type": "text", "analyzer": "std_with_stopwords",
-                                      "fields": {"keyword": {"type": "keyword"}}},
-                    "collection_name": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_desc": {"type": "text", "analyzer": "std_with_stopwords"},
-                    "collection_action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "is_cde": {"type": "boolean"},
                     "data_type": {"type": "text", "analyzer": "std_with_stopwords",
                                   "fields": {"keyword": {"type": "keyword"}}},
                     "metadata": {
-                        "type": "object",
-                        "dynamic": True
+                        "type": "flattened"
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
                     }
                     # typed as keyword for bucket aggs
                 }
             }
         }
-
+        studies_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    'publications': {"type": "text", "analyzer": "std_with_stopwords"},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
+                    'section_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
+                    'abstract': {"type": "text", "analyzer": "std_with_stopwords"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
+        sections_index = {
+            "settings": {
+                "index.mapping.coerce": "false",
+                "number_of_shards": 1,
+                "number_of_replicas": self.replicas,
+                "analysis": {
+                    "analyzer": {
+                        "std_with_stopwords": {
+                            "type": "standard",
+                            "stopwords": "_english_"
+                        }
+                    }
+                }
+            },
+            "mappings": {
+                "dynamic": "strict",
+                "properties": {
+                    "id": {"type": "text", "analyzer": "std_with_stopwords",
+                                   "fields": {"keyword": {"type": "keyword"}}},
+                    "name": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "element_type": {"type": "keyword"},
+                    "description": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "action": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "search_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "optional_terms": {"type": "text", "analyzer": "std_with_stopwords"},
+                    "identifiers": {"type": "keyword"},
+                    "parents": {"type": "text", "analyzer": "std_with_stopwords",
+                                "fields": {"keyword": {"type": "keyword"}}},
+                    "programs": {"type": "text", "analyzer": "std_with_stopwords",
+                                 "fields": {"keyword": {"type": "keyword"}}},
+                    'variable_list': {"type": "text", "analyzer": "std_with_stopwords",
+                                      "fields": {"keyword": {"type": "keyword"}}},
+                    "is_crf": {"type": "boolean"},
+                    "metadata": {
+                        "type": "object",
+                        "dynamic": True
+                    },
+                    "tags": {
+                        "type": "nested",
+                        "properties": {
+                            "category": {
+                                "type": "keyword",
+                            },
+                            "value": {
+                                "type": "keyword",
+                                "fields": {
+                                    "text": {
+                                        "type": "text",
+                                        "analyzer": "std_with_stopwords"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    # typed as keyword for bucket aggs
+                }
+            }
+        }
         settings = {
             'kg_index': kg_index,
             'concepts_index': concepts_index,
             'variables_index': variables_index,
+            'studies_index': studies_index,
+            'sections_index': sections_index,
         }
 
         logger.info(f"creating indices")
-        logger.debug(self.indices)
-        for index in self.indices:
+        logger.info(self.indices)
+        for index_type in self.indices: ## This is a dict.
+            index_name = self.indices[index_type]
             try:
-                if self.es.indices.exists(index=index):
+                if self.es.indices.exists(index=index_name):
                     # if index exists check if replication is good 
-                    index_replicas = self.es.indices.get_settings(index=index)[index]["settings"]["index"]["number_of_replicas"]
+                    # Fetch the settings for the specific index
+                    response = self.es.indices.get_settings(index=index_name)
+                    # Extract the number of replicas from the response dictionary
+                    current_index_settings = response[index_name]["settings"]["index"]
+                    index_replicas = current_index_settings.get("number_of_replicas")
+                    # index_replicas = self.es.indices.get_settings(index=index)["settings"]["index"]["number_of_replicas"]
                     if index_replicas != self.replicas:
-                        self.es.indices.put_settings(index=index, body={"number_of_replicas": (self.replicas - 1) or 1 })
-                        self.es.indices.refresh(index=index)
-                    logger.info(f"Ignoring index {index} which already exists.")
+                        self.es.indices.put_settings(index=index_name, body={"number_of_replicas": (self.replicas - 1) or 1 })
+                        self.es.indices.refresh(index=index_name)
+                    logger.info(f"Ignoring index {index_name} which already exists.")
                 else:
                     result = self.es.indices.create(
-                        index=index,
-                        body=settings[index],
+                        index=index_name,
+                        body=settings[index_type],
                         ignore=400)
-                    logger.info(f"result created index {index}: {result}")
+                    logger.info(f"result created index {index_name}: {result}")
             except Exception as e:
                 logger.error(f"exception: {e}")
                 raise e
@@ -214,11 +394,22 @@ class Index:
                 doc=elem.get_searchable_dict(),
                 doc_id=elem.get_id())
         else:
-            # Otherwise update to add any new identifiers that weren't there last time around
+            # Otherwise update to add any data that weren't there last time around
             results = self.es.get(index=index, id=elem.get_id())
-            identifiers = results['_source']['identifiers'] + list(elem.concepts.keys())
+            update_doc = elem.get_searchable_dict()
+            search_terms = results['_source']['search_terms'] + update_doc['search_terms']
+            optional_terms = results['_source']['optional_terms'] + update_doc['optional_terms']
+            parents = results['_source']['parents'] + update_doc['parents']
+            programs = results['_source']['programs'] + update_doc['programs']
+            tags = results['_source']['tags'] + update_doc['tags']
+            identifiers = results['_source']['identifiers'] + update_doc['identifiers']
             doc = {"doc": {}}
-            doc['doc']['identifiers'] = list(set(identifiers))
+            doc['doc']['search_terms'] = dedupe_and_sort(search_terms)
+            doc['doc']['optional_terms'] = dedupe_and_sort(optional_terms)
+            doc['doc']['parents'] = dedupe_and_sort(parents)
+            doc['doc']['programs'] = dedupe_and_sort(programs)
+            doc['doc']['tags'] = [dict(t) for t in {tuple(sorted(d.items())) for d in tags}]
+            doc['doc']['identifiers'] = dedupe_and_sort(identifiers)
             self.update_doc(index=index, doc=doc, doc_id=elem.get_id())
 
     def index_kg_answer(self, concept_id, kg_answer, index, id_suffix=None):
@@ -230,7 +421,7 @@ class Index:
         # Create the Doc
         doc = {
             'concept_id': concept_id,
-            'search_targets': list(set(search_targets)),
+            'search_targets': dedupe_and_sort(search_targets),
             'knowledge_graph': kg_answer.get_kg()
         }
 

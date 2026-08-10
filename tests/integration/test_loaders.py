@@ -10,7 +10,7 @@ from tests.integration.conftest import TEST_DATA_DIR
 
 def test_filesystem_loader():
     targets = load_from_filesystem(
-        filepath=TEST_DATA_DIR / 'phs000166.v2.pht000700.v1.CAMP_CData.data_dict_2009_09_03.xml'
+        filepath=TEST_DATA_DIR / "phs001252.v1.p1" / "phs001252.v1.pht006366.v1.ECLIPSE_Subject.data_dict.xml"
     )
     assert len(list(targets)) == 1
 
@@ -18,7 +18,7 @@ def test_filesystem_loader():
         filepath=TEST_DATA_DIR,
     )
     files = list(targets)
-    assert len(files) == 16
+    assert len(files) == 6
 
     with pytest.raises(ValueError):
         targets = load_from_filesystem(
