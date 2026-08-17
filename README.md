@@ -265,7 +265,7 @@ canonical reference. The current endpoints, grouped by data model type (see [The
 
 | Endpoint              | Method | Description                                                                 |
 | ---------------------- | ------ | ---------------------------------------------------------------------------- |
-| `/concepts`            | POST   | Search `DugConcept`s related to a query, with filters/aggregations.         |
+| `/concepts`            | POST   | Search `DugConcept`s related to a query, with filters/aggregations/sorting. |
 | `/studies`             | POST   | Search `DugStudy` entities related to a query, or by `parent_ids`/`element_ids`. |
 | `/cdes`                | POST   | Search `DugSection` (CDE set / CRF) entities.                               |
 | `/variables`           | POST   | Search `DugVariable`/CDE entities, optionally scoped to `parent_ids`.       |
@@ -285,6 +285,28 @@ canonical reference. The current endpoints, grouped by data model type (see [The
 The `/concepts`, `/studies`, `/cdes`, and `/variables` endpoints (tagged `v2.0` in `/docs`) are the current,
 data-model-backed way to query Dug; the `/search*` and `/dump_concepts`/`/agg_data_types` endpoints predate the Dug
 Data Model and are kept for backward compatibility.
+
+### Filtering, aggregating, and sorting
+
+The four `v2.0` endpoints all accept `filters`, `aggs`, and `sort`, each of which names raw Elasticsearch fields.
+Field names are passed through to Elasticsearch rather than checked against an allowlist, so the index mappings in
+`src/dug/core/index.py` are the source of truth for what's available. A field Elasticsearch rejects comes back as a
+`400` naming the reason, not a `500`.
+
+Results are ordered by relevance score unless `sort` is given. `sort` is an ordered list — later keys only break ties
+in the earlier ones — and relevance score plus a stable `id.keyword` tiebreaker are always appended, so paging stays
+deterministic. Documents missing the sort field go last in both directions.
+
+```shell
+curl -X POST http://localhost:5551/studies -H 'content-type: application/json' -d '{
+  "query": "opioid",
+  "sort": [{"field": "metadata.Project End Date", "order": "desc"}]
+}'
+```
+
+The usual pitfall is that `text` fields are not sortable. Sort on a `keyword` subfield (`data_type.keyword`,
+`parents.keyword`) instead. Note that `name` and `description` are mapped as `text` with no such subfield in any
+index, so they cannot be sorted on today.
 
 ## Development
 
