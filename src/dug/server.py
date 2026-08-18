@@ -576,6 +576,32 @@ async def get_variables_by_ids(ids: VariableIds):
     return res
 
 
+@APP.get('/ingestion_metadata', tags=['v2.0'], response_model=IngestionMetadataResponse)
+async def get_ingestion_metadata():
+    """
+    Summary of what is currently indexed: document counts, cross-reference counts,
+    and when each index was last written to by the ingestion pipeline.
+
+    Returns:
+
+    - **indices**: One entry per index (`concepts`, `sections`, `studies`, `variables`), each with:
+        * **index**: Elasticsearch index name
+        * **doc_count**: Total documents in the index
+        * **ingested_at**: When the ingestion pipeline last wrote to this index. `null`
+          until a pipeline run has stamped the index.
+        * **index_created_at**: When the index itself was created.
+
+      Variables and CDEs share the `variables` index, so that entry additionally carries:
+        * **variable_count**: Documents with `is_cde` false
+        * **cde_count**: Documents with `is_cde` true
+
+    - **mappings**:
+        * **cdes_with_study_mappings**: CRFs with a non-empty `metadata.study_mappings`
+        * **variables_with_cde_mappings**: Variables with a non-empty `metadata.cde_mapping`
+    """
+    return await search.get_ingestion_metadata()
+
+
 @APP.get('/study_sources', tags=['v2.0'])
 async def get_study_sources():
     """

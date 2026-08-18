@@ -1,5 +1,7 @@
 """Implements search methods using async interfaces"""
+import asyncio
 import logging
+from datetime import datetime, timezone
 from elasticsearch import AsyncElasticsearch, ApiError, helpers
 from elasticsearch.helpers import async_scan
 import ssl, json
@@ -31,6 +33,9 @@ class Search:
 
     # Present in every v2.0 index mapping, so always safe as a stable tiebreaker.
     DEFAULT_SORT_TIEBREAKER = "id.keyword"
+
+    CDE_STUDY_MAPPING_FIELD = "metadata.study_mappings"
+    VARIABLE_CDE_MAPPING_FIELD = "metadata.cde_mapping"
 
     def __init__(self, cfg: Config):
 
@@ -127,6 +132,105 @@ class Search:
                           results['aggregations']['data_type']['buckets']]
         results.update({'data type list': data_type_list})
         return data_type_list
+
+    async def _count(self, index_name, filters=None):
+        """Number of documents in `index_name` matching `filters`.
+
+        Goes through _search rather than _count because the `size_*` filters compile to
+        runtime fields, which the count API does not accept.
+        """
+        es_filters, runtime_mappings = Search._convert_filters_to_es(filters)
+        body = {
+            "query": {"bool": {"filter": es_filters}},
+            "track_total_hits": True,
+        }
+        if runtime_mappings:
+            body["runtime_mappings"] = runtime_mappings
+        results = await self.es.search(
+            index=index_name,
+            body=body,
+            size=0,
+            filter_path=["hits.total.value"],
+        )
+        return results.get("hits", {}).get("total", {}).get("value", 0)
+
+    async def _get_ingest_dates(self, index_names):
+        """ Maps each index name to its (ingested_at, index_created_at) pair. """
+        empty = {name: (None, None) for name in index_names}
+        try:
+            mappings = await self.es.indices.get_mapping(
+                index=index_names, ignore_unavailable=True)
+            settings = await self.es.indices.get_settings(
+                index=index_names, ignore_unavailable=True)
+        except ApiError as err:
+            logger.warning("Could not read index metadata: %s",
+                           Search._extract_es_error_reason(err))
+            return empty
+
+        dates = {}
+        for name in index_names:
+            meta = mappings.get(name, {}).get("mappings", {}).get("_meta", {})
+            created = settings.get(name, {}).get(
+                "settings", {}).get("index", {}).get("creation_date")
+            dates[name] = (
+                meta.get("ingested_at"),
+                datetime.fromtimestamp(
+                    int(created) / 1000, tz=timezone.utc).isoformat() if created else None,
+            )
+        return dates
+
+    async def get_ingestion_metadata(self):
+        """Document counts, cross-reference counts and ingestion dates per index."""
+        concepts_index = self.indices["concepts_index"]
+        sections_index = self.indices["sections_index"]
+        studies_index = self.indices["studies_index"]
+        variables_index = self.indices["variables_index"]
+        index_names = [concepts_index, sections_index, studies_index, variables_index]
+
+        is_cde = {"field": "is_cde", "operator": "eq", "value": True}
+        is_not_cde = {"field": "is_cde", "operator": "eq", "value": False}
+        has_study_mapping = {"field": self.CDE_STUDY_MAPPING_FIELD,
+                             "operator": "size_gt", "value": 0}
+        has_cde_mapping = {"field": self.VARIABLE_CDE_MAPPING_FIELD,
+                           "operator": "size_gt", "value": 0}
+
+        (concepts, sections, studies, variables_total, cdes, variables,
+         cdes_mapped, variables_mapped, ingest_dates) = await asyncio.gather(
+            self._count(concepts_index),
+            self._count(sections_index),
+            self._count(studies_index),
+            self._count(variables_index),
+            self._count(variables_index, [is_cde]),
+            self._count(variables_index, [is_not_cde]),
+            # CDE sets/CRFs, which the API exposes as /cdes, live in the sections index.
+            self._count(sections_index, [has_study_mapping]),
+            self._count(variables_index, [is_not_cde, has_cde_mapping]),
+            self._get_ingest_dates(index_names),
+        )
+
+        def described(index_name, doc_count, **extra):
+            ingested_at, created_at = ingest_dates.get(index_name, (None, None))
+            return {
+                "index": index_name,
+                "doc_count": doc_count,
+                "ingested_at": ingested_at,
+                "index_created_at": created_at,
+                **extra,
+            }
+
+        return {
+            "indices": {
+                "concepts": described(concepts_index, concepts),
+                "sections": described(sections_index, sections),
+                "studies": described(studies_index, studies),
+                "variables": described(variables_index, variables_total,
+                                       variable_count=variables, cde_count=cdes),
+            },
+            "mappings": {
+                "cdes_with_study_mappings": cdes_mapped,
+                "variables_with_cde_mappings": variables_mapped,
+            },
+        }
 
     @staticmethod
     def _get_concepts_query(query,
