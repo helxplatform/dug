@@ -258,7 +258,13 @@ class IndexInit:
                     "is_crf": {"type": "boolean"},
                     "metadata": {
                         "type": "object",
-                        "dynamic": True
+                        "dynamic": True,
+                        "properties": {
+                            "study_mappings": {
+                                "type": "object",
+                                "dynamic": False
+                            }
+                        }
                     },
                     "tags": {
                         "type": "nested",
