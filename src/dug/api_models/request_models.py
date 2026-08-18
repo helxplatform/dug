@@ -46,6 +46,40 @@ class FilterCriterion(BaseModel):
     operator: FilterOperator = Field("eq", description="Comparison operator")
     value: Optional[Union[str, int, float, bool, List[Any]]] = Field(default=None, description="The value to filter against")
 
+SortOrder = Literal["asc", "desc"]
+SortMode = Literal["min", "max", "sum", "avg", "median"]
+MissingPlacement = Literal["_first", "_last"]
+
+# Guardrail on request complexity, in the spirit of Config.aggregate_size_limit
+MAX_SORT_FIELDS = 5
+
+class SortCriterion(BaseModel):
+    field: str = Field(..., description=(
+        "Elasticsearch field to sort on (e.g. 'metadata.Project End Date'). Must be a "
+        "doc_values field (keyword/date/numeric/boolean); 'text' fields are not sortable, "
+        "use their '.keyword' subfield."
+    ))
+    order: SortOrder = Field("asc", description="Sort direction")
+    mode: Optional[SortMode] = Field(default=None, description=(
+        "Which value to sort on for multi-valued fields (parents, programs, variable_list, "
+        "tags...). Defaults to Elasticsearch behavior: min for asc, max for desc."
+    ))
+    missing: Optional[MissingPlacement] = Field(default=None, description=(
+        "Where documents lacking the field are placed. Defaults to '_last' in both directions."
+    ))
+
+    @field_validator("field")
+    @classmethod
+    def validate_field(cls, v):
+        v = (v or "").strip()
+        if not v:
+            raise ValueError("sort field must not be empty")
+        # _score and _doc are the only elasticsearch pseudo-fields that can be sorted
+        # on; letting other underscore names through just yields a confusing ES error.
+        if v.startswith("_") and v not in ("_score", "_doc"):
+            raise ValueError(f"'{v}' is not a sortable field")
+        return v
+
 class SearchElementQuery(BaseModel):
     query: str = None
     simple_search: bool = False
@@ -55,6 +89,10 @@ class SearchElementQuery(BaseModel):
 
     aggs: Optional[Dict[str, int]] = Field(default=None, description="Specify fields to aggregate against and the bucket limit")
     filters: Optional[List[FilterCriterion]] = Field(default_factory=list)
+    sort: Optional[List[SortCriterion]] = Field(default_factory=list, description=(
+        "Ordered list of sort keys, applied before relevance score. Note that fields are "
+        "ES fields, so subfields like `.keyword` may be required."
+    ))
 
     size: Optional[int] = 100
     offset: Optional[int] = 0
@@ -65,6 +103,13 @@ class SearchElementQuery(BaseModel):
         if v is None:
             return v
         return [item for item in v if item not in ("", None)]
+
+    @field_validator("sort")
+    @classmethod
+    def cap_sort_keys(cls, v):
+        if v and len(v) > MAX_SORT_FIELDS:
+            raise ValueError(f"at most {MAX_SORT_FIELDS} sort keys are supported")
+        return v
 
 class VariableIds(BaseModel):
     """

@@ -1,6 +1,6 @@
 """Implements search methods using async interfaces"""
 import logging
-from elasticsearch import AsyncElasticsearch, helpers
+from elasticsearch import AsyncElasticsearch, ApiError, helpers
 from elasticsearch.helpers import async_scan
 import ssl, json
 from dug.config import Config
@@ -24,6 +24,13 @@ class Search:
          * disease->study
          * disease->phenotype->study
     """
+
+    # Fields mapped as `nested` in index.py::init_indices. Sorting on a subfield of a
+    # nested field requires an explicit nested path or elasticsearch rejects the query.
+    NESTED_SORT_PATHS = ("tags",)
+
+    # Present in every v2.0 index mapping, so always safe as a stable tiebreaker.
+    DEFAULT_SORT_TIEBREAKER = "id.keyword"
 
     def __init__(self, cfg: Config):
 
@@ -127,6 +134,7 @@ class Search:
                             prefix_length=3,
                             filters=None,
                             aggs=None,
+                            sort=None,
                             aggregate_size_limit=None):
         "Static data structure populator, pulled for easier testing"
         query_object = {
@@ -235,27 +243,9 @@ class Search:
             }
         }
 
-        if filters:
-            post_filter = query_object \
-                .setdefault("post_filter", {}) \
-                .setdefault("bool", {}) \
-                .setdefault("filter", [])
-            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
-            post_filter.extend(es_filters)
-            query_object.setdefault("runtime_mappings", {}).update(es_rt_mappings)
-
-        if aggs:
-            query_object["aggs"] = {}
-            for field, size_limit in aggs.items():
-                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
-                query_object["aggs"][field] = {
-                    "terms": {
-                        "field": field,
-                        "size": size
-                    }
-                }
-
-        return query_object
+        return Search._apply_common_clauses(
+            query_object, filters=filters, aggs=aggs, sort=sort,
+            aggregate_size_limit=aggregate_size_limit)
 
     def is_simple_search_query(self, query):
         if not query:
@@ -359,6 +349,7 @@ class Search:
                               element_ids=None,
                               filters=None,
                               aggs=None,
+                              sort=None,
                               size=None,
                               offset=0,
                               fuzziness=1,
@@ -373,6 +364,7 @@ class Search:
                     query=query,
                     filters=filters,
                     aggs=aggs,
+                    sort=sort,
                     aggregate_size_limit=self._cfg.aggregate_size_limit
                 )
             else:
@@ -382,6 +374,7 @@ class Search:
                     prefix_length=prefix_length,
                     filters=filters,
                     aggs=aggs,
+                    sort=sort,
                     aggregate_size_limit=self._cfg.aggregate_size_limit
                 )
         else:
@@ -393,6 +386,7 @@ class Search:
                     element_ids=element_ids,
                     filters=filters,
                     aggs=aggs,
+                    sort=sort,
                     aggregate_size_limit=self._cfg.aggregate_size_limit,
                     new_model=True
                 )
@@ -403,6 +397,7 @@ class Search:
                     element_ids=element_ids,
                     filters=filters,
                     aggs=aggs,
+                    sort=sort,
                     aggregate_size_limit=self._cfg.aggregate_size_limit,
                     fuzziness=fuzziness,
                     prefix_length=prefix_length,
@@ -410,16 +405,29 @@ class Search:
                     new_model=True
                 )
 
-        search_results = await self.es.search(
-            index=index_name,
-            body=es_query,
-            filter_path=['hits.hits._id', 'hits.hits._type',
-                        'hits.hits._source', 'hits.hits._score', 'hits.total',
-                        'hits.hits._explanation', 'aggregations'],
-            explain=explain,
-            from_=offset,
-            size=size or self._cfg.default_page_size
-        )
+        try:
+            search_results = await self.es.search(
+                index=index_name,
+                body=es_query,
+                filter_path=['hits.hits._id', 'hits.hits._type',
+                            'hits.hits._source', 'hits.hits._score', 'hits.total',
+                            'hits.hits._explanation', 'aggregations'],
+                explain=explain,
+                from_=offset,
+                size=size or self._cfg.default_page_size
+            )
+        except ApiError as err:
+            status = getattr(err, "status_code", None)
+            if status is None or not 400 <= status < 500:
+                raise
+            reason = Search._extract_es_error_reason(err)
+            logger.warning("Elasticsearch rejected query on %s: %s", index_name, reason)
+            raise SearchException(
+                message="Elasticsearch rejected the search request. Check that the "
+                        "fields named in `sort`, `filters`, and `aggs` exist and are "
+                        "sortable/aggregatable (text fields need a '.keyword' subfield).",
+                details=reason,
+            ) from err
 
         total_items = search_results["hits"]["total"]["value"]
         search_result_hits = self.remove_hits_from_results(search_results)
@@ -767,20 +775,39 @@ class Search:
             return program_summary
 
     @staticmethod
+    def _get_attr(obj, key, default=None):
+        """Reads `key` off either a Pydantic model or an already-dumped dict.
+
+        Note that `getattr(obj, key, obj.get(key))` does not work here: Python
+        evaluates the default eagerly, so it raises AttributeError on a model.
+        """
+        if isinstance(obj, dict):
+            return obj.get(key, default)
+        return getattr(obj, key, default)
+
+    @staticmethod
+    def _extract_es_error_reason(err):
+        """Pulls the human-readable reason out of an elasticsearch ApiError."""
+        try:
+            return err.body["error"]["root_cause"][0]["reason"]
+        except (AttributeError, KeyError, IndexError, TypeError):
+            return str(err)
+
+    @staticmethod
     def _convert_filters_to_es(filters):
         """
         Converts a list of FilterCriterion dicts into ElasticSearch DSL dicts.
         """
         if not filters:
             return [], {}
-            
+
         es_filters = []
         runtime_mappings = {}
         for f in filters:
             # Support both Pydantic model and dumped dict format
-            field = getattr(f, "field", f.get("field"))
-            operator = getattr(f, "operator", f.get("operator"))
-            value = getattr(f, "value", f.get("value"))
+            field = Search._get_attr(f, "field")
+            operator = Search._get_attr(f, "operator")
+            value = Search._get_attr(f, "value")
 
             if operator == "eq":
                 es_filters.append({"term": { field: value }})
@@ -846,6 +873,98 @@ class Search:
         return es_filters, runtime_mappings
 
     @staticmethod
+    def _convert_sort_to_es(sort, tiebreaker_field=None):
+        """
+        Converts a list of SortCriterion (models or dumped dicts) into an
+        ElasticSearch `sort` array.
+
+        Relevance score and a stable tiebreaker are always appended as the final
+        keys, so that documents tying on the caller's sort fields stay ranked by
+        relevance and paginated results are deterministic across requests.
+        """
+        if not sort:
+            return []
+
+        tiebreaker_field = tiebreaker_field or Search.DEFAULT_SORT_TIEBREAKER
+        es_sort = []
+        for criterion in sort:
+            field = Search._get_attr(criterion, "field")
+            if not field:
+                continue
+            order = Search._get_attr(criterion, "order") or "asc"
+
+            if field in ("_score", "_doc"):
+                # These are elasticsearch's own pseudo-fields rather than document
+                # fields, so missing/mode/nested don't apply to them.
+                es_sort.append({field: {"order": order}})
+                continue
+
+            clause = {"order": order}
+
+            missing = Search._get_attr(criterion, "missing")
+            # Elasticsearch defaults to _last for asc but _first for desc, which would
+            # put every document *lacking* the field at the top of a descending sort.
+            clause["missing"] = missing if missing is not None else "_last"
+
+            mode = Search._get_attr(criterion, "mode")
+            if mode:
+                clause["mode"] = mode
+
+            root = field.split(".", 1)[0]
+            if root in Search.NESTED_SORT_PATHS:
+                clause["nested"] = {"path": root}
+
+            es_sort.append({field: clause})
+
+        if not es_sort:
+            return []
+
+        fields_used = {next(iter(clause)) for clause in es_sort}
+        if "_score" not in fields_used:
+            es_sort.append({"_score": {"order": "desc"}})
+        if tiebreaker_field not in fields_used:
+            es_sort.append({tiebreaker_field: {"order": "asc"}})
+
+        return es_sort
+
+    @staticmethod
+    def _apply_common_clauses(query_object, filters=None, aggs=None, sort=None,
+                              aggregate_size_limit=None):
+        """
+        Applies the post_filter/runtime_mappings/aggs/sort tail shared by every v2.0
+        query builder. Mutates and returns `query_object`.
+        """
+        if filters:
+            post_filter = query_object \
+                .setdefault("post_filter", {}) \
+                .setdefault("bool", {}) \
+                .setdefault("filter", [])
+            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
+            post_filter.extend(es_filters)
+            query_object.setdefault("runtime_mappings", {}).update(es_rt_mappings)
+
+        if aggs:
+            query_object["aggs"] = {}
+            for field, size_limit in aggs.items():
+                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
+                query_object["aggs"][field] = {
+                    "terms": {
+                        "field": field,
+                        "size": size
+                    }
+                }
+
+        if sort:
+            es_sort = Search._convert_sort_to_es(sort)
+            if es_sort:
+                query_object["sort"] = es_sort
+                # Without this elasticsearch returns a null _score on every hit whenever
+                # a sort is present, which the float-typed response models reject.
+                query_object["track_scores"] = True
+
+        return query_object
+
+    @staticmethod
     def _get_element_search_query(concept,
                                   fuzziness,
                                   prefix_length,
@@ -855,6 +974,7 @@ class Search:
                                   parent_ids=None,
                                   filters=None,
                                   aggs=None,
+                                  sort=None,
                                   aggregate_size_limit=None):
         """Returns ES query for variable search"""
         element_name = "element_name"
@@ -1041,31 +1161,13 @@ class Search:
                     }
                 )
 
-        if filters:
-            post_filter = es_query \
-                .setdefault("post_filter", {}) \
-                .setdefault("bool", {}) \
-                .setdefault("filter", [])
-            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
-            post_filter.extend(es_filters)
-            es_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
-
-        if aggs:
-            es_query["aggs"] = {}
-            for field, size_limit in aggs.items():
-                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
-                es_query["aggs"][field] = {
-                    "terms": {
-                        "field": field,
-                        "size": size
-                    }
-                }
-
-
-        return es_query
+        return Search._apply_common_clauses(
+            es_query, filters=filters, aggs=aggs, sort=sort,
+            aggregate_size_limit=aggregate_size_limit)
 
     @staticmethod
-    def get_simple_concept_search_query(query, filters=None, aggs=None, aggregate_size_limit=None):
+    def get_simple_concept_search_query(query, filters=None, aggs=None, sort=None,
+                                        aggregate_size_limit=None):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
         simple_query_string_search = {
@@ -1117,27 +1219,9 @@ class Search:
             }
         }
 
-        if filters:
-            post_filter = search_query \
-                .setdefault("post_filter", {}) \
-                .setdefault("bool", {}) \
-                .setdefault("filter", [])
-            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
-            post_filter.extend(es_filters)
-            search_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
-
-        if aggs:
-            search_query["aggs"] = {}
-            for field, size_limit in aggs.items():
-                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
-                search_query["aggs"][field] = {
-                    "terms": {
-                        "field": field,
-                        "size": size
-                    }
-                }
-
-        return search_query
+        return Search._apply_common_clauses(
+            search_query, filters=filters, aggs=aggs, sort=sort,
+            aggregate_size_limit=aggregate_size_limit)
 
     @staticmethod
     def _get_element_simple_search_query(
@@ -1148,6 +1232,7 @@ class Search:
         element_ids=None,
         filters=None,
         aggs=None,
+        sort=None,
         aggregate_size_limit=None
     ):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
@@ -1259,28 +1344,9 @@ class Search:
                     }
                 )
 
-        if filters:
-            post_filter = search_query \
-                .setdefault("post_filter", {}) \
-                .setdefault("bool", {}) \
-                .setdefault("filter", [])
-            es_filters, es_rt_mappings = Search._convert_filters_to_es(filters)
-            post_filter.extend(es_filters)
-            search_query.setdefault("runtime_mappings", {}).update(es_rt_mappings)
-            
-        if aggs:
-            search_query["aggs"] = {}
-            for field, size_limit in aggs.items():
-                size = min(size_limit, aggregate_size_limit) if aggregate_size_limit is not None else size_limit
-                search_query["aggs"][field] = {
-                    "terms": {
-                        "field": field,
-                        "size": size
-                    }
-                }
-
-
-        return search_query
+        return Search._apply_common_clauses(
+            search_query, filters=filters, aggs=aggs, sort=sort,
+            aggregate_size_limit=aggregate_size_limit)
 
     async def get_elements_by_ids(self, ids: [str], index_name=""):
         """Returns variables by ids"""
