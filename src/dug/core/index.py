@@ -67,6 +67,18 @@ class Index:
     def init_indices(self):
         dug.core.index_init.IndexInit.run(self.es, self.replicas, self.indices)
 
+    def set_ingest_date(self, index, timestamp):
+        """Record when an ingestion run last wrote to `index`.
+
+        Held in the mapping `_meta` rather than on the documents themselves: the element
+        indices are `dynamic: strict`, so a new top-level field would be rejected, and
+        index_element only partially updates ids it has seen before, so a per-document
+        stamp would never be refreshed for them.
+        """
+        self.es.indices.put_mapping(
+            index=index,
+            body={"_meta": {"ingested_at": timestamp}})
+
     def index_doc(self, index, doc, doc_id):
         self.es.index(
             index=index,

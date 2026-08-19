@@ -70,3 +70,43 @@ class SectionAPIResponse(DugAPIResponse):
     results: List[SectionResponse]
 
 
+class IndexIngestionMetadata(BaseModel):
+    index: str = Field(description="Elasticsearch index name")
+    doc_count: int = Field(description="Total documents in the index")
+    ingested_at: Optional[str] = Field(
+        default=None,
+        description="When the ingestion pipeline last wrote to this index. Null if the "
+                    "index has not been stamped by a pipeline run."
+    )
+    index_created_at: Optional[str] = Field(
+        default=None, description="When the index itself was created"
+    )
+
+
+class VariablesIngestionMetadata(IndexIngestionMetadata):
+    variable_count: int = Field(description="Documents with is_cde false")
+    cde_count: int = Field(description="Documents with is_cde true")
+
+
+class IngestionMetadataIndices(BaseModel):
+    concepts: IndexIngestionMetadata
+    sections: IndexIngestionMetadata
+    studies: IndexIngestionMetadata
+    variables: VariablesIngestionMetadata
+
+
+class IngestionMappingCounts(BaseModel):
+    cdes_with_study_mappings: int = Field(
+        description="CDE sets/CRFs in the sections index carrying a non-empty "
+                    "metadata.study_mappings"
+    )
+    variables_with_cde_mappings: int = Field(
+        description="Variables carrying a non-empty metadata.cde_mapping"
+    )
+
+
+class IngestionMetadataResponse(BaseModel):
+    indices: IngestionMetadataIndices
+    mappings: IngestionMappingCounts
+
+
