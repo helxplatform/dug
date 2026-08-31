@@ -3,11 +3,14 @@
 import asyncio
 import json
 from importlib import reload
+from types import SimpleNamespace
 from unittest import TestCase, mock
+from elasticsearch import ApiError
 from fastapi.testclient import TestClient
 
 from dug.core import async_search
 from dug.config import Config
+from dug.api_models.request_models import SortCriterion
 
 async def _mock_search(*args, **kwargs):
     "Mock of elasticsearch search function. Ignores argument"
@@ -39,6 +42,225 @@ class SearchTestCase(TestCase):
         self.assertIsInstance(concept_types, dict)
         self.assertEqual(len(concept_types), 9)
         self.assertEqual(concept_types['anatomical entity'], 10)
+
+
+def _build_all_query_builders(**kwargs):
+    """Invoke each of the four v2.0 query builders with the same common clauses.
+
+    Returns {builder_name: query_body}. Every builder shares an identical
+    filters/aggs/sort tail, so any assertion about that tail should hold for all
+    four -- this is what keeps the shared-clause helper honest.
+    """
+    search = async_search.Search
+    return {
+        "_get_concepts_query": search._get_concepts_query(
+            query="brain", **kwargs),
+        "get_simple_concept_search_query": search.get_simple_concept_search_query(
+            query="brain", **kwargs),
+        "_get_element_search_query": search._get_element_search_query(
+            concept="", fuzziness=1, prefix_length=3, query="brain",
+            new_model=True, **kwargs),
+        "_get_element_simple_search_query": search._get_element_simple_search_query(
+            concept="", query="brain", new_model=True, **kwargs),
+    }
+
+
+class QueryBuilderCommonClauseTestCase(TestCase):
+    """Pins the filters/aggs/sort tail shared by all four v2.0 query builders."""
+
+    FILTERS = [
+        {"field": "is_cde", "operator": "eq", "value": True},
+        {"field": "metadata", "operator": "size_gt", "value": 2},
+    ]
+    AGGS = {"data_type.keyword": 5, "concept_type": 500}
+
+    def test_filters_and_aggs_tail(self):
+        "filters and aggs produce the same post_filter/runtime_mappings/aggs everywhere"
+        expected_post_filter = {
+            "bool": {
+                "filter": [
+                    {"term": {"is_cde": True}},
+                    {"range": {"metadata_calculated_size": {"gt": 2}}},
+                ]
+            }
+        }
+        expected_aggs = {
+            # 5 is under the limit and passes through; 500 is clamped to 200.
+            "data_type.keyword": {"terms": {"field": "data_type.keyword", "size": 5}},
+            "concept_type": {"terms": {"field": "concept_type", "size": 200}},
+        }
+        bodies = _build_all_query_builders(
+            filters=self.FILTERS, aggs=self.AGGS, aggregate_size_limit=200)
+        for name, body in bodies.items():
+            with self.subTest(builder=name):
+                self.assertEqual(body["post_filter"], expected_post_filter)
+                self.assertEqual(body["aggs"], expected_aggs)
+                self.assertEqual(list(body["runtime_mappings"]),
+                                 ["metadata_calculated_size"])
+                self.assertEqual(
+                    body["runtime_mappings"]["metadata_calculated_size"]["type"], "long")
+
+    def test_no_common_clauses_when_unset(self):
+        "A builder with no filters/aggs/sort emits none of those keys"
+        for name, body in _build_all_query_builders().items():
+            with self.subTest(builder=name):
+                for key in ("post_filter", "runtime_mappings", "aggs", "sort",
+                            "track_scores"):
+                    self.assertNotIn(key, body)
+
+    def test_builders_emit_sort_and_track_scores(self):
+        "sort reaches every builder, and scores stay tracked alongside it"
+        sort = [{"field": "metadata.Project End Date", "order": "desc"}]
+        expected = [
+            {"metadata.Project End Date": {"order": "desc", "missing": "_last"}},
+            {"_score": {"order": "desc"}},
+            {"id.keyword": {"order": "asc"}},
+        ]
+        for name, body in _build_all_query_builders(sort=sort).items():
+            with self.subTest(builder=name):
+                self.assertEqual(body["sort"], expected)
+                self.assertIs(body["track_scores"], True)
+
+
+class ConvertSortToEsTestCase(TestCase):
+    "Unit tests for the SortCriterion -> elasticsearch `sort` translation"
+
+    def _convert(self, sort):
+        return async_search.Search._convert_sort_to_es(sort)
+
+    def test_single_key(self):
+        "A lone descending key gains a _score and an id tiebreaker"
+        self.assertEqual(
+            self._convert([{"field": "metadata.Project End Date", "order": "desc"}]),
+            [
+                {"metadata.Project End Date": {"order": "desc", "missing": "_last"}},
+                {"_score": {"order": "desc"}},
+                {"id.keyword": {"order": "asc"}},
+            ])
+
+    def test_defaults_to_ascending(self):
+        "order is optional and defaults to asc"
+        self.assertEqual(self._convert([{"field": "is_cde"}])[0],
+                         {"is_cde": {"order": "asc", "missing": "_last"}})
+
+    def test_accepts_models_and_dicts(self):
+        "A SortCriterion model and its model_dump() convert identically"
+        criterion = SortCriterion(field="data_type.keyword", order="desc", mode="max")
+        self.assertEqual(self._convert([criterion]),
+                         self._convert([criterion.model_dump()]))
+
+    def test_nested_path_derived_for_tags(self):
+        "tags is mapped as nested, so sorting on it needs an explicit path"
+        self.assertEqual(
+            self._convert([{"field": "tags.value", "order": "asc"}])[0],
+            {"tags.value": {"order": "asc", "missing": "_last",
+                            "nested": {"path": "tags"}}})
+
+    def test_no_nested_path_for_ordinary_fields(self):
+        "A dotted field that isn't nested gets no nested clause"
+        self.assertNotIn("nested",
+                         self._convert([{"field": "data_type.keyword"}])[0]["data_type.keyword"])
+
+    def test_mode_and_missing_passthrough(self):
+        "Explicit mode/missing override the defaults"
+        self.assertEqual(
+            self._convert([{"field": "parents.keyword", "order": "asc",
+                            "mode": "min", "missing": "_first"}])[0],
+            {"parents.keyword": {"order": "asc", "missing": "_first", "mode": "min"}})
+
+    def test_mode_omitted_when_unset(self):
+        "mode is left out entirely rather than sent as null"
+        self.assertNotIn("mode", self._convert([{"field": "is_cde"}])[0]["is_cde"])
+
+    def test_empty_input(self):
+        "None and [] both mean 'no sort'"
+        self.assertEqual(self._convert(None), [])
+        self.assertEqual(self._convert([]), [])
+        self.assertEqual(self._convert([{"field": ""}]), [])
+
+    def test_multi_key_order_preserved(self):
+        "Sort keys are applied in the order given, tiebreakers last"
+        result = self._convert([
+            {"field": "metadata.Project End Date", "order": "desc"},
+            {"field": "data_type.keyword", "order": "asc"},
+        ])
+        self.assertEqual([next(iter(clause)) for clause in result],
+                         ["metadata.Project End Date", "data_type.keyword",
+                          "_score", "id.keyword"])
+
+    def test_tiebreakers_not_duplicated(self):
+        "Explicitly sorting on a tiebreaker field doesn't append it twice"
+        result = self._convert([{"field": "id.keyword", "order": "desc"}])
+        self.assertEqual([next(iter(clause)) for clause in result],
+                         ["id.keyword", "_score"])
+
+    def test_score_sort_carries_no_extras(self):
+        "_score is a metadata field; missing/mode/nested are invalid on it"
+        result = self._convert([{"field": "_score", "order": "asc"}])
+        self.assertEqual(result, [{"_score": {"order": "asc"}},
+                                  {"id.keyword": {"order": "asc"}}])
+
+
+class SearchElementsSortTestCase(TestCase):
+    "Verifies sort survives the trip through search_elements into the ES body"
+
+    def setUp(self):
+        self.search = async_search.Search(Config.from_env())
+        self.captured = {}
+
+        async def _capturing_search(*args, **kwargs):
+            self.captured.update(kwargs)
+            return {"hits": {"total": {"value": 0}, "hits": []}}
+
+        self.search.es = mock.AsyncMock()
+        self.search.es.search = _capturing_search
+
+    def _run(self, **kwargs):
+        asyncio.run(self.search.search_elements(
+            self.search.indices["variables_index"], query="brain", **kwargs))
+        return self.captured["body"]
+
+    def test_sort_reaches_the_query_body(self):
+        "A sort passed to search_elements lands in the elasticsearch body"
+        body = self._run(sort=[{"field": "metadata.Project End Date", "order": "desc"}])
+        self.assertEqual(body["sort"][0],
+                         {"metadata.Project End Date": {"order": "desc",
+                                                        "missing": "_last"}})
+        self.assertIs(body["track_scores"], True)
+
+    def test_no_sort_leaves_body_untouched(self):
+        "Callers that don't sort (e.g. the v1 shims) get the old body verbatim"
+        body = self._run()
+        self.assertNotIn("sort", body)
+        self.assertNotIn("track_scores", body)
+
+    def test_bad_request_becomes_search_exception(self):
+        "An elasticsearch 400 surfaces as SearchException carrying the reason"
+        async def _rejecting_search(*args, **kwargs):
+            raise ApiError(
+                "search_phase_execution_exception",
+                meta=SimpleNamespace(status=400),
+                body={"error": {"root_cause": [
+                    {"reason": "No mapping found for [nope] in order to sort on"}]}},
+            )
+        self.search.es.search = _rejecting_search
+
+        with self.assertRaises(async_search.SearchException) as ctx:
+            asyncio.run(self.search.search_elements(
+                self.search.indices["variables_index"], query="brain",
+                sort=[{"field": "nope"}]))
+        self.assertIn("No mapping found for [nope]", ctx.exception.details)
+
+    def test_server_error_is_not_swallowed(self):
+        "A 5xx is a real server fault and must not be reported as a bad request"
+        async def _failing_search(*args, **kwargs):
+            raise ApiError("boom", meta=SimpleNamespace(status=503), body={})
+        self.search.es.search = _failing_search
+
+        with self.assertRaises(ApiError):
+            asyncio.run(self.search.search_elements(
+                self.search.indices["variables_index"], query="brain"))
+
 
 brain_result_json = """{
   "hits": {

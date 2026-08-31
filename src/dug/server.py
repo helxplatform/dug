@@ -2,10 +2,11 @@ import logging
 import os
 import uvicorn
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from dug.config import Config
-from dug.core.async_search import Search
+from dug.core.async_search import Search, SearchException
 from typing import Set, Any
 import asyncio
 from contextlib import asynccontextmanager
@@ -38,6 +39,14 @@ APP.add_middleware(
 
 config = Config.from_env()
 search = Search(config)
+
+@APP.exception_handler(SearchException)
+async def handle_search_exception(request: Request, exc: SearchException):
+    """A query elasticsearch refuses is the caller's problem, not a server error."""
+    return JSONResponse(
+        status_code=400,
+        content={"message": exc.message, "details": exc.details, "status": "error"},
+    )
 
 def shutdown_event():
     asyncio.run(search.es.close())
@@ -291,6 +300,12 @@ async def get_concepts(search_query: SearchElementQuery):
     - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
       - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
     - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **sort**: Ordered list of sort keys, applied ahead of relevance score. Results are sorted by the first key; later keys only break ties, in the order given. Max 5 keys. Each entry takes:
+      - **field**: An ES field. `text` fields are not sortable, so subfields like `.keyword` may be required.
+      - **order**: `asc` or `desc`. Defaults to `asc`.
+      - **mode**: For multi-valued fields, which value to sort on: `min`, `max`, `sum`, `avg`, `median`. Defaults to ES behavior (min for asc, max for desc).
+      - **missing**: Where documents lacking the field go: `_first` or `_last`. Defaults to `_last` in both directions.
+      Relevance score and a stable id tiebreaker are always appended, so paging is deterministic.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -320,7 +335,10 @@ async def get_concepts(search_query: SearchElementQuery):
     res_concepts = []
     for concept in concepts:
         item = concept["_source"]
-        item["score"] = concept["_score"]
+        # A null score is possible whenever a sort is applied, so don't hand it
+        # straight to the float-typed response model.
+        score = concept.get("_score")
+        item["score"] = score if score is not None else 0
         item["explanation"] = concept["_explanation"]
         res_concepts.append(item)
 
@@ -354,6 +372,12 @@ async def get_variables(search_query: SearchElementQuery):
     - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
       - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
     - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **sort**: Ordered list of sort keys, applied ahead of relevance score. Results are sorted by the first key; later keys only break ties, in the order given. Max 5 keys. Each entry takes:
+      - **field**: An ES field. `text` fields are not sortable, so subfields like `.keyword` may be required.
+      - **order**: `asc` or `desc`. Defaults to `asc`.
+      - **mode**: For multi-valued fields, which value to sort on: `min`, `max`, `sum`, `avg`, `median`. Defaults to ES behavior (min for asc, max for desc).
+      - **missing**: Where documents lacking the field go: `_first` or `_last`. Defaults to `_last` in both directions.
+      Relevance score and a stable id tiebreaker are always appended, so paging is deterministic.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -373,13 +397,14 @@ async def get_variables(search_query: SearchElementQuery):
     """
     elastic_results, total_count, aggregations = await search.search_elements(
         config.variables_index_name,
-        **search_query.dict()
+        **search_query.model_dump()
     )
 
     results = []
     for result in elastic_results:
         item = result["_source"]
-        item["score"] = result["_score"]
+        score = result.get("_score")
+        item["score"] = score if score is not None else 0
         item["explanation"] = result.get("_explanation", {})
         results.append(item)
     res = {
@@ -411,11 +436,19 @@ async def get_studies(search_query: SearchElementQuery):
     - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
       - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
     - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **sort**: Ordered list of sort keys, applied ahead of relevance score. Results are sorted by the first key; later keys only break ties, in the order given. Max 5 keys. Each entry takes:
+      - **field**: An ES field. `text` fields are not sortable, so subfields like `.keyword` may be required.
+      - **order**: `asc` or `desc`. Defaults to `asc`.
+      - **mode**: For multi-valued fields, which value to sort on: `min`, `max`, `sum`, `avg`, `median`. Defaults to ES behavior (min for asc, max for desc).
+      - **missing**: Where documents lacking the field go: `_first` or `_last`. Defaults to `_last` in both directions.
+      Relevance score and a stable id tiebreaker are always appended, so paging is deterministic.
+      To list the most recently completed studies first:
+      `[{"field": "metadata.Project End Date", "order": "desc"}]`
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
     Returns:
-    
+
     Dict with study list.
     Each study has the following structure:
     - **id**
@@ -475,6 +508,12 @@ async def get_cdes(search_query: SearchElementQuery):
     - **filters**: List of attribute filters to execute the search using. Note that fields are ES fields, so subfields like `.keyword` may be required. Available operators:
       - "eq", "neq", "gt", "gte", "lt", "lte", "in", "exists", "missing", "size_eq", "size_gt", "size_gte", "size_lt", "size_lte"
     - **aggs**: Key-value store of fields to do aggregations on, where key represents the field and value represents the max number of buckets to return. Note that fields are ES fields, so subfields like `.keyword` may be required.
+    - **sort**: Ordered list of sort keys, applied ahead of relevance score. Results are sorted by the first key; later keys only break ties, in the order given. Max 5 keys. Each entry takes:
+      - **field**: An ES field. `text` fields are not sortable, so subfields like `.keyword` may be required.
+      - **order**: `asc` or `desc`. Defaults to `asc`.
+      - **mode**: For multi-valued fields, which value to sort on: `min`, `max`, `sum`, `avg`, `median`. Defaults to ES behavior (min for asc, max for desc).
+      - **missing**: Where documents lacking the field go: `_first` or `_last`. Defaults to `_last` in both directions.
+      Relevance score and a stable id tiebreaker are always appended, so paging is deterministic.
     - **offset**: Offset index used for pagination
     - **size**: Maximum number of items to return in the string
 
@@ -500,7 +539,9 @@ async def get_cdes(search_query: SearchElementQuery):
     results = []
     for result in elastic_results:
         item = result.get("_source")
-        item["score"] = result.get("_score", 0)
+        # .get(..., 0) is not a guard here: the key is present but null when sorting.
+        score = result.get("_score")
+        item["score"] = score if score is not None else 0
         item["explanation"] = result.get("_explanation", {})
         results.append(item)
     res = {
@@ -533,6 +574,32 @@ async def get_variables_by_ids(ids: VariableIds):
         "results": res_variables,
     }
     return res
+
+
+@APP.get('/ingestion_metadata', tags=['v2.0'], response_model=IngestionMetadataResponse)
+async def get_ingestion_metadata():
+    """
+    Summary of what is currently indexed: document counts, cross-reference counts,
+    and when each index was last written to by the ingestion pipeline.
+
+    Returns:
+
+    - **indices**: One entry per index (`concepts`, `sections`, `studies`, `variables`), each with:
+        * **index**: Elasticsearch index name
+        * **doc_count**: Total documents in the index
+        * **ingested_at**: When the ingestion pipeline last wrote to this index. `null`
+          until a pipeline run has stamped the index.
+        * **index_created_at**: When the index itself was created.
+
+      Variables and CDEs share the `variables` index, so that entry additionally carries:
+        * **variable_count**: Documents with `is_cde` false
+        * **cde_count**: Documents with `is_cde` true
+
+    - **mappings**:
+        * **cdes_with_study_mappings**: CRFs with a non-empty `metadata.study_mappings`
+        * **variables_with_cde_mappings**: Variables with a non-empty `metadata.cde_mapping`
+    """
+    return await search.get_ingestion_metadata()
 
 
 @APP.get('/study_sources', tags=['v2.0'])
