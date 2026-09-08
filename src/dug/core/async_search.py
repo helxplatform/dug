@@ -1277,7 +1277,7 @@ class Search:
         simple_query_string_search = {
             "query": query,
             "default_operator": "and",
-            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+            "flags": "OR|AND|NOT|PHRASE|PREFIX|WHITESPACE"
         }
         search_query = {
             "query": {
@@ -1344,7 +1344,7 @@ class Search:
         simple_query_string_search = {
             "query": query,
             "default_operator": "and",
-            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+            "flags": "OR|AND|NOT|PHRASE|PREFIX|WHITESPACE"
         }
 
         element_name = "element_name"
