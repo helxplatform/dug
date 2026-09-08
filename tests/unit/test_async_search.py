@@ -122,6 +122,36 @@ class QueryBuilderCommonClauseTestCase(TestCase):
                 self.assertIs(body["track_scores"], True)
 
 
+class SimpleSearchExcludeTermTestCase(TestCase):
+    """Regression test: `-term` exclusion in simple-search queries.
+
+    simple_query_string requires the WHITESPACE flag to correctly tokenize
+    around a leading `-`; without it, a query like "brain -tumor" silently
+    turns "-tumor" into a *required* term instead of an excluded one. See
+    the DUG exclude-query bug fix.
+    """
+
+    def _flags_for(self, builder_name):
+        body = _build_all_query_builders()[builder_name]
+        must = body["query"]["bool"]["must"]
+        function_score = (must[0] if isinstance(must, list) else must)["function_score"]
+        should = function_score["query"]["bool"]["should"]
+        flags = set()
+        for clause in should:
+            sqs = clause.get("simple_query_string") or clause["nested"]["query"]["simple_query_string"]
+            flags.add(sqs["flags"])
+        self.assertEqual(len(flags), 1, "expected identical flags across should clauses")
+        return next(iter(flags))
+
+    def test_concept_query_flags_include_whitespace(self):
+        "get_simple_concept_search_query must include WHITESPACE in its flags"
+        self.assertIn("WHITESPACE", self._flags_for("get_simple_concept_search_query").split("|"))
+
+    def test_element_query_flags_include_whitespace(self):
+        "_get_element_simple_search_query must include WHITESPACE in its flags"
+        self.assertIn("WHITESPACE", self._flags_for("_get_element_simple_search_query").split("|"))
+
+
 class ConvertSortToEsTestCase(TestCase):
     "Unit tests for the SortCriterion -> elasticsearch `sort` translation"
 
