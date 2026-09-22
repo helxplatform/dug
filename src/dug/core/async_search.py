@@ -1274,10 +1274,12 @@ class Search:
                                         aggregate_size_limit=None):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
+        # Flag meanings: https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-simple-query-string-query#supported-flags
+        # WHITESPACE is required for a leading "-" to be parsed as exclusion rather than as part of the next term.
         simple_query_string_search = {
             "query": query,
             "default_operator": "and",
-            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+            "flags": "OR|AND|NOT|PHRASE|PREFIX|WHITESPACE"
         }
         search_query = {
             "query": {
@@ -1341,10 +1343,12 @@ class Search:
     ):
         """Returns ES query that allows to use basic operators like AND, OR, NOT...
         More info here https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html."""
+        # Flag meanings: https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-simple-query-string-query#supported-flags
+        # WHITESPACE is required for a leading "-" to be parsed as exclusion rather than as part of the next term.
         simple_query_string_search = {
             "query": query,
             "default_operator": "and",
-            "flags": "OR|AND|NOT|PHRASE|PREFIX"
+            "flags": "OR|AND|NOT|PHRASE|PREFIX|WHITESPACE"
         }
 
         element_name = "element_name"

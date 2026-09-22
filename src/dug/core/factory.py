@@ -61,7 +61,11 @@ class DugFactory:
         return crawler
 
     def build_tranqlizer(self) -> ConceptExpander:
-        return ConceptExpander(**self.config.concept_expander)
+        # The session factory is called per thread inside ConceptExpander, so
+        # concurrent TranQL fetches do not share a requests.Session while
+        # still sharing the response cache behind it.
+        return ConceptExpander(session_factory=self.build_http_session,
+                               **self.config.concept_expander)
 
     def build_tranql_queries(self, source=None) -> Dict[str, tql.QueryFactory]:
 

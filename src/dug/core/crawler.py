@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import traceback
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from dug_data_model.v2 import Parser, DugConcept, prepare_for_indexing
@@ -16,7 +17,7 @@ class Crawler:
     def __init__(self, crawl_file: str, parser: Parser, annotator: Annotator,
                  tranqlizer, tranql_queries,
                  http_session, exclude_identifiers=None, program_name=None,
-                 element_extraction=None):
+                 element_extraction=None, crawl_workers=1):
 
         if exclude_identifiers is None:
             exclude_identifiers = []
@@ -30,6 +31,9 @@ class Crawler:
         self.http_session = http_session
         self.exclude_identifiers = exclude_identifiers
         self.element_extraction = element_extraction
+        # Concurrency for the TranQL fetches in expand_concept. Defaults to
+        # serial so existing callers are unaffected.
+        self.crawl_workers = max(1, int(crawl_workers))
         self.elements = []
         self.study = None
         self.concepts = {}
@@ -177,29 +181,49 @@ class Crawler:
                 element.add_identifier(identifier)
 
     def expand_concept(self, concept):
+        """Attach TranQL knowledge graphs to each of a concept's identifiers.
 
-        # Get knowledge graphs of terms related to each identifier
-        for ident_id, identifier in concept.identifiers.items():
+        Most of the (identifier, query) product is rejected by
+        is_valid_curie -- a query class accepts only a few curie prefixes, so
+        roughly six of every seven combinations are dropped. Those rejections
+        are not logged: on a dbGaP dataset the product runs to millions of
+        combinations, and logging each one cost a fifth of the crawl's wall
+        clock writing lines nobody reads.
 
-            # Conditionally skip some identifiers if they are listed in config
-            if ident_id in self.exclude_identifiers:
-                continue
+        The surviving jobs are fetched concurrently. Each is an independent
+        blocking POST to TranQL taking seconds, so this is the difference
+        between a concept costing the sum of its queries and costing the
+        slowest one. Results are applied afterwards, on this thread and in
+        job order, so the concept is only ever mutated by one thread and the
+        outcome does not depend on which request finished first.
+        """
+        jobs = [
+            (query_name, query_factory, ident_id)
+            for ident_id in concept.identifiers
+            if ident_id not in self.exclude_identifiers
+            for query_name, query_factory in self.tranql_queries.items()
+            if query_factory.is_valid_curie(ident_id)
+        ]
+        if not jobs:
+            return
 
-            # Use pre-defined queries to search for related knowledge graphs that include the identifier
-            for query_name, query_factory in self.tranql_queries.items():
+        def fetch(job):
+            query_name, query_factory, ident_id = job
+            kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
+            return self.tranqlizer.expand_identifier(
+                ident_id, query_factory, kg_outfile)
 
-                # Skip query if the identifier is not a valid query for the query class
-                if not query_factory.is_valid_curie(ident_id):
-                    logger.info(f"identifier {ident_id} is not valid for query type {query_name}. Skipping!")
-                    continue
+        workers = min(self.crawl_workers, len(jobs))
+        if workers > 1:
+            with ThreadPoolExecutor(max_workers=workers,
+                                    thread_name_prefix='tranql') as pool:
+                answer_sets = list(pool.map(fetch, jobs))
+        else:
+            answer_sets = [fetch(job) for job in jobs]
 
-                # Fetch kg and answer
-                kg_outfile = f"{self.crawlspace}/{ident_id}_{query_name}.json"
-                answers = self.tranqlizer.expand_identifier(ident_id, query_factory, kg_outfile)
-
-                # Add any answer knowledge graphs to
-                for answer in answers:
-                    concept.add_kg_answer(answer, query_name=query_name)
+        for (query_name, _, _), answers in zip(jobs, answer_sets):
+            for answer in answers:
+                concept.add_kg_answer(answer, query_name=query_name)
 
     # TODO; This function will be deprecated once CDEs are implemented.
     # def expand_to_dug_element(self,
