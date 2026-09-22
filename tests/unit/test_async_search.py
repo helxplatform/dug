@@ -132,6 +132,9 @@ class SimpleSearchExcludeTermTestCase(TestCase):
     """
 
     def _flags_for(self, builder_name):
+        # Every builder wraps its per-field simple_query_string clauses in a function_score
+        # (which sums their scores via score_mode) so fields matching on more than one of
+        # name/description/search_terms/tags rank higher; find that should list here.
         body = _build_all_query_builders()[builder_name]
         must = body["query"]["bool"]["must"]
         function_score = (must[0] if isinstance(must, list) else must)["function_score"]
@@ -140,7 +143,8 @@ class SimpleSearchExcludeTermTestCase(TestCase):
         for clause in should:
             sqs = clause.get("simple_query_string") or clause["nested"]["query"]["simple_query_string"]
             flags.add(sqs["flags"])
-        self.assertEqual(len(flags), 1, "expected identical flags across should clauses")
+        self.assertEqual(len(flags), 1,
+                         f"expected identical flags across should clauses but got {len(flags)} combinations: {flags}")
         return next(iter(flags))
 
     def test_concept_query_flags_include_whitespace(self):
