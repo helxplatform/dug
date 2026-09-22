@@ -1,6 +1,6 @@
-import json
 import logging
-import os
+import threading
+
 import requests
 
 import dug.core.tranql as tql
@@ -11,52 +11,67 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 class ConceptExpander:
-    def __init__(self, url, min_tranql_score=0.2):
+    """Expands an identifier into knowledge graphs via TranQL.
+
+    Responses are cached by the http session rather than by writing json to
+    a crawlspace directory. The session cache keys a POST on its body, and
+    the body here is the generated TranQL query, so it is exactly as
+    cacheable as the files were -- but it expires, it is shared by every
+    process pointing at the same backend, and it costs no disk. The files
+    never expired, so a stale knowledge graph was served indefinitely, and
+    two crawls writing the same identifier concurrently could leave a
+    truncated file that failed to parse.
+
+    `session_factory` is called once per thread, because requests.Session is
+    not documented as thread safe and expand_concept fetches concurrently.
+    """
+
+    def __init__(self, url, min_tranql_score=0.2, session_factory=None):
         self.url = url
         self.min_tranql_score = min_tranql_score
         self.include_node_keys = ["id", "name", "synonyms"]
         self.include_edge_keys = []
         self.tranql_headers = {"accept": "application/json", "Content-Type": "text/plain"}
+        self._session_factory = session_factory or requests.Session
+        self._local = threading.local()
+
+    @property
+    def session(self):
+        session = getattr(self._local, 'session', None)
+        if session is None:
+            session = self._session_factory()
+            self._local.session = session
+        return session
 
     def is_acceptable_answer(self, answer):
         return True
 
-    def expand_identifier(self, identifier, query_factory, kg_filename, include_all_attributes=False):
+    def expand_identifier(self, identifier, query_factory, kg_filename=None, include_all_attributes=False):
 
         answer_kgs = []
 
-        # Skip TranQL query if a file exists in the crawlspace exists already, but continue w/ answers
-        if os.path.exists(kg_filename):
-            logger.info(f"identifier {identifier} is already crawled. Skipping TranQL query.")
-            with open(kg_filename, 'r') as stream:
-                response = json.load(stream)
-        else:
-            query = query_factory.get_query(identifier)
-            logger.debug(query)
-            response = requests.post(
-                url=self.url,
-                headers=self.tranql_headers,
-                data=query).json()
+        query = query_factory.get_query(identifier)
+        logger.debug(query)
+        response = self.session.post(
+            url=self.url,
+            headers=self.tranql_headers,
+            data=query).json()
 
-            # Case: Skip if empty KG
-            try:
-                if response["message"] == 'Internal Server Error' or len(response["message"]["knowledge_graph"]["nodes"]) == 0:
-                    logger.debug(f"Did not find a knowledge graph for {query}")
-                    logger.debug(f"{self.url} returned response: {response}")
-                    return []
-            except KeyError as e:
-                logger.error(f"Could not find key: {e} in response: {response}")
-
-            # Dump out to file if there's a knowledge graph
-            with open(kg_filename, 'w') as stream:
-                json.dump(response, stream, indent=2)
+        # Case: Skip if empty KG
+        try:
+            if response["message"] == 'Internal Server Error' or len(response["message"]["knowledge_graph"]["nodes"]) == 0:
+                logger.debug(f"Did not find a knowledge graph for {query}")
+                logger.debug(f"{self.url} returned response: {response}")
+                return []
+        except KeyError as e:
+            logger.error(f"Could not find key: {e} in response: {response}")
 
         # Get nodes in knowledge graph hashed by ids for easy lookup
         noMessage = (len(response.get("message",{})) == 0)
         statusError = (response.get("status","") == 'Error')
         if noMessage or statusError:
             # Skip on error
-            logger.info(f"Error with identifier: {identifier}, response: {response}, kg_filename: '{kg_filename}'")
+            logger.info(f"Error with identifier: {identifier}, response: {response}")
             return []
         kg = tql.QueryKG(response)
 
