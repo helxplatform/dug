@@ -83,5 +83,6 @@ jobs:
           ${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
           containers.renci.org/${{ github.repository }}:develop
           containers.renci.org/${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
-        cache-from: type=registry,ref=${{ github.repository }}:buildcache-dev
-        cache-to: type=registry,ref=${{ github.repository }}:buildcache-dev,mode=max
+        # Build fresh: a cached `apk upgrade` layer pins stale, vulnerable Alpine packages.
+        pull: true
+        no-cache: true

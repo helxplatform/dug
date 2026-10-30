@@ -98,8 +98,9 @@ jobs:
           ${{ github.repository }}:v${{ steps.version.outputs.version }}
           ${{ github.repository }}:latest
           ${{ github.repository }}:${{ steps.vars.outputs.short_sha }}
-        cache-from: type=registry,ref=${{ github.repository }}:buildcache-release
-        cache-to: type=registry,ref=${{ github.repository }}:buildcache-release,mode=max
+        # Build fresh: a cached `apk upgrade` layer pins stale, vulnerable Alpine packages.
+        pull: true
+        no-cache: true
 
 #==========================TAG & RELEASE W/ NOTES =========================
 
