@@ -45,8 +45,9 @@ jobs:
         push: false
         load: true
         tags: ${{ github.repository }}:vuln-test
-        cache-from: type=registry,ref=${{ github.repository }}:buildcache
-        cache-to: type=registry,ref=${{ github.repository }}:buildcache,mode=max
+        # Build fresh: a cached `apk upgrade` layer pins stale, vulnerable Alpine packages.
+        pull: true
+        no-cache: true
 
     # We will not be concerned with Medium and Low vulnerabilities
     - name: Run Trivy vulnerability scanner
