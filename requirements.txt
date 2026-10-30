@@ -1,4 +1,4 @@
-aiohttp
+aiohttp>=3.14.4
 git+https://github.com/helxplatform/dug-data-model.git@main
 asyncio
 fastapi
@@ -29,3 +29,6 @@ click
 httpx
 bmt==1.4.4
 urllib3>=2.6.2
+# Transitive floors for image CVEs (GHSA-6q48-6c7w-9gw2, CVE-2026-114603)
+certifi>=2026.10.18
+opentelemetry-api>=1.45.1
